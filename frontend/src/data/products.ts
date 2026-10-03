@@ -19,14 +19,14 @@ export interface Product {
 }
 
 const imgs = {
-  steel1: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=700&h=500&fit=crop&auto=format',
-  steel2: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=700&h=500&fit=crop&auto=format',
-  steel3: 'https://images.unsplash.com/photo-1504387508099-cece71a87e17?w=700&h=500&fit=crop&auto=format',
-  warehouse: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&h=500&fit=crop&auto=format',
-  construction: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=700&h=500&fit=crop&auto=format',
-  metal1: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=700&h=500&fit=crop&auto=format',
-  pipe: 'https://images.unsplash.com/photo-1565814636199-ae8d05eedcd7?w=700&h=500&fit=crop&auto=format',
-  roof: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=700&h=500&fit=crop&auto=format',
+  steel1: '/images/steel-indonesia/besi-beton.jpg',
+  steel2: '/images/steel-indonesia/hollow.jpg',
+  steel3: '/images/steel-indonesia/wiremesh.jpg',
+  warehouse: '/images/steel-indonesia/toko-mahameru.jpg',
+  construction: '/images/steel-indonesia/toko-mahameru.jpg',
+  metal1: '/images/steel-indonesia/plat-hitam.jpg',
+  pipe: '/images/steel-indonesia/pipa-hitam.jpg',
+  roof: '/images/steel-indonesia/spandek.jpg',
 };
 
 export const products: Product[] = [

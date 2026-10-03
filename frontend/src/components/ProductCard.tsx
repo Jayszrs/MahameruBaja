@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { Link } from 'react-router';
 import { useState } from 'react';
 import { useQuotation } from '../context/QuotationContext';
@@ -43,11 +44,12 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
     <article className="product-card group relative bg-white rounded-xl border border-light-steel/70 overflow-hidden flex flex-col">
       {/* Image */}
       <Link to={`/produk/${product.slug}`} className="block relative overflow-hidden bg-surface-2 aspect-[4/3]">
-        <img
+        <Image
           src={product.image}
           alt={product.name}
-          className="card-img w-full h-full object-cover"
-          loading="lazy"
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="card-img object-cover"
         />
         {/* Badges overlay */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">

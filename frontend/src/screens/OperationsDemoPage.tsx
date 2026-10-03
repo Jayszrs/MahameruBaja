@@ -45,6 +45,15 @@ const documentTypes = [
   "Bukti Pengiriman",
   "Catatan Komunikasi",
 ]
+const uploadGroups = [
+  { id: "hero", title: "Hero slider & video", hint: "JPG, PNG, WEBP, MP4, WebM - media, urutan, dan poster", accept: "image/jpeg,image/png,image/webp,video/mp4,video/webm" },
+  { id: "product", title: "Foto produk", hint: "JPG, PNG, WEBP - katalog dan thumbnail", accept: "image/jpeg,image/png,image/webp" },
+  { id: "gallery", title: "Galeri toko & proyek", hint: "JPG, PNG, WEBP - dokumentasi ber-caption", accept: "image/jpeg,image/png,image/webp" },
+  { id: "client", title: "Logo klien", hint: "SVG, PNG, WEBP - hanya setelah persetujuan", accept: "image/svg+xml,image/png,image/webp" },
+  { id: "design", title: "Desain laser", hint: "DWG, DXF, PDF, AI, CDR, JPG, PNG", accept: ".dwg,.dxf,.pdf,.ai,.cdr,.jpg,.jpeg,.png" },
+  { id: "order", title: "Dokumen pekerjaan", hint: "PO, quotation, SPK, memo, invoice, surat jalan", accept: ".pdf,.xlsx,.xls,.doc,.docx" },
+  { id: "proof", title: "Bukti transaksi", hint: "Bukti pembayaran, pengiriman, dan penerimaan", accept: "image/jpeg,image/png,image/webp,application/pdf" },
+]
 const demoOrders = [
   {
     id: "DEMO-MBI-001",
@@ -74,6 +83,11 @@ export default function OperationsDemoPage() {
     number: string
   }[]>>({})
   const [type, setType] = useState(documentTypes[2])
+  const [uploadQueue, setUploadQueue] = useState<Array<{
+    group: string
+    name: string
+    size: number
+  }>>([])
   const selected = orders.find((order) => order.id === active)!
   function update(field: "status" | "notes" | "payment", value: string) {
     setOrders((previous) =>
@@ -127,6 +141,17 @@ export default function OperationsDemoPage() {
     link.click()
     URL.revokeObjectURL(url)
   }
+  function queueFiles(group: string, files: FileList | null) {
+    if (!files) return
+    setUploadQueue((current) => [
+      ...current,
+      ...Array.from(files).map((file) => ({
+        group,
+        name: file.name,
+        size: file.size,
+      })),
+    ])
+  }
   return (
     <section className="business-section">
       <div className="industrial-container">
@@ -140,11 +165,54 @@ export default function OperationsDemoPage() {
           <span className="industrial-eyebrow">DEMO DATA · SESSION ONLY</span>
         </div>
         <p className="verification-note">
-          Simulasi alur dari draf PDF, tanpa autentikasi, database, upload
-          dokumen atau data pelanggan nyata. Perubahan hilang saat halaman
-          dimuat ulang. Jangan masukkan informasi pribadi. CMS, CRM dan
-          analytics produksi memerlukan backend serta kontrol akses.
+          Simulasi alur dari draf PDF. Database lead publik sudah tersedia,
+          tetapi autentikasi admin dan penyimpanan object storage belum
+          diaktifkan. File di bawah hanya masuk antrean preview sesi ini.
+          Jangan masukkan dokumen pelanggan nyata.
         </p>
+        <section className="cms-upload-section" aria-labelledby="cms-upload-title">
+          <div className="cms-upload-heading">
+            <div>
+              <p className="industrial-eyebrow">CMS / MEDIA & DOKUMEN</p>
+              <h2 id="cms-upload-title">Pusat upload terstruktur.</h2>
+            </div>
+            <span>{uploadQueue.length} file dalam antrean demo</span>
+          </div>
+          <div className="cms-upload-grid">
+            {uploadGroups.map((group) => (
+              <label className="cms-upload-card" key={group.id}>
+                <input
+                  type="file"
+                  accept={group.accept}
+                  multiple
+                  onChange={(event) => queueFiles(group.title, event.target.files)}
+                />
+                <span className="cms-upload-icon" aria-hidden="true">+</span>
+                <strong>{group.title}</strong>
+                <small>{group.hint}</small>
+                <b>Pilih file</b>
+              </label>
+            ))}
+          </div>
+          {uploadQueue.length > 0 && (
+            <div className="cms-upload-queue" aria-live="polite">
+              {uploadQueue.map((file, index) => (
+                <div key={`${file.name}-${index}`}>
+                  <span>{file.group}</span>
+                  <strong>{file.name}</strong>
+                  <small>{Math.max(1, Math.round(file.size / 1024))} KB</small>
+                  <button
+                    type="button"
+                    onClick={() => setUploadQueue((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+                    aria-label={`Hapus ${file.name} dari antrean`}
+                  >
+                    Hapus
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
         <div className="business-grid mt-8">
           {[
             "Total lead: belum terhubung",

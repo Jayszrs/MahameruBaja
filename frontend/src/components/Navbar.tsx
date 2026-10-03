@@ -1,8 +1,8 @@
 "use client";
 
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router';
-import { useScrollY } from '../hooks/useReveal';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
 
 interface NavbarProps {
@@ -60,16 +60,13 @@ const megaMenuCols = [
 ];
 
 export default function Navbar({ onSearchOpen }: NavbarProps) {
-  const scrollY = useScrollY();
   const location = useLocation();
+  const navigate = useNavigate();
   const { count, setOpen: setQuotationOpen } = useQuotation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const megaRef = useRef<HTMLDivElement>(null);
-
-  const scrolled = scrollY > 80;
-  const isHome = location.pathname === '/';
 
   useEffect(() => { setMobileOpen(false); setMegaOpen(false); }, [location.pathname]);
 
@@ -96,7 +93,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/cari?q=${encodeURIComponent(searchQuery.trim())}`;
+      navigate(`/cari?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   }
 
@@ -146,8 +143,8 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
             >
               <LogoMark light={!navSolid} />
               <div className="leading-tight">
-                <div className={`font-extrabold text-sm tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>MAHAMERU</div>
-                <div className="font-semibold text-[10px] text-brand tracking-[0.18em] uppercase">BAJA</div>
+                <div className={`font-extrabold text-[13px] tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>MAHAMERU BAJA</div>
+                <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
               </div>
             </Link>
 
@@ -334,8 +331,8 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
                 <LogoMark light={false} />
                 <div className="leading-tight">
-                  <div className="font-extrabold text-sm text-gunmetal tracking-tight font-[family-name:var(--font-display)]">MAHAMERU</div>
-                  <div className="font-semibold text-[10px] text-brand tracking-[0.18em] uppercase">BAJA</div>
+                  <div className="font-extrabold text-[13px] text-gunmetal tracking-tight font-[family-name:var(--font-display)]">MAHAMERU BAJA</div>
+                  <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
                 </div>
               </Link>
               <button onClick={() => setMobileOpen(false)} aria-label="Tutup menu" className="p-2 text-steel-grey">
@@ -412,11 +409,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
 function LogoMark({ light }: { light: boolean }) {
   return (
-    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-      <rect width="30" height="30" rx="6" fill={light ? 'rgba(255,255,255,0.15)' : '#D92D27'} />
-      <path d="M6 23L12 9L15 16L18 9L24 23" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M10 18.5H20" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
+    <span className={`relative block h-10 w-10 overflow-hidden border ${light ? 'border-white/20' : 'border-light-steel'} bg-white`} aria-hidden="true">
+      <Image src="/images/steel-indonesia/company-logo.jpeg" alt="" fill sizes="40px" className="object-contain" priority />
+    </span>
   );
 }
 

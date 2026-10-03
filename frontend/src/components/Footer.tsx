@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { Link } from 'react-router';
 
 const produkLinks = [
@@ -69,15 +70,12 @@ export default function Footer() {
           {/* Brand col */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 rounded-lg bg-brand flex items-center justify-center">
-                <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                  <path d="M5 22L11 8L14 15L17 8L23 22" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M9 17.5H19" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+              <div className="relative w-11 h-11 bg-white overflow-hidden">
+                <Image src="/images/steel-indonesia/company-logo.jpeg" alt="Logo MBI" fill sizes="44px" className="object-contain" />
               </div>
               <div className="leading-tight">
-                <div className="font-extrabold text-base text-white tracking-tight font-[family-name:var(--font-display)]">MAHAMERU</div>
-                <div className="font-semibold text-[10px] text-brand tracking-[0.18em] uppercase">BAJA</div>
+                <div className="font-extrabold text-base text-white tracking-tight font-[family-name:var(--font-display)]">MAHAMERU BAJA</div>
+                <div className="font-semibold text-[9px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
               </div>
             </Link>
             <p className="text-white/45 text-sm leading-relaxed max-w-xs mb-5">
