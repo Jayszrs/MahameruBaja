@@ -1,0 +1,10 @@
+.git
+.next
+node_modules
+**/node_modules
+**/dist
+tmp
+*.log
+.env*
+!.env.example
+Draft_Permintaan_Mahameru_Baja.pdf
