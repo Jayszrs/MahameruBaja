@@ -24,7 +24,14 @@ const businessRoutes = [
   { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/laser-cutting", cta: "Lihat layanan" },
 ];
 
-const sampleClients = ["ASTRA", "mandiri", "WIKA", "PP", "ADHI", "TOTAL"];
+const sampleClients = [
+  { name: "ASTRA", logo: "/images/client-logos/astra.png" },
+  { name: "mandiri", logo: "/images/client-logos/mandiri.png" },
+  { name: "WIKA", logo: "/images/client-logos/wika.png" },
+  { name: "PP", logo: "/images/client-logos/pp.png" },
+  { name: "ADHI", logo: "/images/client-logos/adhi.png" },
+  { name: "TOTAL", logo: "/images/client-logos/total.png" },
+];
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
@@ -144,11 +151,64 @@ function LaserFeature() {
 
 function ClientPreview() {
   return (
-    <section className="home-clients" aria-labelledby="clients-heading">
+    <section className="home-clients" id="klien" aria-labelledby="clients-heading">
       <div className="home-shell" data-reveal>
-        <p id="clients-heading">Preview posisi logo klien - bukan pernyataan kerja sama</p>
-        <div>{sampleClients.map((client) => <span key={client}>{client}</span>)}</div>
-        <small>Logo resmi nantinya diunggah dari CMS setelah ada persetujuan dan verifikasi klien.</small>
+        <p id="clients-heading">Preview logo perusahaan / menunggu verifikasi kerja sama</p>
+        <div className="home-client-logo-grid">
+          {sampleClients.map((client) => (
+            <div className="home-client-logo" key={client.name}>
+              <Image src={client.logo} alt={`Logo ${client.name}`} width={92} height={56} sizes="92px" />
+              <span>{client.name}</span>
+            </div>
+          ))}
+        </div>
+        <small>Logo ditampilkan sebagai contoh layout. Status klien wajib diverifikasi sebelum website dipublikasikan.</small>
+      </div>
+    </section>
+  );
+}
+
+function StarIcon({ filled = false }: { filled?: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m12 2.8 2.83 5.74 6.34.92-4.59 4.47 1.08 6.31L12 17.26l-5.66 2.98 1.08-6.31-4.59-4.47 6.34-.92L12 2.8Z" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function ReviewsPreview() {
+  const previewReviews = [
+    { segment: "Retail material", text: "Ruang untuk ulasan pembelian material yang sudah diverifikasi pengelola." },
+    { segment: "Supply proyek", text: "Ruang untuk pengalaman pelanggan proyek setelah memperoleh persetujuan publikasi." },
+    { segment: "Laser cutting", text: "Ruang untuk ulasan hasil pekerjaan berdasarkan data order dan persetujuan pelanggan." },
+  ];
+
+  return (
+    <section className="home-section home-reviews" id="ulasan" aria-labelledby="reviews-heading">
+      <div className="home-shell">
+        <div className="home-section-heading" data-reveal>
+          <div><Eyebrow>Rating & ulasan</Eyebrow><h2 id="reviews-heading">Kepercayaan harus bisa diverifikasi.</h2></div>
+          <p>Blok rating dikembalikan tanpa membuat angka atau testimoni palsu. Nilai Google dan ulasan asli dapat disinkronkan setelah profil bisnis dikonfirmasi.</p>
+        </div>
+        <div className="home-review-layout">
+          <a className="home-rating-card" href="https://www.google.com/maps/search/?api=1&query=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan" target="_blank" rel="noreferrer" data-reveal>
+            <span>Google Business Profile</span>
+            <strong>—</strong>
+            <div>{Array.from({ length: 5 }, (_, index) => <StarIcon key={index} />)}</div>
+            <p>Rating belum terhubung</p>
+            <b>Lihat profil di Google Maps <Arrow diagonal /></b>
+          </a>
+          <div className="home-review-cards">
+            {previewReviews.map((review) => (
+              <article key={review.segment} data-reveal>
+                <div>{Array.from({ length: 5 }, (_, index) => <StarIcon key={index} filled={false} />)}</div>
+                <p>“{review.text}”</p>
+                <strong>{review.segment}</strong>
+                <small>Preview CMS / belum dipublikasikan</small>
+              </article>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -196,5 +256,5 @@ function FinalCallout() {
 }
 
 export default function HomePage() {
-  return <><MotionController /><HeroCarousel /><CategoryGrid /><BusinessRoutes /><StoreStory /><LaserFeature /><ClientPreview /><LocationSection /><FinalCallout /></>;
+  return <><MotionController /><HeroCarousel /><CategoryGrid /><BusinessRoutes /><StoreStory /><LaserFeature /><ReviewsPreview /><ClientPreview /><LocationSection /><FinalCallout /></>;
 }

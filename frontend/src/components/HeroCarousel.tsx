@@ -7,10 +7,10 @@ import { heroSlides } from "../data/heroSlides";
 
 const ROTATION_INTERVAL = 4000;
 
-function Arrow({ previous = false }: { previous?: boolean }) {
+function Arrow() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d={previous ? "M19 12H5m6 6-6-6 6-6" : "M5 12h14m-6-6 6 6-6 6"} />
+      <path d="M5 12h14m-6-6 6 6-6 6" />
     </svg>
   );
 }
@@ -59,35 +59,33 @@ export default function HeroCarousel() {
       className={`hero-carousel ${paused ? "is-paused" : ""}`}
       aria-roledescription="carousel"
       aria-label="Layanan utama Mahameru Baja"
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false);
-      }}
     >
       <div className="hero-carousel-media" aria-hidden="true">
         {heroSlides.map((slide, index) => (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
-            {slide.type === "video" ? (
-              <video
-                ref={(node) => { videoRefs.current[index] = node; }}
-                src={slide.media}
-                poster={slide.poster}
-                muted
-                loop
-                playsInline
-                preload={index === 0 ? "auto" : "metadata"}
-                style={{ objectPosition: slide.objectPosition }}
-              />
-            ) : (
-              <Image
-                src={slide.media}
-                alt=""
-                fill
-                priority={index === 0}
-                sizes="100vw"
-                style={{ objectPosition: slide.objectPosition }}
-              />
-            )}
+            <div className="hero-carousel-parallax" data-parallax="0.055">
+              {slide.type === "video" ? (
+                <video
+                  ref={(node) => { videoRefs.current[index] = node; }}
+                  src={slide.media}
+                  poster={slide.poster}
+                  muted
+                  loop
+                  playsInline
+                  preload={index === 0 ? "auto" : "metadata"}
+                  style={{ objectPosition: slide.objectPosition }}
+                />
+              ) : (
+                <Image
+                  src={slide.media}
+                  alt=""
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  style={{ objectPosition: slide.objectPosition }}
+                />
+              )}
+            </div>
           </div>
         ))}
       </div>
@@ -129,10 +127,6 @@ export default function HeroCarousel() {
                 <i><b /></i>
               </button>
             ))}
-          </div>
-          <div className="hero-carousel-arrows">
-            <button type="button" onClick={() => goTo(activeIndex - 1)} aria-label="Slide sebelumnya"><Arrow previous /></button>
-            <button type="button" onClick={() => goTo(activeIndex + 1)} aria-label="Slide berikutnya"><Arrow /></button>
           </div>
         </div>
       </div>

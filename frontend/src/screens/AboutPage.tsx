@@ -1,8 +1,9 @@
 "use client";
 
 import { Link } from 'react-router';
-import { useReveal, useScrollY, useCounter } from '../hooks/useReveal';
+import { useReveal, useCounter } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';
+import MotionController from '../components/MotionController';
 
 function ArrowIcon() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
@@ -17,7 +18,6 @@ function CheckIcon() {
 
 // ── Page Hero ─────────────────────────────────────────────────────────
 function PageHero() {
-  const scrollY = useScrollY();
   return (
     <section
       className="relative bg-gunmetal overflow-hidden -mt-[7.75rem] lg:-mt-[8.5rem]"
@@ -26,12 +26,12 @@ function PageHero() {
     >
       {/* Parallax bg */}
       <div
-        className="absolute inset-0 w-full h-[120%]"
-        style={{ transform: `translateY(${scrollY * 0.18}px)`, willChange: 'transform' }}
+        className="about-hero-parallax"
+        data-parallax="0.12"
         aria-hidden="true"
       >
         <img
-          src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1600&h=900&fit=crop&auto=format"
+          src="/images/steel-indonesia/toko-mahameru.jpg"
           alt=""
           className="w-full h-full object-cover opacity-22"
         />
@@ -102,19 +102,15 @@ function StatsSection() {
 // ── About Intro ────────────────────────────────────────────────────────
 function AboutIntro() {
   const { ref, visible } = useReveal();
-  const scrollY = useScrollY();
 
   return (
     <section className="py-24 bg-warm-white" aria-labelledby="about-intro-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className={`relative rounded-2xl overflow-hidden aspect-[4/3] bg-graphite reveal ${visible ? 'visible' : ''}`}>
-            <img
-              src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=900&h=700&fit=crop&auto=format"
-              alt="Gudang Mahameru Baja"
-              className="w-full h-full object-cover"
-              style={{ transform: `translateY(${scrollY * 0.04}px)`, transition: 'transform 0s' }}
-            />
+            <div className="about-intro-parallax" data-parallax="0.055">
+              <img src="/images/steel-indonesia/toko-mahameru.jpg" alt="Toko Mahameru Baja di Tambun Selatan" className="w-full h-full object-cover" />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-gunmetal/50 to-transparent" />
             <div className="absolute bottom-4 left-4 flex items-center gap-1.5 bg-brand text-white text-[11px] font-bold px-3 py-1.5 rounded-lg">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
@@ -378,6 +374,7 @@ function AboutCTA() {
 export default function AboutPage() {
   return (
     <>
+      <MotionController />
       <PageHero />
       <BusinessUnits />
       <StatsSection />
