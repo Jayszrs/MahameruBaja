@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* === MAHAMERU BAJA DESIGN TOKENS === */
+
+  /* Brand Colors */
+  --color-brand: #D92323;
+  --color-brand-dark: #AF1616;
+  --color-brand-light: #F5E5E4;
+
+  /* Neutrals */
+  --color-gunmetal: #101112;
+  --color-graphite: #202123;
+  --color-steel-grey: #606971;
+  --color-light-steel: #D6DADC;
+  --color-warm-white: #F7F7F7;
+  --color-surface-2: #EDECEA;
+
+  /* Semantic */
+  --color-positive: #1A7A3E;
+  --color-positive-bg: #E6F4EC;
+  --color-warning: #B45309;
+  --color-warning-bg: #FEF3C7;
+  --color-info: #1E5FA8;
+
+  /* Backward-compat aliases */
+  --color-ink: #17191C;
+  --color-navy: #23272B;
+  --color-surface: #F7F7F7;
+  --color-muted: #606971;
+  --color-rule: #D6DADC;
+  --color-steel: #606971;
+  --color-accent: #D92D27;
+  --color-accent-dark: #B82420;
+
+  /* Fonts */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-warm-white);
+  color: var(--color-graphite);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D6DADC; border-radius: 3px; }
+
+/* ─── Scroll reveal ─────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.08s; }
+.reveal-delay-2 { transition-delay: 0.16s; }
+.reveal-delay-3 { transition-delay: 0.24s; }
+.reveal-delay-4 { transition-delay: 0.32s; }
+.reveal-delay-5 { transition-delay: 0.40s; }
+
+/* ─── Page transition ────────────────────────────── */
+.page-enter {
+  animation: pageEnter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Marquee ─────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee { width: max-content; animation: marquee 40s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+
+/* ─── Glow ────────────────────────────────────────── */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 0.5; }
+}
+.animate-glow { animation: glowPulse 4s ease-in-out infinite; }
+
+/* ─── Texture overlays ─────────────────────────────── */
+.texture-grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.texture-blueprint {
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* ─── Mono utility ─────────────────────────────────── */
+.font-mono-tech {
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+/* ─── No scroll ───────────────────────────────────── */
+.no-scroll { overflow: hidden; }
+
+/* ─── Focus ring ──────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ─── Product card hover ──────────────────────────── */
+.product-card {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  border-color: rgba(217, 45, 39, 0.35);
+}
+.product-card:hover .card-img { transform: scale(1.04); }
+.card-img { transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ─── Mega menu ───────────────────────────────────── */
+.mega-menu-enter {
+  animation: megaIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes megaIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Drawer ──────────────────────────────────────── */
+.drawer-enter {
+  animation: drawerIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes drawerIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+/* ─── Bottom sheet ────────────────────────────────── */
+.sheet-enter {
+  animation: sheetUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+/* ─── Hide scrollbar utility ──────────────────────── */
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+.industrial-container { width: min(1280px, 100%); margin-inline: auto; padding-inline: 32px; }
+.industrial-eyebrow { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: .13em; line-height: 1.8; text-transform: uppercase; }
+.laser-hero { background: var(--color-gunmetal); color: white; position: relative; overflow: hidden; }
+.laser-hero-image { position: absolute; inset: -60px 0 0 22%; height: calc(100% + 60px); }
+.laser-hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; }
+.laser-hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, #101112 0%, #101112ee 20%, #10111288 50%, #10111222 80%), linear-gradient(0deg, #101112 0%, transparent 40%); }
+.laser-hero-content { position: relative; padding-top: 30px; }
+.laser-hero-top { display: flex; justify-content: space-between; align-items: center; color: #d2d3d4; padding-bottom: 24px; border-bottom: 1px solid #ffffff29; }
+.hero-location { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; }
+.laser-hero-copy { padding-block: 72px 66px; max-width: 750px; }
+.hero-service-label { display: flex; align-items: center; gap: 10px; color: #eee; font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em; }
+.hero-service-label span { width: 6px; height: 6px; background: var(--color-brand); }
+.laser-hero h1 { font-size: clamp(54px, 6.8vw, 94px); letter-spacing: -.055em; line-height: 1.04; margin-block: 24px; font-weight: 600; }
+.laser-hero h1 em { font-style: normal; color: #ff4444; }
+.laser-hero-copy > p { font-size: 15px; color: #d0d0d0; line-height: 1.9; max-width: 550px; }
+.industrial-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.industrial-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; padding: 16px 22px; background: var(--color-brand); color: white; font-size: 12px; font-weight: 700; border: 1px solid transparent; transition: background .2s; cursor: pointer; }
+.industrial-button:hover { background: var(--color-brand-dark); }
+.industrial-button.outline { background: transparent; border-color: #ffffff60; }
+.industrial-button.outline:hover { background: #ffffff12; }
+.laser-hero-bottom { display: flex; align-items: center; gap: 40px; padding-block: 22px 30px; border-top: 1px solid #ffffff29; }
+.laser-hero-bottom .industrial-eyebrow { color: #bbb; }
+.laser-hero-bottom p { font-size: 12px; margin-top: 7px; }
+.hero-catalog-link { border-left: 1px solid #ffffff30; padding-left: 35px; font-size: 11px; color: #ccc; line-height: 1.9; }
+.hero-catalog-link strong { color: white; font-weight: 500; }
+.hero-photo-note { margin-left: auto; font-family: var(--font-mono); font-size: 8px; color: #aaa; }
+.laser-service-strip { position: relative; background: var(--color-brand); }
+.laser-service-strip > div { min-height: 55px; display: flex; gap: 25px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding-block: 14px; }
+.laser-service-strip span { font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+.laser-service-strip i { width: 4px; height: 4px; background: white; opacity: .55; }
+.business-section { padding-block: 78px; background: white; }
+.section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; margin-bottom: 36px; }
+.section-heading .industrial-eyebrow, .request-grid .industrial-eyebrow { color: var(--color-brand); margin-bottom: 14px; }
+.section-heading h2, .business-section h2, .laser-process h2 { font-size: clamp(30px, 3.2vw, 44px); line-height: 1.15; letter-spacing: -.04em; }
+.section-heading > p { font-size: 12px; line-height: 1.9; color: #636363; }
+.business-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
+.business-card { padding: 27px 23px; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd; display: flex; flex-direction: column; transition: background .2s; }
+.business-card:hover { background: #f7f7f7; }
+.business-card > .industrial-eyebrow { color: #707070; font-size: 9px; }
+.business-card h3 { font-size: 20px; letter-spacing: -.04em; margin-top: 26px; margin-bottom: 8px; line-height: 1.25; }
+.business-card p { font-size: 12px; line-height: 1.8; color: #686868; margin-block: 8px 24px; }
+.business-card p.business-label { color: var(--color-brand-dark); font-weight: 600; margin-block: 0 8px; }
+.business-link { display: flex; justify-content: space-between; gap: 15px; font-size: 11px; font-weight: 700; color: var(--color-graphite); margin-top: auto; padding-top: 18px; border-top: 1px solid #ddd; }
+.business-link:hover { color: var(--color-brand); }
+.laser-page-hero { padding-block: 60px; background: var(--color-gunmetal); color: white; }
+.laser-page-hero .industrial-eyebrow { color: #d0d0d0; margin-bottom: 25px; }
+.laser-page-hero h1 { font-size: clamp(42px, 5vw, 72px); line-height: 1.08; letter-spacing: -.05em; margin-block: 16px; }
+.laser-page-hero h1 span { color: #ff4444; }
+.laser-page-hero p:not(.industrial-eyebrow) { font-size: 14px; line-height: 1.9; color: #d0d0d0; max-width: 650px; margin-bottom: 25px; }
+.laser-page-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center; }
+.laser-page-grid figure img { width: 100%; aspect-ratio: 1.15; object-fit: cover; }
+.laser-page-grid figcaption { font-family: var(--font-mono); font-size: 9px; line-height: 1.7; color: #ccc; margin-top: 12px; }
+.verification-note { padding: 18px; border-left: 2px solid var(--color-brand); background: #f5f5f5; font-size: 12px; line-height: 1.9; color: #555; margin-top: 24px; }
+.laser-process { background: var(--color-gunmetal); color: white; padding-block: 65px; }
+.laser-process > div > .industrial-eyebrow { color: #bbb; margin-bottom: 15px; }
+.process-grid { display: grid; grid-template-columns: repeat(5, 1fr); margin-block: 35px; gap: 25px; }
+.process-grid > div { border-top: 1px solid #ffffff40; padding-top: 20px; }
+.process-grid span { font-family: var(--font-mono); color: #ff5555; font-size: 12px; }
+.process-grid h3 { font-size: 15px; margin-top: 14px; }
+.laser-process p:not(.industrial-eyebrow) { font-size: 12px; color: #ccc; line-height: 1.9; }
+.request-grid { display: grid; grid-template-columns: .75fr 1.25fr; gap: 85px; }
+.request-grid > div > p:not(.industrial-eyebrow) { font-size: 13px; line-height: 1.9; margin-top: 20px; color: #666; }
+.laser-request-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.laser-request-form label { font-size: 11px; font-weight: 600; }
+.laser-request-form input:not([type=checkbox]), .laser-request-form select, .laser-request-form textarea { width: 100%; padding: 12px; border: 1px solid #ccc; background: #fafafa; margin-top: 8px; font-size: 13px; border-radius: 0; }
+.laser-request-form small { color: #666; font-weight: 400; line-height: 1.8; display: block; margin-top: 7px; }
+.form-full { grid-column: 1 / -1; }
+.consent-label { display: flex; align-items: center; gap: 12px; line-height: 1.8; }
+.request-summary { padding: 20px; border: 1px solid #ccc; background: #f7f7f7; }
+.request-summary p { font-size: 12px; line-height: 1.8; margin-block: 12px; }
+#request { scroll-margin-top: 160px; }
+.laser-faq { background: #f7f7f7; }
+.laser-faq h2 { margin-block: 14px 30px; }
+.laser-faq details { border-top: 1px solid #ccc; padding-block: 20px; }
+.laser-faq summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.laser-faq details p { font-size: 13px; line-height: 1.9; margin-top: 16px; color: #555; max-width: 850px; }
+.operations-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+@layer utilities {
+  .text-white\/35, .text-white\/38, .text-white\/40, .text-white\/50, .text-white\/55, .text-white\/58, .text-white\/60 { color: rgb(255 255 255 / .74); }
+}
+@media (max-width: 1000px) {
+  .business-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .laser-hero-copy { padding-block: 60px; }
+  .hero-photo-note { display: none; }
+  .request-grid { gap: 35px; grid-template-columns: 1fr 1.5fr; }
+  .laser-page-grid { gap: 30px; }
+  .process-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .industrial-container { padding-inline: 22px; }
+  .laser-hero-image { left: 0; opacity: .55; }
+  .laser-hero-shade { background: linear-gradient(90deg, #101112ee, #10111277), linear-gradient(0deg, #101112, transparent); }
+  .hero-location { display: none; }
+  .laser-hero-copy { padding-block: 48px; }
+  .laser-hero-copy > p { font-size: 13px; }
+  .laser-hero-bottom { gap: 20px; align-items: flex-start; }
+  .hero-catalog-link { padding-left: 20px; }
+  .laser-service-strip > div { justify-content: flex-start; gap: 15px; }
+  .laser-service-strip i { display: none; }
+  .business-section { padding-block: 48px; }
+  .section-heading { flex-direction: column; align-items: flex-start; gap: 18px; }
+  .business-grid { grid-template-columns: 1fr; }
+  .business-card h3 { margin-top: 16px; }
+  .request-grid, .laser-page-grid { grid-template-columns: 1fr; }
+  .operations-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr 1fr; }
+  .laser-request-form { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .laser-hero-image { transform: none !important; }
+  .page-enter, .mega-menu-enter, .drawer-enter, .sheet-enter { animation: none !important; }
+  .reveal, .animate-marquee, .animate-glow,
+  .product-card, .card-img {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
