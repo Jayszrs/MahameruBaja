@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import MotionController from "../components/MotionController";
 import { laserImage } from "../data/business";
@@ -29,6 +29,13 @@ export default function ProjectsPage() {
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
   const filtered = activeFilter === "Semua" ? galleryItems : galleryItems.filter((item) => item.category === activeFilter);
 
+  useEffect(() => {
+    if (!lightbox) return;
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setLightbox(null); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [lightbox]);
+
   return (
     <>
       <MotionController />
@@ -54,7 +61,7 @@ export default function ProjectsPage() {
           </div>
           <div className="projects-filters" aria-label="Filter galeri" data-reveal>
             {filters.map((filter) => (
-              <button type="button" onClick={() => setActiveFilter(filter)} className={activeFilter === filter ? "is-active" : ""} key={filter}>{filter}</button>
+              <button type="button" onClick={() => setActiveFilter(filter)} aria-pressed={activeFilter === filter} className={activeFilter === filter ? "is-active" : ""} key={filter}>{filter}</button>
             ))}
           </div>
           <div className="projects-grid">

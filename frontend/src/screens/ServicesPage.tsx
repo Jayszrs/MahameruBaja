@@ -3,6 +3,7 @@
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import { laserImage } from '../data/business';
+import MotionController from '../components/MotionController';
 
 const services = [
   { id: 'laser-cutting', title: 'Laser Cutting & CNC Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
@@ -10,56 +11,58 @@ const services = [
     id: 'penjualan',
     title: 'Penjualan Material',
     desc: 'Penjualan berbagai jenis besi dan material baja untuk kebutuhan konstruksi, dari satuan hingga volume besar. Stok selalu diperbarui untuk memastikan ketersediaan.',
-    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/toko-mahameru.jpg',
     points: ['Besi beton, hollow, siku, UNP, WF', 'Pipa, plat, wiremesh', 'Baja ringan, bondek, spandek', 'Aksesoris konstruksi'],
   },
   {
     id: 'konsultasi',
     title: 'Konsultasi Material',
     desc: 'Tim berpengalaman kami siap membantu Anda memilih jenis dan spesifikasi material yang tepat, menghitung estimasi kebutuhan, dan memberikan rekomendasi yang sesuai dengan proyek.',
-    image: 'https://images.unsplash.com/photo-1504387508099-cece71a87e17?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/besi-beton.jpg',
     points: ['Pemilihan spesifikasi material', 'Estimasi kebutuhan volume', 'Rekomendasi alternatif material', 'Konsultasi via WhatsApp'],
   },
   {
     id: 'proyek',
     title: 'Pemesanan Proyek',
     desc: 'Layanan khusus untuk kebutuhan material proyek konstruksi berskala besar. Kami menyediakan penawaran resmi, faktur, dan dapat menyesuaikan jadwal pengiriman sesuai tahapan proyek.',
-    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/wiremesh.jpg',
     points: ['Penawaran harga khusus proyek', 'Faktur dan dokumen resmi', 'Jadwal suplai bertahap', 'Koordinasi dengan kontraktor'],
   },
   {
     id: 'pengiriman',
     title: 'Pengiriman Material',
     desc: 'Layanan pengiriman material ke lokasi proyek di area Bekasi dan sekitarnya. Kami memastikan material sampai dalam kondisi baik dan sesuai dengan pesanan.',
-    image: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/pipa-hitam.jpg',
     points: ['Pengiriman area Bekasi & sekitarnya', 'Armada pengangkut besi', 'Material dikemas dengan aman', 'Estimasi waktu pengiriman'],
   },
   {
     id: 'retail',
     title: 'Supply Retail',
     desc: 'Melayani pembelian satuan untuk kebutuhan rumah tangga, renovasi rumah, dan proyek kecil. Tidak ada minimum order untuk pembelian retail.',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/hollow.jpg',
     points: ['Tanpa minimum order', 'Beli per batang / lembar / roll', 'Cocok untuk renovasi rumah', 'Dapat diambil langsung di toko'],
   },
   {
     id: 'corporate',
     title: 'Supply Kontraktor & Perusahaan',
     desc: 'Program khusus untuk kontraktor dan perusahaan yang membutuhkan pasokan material secara rutin. Termasuk penawaran harga khusus dan layanan prioritas.',
-    image: 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=800&h=500&fit=crop&auto=format',
+    image: '/images/steel-indonesia/plat-hitam.jpg',
     points: ['Harga khusus volume besar', 'Layanan akun korporat', 'Koordinasi jadwal suplai', 'Dokumen pengadaan lengkap'],
   },
 ];
 
 function HeroSection() {
   return (
-    <section className="pt-36 pb-20 bg-navy relative overflow-hidden" aria-labelledby="services-hero-heading">
+    <section className="services-hero pt-36 pb-20 bg-navy relative overflow-hidden" aria-labelledby="services-hero-heading">
+      <div className="services-hero-media" data-parallax="0.1" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
+      <div className="services-hero-shade" aria-hidden="true" />
       <div className="absolute inset-0 opacity-5" aria-hidden="true">
         <div className="h-full w-full" style={{
           backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
           backgroundSize: '60px 60px',
         }} />
       </div>
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
+      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8" data-reveal>
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-5">
           <Link to="/" className="hover:text-white transition-colors">Beranda</Link>
           <span>/</span>
@@ -98,10 +101,10 @@ function ServicesGrid() {
         <div className="space-y-16">
           {services.map((service, i) => (
             <div key={service.id} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:direction-rtl' : ''}`}>
-              <div className={`rounded-2xl overflow-hidden aspect-video bg-graphite ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
-                <img src={service.image} alt={service.title} className="w-full h-full object-cover" />
+              <div className={`services-media rounded-2xl overflow-hidden aspect-video bg-graphite ${i % 2 === 1 ? 'lg:order-2' : ''}`} data-reveal>
+                <div data-parallax="0.035"><img src={service.image} alt={service.title} className="w-full h-full object-cover" /></div>
               </div>
-              <div className={i % 2 === 1 ? 'lg:order-1' : ''}>
+              <div className={i % 2 === 1 ? 'lg:order-1' : ''} data-reveal>
                 <div className="text-[10px] font-bold tracking-[0.18em] uppercase text-muted mb-2">
                   LAYANAN / {String(i + 1).padStart(2, '0')}
                 </div>
@@ -200,6 +203,7 @@ function ServicesCTA() {
 export default function ServicesPage() {
   return (
     <>
+      <MotionController />
       <HeroSection />
       <ServicesGrid />
       <ProcessSection />

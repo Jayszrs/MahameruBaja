@@ -9,11 +9,10 @@ export default function MotionController() {
 
     if (reduceMotion.matches) return;
 
-    root.classList.add("motion-ready");
-
     const revealElements = Array.from(
       document.querySelectorAll<HTMLElement>("[data-reveal]"),
     );
+    root.classList.add("motion-ready");
     const revealObserver = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -22,9 +21,17 @@ export default function MotionController() {
           revealObserver.unobserve(entry.target);
         }
       },
-      { rootMargin: "0px 0px -8%", threshold: 0.08 },
+      { rootMargin: "0px 0px -4%", threshold: 0 },
     );
-    revealElements.forEach((element) => revealObserver.observe(element));
+    revealElements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        element.classList.add("is-visible");
+      } else {
+        element.classList.add("will-reveal");
+        revealObserver.observe(element);
+      }
+    });
 
     const parallaxElements = Array.from(
       document.querySelectorAll<HTMLElement>("[data-parallax]"),
@@ -55,6 +62,7 @@ export default function MotionController() {
     return () => {
       root.classList.remove("motion-ready");
       revealObserver.disconnect();
+      revealElements.forEach((element) => element.classList.remove("will-reveal", "is-visible"));
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);

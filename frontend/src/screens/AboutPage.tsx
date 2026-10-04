@@ -1,7 +1,7 @@
 "use client";
 
 import { Link } from 'react-router';
-import { useReveal, useCounter } from '../hooks/useReveal';
+import { useReveal } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';
 import MotionController from '../components/MotionController';
 
@@ -68,16 +68,11 @@ function PageHero() {
 // ── Stats ─────────────────────────────────────────────────────────────
 function StatsSection() {
   const { ref, visible } = useReveal();
-  const countY = useCounter(10, 1400, visible);
-  const countP = useCounter(500, 2000, visible);
-  const countProd = useCounter(22, 1600, visible);
-  const countArea = useCounter(9, 1200, visible);
-
   const stats = [
-    { num: countY, suffix: '+', label: 'Tahun Beroperasi', sub: 'Pengalaman di industri baja' },
-    { num: countP, suffix: '+', label: 'Pelanggan Puas', sub: 'Dari rumah tangga hingga korporasi' },
-    { num: countProd, suffix: '+', label: 'Jenis Produk', sub: 'Besi, baja, dan material bangunan' },
-    { num: countArea, suffix: '', label: 'Area Pengiriman', sub: 'Wilayah Bekasi & sekitarnya' },
+    { value: 'Tambun', label: 'Lokasi toko', sub: 'Tambun Selatan, Kabupaten Bekasi' },
+    { value: 'Retail', label: 'Pembelian satuan', sub: 'Material untuk rumah dan renovasi' },
+    { value: 'Proyek', label: 'Pengadaan material', sub: 'Penawaran sesuai daftar kebutuhan' },
+    { value: 'Custom', label: 'Pekerjaan produksi', sub: 'Laser cutting dan CNC bending' },
   ];
 
   return (
@@ -86,11 +81,9 @@ function StatsSection() {
         <div ref={ref} className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((s, i) => (
             <div key={s.label} className={`text-center reveal reveal-delay-${i + 1} ${visible ? 'visible' : ''}`}>
-              <div className="text-3xl lg:text-4xl font-extrabold text-brand tabular-nums font-[family-name:var(--font-display)] mb-1">
-                —
-              </div>
+              <div className="text-3xl lg:text-4xl font-extrabold text-brand font-[family-name:var(--font-display)] mb-1">{s.value}</div>
               <div className="text-white font-bold text-sm mb-1">{s.label}</div>
-              <div className="text-white/70 text-[11px]">Data menunggu verifikasi</div>
+              <div className="text-white/70 text-[11px]">{s.sub}</div>
             </div>
           ))}
         </div>

@@ -26,7 +26,7 @@ const bantuanLinks = [
   { label: 'Cara Memesan', href: '/tentang-kami' },
   { label: 'Minta Penawaran', href: '/minta-penawaran' },
   { label: 'Cek Produk', href: '/produk' },
-  { label: 'FAQ', href: '/#faq' },
+  { label: 'Pertanyaan & Bantuan', href: '/kontak' },
 ];
 
 export default function Footer() {
@@ -109,19 +109,7 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Social */}
-            <div className="flex items-center gap-2">
-              {['instagram', 'facebook', 'youtube'].map(s => (
-                <a
-                  key={s}
-                  href="#"
-                  aria-label={`Ikuti kami di ${s}`}
-                  className="w-8 h-8 rounded-lg bg-white/8 hover:bg-brand transition-colors flex items-center justify-center"
-                >
-                  <SocialIcon name={s} />
-                </a>
-              ))}
-            </div>
+            <Link to="/kontak" className="inline-flex text-sm font-bold text-white hover:text-brand transition-colors">Lihat detail kontak →</Link>
           </div>
 
           {/* Produk col */}
@@ -183,9 +171,7 @@ export default function Footer() {
           <div className="flex items-center gap-1 text-white/25 text-xs">
             <span className="font-[family-name:var(--font-mono)]">Tambun Selatan, Bekasi</span>
             <span className="mx-2">·</span>
-            <a href="#" className="hover:text-white/60 transition-colors">Kebijakan Privasi</a>
-            <span className="mx-2">·</span>
-            <a href="#" className="hover:text-white/60 transition-colors">Syarat & Ketentuan</a>
+            <Link to="/kontak" className="hover:text-white/60 transition-colors">Hubungi kami</Link>
           </div>
         </div>
       </div>

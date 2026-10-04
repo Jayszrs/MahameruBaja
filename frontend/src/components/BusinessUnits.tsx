@@ -7,7 +7,7 @@ export default function BusinessUnits() {
   return (
     <section className="business-section" aria-labelledby="business-heading">
       <div className="industrial-container">
-        <div className="section-heading">
+        <div className="section-heading" data-reveal>
           <div>
             <p className="industrial-eyebrow">
               SATU EKOSISTEM · EMPAT JALUR LAYANAN
@@ -26,7 +26,7 @@ export default function BusinessUnits() {
         </div>
         <div className="business-grid">
           {businessUnits.map((unit, index) => (
-            <article key={unit.slug} className="business-card">
+            <article key={unit.slug} className="business-card" data-reveal>
               <span className="industrial-eyebrow">
                 0{index + 1} / {unit.category}
               </span>
