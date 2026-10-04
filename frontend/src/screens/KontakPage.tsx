@@ -49,12 +49,6 @@ export default function KontakPage() {
       <section className="pt-36 pb-14 bg-graphite relative overflow-hidden" aria-labelledby="kontak-hero-heading">
         <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
         <div className="simple-hero-shade" aria-hidden="true" />
-        <div className="absolute inset-0 opacity-5" aria-hidden="true">
-          <div className="h-full w-full" style={{
-            backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
-            backgroundSize: '60px 60px',
-          }} />
-        </div>
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-5">
             <Link to="/" className="hover:text-white transition-colors">Beranda</Link>

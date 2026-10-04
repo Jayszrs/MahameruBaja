@@ -3,6 +3,7 @@
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import { laserImage } from '../data/business';
+import IndustryIcon, { type IconName } from '../components/IndustryIcon';
 
 const services = [
   { id: 'laser-cutting', title: 'Laser Cutting & CNC Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
@@ -55,13 +56,7 @@ function HeroSection() {
     <section className="services-hero pt-36 pb-20 bg-navy relative overflow-hidden" aria-labelledby="services-hero-heading">
       <div className="services-hero-media" data-parallax="0.26" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
       <div className="services-hero-shade" aria-hidden="true" />
-      <div className="absolute inset-0 opacity-5" aria-hidden="true">
-        <div className="h-full w-full" style={{
-          backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
-          backgroundSize: '60px 60px',
-        }} />
-      </div>
-      <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8" data-reveal>
+      <div className="services-hero-content relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8" data-reveal>
         <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-5">
           <Link to="/" className="hover:text-white transition-colors">Beranda</Link>
           <span>/</span>
@@ -139,19 +134,19 @@ function ServicesGrid() {
 function ProcessSection() {
   const { ref, visible } = useReveal();
 
-  const steps = [
-    { num: '01', title: 'Hubungi Kami', desc: 'Via WhatsApp, telepon, atau kunjungi toko langsung.' },
-    { num: '02', title: 'Ceritakan Kebutuhan', desc: 'Sampaikan jenis material, ukuran, dan jumlah yang dibutuhkan.' },
-    { num: '03', title: 'Dapatkan Penawaran', desc: 'Kami berikan penawaran harga terbaik sesuai kebutuhan.' },
-    { num: '04', title: 'Konfirmasi & Pembayaran', desc: 'Setujui penawaran dan lakukan konfirmasi pesanan.' },
-    { num: '05', title: 'Pengiriman / Pengambilan', desc: 'Material siap dikirim atau dapat diambil di toko.' },
+  const steps: { num: string; title: string; desc: string; icon: IconName }[] = [
+    { num: '01', title: 'Hubungi Kami', desc: 'Via WhatsApp, telepon, atau kunjungi toko langsung.', icon: 'phone' },
+    { num: '02', title: 'Ceritakan Kebutuhan', desc: 'Sampaikan jenis material, ukuran, dan jumlah yang dibutuhkan.', icon: 'measure' },
+    { num: '03', title: 'Dapatkan Penawaran', desc: 'Kami berikan penawaran harga terbaik sesuai kebutuhan.', icon: 'quote' },
+    { num: '04', title: 'Konfirmasi & Pembayaran', desc: 'Setujui penawaran dan lakukan konfirmasi pesanan.', icon: 'payment' },
+    { num: '05', title: 'Pengiriman / Pengambilan', desc: 'Material siap dikirim atau dapat diambil di toko.', icon: 'truck' },
   ];
 
   return (
     <section className="py-20 bg-white" aria-labelledby="process-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
-        <div ref={ref} className={`text-center mb-12 reveal ${visible ? 'visible' : ''}`}>
-          <div className="flex items-center justify-center gap-2 mb-3">
+        <div ref={ref} className={`text-left mb-12 reveal ${visible ? 'visible' : ''}`}>
+          <div className="flex items-center gap-2 mb-3">
             <span className="w-5 h-px bg-accent" />
             <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-accent">Proses</span>
             <span className="w-5 h-px bg-accent" />
@@ -160,12 +155,11 @@ function ProcessSection() {
             Cara Bekerja Sama
           </h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="services-process-grid grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
           {steps.map((step, i) => (
-            <div key={step.num} className={`text-center reveal reveal-delay-${i + 1} ${visible ? 'visible' : ''}`}>
-              <div className="w-14 h-14 rounded-full bg-accent/10 border-2 border-accent/20 flex items-center justify-center mx-auto mb-3">
-                <span className="font-extrabold text-sm text-accent">{step.num}</span>
-              </div>
+            <div key={step.num} className={`services-process-card text-left reveal reveal-delay-${i + 1} ${visible ? 'visible' : ''}`}>
+              <div className="services-process-icon"><IndustryIcon name={step.icon} size={38} /></div>
+              <span className="services-process-index">{step.num} / 05</span>
               <h3 className="font-bold text-sm text-graphite mb-1">{step.title}</h3>
               <p className="text-xs text-muted leading-relaxed">{step.desc}</p>
             </div>

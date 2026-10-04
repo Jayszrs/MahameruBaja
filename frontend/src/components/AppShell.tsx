@@ -18,11 +18,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
 
+  if (pathname.startsWith("/admin")) return <>{children}</>;
+
   return (
     <QuotationProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar onSearchOpen={() => setSearchOpen(true)} />
-        <main className="flex-1 page-enter pt-[5.5rem] lg:pt-[8.75rem]">
+        <main className={`flex-1 page-enter ${pathname === "/" ? "pt-0" : "pt-[5.5rem] lg:pt-[8.75rem]"}`}>
           {!pathname.startsWith("/produk") && <MotionController key={pathname} />}
           {children}
         </main>

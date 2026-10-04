@@ -22,4 +22,6 @@ Web: `http://localhost:3000`
 API health: `http://localhost:4000/health`  
 MinIO Console: `http://localhost:9001`
 
+Portal admin lokal: `http://localhost:3000/admin/login`, atau tautan **Portal Admin** di footer situs. Kredensial development tersimpan di `frontend/.admin-local-access.txt` (diabaikan Git). Dashboard saat ini memakai data pratinjau sesi; login sudah aktif, sedangkan penyimpanan konten belum tersambung.
+
 Untuk setup lengkap, keputusan hosting, environment variables, backup, dan checklist go-live, baca [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

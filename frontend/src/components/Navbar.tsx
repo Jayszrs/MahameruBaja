@@ -64,9 +64,17 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [homeNavVisible, setHomeNavVisible] = useState(false);
   const megaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMobileOpen(false); setMegaOpen(false); }, [location.pathname]);
+
+  useEffect(() => {
+    const update = () => setHomeNavVisible(window.scrollY > Math.min(180, window.innerHeight * 0.22));
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, [location.pathname]);
 
   useEffect(() => {
     document.body.classList.toggle('no-scroll', mobileOpen);
@@ -87,6 +95,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
     href === '/' ? location.pathname === '/' : location.pathname.startsWith(href);
 
   const navSolid = true;
+  const homeNavHidden = location.pathname === '/' && !homeNavVisible && !mobileOpen;
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -98,7 +107,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   return (
     <>
       {/* TOP INFO BAR */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gunmetal text-white/70 text-xs">
+      <div className={`fixed top-0 left-0 right-0 z-50 bg-gunmetal text-white/70 text-xs home-nav-layer ${homeNavHidden ? 'home-nav-hidden' : ''}`}>
         <div className="max-w-[1280px] mx-auto px-4 lg:px-8 flex items-center justify-between h-8 gap-4">
           <div className="flex items-center gap-3">
             <span className="hidden sm:inline-flex items-center gap-1">
@@ -125,7 +134,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
       {/* MAIN NAVBAR */}
       <div
-        className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 home-nav-layer ${homeNavHidden ? 'home-nav-hidden' : ''} ${
           navSolid
             ? 'bg-white/97 backdrop-blur-md shadow-sm border-b border-light-steel'
             : 'bg-transparent'
@@ -407,7 +416,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
 function LogoMark({ light }: { light: boolean }) {
   return (
-    <span className={`relative block h-10 w-10 overflow-hidden border ${light ? 'border-white/20' : 'border-light-steel'} bg-white`} aria-hidden="true">
+    <span className={`relative block h-10 w-10 overflow-hidden rounded-full ${light ? 'ring-1 ring-white/20' : 'ring-1 ring-black/10'} bg-white`} aria-hidden="true">
       <Image src="/images/steel-indonesia/company-logo.jpeg" alt="" fill sizes="40px" className="object-contain" priority />
     </span>
   );

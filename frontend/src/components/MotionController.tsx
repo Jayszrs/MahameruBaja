@@ -13,9 +13,7 @@ export default function MotionController() {
     const parallax = new Set<HTMLElement>();
     const revealObserver = new IntersectionObserver((entries) => {
       for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
+        entry.target.classList.toggle("is-visible", entry.isIntersecting);
       }
     }, { rootMargin: "0px 0px -5% 0px", threshold: 0.05 });
 
@@ -54,8 +52,9 @@ export default function MotionController() {
         if (revealed.has(element)) return;
         revealed.add(element);
         const rect = element.getBoundingClientRect();
+        element.classList.add("will-reveal");
         if (rect.top < window.innerHeight && rect.bottom > 0) element.classList.add("is-visible");
-        else { element.classList.add("will-reveal"); revealObserver.observe(element); }
+        revealObserver.observe(element);
       });
       main.querySelectorAll<HTMLElement>("[data-parallax]").forEach((element) => parallax.add(element));
       requestUpdate();

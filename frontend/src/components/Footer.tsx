@@ -70,7 +70,7 @@ export default function Footer() {
           {/* Brand col */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2.5 mb-5">
-              <div className="relative w-11 h-11 bg-white overflow-hidden">
+              <div className="relative w-11 h-11 bg-white overflow-hidden rounded-full">
                 <Image src="/images/steel-indonesia/company-logo.jpeg" alt="Logo MBI" fill sizes="44px" className="object-contain" />
               </div>
               <div className="leading-tight">
@@ -174,6 +174,8 @@ export default function Footer() {
             <Link to="/kebijakan-privasi" className="hover:text-white/60 transition-colors">Kebijakan Privasi</Link>
             <span className="mx-2">·</span>
             <Link to="/syarat-ketentuan" className="hover:text-white/60 transition-colors">Syarat & Ketentuan</Link>
+            <span className="mx-2">·</span>
+            <Link to="/admin/login" className="hover:text-white/60 transition-colors">Portal Admin</Link>
           </div>
         </div>
       </div>

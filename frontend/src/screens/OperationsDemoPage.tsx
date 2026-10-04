@@ -153,28 +153,36 @@ export default function OperationsDemoPage() {
     ])
   }
   return (
-    <section className="business-section">
-      <div className="industrial-container">
-        <div className="section-heading">
-          <div>
-            <p className="industrial-eyebrow">
-              PROTOTIPE / BUKAN PANEL ADMIN PRODUKSI
-            </p>
-            <h1 className="text-4xl">Workspace operasional.</h1>
-          </div>
-          <span className="industrial-eyebrow">DEMO DATA · SESSION ONLY</span>
+    <section className="business-section cms-dashboard">
+      <div className="industrial-container cms-shell">
+        <div className="cms-topbar">
+          <div className="cms-topbar-brand"><img src="/images/steel-indonesia/company-logo.jpeg" alt="" /><span><strong>Mahameru Baja</strong><small>Content & operations workspace</small></span></div>
+          <div className="cms-topbar-actions"><a href="/" className="cms-site-link">Lihat situs <span aria-hidden="true">↗</span></a><form action="/api/admin/logout" method="post"><button type="submit" className="cms-site-link">Keluar</button></form></div>
         </div>
+        <div className="cms-hero">
+          <div><p className="industrial-eyebrow">WORKSPACE / DEMO INTERAKTIF</p><h1>Kelola konten.<br /><em>Pantau pekerjaan.</em></h1><p>Jelajahi struktur media, alur lead, dan dokumen dalam satu tempat. Perubahan di halaman ini hanya berlaku selama sesi browser.</p></div>
+          <div className="cms-hero-status"><span className="cms-status-dot" /> Sesi admin aktif <small>Konten masih mode pratinjau</small></div>
+        </div>
+        <nav className="cms-jump-nav" aria-label="Navigasi workspace">
+          <a href="#cms-ringkasan">Ringkasan</a><a href="#cms-media">Media & halaman</a><a href="#cms-pekerjaan">Pekerjaan</a>
+        </nav>
         <p className="verification-note">
           Simulasi alur dari draf PDF. Database lead publik sudah tersedia,
-          tetapi autentikasi admin dan penyimpanan object storage belum
-          diaktifkan. File di bawah hanya masuk antrean preview sesi ini.
+          dan akses portal kini dilindungi login. Penyimpanan konten serta
+          object storage belum diaktifkan. File di bawah hanya masuk antrean preview sesi ini.
           Jangan masukkan dokumen pelanggan nyata.
         </p>
-        <section className="cms-upload-section" aria-labelledby="cms-upload-title">
+        <div className="cms-metrics" id="cms-ringkasan">
+          <div><small>01 / PEKERJAAN</small><strong>{orders.length}</strong><span>alur contoh</span></div>
+          <div><small>02 / MEDIA</small><strong>{uploadQueue.length}</strong><span>file sesi ini</span></div>
+          <div><small>03 / DOKUMEN</small><strong>{Object.values(documents).reduce((total, items) => total + items.length, 0)}</strong><span>metadata contoh</span></div>
+          <div><small>04 / STATUS</small><strong className="cms-metric-status">Preview</strong><span>penyimpanan belum aktif</span></div>
+        </div>
+        <section className="cms-upload-section" id="cms-media" aria-labelledby="cms-upload-title">
           <div className="cms-upload-heading">
             <div>
               <p className="industrial-eyebrow">CMS / MEDIA & DOKUMEN</p>
-              <h2 id="cms-upload-title">Pusat upload terstruktur.</h2>
+              <h2 id="cms-upload-title">Pusat media & dokumen.</h2>
             </div>
             <span>{uploadQueue.length} file dalam antrean demo</span>
           </div>
@@ -213,18 +221,14 @@ export default function OperationsDemoPage() {
             </div>
           )}
         </section>
-        <div className="business-grid mt-8">
+        <div className="cms-page-links" aria-label="Pratinjau halaman situs">
           {[
-            "Total lead: belum terhubung",
-            "Pengunjung: analytics belum aktif",
-            "Permintaan harga: demo",
-            "Laser cutting: demo",
-          ].map((label) => (
-            <div className="business-card" key={label}>
-              <p>{label}</p>
-            </div>
-          ))}
+            { title: "Beranda", image: "/images/hero-steel-warehouse-v2.png", href: "/" },
+            { title: "Layanan", image: "/images/steel-indonesia/toko-mahameru.jpg", href: "/layanan" },
+            { title: "Proyek", image: "/images/cnc-bending-visual-v1.png", href: "/proyek" },
+          ].map((page) => <a key={page.title} href={page.href} target="_blank" rel="noopener noreferrer"><img src={page.image} alt="" loading="lazy" /><span>{page.title}<small>Lihat halaman ↗</small></span></a>)}
         </div>
+        <div className="cms-section-heading" id="cms-pekerjaan"><div><p className="industrial-eyebrow">WORKFLOW / SIMULASI</p><h2>Daftar pekerjaan</h2></div><span>Pilih pekerjaan untuk melihat detail dan statusnya.</span></div>
         <div className="industrial-actions">
           <input
             aria-label="Cari pekerjaan demo"

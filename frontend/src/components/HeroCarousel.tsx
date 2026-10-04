@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "../data/heroSlides";
 
-const ROTATION_INTERVAL = 5500;
+const ROTATION_INTERVAL = 2500;
 
 function Arrow() {
   return (
@@ -20,10 +20,6 @@ export default function HeroCarousel() {
   const [paused, setPaused] = useState(false);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const activeSlide = heroSlides[activeIndex];
-
-  const goTo = useCallback((index: number) => {
-    setActiveIndex((index + heroSlides.length) % heroSlides.length);
-  }, []);
 
   useEffect(() => {
     const handleVisibility = () => setPaused(document.hidden);
@@ -81,7 +77,6 @@ export default function HeroCarousel() {
         ))}
       </div>
       <div className="hero-carousel-overlay" aria-hidden="true" />
-      <div className="hero-carousel-grid" aria-hidden="true" />
 
       <div className="home-shell hero-carousel-layout">
         <div className="hero-carousel-copy-wrap" data-parallax="0.075"><div className="hero-carousel-copy" key={activeSlide.id}>
@@ -104,27 +99,9 @@ export default function HeroCarousel() {
           {activeSlide.visualNote && <small>{activeSlide.visualNote}</small>}
         </div>
 
-        <div className="hero-carousel-controls">
-          <div className="hero-carousel-pagination" aria-label="Pilih slide">
-            {heroSlides.map((slide, index) => (
-              <button
-                type="button"
-                className={index === activeIndex ? "is-active" : ""}
-                onClick={() => goTo(index)}
-                aria-label={`Tampilkan slide ${index + 1}: ${slide.eyebrow}`}
-                aria-current={index === activeIndex ? "true" : undefined}
-                key={slide.id}
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <i><b /></i>
-              </button>
-            ))}
-          </div>
-          <button type="button" className="hero-carousel-next" onClick={() => goTo(activeIndex + 1)} aria-label="Tampilkan gambar berikutnya">
-            <span>{String(activeIndex + 1).padStart(2, "0")} / {String(heroSlides.length).padStart(2, "0")}</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
-          </button>
-        </div>
+        <a href="#jelajahi-material" className="hero-scroll-cue" aria-label="Gulir ke konten beranda">
+          <span>Scroll untuk menjelajah</span><i aria-hidden="true" />
+        </a>
       </div>
 
       <div className="home-hero-rail" aria-label="Layanan utama">

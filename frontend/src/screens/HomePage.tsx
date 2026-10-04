@@ -48,7 +48,7 @@ function Eyebrow({ children, light = false }: { children: ReactNode; light?: boo
 
 function CategoryGrid() {
   return (
-    <section className="home-section home-products" aria-labelledby="products-heading">
+    <section className="home-section home-products" id="jelajahi-material" aria-labelledby="products-heading">
       <div className="home-shell">
         <div className="home-section-heading" data-reveal>
           <div><Eyebrow>Katalog material</Eyebrow><h2 id="products-heading">Mulai dari material yang tepat.</h2></div>

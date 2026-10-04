@@ -1,3 +1,5 @@
-import OperationsDemoPage from "../../src/screens/OperationsDemoPage";
-export const metadata = { title: "Demo Operasional", robots: { index: false, follow: false } };
-export default OperationsDemoPage;
+import { redirect } from "next/navigation";
+
+export default function LegacyAdminPage() {
+  redirect("/admin");
+}

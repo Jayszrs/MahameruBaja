@@ -4,6 +4,22 @@ import { useState } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead } from "../lib/api"
+import IndustryIcon, { type IconName } from "../components/IndustryIcon"
+
+const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
+  { name: "Laser cutting plat & custom", description: "Cutting berdasarkan gambar CAD untuk ornamen, panel dan komponen.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
+  { name: "CNC bending & tekuk plat", description: "Kebutuhan tekukan mengikuti ukuran dan gambar teknik yang disetujui.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
+  { name: "Fabrikasi & finishing", description: "Diskusikan perakitan, finishing serta kebutuhan ereksion dengan tim.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
+  { name: "Produksi & pekerjaan proyek", description: "Konsultasikan jumlah, kebutuhan produksi dan jadwal proyek.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
+]
+
+const workflowSteps: { title: string; icon: IconName }[] = [
+  { title: "Gambar & review", icon: "drawing" },
+  { title: "Penawaran & persetujuan", icon: "quote" },
+  { title: "SPK & jadwal produksi", icon: "calendar" },
+  { title: "Cutting · bending · fabrikasi", icon: "machine" },
+  { title: "Quality control & selesai", icon: "quality" },
+]
 
 export default function LaserCuttingPage() {
   const [selected, setSelected] = useState("Laser Cutting")
@@ -115,26 +131,13 @@ export default function LaserCuttingPage() {
               Tidak ada klaim kapasitas tanpa konfirmasi.
             </p>
           </div>
-          <div className="business-grid">
-            {[
-              "Laser cutting plat & custom",
-              "CNC bending & tekuk plat",
-              "Fabrikasi & finishing",
-              "Produksi & pekerjaan proyek",
-            ].map((name, index) => (
-              <article className="business-card" key={name}>
-                <span className="industrial-eyebrow">0{index + 1}</span>
-                <h3>{name}</h3>
-                <p>
-                  {
-                    [
-                      "Cutting berdasarkan gambar CAD untuk ornamen, panel dan komponen.",
-                      "Kebutuhan tekukan mengikuti ukuran dan gambar teknik yang disetujui.",
-                      "Diskusikan perakitan, finishing serta kebutuhan ereksion dengan tim.",
-                      "Konsultasikan jumlah, kebutuhan produksi dan jadwal proyek.",
-                    ][index]
-                  }
-                </p>
+          <div className="business-grid laser-scope-grid">
+            {scopeCards.map((card, index) => (
+              <article className="business-card laser-scope-card" data-reveal key={card.name}>
+                <div className="laser-scope-media"><img src={card.image} alt="" loading="lazy" /><small>{card.note}</small></div>
+                <div className="laser-scope-card-top"><span className="industrial-eyebrow">0{index + 1}</span><span className="laser-scope-icon"><IndustryIcon name={card.icon} size={28} /></span></div>
+                <h3>{card.name}</h3>
+                <p>{card.description}</p>
                 <a className="business-link" href="#request">
                   Request penawaran ↗
                 </a>
@@ -158,16 +161,11 @@ export default function LaserCuttingPage() {
           <p className="industrial-eyebrow">02 / ALUR PEKERJAAN</p>
           <h2>Satu gambar. Alur yang jelas.</h2>
           <div className="process-grid">
-            {[
-              "Gambar & review",
-              "Penawaran & persetujuan",
-              "SPK & jadwal produksi",
-              "Cutting · bending · fabrikasi",
-              "Quality control & selesai",
-            ].map((step, index) => (
-              <div key={step}>
+            {workflowSteps.map((step, index) => (
+              <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
-                <h3>{step}</h3>
+                <div className="laser-process-icon"><IndustryIcon name={step.icon} size={42} /></div>
+                <h3>{step.title}</h3>
               </div>
             ))}
           </div>
