@@ -15,6 +15,8 @@ export default function InformasiPage() {
     <>
       {/* Hero */}
       <section className="bg-graphite relative overflow-hidden" aria-labelledby="informasi-hero-heading">
+        <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/hero-steel-warehouse-v2.png" alt="" /></div>
+        <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 pt-8 pb-12">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/38 mb-5">
@@ -32,6 +34,7 @@ export default function InformasiPage() {
           <p className="text-white/50 max-w-lg text-sm leading-relaxed">
             Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.
           </p>
+          <small className="simple-visual-note">Visual ilustrasi material</small>
         </div>
       </section>
 

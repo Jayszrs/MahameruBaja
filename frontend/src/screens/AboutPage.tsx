@@ -1,9 +1,9 @@
 "use client";
 
+import Image from 'next/image';
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';
-import MotionController from '../components/MotionController';
 
 function ArrowIcon() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
@@ -27,7 +27,7 @@ function PageHero() {
       {/* Parallax bg */}
       <div
         className="about-hero-parallax"
-        data-parallax="0.12"
+        data-parallax="0.26"
         aria-hidden="true"
       >
         <img
@@ -101,7 +101,7 @@ function AboutIntro() {
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className={`relative rounded-2xl overflow-hidden aspect-[4/3] bg-graphite reveal ${visible ? 'visible' : ''}`}>
-            <div className="about-intro-parallax" data-parallax="0.055">
+            <div className="about-intro-parallax" data-parallax="0.16">
               <img src="/images/steel-indonesia/toko-mahameru.jpg" alt="Toko Mahameru Baja di Tambun Selatan" className="w-full h-full object-cover" />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-gunmetal/50 to-transparent" />
@@ -145,6 +145,31 @@ function AboutIntro() {
 }
 
 // ── What We Do ─────────────────────────────────────────────────────────
+function AboutPhotoStory() {
+  const photos = [
+    { src: '/images/hero-steel-warehouse-v2.png', alt: 'Ilustrasi persediaan material baja di gudang', label: 'Material siap direncanakan', note: 'Visual ilustrasi' },
+    { src: '/images/steel-indonesia/wiremesh.jpg', alt: 'Persediaan wiremesh untuk konstruksi', label: 'Pilihan material konstruksi', note: 'Foto material' },
+    { src: '/images/cnc-bending-visual-v1.png', alt: 'Ilustrasi proses CNC bending pada plat logam', label: 'Pekerjaan berbasis gambar', note: 'Visual ilustrasi' },
+    { src: '/images/hero-steel-logistics-v1.png', alt: 'Ilustrasi pengiriman baja konstruksi', label: 'Alur kebutuhan proyek', note: 'Visual ilustrasi' },
+  ];
+
+  return <section className="about-photo-story" aria-labelledby="about-photo-heading">
+    <div className="home-shell">
+      <div className="about-photo-heading" data-reveal>
+        <p className="home-eyebrow text-brand"><span />Dari material ke pekerjaan</p>
+        <h2 id="about-photo-heading">Setiap kebutuhan punya <em>titik awal.</em></h2>
+        <p>Dari pilihan besi untuk renovasi sampai daftar material proyek dan gambar produksi, kami membantu mengarahkan kebutuhan ke jalur yang tepat.</p>
+      </div>
+      <div className="about-photo-grid">
+        {photos.map((photo, index) => <figure className="about-photo" data-reveal key={photo.src}>
+          <div className="about-photo-media" data-parallax={index % 2 ? '-0.12' : '0.17'}><Image src={photo.src} alt={photo.alt} fill sizes={index === 0 ? '(max-width: 700px) 100vw, 52vw' : '(max-width: 700px) 50vw, 32vw'} /></div>
+          <figcaption><strong>{photo.label}</strong><small>{photo.note}</small></figcaption>
+        </figure>)}
+      </div>
+    </div>
+  </section>;
+}
+
 function WhatWeDoSection() {
   const { ref, visible } = useReveal();
 
@@ -367,11 +392,11 @@ function AboutCTA() {
 export default function AboutPage() {
   return (
     <>
-      <MotionController />
       <PageHero />
       <BusinessUnits />
       <StatsSection />
       <AboutIntro />
+      <AboutPhotoStory />
       <WhatWeDoSection />
       <CustomerSegmentsSection />
       <WhyChooseSection />

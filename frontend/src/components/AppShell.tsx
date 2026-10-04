@@ -8,6 +8,7 @@ import WhatsAppButton from "./WhatsAppButton";
 import SearchOverlay from "./SearchOverlay";
 import QuotationDrawer from "./QuotationDrawer";
 import { QuotationProvider } from "../context/QuotationContext";
+import MotionController from "./MotionController";
 
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -21,7 +22,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <QuotationProvider>
       <div className="min-h-screen flex flex-col">
         <Navbar onSearchOpen={() => setSearchOpen(true)} />
-        <main className="flex-1 page-enter pt-[5.5rem] lg:pt-[8.75rem]">{children}</main>
+        <main className="flex-1 page-enter pt-[5.5rem] lg:pt-[8.75rem]">
+          {!pathname.startsWith("/produk") && <MotionController key={pathname} />}
+          {children}
+        </main>
+        {!pathname.startsWith("/produk") && <div className="page-scroll-progress" aria-hidden="true" />}
         <Footer />
         <WhatsAppButton />
         <QuotationDrawer />

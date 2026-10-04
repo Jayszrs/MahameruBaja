@@ -116,7 +116,7 @@ export default function ArticleDetailPage() {
       <div className="relative bg-graphite">
         <div className="max-w-[800px] mx-auto px-6">
           <div className="rounded-2xl overflow-hidden aspect-video bg-graphite -mb-8">
-            <img src={article.image} alt={article.title} className="w-full h-full object-cover opacity-90" />
+            <img src={article.image} alt={article.title} className="auto-parallax w-full h-full object-cover opacity-90" data-parallax="0.08" />
           </div>
         </div>
       </div>

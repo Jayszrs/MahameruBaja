@@ -44,7 +44,9 @@ export default function ProductsPage() {
   // Sync URL params
   useEffect(() => {
     const k = searchParams.get('kategori');
-    if (k && !activeCategories.includes(k)) setActiveCategories([k]);
+    setActiveCategories(k ? [k] : []);
+    setSearchQ(searchParams.get('q') ?? searchParams.get('search') ?? '');
+    setPage(1);
   }, [searchParams]);
 
   useEffect(() => {

@@ -3,7 +3,6 @@
 import { Link, useParams } from "react-router"
 import { businessUnits } from "../data/business"
 import NotFoundPage from "./NotFoundPage"
-import MotionController from "../components/MotionController"
 
 const unitDetails: Record<string, { image: string; needs: string; start: string; area: string }> = {
   "retail-tambun": { image: "/images/steel-indonesia/toko-mahameru.jpg", needs: "Besi beton, hollow, plat, profil baja, pipa dan material konstruksi untuk pembelian satuan.", start: "Telusuri katalog, catat ukuran dan jumlah, lalu minta konfirmasi stok serta harga.", area: "Toko di Tambun Selatan, Kabupaten Bekasi." },
@@ -19,8 +18,9 @@ export default function BusinessUnitPage() {
   const detail = unitDetails[unit.slug]
   return (
     <>
-      <MotionController />
       <section className="laser-page-hero">
+        <div className="unit-hero-media" data-parallax="0.26" aria-hidden="true"><img src={detail.image} alt="" /></div>
+        <div className="unit-hero-shade" aria-hidden="true" />
         <div className="industrial-container" data-reveal>
           <p className="industrial-eyebrow">
             EKOSISTEM MAHAMERU BAJA / {unit.label}

@@ -47,6 +47,8 @@ export default function KontakPage() {
     <>
       {/* Hero */}
       <section className="pt-36 pb-14 bg-graphite relative overflow-hidden" aria-labelledby="kontak-hero-heading">
+        <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
+        <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 opacity-5" aria-hidden="true">
           <div className="h-full w-full" style={{
             backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
@@ -148,7 +150,7 @@ export default function KontakPage() {
                   Telepon Kami
                 </a>
                 <a
-                  href="https://maps.google.com/?q=Jl.+Permata+Regensi+Blok+K1+No.+38-39+Tambun+Selatan+Bekasi"
+                  href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8"
                   target="_blank" rel="noopener noreferrer"
                   className="flex items-center gap-2 w-full px-4 py-3 bg-white border border-rule hover:bg-surface text-graphite font-bold text-sm rounded-xl transition-colors">
                   <LocationIcon />
@@ -158,13 +160,7 @@ export default function KontakPage() {
 
               {/* Map */}
               <div className="rounded-2xl overflow-hidden border border-rule bg-surface-2 aspect-[4/3]">
-                <img
-                  src="https://images.unsplash.com/photo-1569163140049-6a58e2e16e99?w=700&h=500&fit=crop&auto=format"
-                  alt="Peta lokasi Mahameru Baja, Tambun Selatan, Bekasi"
-                  className="w-full h-full object-cover opacity-60"
-                />
-                <div className="relative -mt-full flex items-center justify-center" style={{ marginTop: '-100%', height: '100%' }}>
-                </div>
+                <iframe title="Lokasi Toko Besi Mahameru Baja di Google Maps" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full border-0" />
               </div>
             </div>
 

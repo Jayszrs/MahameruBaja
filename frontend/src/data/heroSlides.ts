@@ -11,6 +11,7 @@ export type HeroSlide = {
   primaryAction: { label: string; href: string };
   secondaryAction: { label: string; href: string };
   objectPosition?: string;
+  visualNote?: string;
 };
 
 /**
@@ -22,8 +23,8 @@ export const heroSlides: HeroSlide[] = [
   {
     id: "retail-tambun",
     type: "image",
-    media: "/images/steel-indonesia/toko-mahameru.jpg",
-    alt: "Toko Besi Mahameru Baja di Tambun Selatan, Bekasi",
+    media: "/images/hero-steel-warehouse-v2.png",
+    alt: "Ilustrasi persediaan baja konstruksi di gudang",
     eyebrow: "Retail material / Tambun Selatan",
     title: "Baja untuk membangun",
     accent: "lebih jauh.",
@@ -31,13 +32,14 @@ export const heroSlides: HeroSlide[] = [
       "Material konstruksi, konsultasi kebutuhan, dan akses langsung ke tim Mahameru Baja dalam satu alur yang sederhana.",
     primaryAction: { label: "Jelajahi material", href: "/produk" },
     secondaryAction: { label: "Minta penawaran", href: "/minta-penawaran" },
-    objectPosition: "center 48%",
+    objectPosition: "center 54%",
+    visualNote: "Visual ilustrasi material",
   },
   {
     id: "supply-proyek",
     type: "image",
-    media: "/images/steel-indonesia/wiremesh.jpg",
-    alt: "Persediaan wiremesh untuk kebutuhan konstruksi dan proyek",
+    media: "/images/steel-indonesia/toko-mahameru.jpg",
+    alt: "Aktivitas pengiriman material di Toko Besi Mahameru Baja",
     eyebrow: "Trading / Supply proyek",
     title: "Material proyek.",
     accent: "Satu jalur yang jelas.",
@@ -46,6 +48,20 @@ export const heroSlides: HeroSlide[] = [
     primaryAction: { label: "Request kebutuhan proyek", href: "/minta-penawaran?unit=trading-proyek" },
     secondaryAction: { label: "Lihat katalog", href: "/produk" },
     objectPosition: "center 55%",
+  },
+  {
+    id: "logistik-material",
+    type: "image",
+    media: "/images/hero-steel-logistics-v1.png",
+    alt: "Ilustrasi pengiriman baja konstruksi dari gudang",
+    eyebrow: "Pengiriman / kebutuhan proyek",
+    title: "Dari stok",
+    accent: "sampai lokasi.",
+    description: "Rencanakan material, volume, dan waktu kebutuhan. Tim kami membantu menyiapkan alur penawaran dan pengiriman.",
+    primaryAction: { label: "Rencanakan kebutuhan", href: "/minta-penawaran" },
+    secondaryAction: { label: "Lihat layanan", href: "/layanan" },
+    objectPosition: "center 50%",
+    visualNote: "Visual ilustrasi pengiriman",
   },
   {
     id: "laser-cutting",

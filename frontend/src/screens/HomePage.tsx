@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import HeroCarousel from "../components/HeroCarousel";
-import MotionController from "../components/MotionController";
 import SocialProof from "../components/SocialProof";
 
 const whatsapp = "https://wa.me/6281218052017";
@@ -19,10 +18,10 @@ const categories = [
 ];
 
 const businessRoutes = [
-  { index: "01", tag: "Retail / Tambun", title: "Mahameru Baja", text: "Pembelian material satuan dan kebutuhan renovasi dengan konsultasi langsung dari toko Tambun.", href: "/produk", cta: "Lihat katalog" },
-  { index: "02", tag: "Retail / Cibitung", title: "Garuda Marginal Baja", text: "Jalur retail untuk pelanggan Cibitung dan kawasan industri di sekitarnya.", href: "/unit/retail-cibitung", cta: "Lihat unit" },
-  { index: "03", tag: "Trading / Proyek", title: "Mahameru Baja Indonesia", text: "Pengadaan volume proyek, pengecekan stok, penawaran, dan penjadwalan pengiriman.", href: "/minta-penawaran?unit=trading-proyek", cta: "Request proyek" },
-  { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/laser-cutting", cta: "Lihat layanan" },
+  { index: "01", tag: "Retail / Tambun", title: "Mahameru Baja", text: "Pembelian material satuan dan kebutuhan renovasi dengan konsultasi langsung dari toko Tambun.", href: "/produk", cta: "Lihat katalog", image: "/images/steel-indonesia/toko-mahameru.jpg", imageAlt: "Aktivitas toko Mahameru Baja" },
+  { index: "02", tag: "Retail / Cibitung", title: "Garuda Marginal Baja", text: "Jalur retail untuk pelanggan Cibitung dan kawasan industri di sekitarnya.", href: "/unit/retail-cibitung", cta: "Lihat unit", image: "/images/steel-indonesia/hollow.jpg", imageAlt: "Besi hollow untuk kebutuhan retail" },
+  { index: "03", tag: "Trading / Proyek", title: "Mahameru Baja Indonesia", text: "Pengadaan volume proyek, pengecekan stok, penawaran, dan penjadwalan pengiriman.", href: "/minta-penawaran?unit=trading-proyek", cta: "Request proyek", image: "/images/steel-indonesia/besi-beton.jpg", imageAlt: "Material besi beton untuk proyek" },
+  { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/laser-cutting", cta: "Lihat layanan", image: "/images/laser-cutting-illustration.jpg", imageAlt: "Proses laser cutting material logam" },
 ];
 
 
@@ -83,6 +82,8 @@ function BusinessRoutes() {
         <div className="home-route-list">
           {businessRoutes.map((route) => (
             <Link href={route.href} className="home-route-card" key={route.index} data-reveal>
+              <div className="home-route-media" data-parallax="0.18"><Image src={route.image} alt={route.imageAlt} fill sizes="(max-width: 700px) 100vw, 42vw" /></div>
+              <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
               <div><small>{route.tag}</small><h3>{route.title}</h3><p>{route.text}</p></div>
               <strong>{route.cta}<Arrow diagonal /></strong>
@@ -99,7 +100,7 @@ function StoreStory() {
     <section className="home-section home-story" aria-labelledby="story-heading">
       <div className="home-shell home-story-grid">
         <div className="home-story-photo" data-reveal>
-          <div className="home-parallax-media" data-parallax="0.06"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="Aktivitas pengiriman material di Toko Besi Mahameru Baja" fill sizes="(max-width: 900px) 100vw, 56vw" /></div>
+          <div className="home-parallax-media" data-parallax="0.16"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="Aktivitas pengiriman material di Toko Besi Mahameru Baja" fill sizes="(max-width: 900px) 100vw, 56vw" /></div>
           <span>Dokumentasi toko / Tambun Selatan</span>
         </div>
         <div className="home-story-copy" data-reveal>
@@ -124,7 +125,7 @@ function StoreStory() {
 function LaserFeature() {
   return (
     <section className="home-laser" aria-labelledby="laser-heading">
-      <div className="home-laser-media" data-parallax="0.05"><Image src="/images/laser-cutting-illustration.jpg" alt="Ilustrasi proses laser cutting pada material logam" fill sizes="100vw" /></div>
+      <div className="home-laser-media" data-parallax="0.22"><Image src="/images/laser-cutting-illustration.jpg" alt="Ilustrasi proses laser cutting pada material logam" fill sizes="100vw" /></div>
       <div className="home-laser-shade" />
       <div className="home-shell home-laser-content" data-reveal>
         <Eyebrow light>MBI Laser Cutting / CNC Bending</Eyebrow>
@@ -156,10 +157,10 @@ function LocationSection() {
             <div><dt>Telepon</dt><dd>021 8830 194</dd></div>
             <div><dt>WhatsApp</dt><dd>+62 812-1805-2017</dd></div>
           </dl>
-          <div className="home-actions"><a href="https://www.google.com/maps/search/?api=1&query=Jl.%20Permata%20Regensi%20Blok%20K1%20Tambun%20Selatan%20Bekasi" target="_blank" rel="noreferrer" className="home-button home-button-dark">Buka Google Maps <Arrow diagonal /></a></div>
+          <div className="home-actions"><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noreferrer" className="home-button home-button-dark">Buka Google Maps <Arrow diagonal /></a></div>
         </div>
         <div className="home-map" data-reveal>
-          <iframe title="Lokasi Toko Besi Mahameru Baja" src="https://www.google.com/maps?q=Jl.%20Permata%20Regensi%20Blok%20K1%20Tambun%20Selatan%20Bekasi&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+          <iframe title="Lokasi Toko Besi Mahameru Baja" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
           <div><span>Area layanan</span><strong>Tambun / Cibitung / Bekasi dan sekitarnya</strong></div>
         </div>
       </div>
@@ -185,5 +186,5 @@ function FinalCallout() {
 }
 
 export default function HomePage() {
-  return <><MotionController /><HeroCarousel /><CategoryGrid /><BusinessRoutes /><StoreStory /><LaserFeature /><SocialProof /><LocationSection /><FinalCallout /></>;
+  return <><HeroCarousel /><CategoryGrid /><BusinessRoutes /><StoreStory /><LaserFeature /><SocialProof /><LocationSection /><FinalCallout /></>;
 }

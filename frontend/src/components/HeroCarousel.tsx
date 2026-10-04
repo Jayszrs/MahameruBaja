@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { heroSlides } from "../data/heroSlides";
 
-const ROTATION_INTERVAL = 4000;
+const ROTATION_INTERVAL = 5500;
 
 function Arrow() {
   return (
@@ -18,20 +18,11 @@ function Arrow() {
 export default function HeroCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const activeSlide = heroSlides[activeIndex];
 
   const goTo = useCallback((index: number) => {
     setActiveIndex((index + heroSlides.length) % heroSlides.length);
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updatePreference = () => setReducedMotion(mediaQuery.matches);
-    updatePreference();
-    mediaQuery.addEventListener("change", updatePreference);
-    return () => mediaQuery.removeEventListener("change", updatePreference);
   }, []);
 
   useEffect(() => {
@@ -49,10 +40,10 @@ export default function HeroCarousel() {
   }, [activeIndex, paused]);
 
   useEffect(() => {
-    if (paused || reducedMotion) return;
-    const timer = window.setTimeout(() => goTo(activeIndex + 1), ROTATION_INTERVAL);
+    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => setActiveIndex((index) => (index + 1) % heroSlides.length), ROTATION_INTERVAL);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, goTo, paused, reducedMotion]);
+  }, [activeIndex, paused]);
 
   return (
     <section
@@ -63,7 +54,7 @@ export default function HeroCarousel() {
       <div className="hero-carousel-media" aria-hidden="true">
         {heroSlides.map((slide, index) => (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
-            <div className="hero-carousel-parallax" data-parallax="0.055">
+            <div className="hero-carousel-parallax" data-parallax="0.32">
               {slide.type === "video" ? (
                 <video
                   ref={(node) => { videoRefs.current[index] = node; }}
@@ -93,7 +84,7 @@ export default function HeroCarousel() {
       <div className="hero-carousel-grid" aria-hidden="true" />
 
       <div className="home-shell hero-carousel-layout">
-        <div className="hero-carousel-copy" key={activeSlide.id}>
+        <div className="hero-carousel-copy-wrap" data-parallax="0.075"><div className="hero-carousel-copy" key={activeSlide.id}>
           <p className="hero-carousel-eyebrow"><span />{activeSlide.eyebrow}</p>
           <h1 id="home-heading">{activeSlide.title}<br /><em>{activeSlide.accent}</em></h1>
           <p>{activeSlide.description}</p>
@@ -105,11 +96,12 @@ export default function HeroCarousel() {
               {activeSlide.secondaryAction.label}<Arrow />
             </Link>
           </div>
-        </div>
+        </div></div>
 
         <div className="hero-carousel-meta" aria-label="Ringkasan perusahaan">
           <span>Bekasi / Jawa Barat</span>
           <strong>Retail • Trading • Production</strong>
+          {activeSlide.visualNote && <small>{activeSlide.visualNote}</small>}
         </div>
 
         <div className="hero-carousel-controls">
@@ -128,6 +120,10 @@ export default function HeroCarousel() {
               </button>
             ))}
           </div>
+          <button type="button" className="hero-carousel-next" onClick={() => goTo(activeIndex + 1)} aria-label="Tampilkan gambar berikutnya">
+            <span>{String(activeIndex + 1).padStart(2, "0")} / {String(heroSlides.length).padStart(2, "0")}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg>
+          </button>
         </div>
       </div>
 

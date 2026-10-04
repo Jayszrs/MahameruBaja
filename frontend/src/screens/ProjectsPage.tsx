@@ -3,14 +3,13 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import MotionController from "../components/MotionController";
 import { laserImage } from "../data/business";
 
-const filters = ["Semua", "Laser Cutting & Bending", "Retail", "Mesin", "Produk", "Warehouse"];
+const filters = ["Semua", "Laser Cutting & Bending", "Retail", "Mesin", "Produk", "Warehouse", "Ilustrasi"];
 
 const galleryItems = [
   { id: 1, src: laserImage, category: "Laser Cutting & Bending", title: "Ilustrasi proses laser cutting", span: "col-span-2" },
-  { id: 2, src: laserImage, category: "Mesin", title: "Ilustrasi fasilitas produksi — spesifikasi menunggu verifikasi", span: "" },
+  { id: 2, src: "/images/cnc-bending-visual-v1.png", category: "Mesin", title: "Ilustrasi proses CNC bending", span: "" },
   { id: 3, src: "/images/steel-indonesia/toko-mahameru.jpg", category: "Retail", title: "Toko Mahameru Baja, Tambun Selatan", span: "col-span-2 row-span-2" },
   { id: 4, src: "/images/steel-indonesia/besi-beton.jpg", category: "Produk", title: "Besi beton", span: "" },
   { id: 5, src: "/images/steel-indonesia/hollow.jpg", category: "Produk", title: "Besi hollow", span: "" },
@@ -20,6 +19,8 @@ const galleryItems = [
   { id: 9, src: "/images/steel-indonesia/spandek.jpg", category: "Produk", title: "Material spandek", span: "" },
   { id: 10, src: "/images/steel-indonesia/plat-hitam.jpg", category: "Warehouse", title: "Plat hitam", span: "" },
   { id: 11, src: "/images/steel-indonesia/pipa-hitam.jpg", category: "Produk", title: "Pipa hitam", span: "" },
+  { id: 12, src: "/images/hero-steel-logistics-v1.png", category: "Ilustrasi", title: "Ilustrasi alur pengiriman material", span: "col-span-2" },
+  { id: 13, src: "/images/hero-steel-warehouse-v2.png", category: "Ilustrasi", title: "Ilustrasi persediaan baja konstruksi", span: "col-span-2" },
 ];
 
 type GalleryItem = (typeof galleryItems)[number];
@@ -38,9 +39,8 @@ export default function ProjectsPage() {
 
   return (
     <>
-      <MotionController />
       <section className="projects-hero" aria-labelledby="projects-hero-heading">
-        <div className="projects-parallax-media" data-parallax="0.12" aria-hidden="true">
+        <div className="projects-parallax-media" data-parallax="0.26" aria-hidden="true">
           <Image src={laserImage} alt="" fill priority sizes="100vw" />
         </div>
         <div className="projects-hero-shade" aria-hidden="true" />
@@ -49,7 +49,7 @@ export default function ProjectsPage() {
           <nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/</span><span>Proyek & Galeri</span></nav>
           <p className="home-eyebrow text-brand"><span />Dokumentasi & kapabilitas</p>
           <h1 id="projects-hero-heading">Material nyata.<br /><em>Proses yang terlihat.</em></h1>
-          <p>Galeri media produk, retail, dan ilustrasi produksi. Dokumentasi proyek aktual dapat ditambahkan melalui CMS setelah memperoleh persetujuan publikasi.</p>
+          <p>Jelajahi material, aktivitas retail, dan gambaran proses produksi Mahameru Baja melalui galeri ini.</p>
         </div>
       </section>
 
@@ -67,7 +67,7 @@ export default function ProjectsPage() {
           <div className="projects-grid">
             {filtered.map((item, index) => (
               <button type="button" key={item.id} onClick={() => setLightbox(item)} aria-label={`Lihat gambar: ${item.title}`} className={`projects-card ${item.span}`} data-reveal>
-                <div className="projects-card-parallax" data-parallax={index % 2 === 0 ? "0.025" : "-0.02"}>
+                <div className="projects-card-parallax" data-parallax={index % 2 === 0 ? "0.13" : "-0.1"}>
                   <Image src={item.src} alt={item.title} fill sizes="(max-width: 768px) 50vw, 25vw" />
                 </div>
                 <span>{String(index + 1).padStart(2, "0")}</span>

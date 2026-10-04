@@ -3,7 +3,6 @@
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import { laserImage } from '../data/business';
-import MotionController from '../components/MotionController';
 
 const services = [
   { id: 'laser-cutting', title: 'Laser Cutting & CNC Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
@@ -18,7 +17,7 @@ const services = [
     id: 'konsultasi',
     title: 'Konsultasi Material',
     desc: 'Tim berpengalaman kami siap membantu Anda memilih jenis dan spesifikasi material yang tepat, menghitung estimasi kebutuhan, dan memberikan rekomendasi yang sesuai dengan proyek.',
-    image: '/images/steel-indonesia/besi-beton.jpg',
+    image: '/images/hero-steel-warehouse-v2.png',
     points: ['Pemilihan spesifikasi material', 'Estimasi kebutuhan volume', 'Rekomendasi alternatif material', 'Konsultasi via WhatsApp'],
   },
   {
@@ -32,7 +31,7 @@ const services = [
     id: 'pengiriman',
     title: 'Pengiriman Material',
     desc: 'Layanan pengiriman material ke lokasi proyek di area Bekasi dan sekitarnya. Kami memastikan material sampai dalam kondisi baik dan sesuai dengan pesanan.',
-    image: '/images/steel-indonesia/pipa-hitam.jpg',
+    image: '/images/hero-steel-logistics-v1.png',
     points: ['Pengiriman area Bekasi & sekitarnya', 'Armada pengangkut besi', 'Material dikemas dengan aman', 'Estimasi waktu pengiriman'],
   },
   {
@@ -54,7 +53,7 @@ const services = [
 function HeroSection() {
   return (
     <section className="services-hero pt-36 pb-20 bg-navy relative overflow-hidden" aria-labelledby="services-hero-heading">
-      <div className="services-hero-media" data-parallax="0.1" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
+      <div className="services-hero-media" data-parallax="0.26" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
       <div className="services-hero-shade" aria-hidden="true" />
       <div className="absolute inset-0 opacity-5" aria-hidden="true">
         <div className="h-full w-full" style={{
@@ -102,7 +101,8 @@ function ServicesGrid() {
           {services.map((service, i) => (
             <div key={service.id} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:direction-rtl' : ''}`}>
               <div className={`services-media rounded-2xl overflow-hidden aspect-video bg-graphite ${i % 2 === 1 ? 'lg:order-2' : ''}`} data-reveal>
-                <div data-parallax="0.035"><img src={service.image} alt={service.title} className="w-full h-full object-cover" /></div>
+                <div data-parallax="0.14"><img src={service.image} alt={service.title} className="w-full h-full object-cover" /></div>
+                {service.image.includes('hero-steel-') && <span className="services-visual-note">Visual ilustrasi</span>}
               </div>
               <div className={i % 2 === 1 ? 'lg:order-1' : ''} data-reveal>
                 <div className="text-[10px] font-bold tracking-[0.18em] uppercase text-muted mb-2">
@@ -120,8 +120,8 @@ function ServicesGrid() {
                 </ul>
                 <a
                   href={service.id === 'laser-cutting' ? '/laser-cutting#request' : 'https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20bertanya%20tentang%20layanan%20Anda.'}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={service.id === 'laser-cutting' ? undefined : '_blank'}
+                  rel={service.id === 'laser-cutting' ? undefined : 'noopener noreferrer'}
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-accent-dark text-white font-bold text-sm rounded-lg transition-all hover:-translate-y-0.5"
                 >
                   Hubungi Kami
@@ -203,7 +203,6 @@ function ServicesCTA() {
 export default function ServicesPage() {
   return (
     <>
-      <MotionController />
       <HeroSection />
       <ServicesGrid />
       <ProcessSection />

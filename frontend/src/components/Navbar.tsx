@@ -25,9 +25,7 @@ const megaMenuCols = [
     title: 'Besi Struktur',
     items: [
       { label: 'WF Beam', slug: 'besi-wf' },
-      { label: 'H-Beam', slug: 'h-beam' },
-      { label: 'UNP', slug: 'besi-unp' },
-      { label: 'CNP', slug: 'besi-cnp' },
+      { label: 'H-Beam', slug: 'besi-wf' },
       { label: 'Besi Siku', slug: 'besi-siku' },
     ],
   },

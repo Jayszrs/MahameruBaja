@@ -97,10 +97,7 @@ export default function LaserCuttingPage() {
                 src={laserImage}
                 alt="Ilustrasi proses pemotongan plat dengan mesin"
               />
-              <figcaption>
-                Foto ilustrasi. Spesifikasi mesin dan hasil aktual menunggu
-                verifikasi.
-              </figcaption>
+              <figcaption>Visual ilustrasi proses laser cutting.</figcaption>
             </figure>
           </div>
         </div>
@@ -144,11 +141,16 @@ export default function LaserCuttingPage() {
               </article>
             ))}
           </div>
-          <p className="verification-note">
-            Draf menyebut laser 3000 W dan bending 160 ton. Angka ini belum
-            menjadi spesifikasi terverifikasi; kapasitas, toleransi dan material
-            yang dapat diproses wajib dikonfirmasi.
-          </p>
+          <p className="verification-note">Kapasitas mesin, toleransi, dan material yang dapat diproses dikonfirmasi dalam review teknis sebelum penawaran.</p>
+        </div>
+      </section>
+      <section className="laser-visual-strip" aria-label="Ilustrasi proses CNC bending">
+        <div className="laser-visual-strip-media" data-parallax="0.27"><img src="/images/cnc-bending-visual-v1.png" alt="Ilustrasi plat logam yang dibentuk dengan mesin CNC bending" /></div>
+        <div className="laser-visual-strip-shade" aria-hidden="true" />
+        <div className="industrial-container laser-visual-strip-copy" data-reveal>
+          <p className="industrial-eyebrow">CUTTING / BENDING / FABRIKASI</p>
+          <h2>Dari gambar kerja<br />ke bentuk nyata.</h2>
+          <span>Visual ilustrasi proses produksi</span>
         </div>
       </section>
       <section className="laser-process">
@@ -169,11 +171,7 @@ export default function LaserCuttingPage() {
               </div>
             ))}
           </div>
-          <p>
-            Alur rencana operasional dari draf. Pekerjaan hanya dimulai setelah
-            review teknis dan kesepakatan dengan tim; bukan status produksi
-            langsung.
-          </p>
+          <p>Pekerjaan dimulai setelah review teknis, penawaran, dan kesepakatan dengan tim.</p>
         </div>
       </section>
       <section id="request" className="business-section">

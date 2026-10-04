@@ -144,6 +144,8 @@ export default function QuotationPage() {
     <>
       {/* Hero */}
       <section className="pt-36 pb-12 bg-navy relative overflow-hidden" aria-labelledby="quotation-hero-heading">
+        <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/hero-steel-logistics-v1.png" alt="" /></div>
+        <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 opacity-5" aria-hidden="true">
           <div className="h-full w-full" style={{
             backgroundImage: 'linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)',
@@ -166,6 +168,7 @@ export default function QuotationPage() {
           <p className="text-white/60 max-w-lg text-sm leading-relaxed">
             Isi formulir di bawah untuk mendapatkan penawaran harga. Tim kami akan merespons melalui WhatsApp sesegera mungkin.
           </p>
+          <small className="simple-visual-note">Visual ilustrasi pengiriman</small>
         </div>
       </section>
 

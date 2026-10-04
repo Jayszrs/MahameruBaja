@@ -171,7 +171,9 @@ export default function Footer() {
           <div className="flex items-center gap-1 text-white/25 text-xs">
             <span className="font-[family-name:var(--font-mono)]">Tambun Selatan, Bekasi</span>
             <span className="mx-2">·</span>
-            <Link to="/kontak" className="hover:text-white/60 transition-colors">Hubungi kami</Link>
+            <Link to="/kebijakan-privasi" className="hover:text-white/60 transition-colors">Kebijakan Privasi</Link>
+            <span className="mx-2">·</span>
+            <Link to="/syarat-ketentuan" className="hover:text-white/60 transition-colors">Syarat & Ketentuan</Link>
           </div>
         </div>
       </div>
