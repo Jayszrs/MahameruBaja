@@ -18,12 +18,18 @@ export interface CreateLeadInput {
   }>;
 }
 
+const pendingKeys = new Map<string, string>();
 export async function createLead(input: CreateLeadInput) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-  const response = await fetch(`${apiUrl}/api/v1/leads`, {
+  const bodyKey = JSON.stringify(input);
+  if (!pendingKeys.has(bodyKey)) {
+    if (pendingKeys.size > 30) pendingKeys.clear();
+    pendingKeys.set(bodyKey, globalThis.crypto?.randomUUID?.() || `request-${Date.now()}-${Math.random().toString(36).slice(2)}`);
+  }
+  const response = await fetch("/api/requests", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", "idempotency-key": pendingKeys.get(bodyKey)! },
     body: JSON.stringify(input),
+    signal: AbortSignal.timeout(10000),
   });
   const body = await response.json().catch(() => null);
   if (!response.ok) {

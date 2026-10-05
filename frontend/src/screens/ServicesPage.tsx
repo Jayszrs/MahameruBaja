@@ -4,6 +4,7 @@ import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import { laserImage } from '../data/business';
 import IndustryIcon, { type IconName } from '../components/IndustryIcon';
+import MaterialCollage from '../components/MaterialCollage';
 
 const services = [
   { id: 'laser-cutting', title: 'Laser Cutting & CNC Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
@@ -198,6 +199,7 @@ export default function ServicesPage() {
   return (
     <>
       <HeroSection />
+      <MaterialCollage variant="services" />
       <ServicesGrid />
       <ProcessSection />
       <ServicesCTA />

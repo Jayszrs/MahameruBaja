@@ -12,7 +12,7 @@
 
 Kontak diambil dari screenshot pengguna: Satria (Marketing), Ipung (Direktur), dan Andra (Owner). Email terpotong pada gambar sehingga tidak diisi. Penempatan kontak per divisi belum terverifikasi; semuanya diawali sebagai kontak bersama. Rating 4,5 dan 125 ulasan terlihat pada screenshot Google Maps yang diberikan pengguna pada 5 Oktober 2026.
 
-Teks komentar individual belum tersedia. Jangan mengisi testimoni karangan sebagai ulasan Google. Carousel aktif ketika ada ulasan asli yang diterbitkan; selama kosong, situs menampilkan ringkasan rating dan tautan sumber. Website lama `https://steelindonesia.com/company/index.php` mengarah ke beranda direktori ketika diperiksa, sehingga tidak dipakai untuk menebak email atau kontak tambahan.
+Teks komentar individual belum tersedia. Jangan mengisi testimoni karangan sebagai ulasan Google. Selama belum ada ulasan asli terbit, situs menampilkan enam kartu contoh cerita berlabel jelas sebagai pratinjau desain. Kartu ini bukan ulasan Google dan tidak disimpan sebagai data pelanggan. Ketika ulasan asli diterbitkan, kartu contoh otomatis diganti oleh ulasan CMS. Rating ringkasan Google tetap ditampilkan terpisah. Website lama `https://steelindonesia.com/company/index.php` mengarah ke beranda direktori ketika diperiksa, sehingga tidak dipakai untuk menebak email atau kontak tambahan.
 
 ## Penyimpanan
 
@@ -32,3 +32,10 @@ Endpoint `/api/admin/content` memerlukan sesi admin. Penulisan memeriksa origin,
 - Ulasan draf tidak muncul di HTML/payload beranda.
 - Render carousel, bintang, tautan sumber, filter kontak per divisi, dan normalisasi nomor WhatsApp: lulus menggunakan fixture khusus pengujian yang tidak diterbitkan.
 - Verifikasi interaksi visual langsung belum dilakukan karena tidak ada browser yang tersedia melalui alat browser sesi ini.
+
+
+## Pembaruan desain ulasan
+
+Kartu mengikuti referensi editorial pengguna: kutipan dengan font serif, warna krem/sage, avatar monogram, bintang SVG, dan carousel ke kanan yang dapat digeser manual. Tombol Jeda tersedia tanpa panah navigasi atau scrollbar. Ikon tautan menggunakan SVG, sehingga tidak bergantung pada named HTML entity. Enam cerita awal adalah ilustrasi dan diberi label pada bagian serta setiap kartu.
+
+Verifikasi pembaruan: build produksi lulus; tampilan awal enam cerita (tiga set untuk loop), penggantian otomatis oleh ulasan CMS, rating berbeda per ulasan, serta penyembunyian draf telah diuji lewat SSR dengan data terpisah. Tiga belas rute dan 32 gambar merespons berhasil. Server development pengguna di port 3000 sudah mengirim markup ulasan/kolase baru. Belum ada verifikasi visual browser atau interaksi drag melalui perangkat nyata.

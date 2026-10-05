@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
-import { createLead } from "../lib/api"
+import { createLead, type CreateLeadInput } from "../lib/api"
+import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
@@ -29,6 +30,7 @@ export default function LaserCuttingPage() {
   const [submitError, setSubmitError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [leadId, setLeadId] = useState("")
+  const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (fileError) return
@@ -49,7 +51,7 @@ export default function LaserCuttingPage() {
     setSubmitting(true)
     setSubmitError("")
     try {
-      const result = await createLead({
+      const input: CreateLeadInput = {
         kind: "LASER",
         businessUnitSlug: "laser-cutting",
         name: String(data.get("nama") || ""),
@@ -67,7 +69,9 @@ export default function LaserCuttingPage() {
           attachmentName: file?.name,
           attachmentSize: file?.size,
         },
-      })
+      }
+      const result = await createLead(input)
+      setRequestInput(input)
       setLeadId(result.id)
       setMessage(
         `Halo Mahameru Baja, nomor request saya ${result.id}. Saya ingin request ${selected}.\n${details}\nFile desain: ${file?.name || "akan dikirim melalui chat"}\nMohon arahkan ke tim MBI Laser Cutting dan konfirmasi kelayakan, harga serta jadwal.`,
@@ -302,23 +306,8 @@ export default function LaserCuttingPage() {
             <button className="industrial-button form-full" type="submit" disabled={submitting}>
               {submitting ? "Menyimpan request..." : "Simpan request penawaran"} <span aria-hidden="true">↗</span>
             </button>
-            {message && (
-              <div role="status" className="request-summary form-full">
-                <h3>Request {leadId} tersimpan</h3>
-                <p>
-                  Klik untuk mengirim pesan. Lampirkan file desain secara manual
-                  di WhatsApp.
-                </p>
-                <a
-                  className="industrial-button"
-                  href={`https://wa.me/6281218052017?text=${encodeURIComponent(message)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Kirim melalui WhatsApp ↗
-                </a>
-              </div>
-            )}
+            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} /><p className="text-sm">File desain dikirim terpisah sebagai lampiran WhatsApp.</p></div>}
+
           </form>
         </div>
       </section>

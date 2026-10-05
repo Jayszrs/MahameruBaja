@@ -14,12 +14,6 @@ export default function QuotationDrawer() {
 
   if (!isOpen) return null;
 
-  const waText = items.map(i =>
-    `• ${i.name} (${i.sku}) — ${i.qty} ${i.unit}${i.notes ? ` [${i.notes}]` : ''}`
-  ).join('\n');
-  const waHref = `https://wa.me/6281218052017?text=${encodeURIComponent(
-    `Halo Mahameru Baja, saya ingin meminta penawaran untuk material berikut:\n\n${waText}\n\nMohon informasikan ketersediaan dan harganya. Terima kasih.`
-  )}`;
 
   return (
     <div className="fixed inset-0 z-50" aria-modal="true" role="dialog" aria-label="Daftar Penawaran">
@@ -96,7 +90,7 @@ export default function QuotationDrawer() {
                           aria-label="Tambah"
                           className="w-6 h-6 rounded border border-light-steel flex items-center justify-center text-steel-grey hover:text-graphite hover:border-graphite/40 transition-colors text-sm font-bold"
                         >+</button>
-                        <span className="text-xs text-steel-grey">batang</span>
+                        <span className="text-xs text-steel-grey">{item.unit}</span>
                         <button
                           onClick={() => removeItem(item.id)}
                           aria-label="Hapus item"
@@ -123,22 +117,8 @@ export default function QuotationDrawer() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="border-t border-light-steel p-4 space-y-2 bg-warm-white">
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold text-sm rounded-xl transition-colors"
-            >
-              <WAIcon />
-              Kirim via WhatsApp
-            </a>
-            <Link
-              to="/minta-penawaran"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-3 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-colors"
-            >
-              Lanjut Minta Penawaran
-            </Link>
+            <Link to="/minta-penawaran" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 w-full py-3 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-colors">Buat PDF & lanjut WhatsApp</Link>
+            <p className="text-xs text-steel-grey">Lengkapi kontak. PDF dibuat otomatis dari daftar material Anda.</p>
             <button
               onClick={clearItems}
               className="w-full py-2 text-xs text-steel-grey hover:text-brand transition-colors"

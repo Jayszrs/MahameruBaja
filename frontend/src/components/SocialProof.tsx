@@ -113,26 +113,47 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
   };
 }
 
+function ReviewArrow() {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg>;
+}
+
+function Stars({ rating }: { rating: number }) {
+  return <span className="review-stars-svg" role="img" aria-label={`${rating} dari 5 bintang`}>{[0, 1, 2, 3, 4].map(index => <span key={index}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg><svg viewBox="0 0 24 24" aria-hidden="true" style={{ clipPath: `inset(0 ${(1 - Math.max(0, Math.min(1, rating - index))) * 100}% 0 0)` }}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg></span>)}</span>;
+}
+
+// Illustrative copy only. It is never saved or described as a Google review.
+const reviewPreviews = [
+  { id: "retail", author: "Kebutuhan renovasi", when: "Retail material", text: "Dari ukuran besi sampai jumlah kebutuhan, percakapan kecil bisa menjadi awal bangunan yang direncanakan dengan baik." },
+  { id: "laser", author: "Dari gambar ke bentuk", when: "Laser cutting", text: "Sebuah pola di atas kertas punya banyak kemungkinan. Mulai dengan gambar kerja, lalu bicarakan material dan detailnya." },
+  { id: "supply", author: "Untuk pekerjaan besar", when: "Supply proyek", text: "Rencana yang jelas membantu setiap tahap. Daftar material, lokasi, dan waktu kebutuhan menjadi awal koordinasi bersama." },
+  { id: "bending", author: "Detail yang berarti", when: "CNC bending", text: "Sudut, ukuran, dan ketebalan membentuk hasil akhir. Setiap detail layak dibicarakan sebelum masuk ke proses produksi." },
+  { id: "workshop", author: "Bertemu di workshop", when: "Konsultasi kebutuhan", text: "Ada ide yang lebih mudah dijelaskan lewat percakapan. Bawa gambar atau daftar kebutuhan, lalu mulai dari sana." },
+  { id: "material", author: "Material untuk ide Anda", when: "Besi & baja", text: "Setiap pekerjaan punya kebutuhan berbeda. Memilih profil dan ukuran yang sesuai adalah bagian dari merencanakan hasilnya." },
+];
+
 function Reviews({ content }: { content: SiteContent }) {
-  const reviews = content.reviews.filter(review => review.published);
+  const published = content.reviews.filter(review => review.published);
+  const preview = published.length === 0;
+  const reviews = preview ? reviewPreviews.map(review => ({ ...review, rating: 5, url: "" })) : published;
   const copies = reviews.length < 3 ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 2];
-  const marquee = useMarquee(reviews.length, 38);
-  return <section className="home-section home-reviews" id="ulasan" aria-labelledby="reviews-heading">
+  const marquee = useMarquee(reviews.length, 30);
+  return <section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
     <div className="home-shell">
       <div className="home-section-heading proof-heading" data-reveal>
-        <div><p className="home-eyebrow text-brand"><span />Suara pelanggan</p><h2 id="reviews-heading">Pengalaman mereka.<br />Kepercayaan untuk kami.</h2></div>
-        <p>Penilaian pelanggan di Google Maps. Baca cerita mereka, lalu diskusikan kebutuhan Anda bersama tim kami.</p>
+        <div><p className="home-eyebrow text-brand"><span />Cerita & kepercayaan</p><h2 id="reviews-heading">Setiap kebutuhan,<br /><em>punya ceritanya.</em></h2></div>
+        <a className="review-rating-seal" href={content.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${content.rating} dari 5. Buka sumber`}><span className="review-seal-label">GOOGLE MAPS</span><strong>{content.rating.toFixed(1)}<small>/5</small></strong><Stars rating={content.rating} /><span>{content.reviewCount !== null ? `${content.reviewCount} ulasan` : "Lihat penilaian"}<ReviewArrow /></span></a>
       </div>
-      <div className="reviews-summary" data-reveal><div className="reviews-google-mark" aria-hidden="true">G</div><strong>{content.rating.toFixed(1)}<small>/ 5</small></strong><div><div className="rating-stars" aria-label={`${content.rating.toFixed(1)} dari 5 bintang`}><span>{"\u2605".repeat(5)}</span><span style={{ width: `${content.rating / 5 * 100}%` }} aria-hidden="true">{"\u2605".repeat(5)}</span></div><p>{content.reviewCount !== null ? `${content.reviewCount} ulasan Google` : "Rating Google Maps"} &middot; dicatat {content.ratingDate}</p></div><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Lihat semua di Google &nearr;</a>{reviews.length > 0 && <button type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button>}</div>
+      <div className="review-caption-row"><p>{preview ? "Pratinjau desain: cerita ilustratif, bukan kutipan ulasan Google." : "Cerita pelanggan, dikutip dari ulasan Google Maps."}</p><button className="review-motion-toggle" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}><span aria-hidden="true">{marquee.userPaused ? "\u25b6" : "\u2161"}</span>{marquee.userPaused ? "Lanjutkan" : "Jeda"}</button></div>
     </div>
-    {reviews.length > 0 ? <div className="reviews-bleed"><div className="home-review-cards proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Ulasan Google, bergerak ke kanan. Geser untuk menjelajah.">
-      {copies.flatMap(copy => reviews.map(review => <article key={`${copy}-${review.id}`} aria-hidden={copy !== 1}>
-        <header><span className="review-avatar">{review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || "Ulasan Google Maps"}</small></div><span className="review-google-g" aria-hidden="true">G</span></header>
-        <div className="review-card-stars" aria-label={`${review.rating} dari 5 bintang`}>{"\u2605".repeat(review.rating)}<span>{"\u2605".repeat(5 - review.rating)}</span></div>
+    <div className="reviews-bleed"><div className="home-review-cards proof-marquee quote-ribbon" {...marquee.handlers} tabIndex={0} aria-label="Kartu cerita bergerak ke kanan. Geser atau gunakan tombol panah untuk menjelajah.">
+      {copies.flatMap(copy => reviews.map((review, index) => <article className={`quote-card quote-tone-${index % 3}`} key={`${copy}-${review.id}`} aria-hidden={copy !== 1}>
+        <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{String.fromCharCode(8220)}</span><small>{preview ? `CONTOH CERITA ${String(index + 1).padStart(2, "0")}` : "ULASAN GOOGLE"}</small></div>
+        <Stars rating={review.rating} />
         <blockquote>{review.text}</blockquote>
-        <a className="review-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>Baca ulasan asli &nearr;</a>
+        <footer><span className="quote-avatar" aria-hidden="true">{preview ? <svg viewBox="0 0 40 40" fill="none"><path d={index % 2 ? "M8 29 20 8l12 21H8ZM20 8v21M8 29l18-11" : "M9 10h22v22H9zM9 10l22 22M31 10 9 32M20 10v22"} stroke="currentColor" strokeWidth="1.5" /></svg> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || "Pelanggan Mahameru Baja"}</small></div>{!preview ? <a className="quote-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a> : <span className="quote-spark" aria-hidden="true">{String.fromCharCode(10023)}</span>}</footer>
       </article>))}
-    </div></div> : <div className="home-shell"><a className="reviews-source-callout" href={content.mapsUrl} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">&#9733;</span><div><strong>Baca cerita pelanggan kami.</strong><p>Ulasan lengkap tersedia di profil Google Maps Mahameru Baja.</p></div><b aria-hidden="true">&nearr;</b></a></div>}
+    </div></div>
+    <div className="home-shell review-bottomline"><span>Rating dicatat {content.ratingDate}</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
   </section>;
 }
 

@@ -2,6 +2,8 @@
 
 import { Link } from "react-router"
 import { businessUnits } from "../data/business"
+import Image from "next/image"
+import { divisions } from "../data/divisionContent"
 
 export default function BusinessUnits() {
   return (
@@ -24,9 +26,10 @@ export default function BusinessUnits() {
             Pilih jalur yang sesuai dengan proyek Anda.
           </p>
         </div>
-        <div className="business-grid">
+        <div className="business-grid ecosystem-cards">
           {businessUnits.map((unit, index) => (
             <article key={unit.slug} className="business-card" data-reveal>
+              <div className="ecosystem-card-photo"><Image src={divisions.find(division => division.slug === unit.slug)?.hero || "/images/steel-indonesia/toko-mahameru.jpg"} alt={unit.name} fill sizes="(max-width: 760px) 90vw, 45vw" /></div>
               <span className="industrial-eyebrow">
                 0{index + 1} / {unit.category}
               </span>

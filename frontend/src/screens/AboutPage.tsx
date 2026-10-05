@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';
+import MaterialCollage from '../components/MaterialCollage';
 
 function ArrowIcon() {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
@@ -393,6 +394,7 @@ export default function AboutPage() {
   return (
     <>
       <PageHero />
+      <MaterialCollage variant="company" />
       <BusinessUnits />
       <StatsSection />
       <AboutIntro />

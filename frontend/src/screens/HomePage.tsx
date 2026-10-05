@@ -5,6 +5,7 @@ import HeroCarousel from "../components/HeroCarousel";
 import SocialProof from "../components/SocialProof";
 import type { SiteContent } from "../data/siteContent";
 import SocialHub from "../components/SocialHub";
+import MaterialCollage from "../components/MaterialCollage";
 
 const whatsapp = "https://wa.me/6281218052017";
 
@@ -189,5 +190,5 @@ function FinalCallout() {
 }
 
 export default function HomePage({ content }: { content: SiteContent }) {
-  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><LaserFeature /><BusinessRoutes /><SocialProof content={content} /><CategoryGrid /><StoreStory /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /></>;
+  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><MaterialCollage /><LaserFeature /><BusinessRoutes /><SocialProof content={content} /><CategoryGrid /><StoreStory /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /></>;
 }

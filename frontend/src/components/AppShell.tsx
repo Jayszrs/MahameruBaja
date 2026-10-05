@@ -26,7 +26,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <QuotationProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className="public-site min-h-screen flex flex-col">
         {division ? <DivisionHeader division={division} /> : <Navbar onSearchOpen={() => setSearchOpen(true)} />}
         <main className={`flex-1 page-enter ${pathname === "/" ? "pt-0" : division ? "unit-main" : "site-main"}`}>
           {!productPage && <MotionController key={pathname} />}

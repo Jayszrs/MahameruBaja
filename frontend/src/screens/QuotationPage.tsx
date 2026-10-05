@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
 import { businessUnits } from '../data/business';
-import { createLead } from '../lib/api';
+import { createLead, type CreateLeadInput } from '../lib/api';
+import RequestHandoff from '../components/RequestHandoff';
 
 interface ProductRow {
   id: string;
@@ -36,8 +37,10 @@ export default function QuotationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [leadId, setLeadId] = useState('');
+  const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null);
 
   function addRow() {
+    if (rows.length >= 50) return;
     setRows(r => [...r, { id: generateId(), produk: '', spesifikasi: '', jumlah: '', satuan: 'Batang' }]);
   }
 
@@ -52,8 +55,10 @@ export default function QuotationPage() {
 
   function validate() {
     const e: Record<string, string> = {};
-    if (!formData.nama.trim()) e.nama = 'Nama harus diisi';
-    if (!formData.whatsapp.trim()) e.whatsapp = 'Nomor WhatsApp harus diisi';
+    if (formData.nama.trim().length < 2) e.nama = 'Nama harus diisi';
+    if (!/^[+0-9 ()-]{8,24}$/.test(formData.whatsapp.trim())) e.whatsapp = 'Isi nomor WhatsApp yang valid';
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) e.email = 'Email tidak valid';
+    if (rows.some(r => r.produk.trim() && r.jumlah && (!Number.isFinite(Number(r.jumlah)) || Number(r.jumlah) <= 0))) e.rows = 'Jumlah harus lebih besar dari nol';
     if (rows.every(r => !r.produk.trim())) e.rows = 'Masukkan minimal satu produk';
     if (!consent) e.consent = 'Persetujuan diperlukan agar tim dapat menindaklanjuti permintaan';
     return e;
@@ -67,7 +72,7 @@ export default function QuotationPage() {
     setSubmitError('');
     setSubmitting(true);
     try {
-      const result = await createLead({
+      const input: CreateLeadInput = {
         kind: unit === 'trading-proyek' ? 'TRADING' : 'QUOTATION',
         businessUnitSlug: unit,
         name: formData.nama,
@@ -83,7 +88,9 @@ export default function QuotationPage() {
           quantity: row.jumlah ? Number(row.jumlah) : undefined,
           unit: row.satuan,
         })),
-      });
+      };
+      const result = await createLead(input);
+      setRequestInput(input);
       setLeadId(result.id);
       setSubmitted(true);
     } catch (error) {
@@ -93,51 +100,13 @@ export default function QuotationPage() {
     }
   }
 
-  function buildWAMessage() {
-    const items = rows.filter(r => r.produk.trim()).map(
-      r => `• ${r.produk}${r.spesifikasi ? ` (${r.spesifikasi})` : ''} — ${r.jumlah || '?'} ${r.satuan}`
-    ).join('\n');
-    return encodeURIComponent(
-      `Halo Mahameru Baja, saya ingin minta penawaran material:\nUnit: ${businessUnits.find(item => item.slug === unit)?.name}\nNama: ${formData.nama}\nPerusahaan: ${formData.perusahaan || '-'}\nWA: ${formData.whatsapp}\nLokasi: ${formData.lokasi || '-'}\n\nDaftar material:\n${items}\n\nCatatan: ${formData.catatan || '-'}`
-    );
-  }
-
   const inputClass = (field: string) =>
     `w-full px-4 py-3 text-sm bg-white border rounded-xl focus:outline-none transition-colors ${
       errors[field] ? 'border-red-400 focus:border-red-400' : 'border-rule focus:border-steel'
     }`;
 
-  if (submitted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface px-6 pt-16">
-        <div className="max-w-md w-full text-center py-16">
-          <div className="w-16 h-16 rounded-full bg-positive/15 flex items-center justify-center mx-auto mb-5">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-extrabold text-graphite mb-3">Ringkasan penawaran siap</h2>
-          <p className="text-muted mb-2">Permintaan sudah tercatat dengan nomor <strong>{leadId}</strong>.</p>
-          <p className="text-muted text-sm mb-6">Lanjutkan melalui WhatsApp agar tim dapat merespons lebih cepat.</p>
-          <div className="flex flex-col gap-2">
-            <a
-              href={`https://wa.me/6281218052017?text=${buildWAMessage()}`}
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-6 py-3.5 bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm rounded-xl transition-colors"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="white" aria-hidden="true">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z" />
-                <path d="M11.974 0C5.364 0 0 5.363 0 11.974c0 2.077.537 4.036 1.478 5.745L0 24l6.433-1.448a11.913 11.913 0 005.541 1.371C18.584 23.923 24 18.56 24 11.949 24 5.362 18.584 0 11.974 0zm0 21.893a9.902 9.902 0 01-5.054-1.386l-.362-.215-3.757.984 1.002-3.657-.237-.376a9.868 9.868 0 01-1.515-5.269c0-5.464 4.446-9.909 9.909-9.909 5.463 0 9.908 4.445 9.908 9.908 0 5.463-4.445 9.92-9.894 9.92z" />
-              </svg>
-              Lanjut via WhatsApp
-            </a>
-            <Link to="/produk" className="px-6 py-3 border border-rule text-graphite font-semibold text-sm rounded-xl hover:bg-surface transition-colors">
-              Kembali ke Katalog Produk
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+  if (submitted && requestInput) {
+    return <div className="quote-success industrial-container"><p className="industrial-eyebrow">PERMINTAAN TERSIMPAN / {leadId}</p><h1>Satu langkah lagi.<br /><em>Kirim ke tim kami.</em></h1><RequestHandoff input={requestInput} id={leadId} /><div className="industrial-actions"><button type="button" className="industrial-button" onClick={() => setSubmitted(false)}>Ubah rincian / buat permintaan baru</button><Link to="/produk" className="editorial-link">Kembali ke katalog</Link></div></div>;
   }
 
   return (
@@ -204,6 +173,7 @@ export default function QuotationPage() {
                   <input id="email" type="email" value={formData.email}
                     onChange={e => setFormData(f => ({ ...f, email: e.target.value }))}
                     className={inputClass('email')} placeholder="email@example.com (opsional)" />
+                  {errors.email && <p role="alert" className="text-xs text-red-500">{errors.email}</p>}
                 </div>
                 <div className="sm:col-span-2">
                   <label htmlFor="lokasi" className="block text-sm font-semibold text-graphite mb-1.5">Lokasi Proyek</label>
@@ -243,7 +213,7 @@ export default function QuotationPage() {
                     <div className="col-span-2">
                       {i === 0 && <div className="text-xs font-semibold text-muted mb-1">Jumlah</div>}
                       <input
-                        type="number" value={row.jumlah} min="0"
+                        type="number" value={row.jumlah} min="0.001" step="any"
                         onChange={e => updateRow(row.id, 'jumlah', e.target.value)}
                         placeholder="0" aria-label={`Jumlah baris ${i + 1}`}
                         className="w-full px-3 py-2.5 text-sm bg-surface border border-rule rounded-lg focus:outline-none focus:border-steel transition-colors"
