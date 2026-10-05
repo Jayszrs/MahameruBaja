@@ -164,11 +164,11 @@ export default function OperationsDemoPage() {
           <div className="cms-hero-status"><span className="cms-status-dot" /> Sesi admin aktif <small>Konten masih mode pratinjau</small></div>
         </div>
         <nav className="cms-jump-nav" aria-label="Navigasi workspace">
-          <a href="/admin/konten">Kelola kontak & ulasan ↗</a><a href="#cms-ringkasan">Ringkasan</a><a href="#cms-media">Media & halaman</a><a href="#cms-pekerjaan">Pekerjaan</a>
+          <a href="/admin/konten">Kelola kontak & ulasan ↗</a><a href="/admin/sosial">Kelola sosial media ↗</a><a href="#cms-ringkasan">Ringkasan</a><a href="#cms-media">Media & halaman</a><a href="#cms-pekerjaan">Pekerjaan</a>
         </nav>
         <p className="verification-note">
           Simulasi alur dari draf PDF. Database lead publik sudah tersedia,
-          dan akses portal kini dilindungi login. Kontak serta ulasan dapat disimpan melalui menu Kelola kontak & ulasan.
+          dan akses portal kini dilindungi login. Kontak, ulasan, dan sosial media dapat disimpan melalui menu pengelolaan masing-masing.
           Modul pekerjaan dan object storage belum aktif. File di bawah hanya masuk antrean preview sesi ini.
           Jangan masukkan dokumen pelanggan nyata.
         </p>

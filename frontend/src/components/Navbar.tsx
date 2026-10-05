@@ -19,6 +19,7 @@ const bottomLinks = [
   { label: 'Tentang Kami', href: '/tentang-kami', hasMega: false },
   { label: 'Artikel', href: '/informasi', hasMega: false },
   { label: 'Kontak', href: '/kontak', hasMega: false },
+  { label: 'Sosial Media', href: '/sosial-media', hasMega: false },
 ];
 
 const megaMenuCols = [
@@ -92,6 +93,30 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
     return () => document.removeEventListener('mousedown', handler);
   }, [megaOpen]);
 
+  useEffect(() => {
+    if (!megaOpen) return;
+    const close = () => setMegaOpen(false);
+    window.addEventListener("scroll", close, { passive: true, once: true });
+    return () => window.removeEventListener("scroll", close);
+  }, [megaOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    const dialog = document.querySelector<HTMLElement>('[role="dialog"][aria-label="Menu utama"]');
+    const items = () => Array.from(dialog?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') || []);
+    items()[0]?.focus();
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+      if (event.key !== "Tab") return;
+      const controls = items(); const first = controls[0]; const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener("keydown", keyboard);
+    return () => { document.removeEventListener("keydown", keyboard); previous?.focus(); };
+  }, [mobileOpen]);
+
   const isActive = (href: string) =>
     href === '/' ? location.pathname === '/' :
       href === '/divisi' ? location.pathname.startsWith('/divisi') || location.pathname.startsWith('/unit/') :
@@ -109,42 +134,17 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
   return (
     <>
-      {/* TOP INFO BAR */}
-      <div className={`fixed top-0 left-0 right-0 z-50 bg-gunmetal text-white/70 text-xs home-nav-layer ${homeNavHidden ? 'home-nav-hidden' : ''}`}>
-        <div className="max-w-[1280px] mx-auto px-4 lg:px-8 flex items-center justify-between h-8 gap-4">
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></svg>
-              Tambun Selatan, Bekasi
-            </span>
-            <span className="hidden md:inline text-white/30">|</span>
-            <span className="hidden md:inline">Kebutuhan Material Proyek? Hubungi Mahameru Baja</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:inline">Sen–Sab: 07:00–17:00 WIB</span>
-            <a
-              href="https://wa.me/6281218052017"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[#4ADE80] hover:text-[#22c55e] transition-colors font-medium"
-            >
-              <WAIcon size={12} />
-              <span>+62 812-1805-2017</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* MAIN NAVBAR */}
       <div
-        className={`fixed top-8 left-0 right-0 z-50 transition-all duration-300 home-nav-layer ${homeNavHidden ? 'home-nav-hidden' : ''} ${
+        inert={homeNavHidden}
+        className={`site-navbar fixed top-0 left-0 right-0 z-50 transition-all duration-300 home-nav-layer ${homeNavHidden ? 'home-nav-hidden' : ''} ${
           navSolid
-            ? 'bg-white/97 backdrop-blur-md shadow-sm border-b border-light-steel'
+            ? 'bg-white shadow-sm border-b border-light-steel'
             : 'bg-transparent'
         }`}
       >
         <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
-          <div className="flex items-center gap-4 h-14 lg:h-16">
+          <div className="flex items-center gap-2 sm:gap-4 h-14 lg:h-16">
             {/* Logo */}
             <Link
               to="/"
@@ -152,7 +152,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
               aria-label="Mahameru Baja - Beranda"
             >
               <LogoMark light={!navSolid} />
-              <div className="leading-tight">
+              <div className="navbar-wordmark leading-tight">
                 <div className={`font-extrabold text-[13px] tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>MAHAMERU BAJA</div>
                 <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
               </div>
@@ -168,7 +168,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Cari besi beton, WF, hollow, wiremesh..."
-                className="flex-1 px-4 py-2.5 text-sm text-graphite bg-transparent focus:outline-none placeholder-light-steel"
+                aria-label="Cari produk" className="min-w-0 flex-1 px-4 py-2.5 text-sm text-graphite bg-transparent focus:outline-none placeholder-light-steel"
               />
               <button
                 type="submit"
@@ -249,8 +249,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 >
                   <Link
                     to={link.href}
-                    prefetch
-                    className={`flex items-center gap-1 px-3.5 py-3 text-[13px] font-semibold transition-colors relative group font-[family-name:var(--font-display)] ${
+                    className={`flex items-center gap-1 px-2.5 py-3 text-[12px] font-semibold transition-colors relative group font-[family-name:var(--font-display)] ${
                       isActive(link.href)
                         ? navSolid ? 'text-brand' : 'text-white'
                         : navSolid ? 'text-graphite hover:text-brand' : 'text-white/80 hover:text-white'
@@ -270,7 +269,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
                   {/* Mega Menu */}
                   {link.hasMega && megaOpen && (
-                    <div className="absolute top-full left-0 w-[780px] bg-white shadow-2xl border border-light-steel rounded-xl overflow-hidden mega-menu-enter"
+                    <div className="absolute top-full left-0 w-[min(780px,calc(100vw-250px))] bg-white shadow-2xl border border-light-steel rounded-xl overflow-hidden"
                       style={{ zIndex: 100 }}
                       onMouseEnter={() => setMegaOpen(true)}
                       onMouseLeave={() => setMegaOpen(false)}
@@ -335,13 +334,13 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden" aria-modal="true" role="dialog">
+        <div className="fixed inset-0 z-[70] lg:hidden" aria-modal="true" aria-label="Menu utama" role="dialog">
           <div className="absolute inset-0 bg-gunmetal/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="absolute top-0 right-0 bottom-0 w-[280px] bg-white shadow-xl flex flex-col">
-            <div className="flex items-center justify-between px-5 h-16 border-b border-light-steel mt-8">
+          <div className="absolute top-0 right-0 bottom-0 w-[min(340px,100vw)] bg-white shadow-xl flex flex-col">
+            <div className="flex items-center justify-between px-5 h-16 border-b border-light-steel">
               <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
                 <LogoMark light={false} />
-                <div className="leading-tight">
+                <div className="navbar-wordmark leading-tight">
                   <div className="font-extrabold text-[13px] text-gunmetal tracking-tight font-[family-name:var(--font-display)]">MAHAMERU BAJA</div>
                   <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
                 </div>
@@ -350,7 +349,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 <XIcon />
               </button>
             </div>
-            <nav className="flex-1 overflow-y-auto px-3 py-3">
+            <nav className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
               <ul className="space-y-0.5" role="list">
                 {bottomLinks.map(link => (
                   <li key={link.href}>
@@ -386,7 +385,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 </div>
               </div>
             </nav>
-            <div className="px-4 pb-6 pt-2 border-t border-light-steel space-y-2">
+            <div className="mobile-menu-actions px-4 pb-6 pt-2 border-t border-light-steel space-y-2">
               <button
                 onClick={() => { setQuotationOpen(true); setMobileOpen(false); }}
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-light-steel text-graphite text-sm font-bold rounded-xl hover:bg-warm-white transition-colors"
@@ -421,7 +420,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 function LogoMark({ light }: { light: boolean }) {
   return (
     <span className={`relative block h-10 w-10 overflow-hidden rounded-full ${light ? 'ring-1 ring-white/20' : 'ring-1 ring-black/10'} bg-white`} aria-hidden="true">
-      <Image src="/images/steel-indonesia/company-logo.jpeg" alt="" fill sizes="40px" className="object-contain" priority />
+      <Image src="/images/steel-indonesia/company-logo.jpeg" alt="" fill sizes="40px" className="object-contain" />
     </span>
   );
 }

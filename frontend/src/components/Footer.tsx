@@ -20,6 +20,7 @@ const perusahaanLinks = [
   { label: 'Layanan', href: '/layanan' },
   { label: 'Proyek & Galeri', href: '/proyek' },
   { label: 'Artikel', href: '/informasi' },
+  { label: 'Sosial Media', href: '/sosial-media' },
   { label: 'Kontak', href: '/kontak' },
 ];
 

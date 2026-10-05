@@ -123,16 +123,16 @@ function Reviews({ content }: { content: SiteContent }) {
         <div><p className="home-eyebrow text-brand"><span />Suara pelanggan</p><h2 id="reviews-heading">Pengalaman mereka.<br />Kepercayaan untuk kami.</h2></div>
         <p>Penilaian pelanggan di Google Maps. Baca cerita mereka, lalu diskusikan kebutuhan Anda bersama tim kami.</p>
       </div>
-      <div className="reviews-summary" data-reveal><div className="reviews-google-mark" aria-hidden="true">G</div><strong>{content.rating.toFixed(1)}<small>/ 5</small></strong><div><div className="rating-stars" aria-label={`${content.rating.toFixed(1)} dari 5 bintang`}><span>?????</span><span style={{ width: `${content.rating / 5 * 100}%` }} aria-hidden="true">?????</span></div><p>{content.reviewCount !== null ? `${content.reviewCount} ulasan Google` : "Rating Google Maps"} ? dicatat {content.ratingDate}</p></div><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Lihat semua di Google ?</a>{reviews.length > 0 && <button type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button>}</div>
+      <div className="reviews-summary" data-reveal><div className="reviews-google-mark" aria-hidden="true">G</div><strong>{content.rating.toFixed(1)}<small>/ 5</small></strong><div><div className="rating-stars" aria-label={`${content.rating.toFixed(1)} dari 5 bintang`}><span>{"\u2605".repeat(5)}</span><span style={{ width: `${content.rating / 5 * 100}%` }} aria-hidden="true">{"\u2605".repeat(5)}</span></div><p>{content.reviewCount !== null ? `${content.reviewCount} ulasan Google` : "Rating Google Maps"} &middot; dicatat {content.ratingDate}</p></div><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Lihat semua di Google &nearr;</a>{reviews.length > 0 && <button type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button>}</div>
     </div>
     {reviews.length > 0 ? <div className="reviews-bleed"><div className="home-review-cards proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Ulasan Google, bergerak ke kanan. Geser untuk menjelajah.">
       {copies.flatMap(copy => reviews.map(review => <article key={`${copy}-${review.id}`} aria-hidden={copy !== 1}>
         <header><span className="review-avatar">{review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || "Ulasan Google Maps"}</small></div><span className="review-google-g" aria-hidden="true">G</span></header>
-        <div className="review-card-stars" aria-label={`${review.rating} dari 5 bintang`}>{"?".repeat(review.rating)}<span>{"?".repeat(5 - review.rating)}</span></div>
+        <div className="review-card-stars" aria-label={`${review.rating} dari 5 bintang`}>{"\u2605".repeat(review.rating)}<span>{"\u2605".repeat(5 - review.rating)}</span></div>
         <blockquote>{review.text}</blockquote>
-        <a className="review-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>Baca ulasan asli ?</a>
+        <a className="review-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>Baca ulasan asli &nearr;</a>
       </article>))}
-    </div></div> : <div className="home-shell"><a className="reviews-source-callout" href={content.mapsUrl} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">?</span><div><strong>Baca cerita pelanggan kami.</strong><p>Ulasan lengkap tersedia di profil Google Maps Mahameru Baja.</p></div><b aria-hidden="true">?</b></a></div>}
+    </div></div> : <div className="home-shell"><a className="reviews-source-callout" href={content.mapsUrl} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">&#9733;</span><div><strong>Baca cerita pelanggan kami.</strong><p>Ulasan lengkap tersedia di profil Google Maps Mahameru Baja.</p></div><b aria-hidden="true">&nearr;</b></a></div>}
   </section>;
 }
 

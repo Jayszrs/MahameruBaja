@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -26,12 +27,15 @@ export const siteContentSchema = z.object({
   revision: z.number().int().min(0),
   contacts: z.array(contactSchema).max(40),
   reviews: z.array(reviewSchema).max(100),
+  socialAccounts: z.array(socialAccountSchema).max(4).default(defaultSocialAccounts),
+  socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
   ratingDate: text(80).min(1), mapsUrl: googleUrl,
 }).superRefine((data, ctx) => {
-  for (const key of ["contacts", "reviews"] as const) {
+  for (const key of ["contacts", "reviews", "socialPosts"] as const) {
     if (new Set(data[key].map(item => item.id)).size !== data[key].length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [key], message: "ID harus unik" });
   }
+  if (new Set(data.socialAccounts.map(a => a.platform)).size !== data.socialAccounts.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["socialAccounts"], message: "Platform tidak boleh duplikat" });
 });
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
@@ -41,6 +45,7 @@ export type TeamContact = SiteContent["contacts"][number];
 export const defaultSiteContent: SiteContent = {
   revision: 0, rating: 4.5, reviewCount: 125, ratingDate: "5 Oktober 2026",
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: [],
+  socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
   contacts: [
     { id: "satria", name: "Satria", role: "Marketing", phone: "0813 1409 7771", mobile: "0813 1409 7771", whatsapp: "0813 1409 7771", email: "", photo: "", divisions: [], published: true },
     { id: "ipung", name: "Ipung", role: "Direktur", phone: "082110193640", mobile: "082110193640", whatsapp: "082110193640", email: "", photo: "/images/steel-indonesia/company-logo.jpeg", divisions: [], published: true },

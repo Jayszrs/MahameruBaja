@@ -12,7 +12,7 @@ Draft bagian 3 dan 6 menyebut empat jalur bisnis: Mahameru Baja Tambun, Garuda M
 | --- | --- | --- |
 | 1. Tujuan situs | Sebagian | Profil, katalog, WhatsApp, dan form lead tersedia. Order dan operasional admin belum penuh. |
 | 2. Domain & SEO | Sebagian | Metadata, canonical unik, sitemap, dan konten lokal tersedia. Domain publik, Search Console, indeksasi, serta hasil ranking perlu diuji setelah peluncuran. |
-| 3. Empat jalur bisnis | Ada untuk halaman publik | `/divisi` menghubungkan empat halaman unit yang berbeda. Nomor kontak khusus tiap unit belum tersedia. |
+| 3. Empat jalur bisnis | Ada untuk halaman publik | `/divisi` menghubungkan empat microsite, masing-masing lima halaman dengan navigasi sendiri. Nomor kontak khusus tiap unit belum tersedia. |
 | 4. Menu utama | Sebagian | Beranda, produk, divisi, laser, layanan, proyek/galeri, tentang, artikel, dan kontak ada. Label retail/trading/fabrikasi dipusatkan di halaman divisi. |
 | 5–6. Home & empat pilihan | Ada | Hero mengutamakan laser cutting; empat kartu mengarah ke halaman unit. Material tetap tersedia di katalog. |
 | 7. Katalog produk | Sebagian | Kategori, foto, detail dasar, dan jalur tanya harga ada. Stok, harga, ukuran, dan katalog per unit belum tersambung ke inventori/CMS. |
@@ -24,14 +24,14 @@ Draft bagian 3 dan 6 menyebut empat jalur bisnis: Mahameru Baja Tambun, Garuda M
 | 13. Galeri | Sebagian | Galeri dan filter publik ada. Foto, caption, dan kategori belum bisa dikelola lewat CMS. |
 | 14. Kontak empat unit | Sebagian | Direktori Satria, Ipung, dan Andra mengikuti screenshot pengguna. CMS menyimpan nomor, email, foto, status terbit, dan pilihan divisi. Alamat khusus serta pembagian PIC per divisi masih perlu data resmi; kontak awal ditampilkan bersama. |
 | 15. SEO lokal | Sebagian | Halaman laser, katalog, divisi, dan unit memuat informasi lokal yang relevan. Perlu foto pekerjaan asli, lokasi terverifikasi, tautan Google Business, dan pemantauan Search Console setelah online. |
-| 17. Integrasi marketing | Sebagian | WhatsApp terhubung. Tautan akun Instagram, TikTok, dan YouTube harus diverifikasi sebelum dipasang sebagai kanal resmi. |
+| 17. Integrasi marketing | Sebagian | WhatsApp terhubung. Instagram/TikTok dari pengguna serta kanal YouTube bernama Mahameru Baja Indonesia ditautkan; halaman sosial dan editor persisten tersedia. Kepemilikan YouTube belum dikonfirmasi pengguna; Facebook belum ditemukan secara meyakinkan. |
 | 18–19. Struktur & prinsip | Ada untuk navigasi publik | Satu situs menghubungkan katalog, permintaan harga, laser, dan empat unit; alur back-office belum lengkap. |
 
 ## Dashboard dan proses internal
 
 | Bagian draft | Status | Kondisi sekarang |
 | --- | --- | --- |
-| 16. Panel admin | Sebagian | Login dan sesi admin aktif. `/admin/konten` menyimpan kontak dan ulasan manual ke disk server. Modul operasional dashboard belum membaca lead riil atau angka pengunjung. Panduan: `CMS_CONTACTS_REVIEWS.md`. |
+| 16. Panel admin | Sebagian | Login dan sesi admin aktif. `/admin/konten` menyimpan kontak dan ulasan manual ke disk server; `/admin/sosial` mengelola akun serta unggahan sosial. Modul operasional dashboard belum membaca lead riil atau angka pengunjung. Panduan: `CMS_CONTACTS_REVIEWS.md`. |
 | 20. Proses trading | Belum | Status contoh dan skema awal tersedia; cek stok, quotation, PO, invoice, pembayaran, memo, surat jalan, dan pengiriman belum menjadi alur data yang persisten. |
 | 21. Proses laser | Belum | Form request laser ada. Review gambar, penawaran, SPK, jadwal produksi, QC, dan invoice masih contoh tampilan. |
 | 22–23. Status & dashboard | Sebagian | Dua daftar status tampil pada dashboard contoh, tetapi perubahan belum disimpan atau dihubungkan ke lead/order nyata. |
@@ -54,3 +54,8 @@ Build produksi berhasil menghasilkan 55 halaman. Halaman beranda, pemilih divisi
 5. Ulasan Google yang dapat diverifikasi bila kutipan individual ingin ditampilkan; angka rating di situs saat ini adalah catatan manual, bukan sinkronisasi langsung.
 
 Tidak ada jaminan peringkat pertama Google dari perubahan on-page saja. Google menilai relevansi, kualitas konten, persaingan, dan sinyal lain setelah situs dapat dirayapi dan diindeks.
+
+
+## Pembaruan microsite, sosial, dan responsive
+
+Empat unit kini memiliki 20 halaman yang ditautkan, dengan produk/layanan, tentang, galeri, dan kontak. Hasil uji terbaru serta batas verifikasi dijelaskan di `MICROSITES_SOCIAL_RESPONSIVE.md`. Modul operasional dan kebutuhan data asli pada audit di atas tetap berlaku.

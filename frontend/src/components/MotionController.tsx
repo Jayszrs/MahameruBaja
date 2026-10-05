@@ -19,23 +19,30 @@ export default function MotionController() {
     }, { rootMargin: "0px 0px -5% 0px", threshold: 0.05 });
 
     let frame = 0;
+    const compactMotion = window.matchMedia("(pointer: coarse), (max-width: 760px)");
     const updateParallax = () => {
       frame = 0;
       const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       root.style.setProperty("--page-scroll-progress", String(Math.min(1, window.scrollY / scrollable)));
       const viewportCenter = window.innerHeight / 2;
+      const transforms: { element: HTMLElement; offset: number; scale: number }[] = [];
       for (const element of parallax) {
         if (!element.isConnected) { parallax.delete(element); continue; }
         const rect = element.parentElement?.getBoundingClientRect();
         if (!rect || rect.bottom < -220 || rect.top > window.innerHeight + 220) continue;
-        const speed = Number(element.dataset.parallax || "0.12");
+        const strength = compactMotion.matches ? 0.55 : 1;
+        const speed = Number(element.dataset.parallax || "0.12") * strength;
         const limit = element.classList.contains("auto-parallax")
           ? Math.min(36, rect.height * 0.05)
           : Math.min(190, rect.height * 0.19);
         const offset = Math.max(-limit, Math.min(limit, (viewportCenter - rect.top - rect.height / 2) * speed));
-        element.style.setProperty("--parallax-y", `${offset.toFixed(1)}px`);
         const travel = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
-        element.style.setProperty("--scene-scale", (1.08 - travel * .08).toFixed(3));
+        transforms.push({ element, offset, scale: 1 + (1 - travel) * .08 * strength });
+      }
+      // Finish layout reads before applying transforms, including on touch devices.
+      for (const { element, offset, scale } of transforms) {
+        element.style.setProperty("--parallax-y", `${offset.toFixed(1)}px`);
+        element.style.setProperty("--scene-scale", scale.toFixed(3));
       }
     };
     const requestUpdate = () => {
@@ -50,7 +57,7 @@ export default function MotionController() {
         element.dataset.reveal = "auto";
       });
       main.querySelectorAll<HTMLImageElement>("section img").forEach((image) => {
-        if (image.dataset.parallax || image.closest("[data-parallax], .hero-carousel, .proof-marquee, .home-product-tile, .projects-card, [aria-hidden='true']") || image.src.includes("logo")) return;
+        if (image.dataset.parallax || image.closest("[data-parallax], .hero-carousel, .proof-marquee, .home-product-tile, .projects-card, .social-post, .social-feed, .directory-card, [aria-hidden='true']") || image.src.includes("logo")) return;
         image.dataset.parallax = "0.09";
         image.classList.add("auto-parallax");
       });
