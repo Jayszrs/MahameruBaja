@@ -37,7 +37,6 @@ export const metadata: Metadata = {
     icon: "/mbi-mark.svg",
     apple: "/mbi-mark.svg",
   },
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "id_ID",

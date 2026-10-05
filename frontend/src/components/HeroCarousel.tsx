@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "../data/heroSlides";
+import { googleMapsUrl, googleRating, googleRatingObservedAt } from "../data/googleReviews";
 
 const ROTATION_INTERVAL = 2500;
 
@@ -91,6 +92,11 @@ export default function HeroCarousel() {
               {activeSlide.secondaryAction.label}<Arrow />
             </Link>
           </div>
+          {googleRating !== null && <a className="hero-rating-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${googleRating.toFixed(1)} dari 5, lihat ulasan`}>
+            <span className="hero-rating-stars" aria-hidden="true"><span>★★★★★</span><span style={{ width: `${googleRating / 5 * 100}%` }}>★★★★★</span></span>
+            <strong>{googleRating.toFixed(1)} / 5</strong>
+            <small>Rating Google Maps · dilihat {googleRatingObservedAt} ↗</small>
+          </a>}
         </div></div>
 
         <div className="hero-carousel-meta" aria-label="Ringkasan perusahaan">

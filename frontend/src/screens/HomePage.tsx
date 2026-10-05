@@ -18,10 +18,10 @@ const categories = [
 ];
 
 const businessRoutes = [
-  { index: "01", tag: "Retail / Tambun", title: "Mahameru Baja", text: "Pembelian material satuan dan kebutuhan renovasi dengan konsultasi langsung dari toko Tambun.", href: "/produk", cta: "Lihat katalog", image: "/images/steel-indonesia/toko-mahameru.jpg", imageAlt: "Aktivitas toko Mahameru Baja" },
+  { index: "01", tag: "Retail / Tambun", title: "Mahameru Baja", text: "Pembelian material satuan dan kebutuhan renovasi dengan konsultasi langsung dari toko Tambun.", href: "/unit/retail-tambun", cta: "Masuk divisi", image: "/images/steel-indonesia/toko-mahameru.jpg", imageAlt: "Aktivitas toko Mahameru Baja" },
   { index: "02", tag: "Retail / Cibitung", title: "Garuda Marginal Baja", text: "Jalur retail untuk pelanggan Cibitung dan kawasan industri di sekitarnya.", href: "/unit/retail-cibitung", cta: "Lihat unit", image: "/images/steel-indonesia/hollow.jpg", imageAlt: "Besi hollow untuk kebutuhan retail" },
-  { index: "03", tag: "Trading / Proyek", title: "Mahameru Baja Indonesia", text: "Pengadaan volume proyek, pengecekan stok, penawaran, dan penjadwalan pengiriman.", href: "/minta-penawaran?unit=trading-proyek", cta: "Request proyek", image: "/images/steel-indonesia/besi-beton.jpg", imageAlt: "Material besi beton untuk proyek" },
-  { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/laser-cutting", cta: "Lihat layanan", image: "/images/laser-cutting-illustration.jpg", imageAlt: "Proses laser cutting material logam" },
+  { index: "03", tag: "Trading / Proyek", title: "Mahameru Baja Indonesia", text: "Pengadaan volume proyek, pengecekan stok, penawaran, dan penjadwalan pengiriman.", href: "/unit/trading-proyek", cta: "Masuk divisi", image: "/images/steel-indonesia/besi-beton.jpg", imageAlt: "Material besi beton untuk proyek" },
+  { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/unit/laser-cutting", cta: "Masuk divisi", image: "/images/laser-cutting-illustration.jpg", imageAlt: "Proses laser cutting material logam" },
 ];
 
 
@@ -81,7 +81,7 @@ function BusinessRoutes() {
         </div>
         <div className="home-route-list">
           {businessRoutes.map((route) => (
-            <Link href={route.href} className="home-route-card" key={route.index} data-reveal>
+            <Link href={route.href} prefetch className="home-route-card" key={route.index} data-reveal>
               <div className="home-route-media" data-parallax="0.18"><Image src={route.image} alt={route.imageAlt} fill sizes="(max-width: 700px) 100vw, 42vw" /></div>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
@@ -90,6 +90,7 @@ function BusinessRoutes() {
             </Link>
           ))}
         </div>
+        <Link href="/divisi" prefetch className="home-text-link">Lihat semua divisi <Arrow /></Link>
       </div>
     </section>
   );
@@ -125,14 +126,14 @@ function StoreStory() {
 function LaserFeature() {
   return (
     <section className="home-laser" aria-labelledby="laser-heading">
-      <div className="home-laser-media" data-parallax="0.22"><Image src="/images/laser-cutting-illustration.jpg" alt="Ilustrasi proses laser cutting pada material logam" fill sizes="100vw" /></div>
+      <div className="home-laser-media" data-parallax="0.22"><Image src="/images/cnc-bending-visual-v1.png" alt="Ilustrasi proses CNC bending pada plat logam" fill sizes="100vw" /></div>
       <div className="home-laser-shade" />
       <div className="home-shell home-laser-content" data-reveal>
         <Eyebrow light>MBI Laser Cutting / CNC Bending</Eyebrow>
-        <h2 id="laser-heading">Gambar teknik Anda.<br /><em>Langkah awal produksi.</em></h2>
-        <p>Upload desain, tentukan material dan ketebalan, lalu tim MBI meninjau kebutuhan sebelum penawaran dibuat.</p>
+        <h2 id="laser-heading">Cutting, bending, fabrikasi.<br /><em>Satu alur produksi.</em></h2>
+        <p>Butuh jasa laser cutting plat di Bekasi, Tambun, atau Cibitung? Siapkan gambar DWG, DXF, atau PDF, lalu tim MBI meninjau material, ketebalan, ukuran, jumlah, dan kebutuhan CNC bending sebelum membuat penawaran.</p>
         <div className="home-process-line" aria-label="Alur produksi">
-          {["Upload desain", "Review", "Penawaran", "Cutting", "Bending", "QC"].map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>)}
+          {["Siapkan desain", "Review", "Penawaran", "Cutting", "Bending", "QC"].map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>)}
         </div>
         <div className="home-actions">
           <Link href="/laser-cutting#request" className="home-button home-button-primary">Request pekerjaan <Arrow diagonal /></Link>
@@ -186,5 +187,5 @@ function FinalCallout() {
 }
 
 export default function HomePage() {
-  return <><HeroCarousel /><CategoryGrid /><BusinessRoutes /><StoreStory /><LaserFeature /><SocialProof /><LocationSection /><FinalCallout /></>;
+  return <><HeroCarousel /><LaserFeature /><BusinessRoutes /><SocialProof /><CategoryGrid /><StoreStory /><LocationSection /><FinalCallout /></>;
 }

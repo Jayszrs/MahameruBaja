@@ -15,6 +15,7 @@ const produkLinks = [
 ];
 
 const perusahaanLinks = [
+  { label: 'Empat Divisi', href: '/divisi' },
   { label: 'Tentang Kami', href: '/tentang-kami' },
   { label: 'Layanan', href: '/layanan' },
   { label: 'Proyek & Galeri', href: '/proyek' },

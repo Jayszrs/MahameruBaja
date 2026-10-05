@@ -39,7 +39,7 @@ export default function MotionController() {
       if (!frame) frame = window.requestAnimationFrame(updateParallax);
     };
     const scan = () => {
-      main.querySelectorAll<HTMLElement>("section h1, section h2, section h3, section figure, section .business-card, section .unit-visual, article h2, article p, article ul").forEach((element) => {
+      main.querySelectorAll<HTMLElement>("section h1, section h2, section figure, section .business-card, section .unit-visual, article h2").forEach((element) => {
         if (element.closest("[data-reveal], .reveal, .proof-marquee, .projects-lightbox, form, [aria-hidden='true']")) return;
         element.dataset.reveal = "auto";
       });
@@ -62,8 +62,15 @@ export default function MotionController() {
 
     scan();
     root.classList.add("motion-ready");
-    const mutationObserver = new MutationObserver(scan);
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    let scanFrame = 0;
+    const mutationObserver = new MutationObserver(() => {
+      if (scanFrame) return;
+      scanFrame = window.requestAnimationFrame(() => {
+        scanFrame = 0;
+        scan();
+      });
+    });
+    mutationObserver.observe(main, { childList: true, subtree: true });
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
 
@@ -72,6 +79,7 @@ export default function MotionController() {
       root.style.removeProperty("--page-scroll-progress");
       revealObserver.disconnect();
       mutationObserver.disconnect();
+      if (scanFrame) window.cancelAnimationFrame(scanFrame);
       revealed.forEach((element) => element.classList.remove("will-reveal", "is-visible"));
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", requestUpdate);

@@ -1,76 +1,37 @@
-"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { divisions, type Division } from "../data/divisionContent";
 
-import { Link, useParams } from "react-router"
-import { businessUnits } from "../data/business"
-import NotFoundPage from "./NotFoundPage"
+export default function BusinessUnitPage({ division }: { division: Division }) {
+  const whatsapp = `https://wa.me/6281218052017?text=${encodeURIComponent(`Halo Mahameru Baja, saya ingin bertanya tentang ${division.name} (${division.label}).`)}`;
+  return <div className="division-page">
+    <section className="division-hero" aria-labelledby="division-title">
+      <div className="division-hero-image" data-parallax="0.22"><Image src={division.hero} alt="" fill priority sizes="100vw" /></div>
+      <div className="division-hero-overlay" />
+      <div className="industrial-container division-hero-content">
+        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/divisi">Divisi</Link><span>/</span><span>{division.name}</span></nav>
+        <p className="industrial-eyebrow" data-reveal>{division.label} / {division.area}</p>
+        <h1 id="division-title" data-reveal>{division.title}</h1>
+        <p data-reveal>{division.intro}</p>
+        <div className="division-actions" data-reveal><Link className="industrial-button" href={division.primary.href}>{division.primary.label} ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">Chat tim ↗</a></div>
+      </div>
+      <span className="division-hero-index" aria-hidden="true">0{divisions.findIndex((item) => item.slug === division.slug) + 1} / 04</span>
+    </section>
 
-const unitDetails: Record<string, { image: string; needs: string; start: string; area: string }> = {
-  "retail-tambun": { image: "/images/steel-indonesia/toko-mahameru.jpg", needs: "Besi beton, hollow, plat, profil baja, pipa dan material konstruksi untuk pembelian satuan.", start: "Telusuri katalog, catat ukuran dan jumlah, lalu minta konfirmasi stok serta harga.", area: "Toko di Tambun Selatan, Kabupaten Bekasi." },
-  "retail-cibitung": { image: "/images/steel-indonesia/hollow.jpg", needs: "Konsultasi material untuk renovasi, bengkel dan kebutuhan retail di wilayah Cibitung.", start: "Kirim jenis material, ukuran, jumlah dan lokasi kebutuhan agar diarahkan ke tim retail.", area: "Area layanan Cibitung dan sekitarnya. Detail lokasi dikonfirmasi melalui kontak utama." },
-  "trading-proyek": { image: "/images/steel-indonesia/wiremesh.jpg", needs: "Pengadaan material dalam volume proyek dan penjadwalan kebutuhan bertahap.", start: "Kirim daftar material, spesifikasi, volume, lokasi proyek dan target pengiriman.", area: "Jangkauan pengiriman dan jadwal dikonfirmasi setelah kebutuhan ditinjau." },
-  "laser-cutting": { image: "/images/laser-cutting-illustration.jpg", needs: "Laser cutting, CNC bending dan pengerjaan komponen sesuai gambar teknik.", start: "Siapkan file gambar, material, ketebalan, ukuran dan jumlah untuk review teknis.", area: "Kapasitas, kelayakan desain dan jadwal dikonfirmasi oleh tim produksi." },
-}
+    <section className="division-intro-section"><div className="industrial-container division-intro-grid"><div data-reveal><p className="industrial-eyebrow">MENGENAL DIVISI</p><h2>{division.name}</h2></div><p data-reveal>{division.description}</p></div></section>
 
-export default function BusinessUnitPage() {
-  const { slug } = useParams()
-  const unit = businessUnits.find((item) => item.slug === slug)
-  if (!unit) return <NotFoundPage />
-  const detail = unitDetails[unit.slug]
-  return (
-    <>
-      <section className="laser-page-hero">
-        <div className="unit-hero-media" data-parallax="0.26" aria-hidden="true"><img src={detail.image} alt="" /></div>
-        <div className="unit-hero-shade" aria-hidden="true" />
-        <div className="industrial-container" data-reveal>
-          <p className="industrial-eyebrow">
-            EKOSISTEM MAHAMERU BAJA / {unit.label}
-          </p>
-          <h1>{unit.name}</h1>
-          <p>{unit.description}</p>
-          <div className="industrial-actions">
-            <Link className="industrial-button" to={unit.destination}>
-              {unit.slug === "laser-cutting"
-                ? "Lihat jasa dan mesin"
-                : "retail" === unit.slug.split("-")[0]
-                  ? "Lihat katalog produk"
-                  : "Request penawaran"}{" "}
-              ↗
-            </Link>
-            <Link
-              className="industrial-button outline"
-              to={`/minta-penawaran?unit=${unit.slug}`}
-            >
-              Minta harga →
-            </Link>
-          </div>
-        </div>
-      </section>
-      <section className="business-section">
-        <div className="industrial-container">
-          <div className="section-heading" data-reveal>
-            <div>
-              <p className="industrial-eyebrow">INFORMASI UNIT</p>
-              <h2>{unit.label}</h2>
-            </div>
-            <p>Satu perusahaan, jalur layanan yang terarah.</p>
-          </div>
-          <div className="business-grid">
-            {[
-              { title: "Kebutuhan yang ditangani", text: detail.needs },
-              { title: "Cara memulai", text: detail.start },
-              { title: "Area & konfirmasi", text: detail.area },
-              { title: "Hubungi tim", text: "Sampaikan kebutuhan melalui kontak utama. Tim akan mengarahkan permintaan ke unit yang sesuai." },
-            ].map((item) => (
-              <article className="business-card" key={item.title} data-reveal>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-                {item.title === "Hubungi tim" && <a className="business-link" target="_blank" rel="noopener noreferrer" href={`https://wa.me/6281218052017?text=${encodeURIComponent(`Halo, mohon arahkan saya ke ${unit.name} (${unit.label}).`)}`}>Chat kontak utama ↗</a>}
-              </article>
-            ))}
-          </div>
-          <div className="unit-visual" data-reveal><img src={detail.image} alt={`Ilustrasi ${unit.label}`} /><div><strong>{unit.name}</strong><span>{unit.label}</span></div></div>
-        </div>
-      </section>
-    </>
-  )
+    <section className="division-services-section"><div className="industrial-container">
+      <div className="division-section-heading" data-reveal><p className="industrial-eyebrow">01 / LAYANAN & PRODUK</p><h2>Mulai dari kebutuhan Anda.</h2><p>Pilih jalur yang sesuai, lalu kirim spesifikasi untuk ditinjau tim.</p></div>
+      <div className="division-offerings">{division.offerings.map((offering, index) => <article key={offering} data-reveal><span>0{index + 1}</span><h3>{offering}</h3><Link href={division.quote}>Konsultasikan <span aria-hidden="true">↗</span></Link></article>)}</div>
+    </div></section>
+
+    <section className="division-gallery-section" aria-label={`Galeri ${division.name}`}><div className="industrial-container"><div className="division-section-heading" data-reveal><p className="industrial-eyebrow">02 / MATERIAL & PROSES</p><h2>Lihat lebih dekat.</h2></div></div><div className="division-gallery">{division.images.map((item) => <figure key={item.src} data-reveal><div data-parallax="0.1"><Image src={item.src} alt={item.title} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><figcaption>{item.title}</figcaption></figure>)}</div></section>
+
+    <section className="division-process-section"><div className="industrial-container division-process-grid"><div data-reveal><p className="industrial-eyebrow">03 / CARA KERJA</p><h2>Tiga langkah<br />untuk memulai.</h2><p>Informasi yang lengkap membantu tim menindaklanjuti permintaan Anda lebih cepat.</p></div><ol>{division.process.map((step, index) => <li key={step} data-reveal><span>0{index + 1}</span><h3>{step}</h3></li>)}</ol></div></section>
+
+    <section className="division-faq-section"><div className="industrial-container division-faq-grid"><div data-reveal><p className="industrial-eyebrow">04 / PERTANYAAN</p><h2>Yang sering ditanyakan.</h2></div><div>{division.faq.map((item) => <details key={item.question} data-reveal><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></div></section>
+
+    <section className="division-end-section"><div className="industrial-container division-end-grid" data-reveal><div><p className="industrial-eyebrow">LANJUTKAN PERMINTAAN</p><h2>Siapkan daftar atau gambar. Kami bantu arahkan.</h2></div><div className="division-actions"><Link className="industrial-button" href={division.quote}>Minta penawaran ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></section>
+    <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Jelajahi divisi lain</strong><div>{divisions.filter((item) => item.slug !== division.slug).map((item) => <Link key={item.slug} href={`/unit/${item.slug}`} prefetch>{item.name} <span aria-hidden="true">↗</span></Link>)}</div></nav>
+  </div>;
 }

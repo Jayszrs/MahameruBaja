@@ -11,6 +11,7 @@ interface NavbarProps {
 
 const bottomLinks = [
   { label: 'Beranda', href: '/', hasMega: false },
+  { label: '4 Divisi', href: '/divisi', hasMega: false },
   { label: 'Produk', href: '/produk', hasMega: true },
   { label: 'Laser Cutting & Bending', href: '/laser-cutting', hasMega: false },
   { label: 'Layanan', href: '/layanan', hasMega: false },
@@ -92,7 +93,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   }, [megaOpen]);
 
   const isActive = (href: string) =>
-    href === '/' ? location.pathname === '/' : location.pathname.startsWith(href);
+    href === '/' ? location.pathname === '/' :
+      href === '/divisi' ? location.pathname.startsWith('/divisi') || location.pathname.startsWith('/unit/') :
+        location.pathname.startsWith(href);
 
   const navSolid = true;
   const homeNavHidden = location.pathname === '/' && !homeNavVisible && !mobileOpen;
@@ -246,6 +249,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 >
                   <Link
                     to={link.href}
+                    prefetch
                     className={`flex items-center gap-1 px-3.5 py-3 text-[13px] font-semibold transition-colors relative group font-[family-name:var(--font-display)] ${
                       isActive(link.href)
                         ? navSolid ? 'text-brand' : 'text-white'
