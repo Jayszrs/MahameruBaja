@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type PointerEvent } from "react";
-import { googleMapsUrl, googleRating, googleRatingObservedAt, googleReviewCount, googleReviews } from "../data/googleReviews";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
+import type { SiteContent } from "../data/siteContent";
 
 const clients = [
   { name: "Astra", logo: "/images/client-logos/astra.png" },
@@ -16,6 +16,8 @@ const clients = [
 function useMarquee(itemCount: number, pixelsPerSecond: number) {
   const ref = useRef<HTMLDivElement>(null);
   const paused = useRef(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const stopped = useRef(false);
   const drag = useRef<{ x: number; left: number } | null>(null);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
     let previous = 0;
+    let fraction = 0;
 
     const cycleWidth = () => {
       const first = element.children[0] as HTMLElement | undefined;
@@ -37,7 +40,7 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
         element.scrollLeft += cycle;
         if (drag.current) drag.current.left += cycle;
       }
-      if (element.scrollLeft > cycle * 2.5) {
+      if (element.scrollLeft > cycle * 1.5) {
         element.scrollLeft -= cycle;
         if (drag.current) drag.current.left -= cycle;
       }
@@ -51,8 +54,11 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
     resizeObserver.observe(element);
 
     const tick = (now: number) => {
-      if (previous && !paused.current && !drag.current && !document.hidden && !reducedMotion.matches) {
-        element.scrollLeft -= Math.min(now - previous, 64) * pixelsPerSecond / 1000;
+      if (previous && !paused.current && !stopped.current && !drag.current && !document.hidden && !reducedMotion.matches) {
+        fraction += Math.min(now - previous, 64) * pixelsPerSecond / 1000;
+        const distance = Math.trunc(fraction);
+        fraction -= distance;
+        element.scrollLeft -= distance;
         keepInMiddle();
       }
       previous = now;
@@ -88,62 +94,54 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
   };
 
   return {
+    userPaused,
+    togglePause: () => { stopped.current = !stopped.current; setUserPaused(stopped.current); },
+    handlers: {
     ref,
     onPointerDown,
     onPointerMove,
     onPointerUp,
     onPointerCancel: onPointerUp,
+    onMouseEnter: () => { paused.current = true; },
+    onMouseLeave: () => { if (!drag.current) paused.current = false; },
     onFocusCapture: () => { paused.current = true; },
     onBlurCapture: () => { paused.current = false; },
     onTouchStart: () => { paused.current = true; },
     onTouchEnd: () => { paused.current = false; },
+    onTouchCancel: () => { paused.current = false; },
+    },
   };
 }
 
-function Reviews() {
-  const reviews = googleReviews;
-  const reviewCopies = reviews.length < 3 ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 2];
-  const marquee = useMarquee(reviews.length, 62);
-  const mapsUrl = googleMapsUrl;
+function Reviews({ content }: { content: SiteContent }) {
+  const reviews = content.reviews.filter(review => review.published);
+  const copies = reviews.length < 3 ? [0, 1, 2, 3, 4, 5, 6] : [0, 1, 2];
+  const marquee = useMarquee(reviews.length, 38);
   return <section className="home-section home-reviews" id="ulasan" aria-labelledby="reviews-heading">
     <div className="home-shell">
       <div className="home-section-heading proof-heading" data-reveal>
-        <div><p className="home-eyebrow text-brand"><span />Rating & ulasan</p><h2 id="reviews-heading">{reviews.length ? <>Cerita pelanggan,<br />langsung dari Google.</> : <>Penilaian pelanggan<br />di Google Maps.</>}</h2></div>
-        <p>Lihat penilaian dan pengalaman pelanggan pada profil resmi Toko Besi Mahameru Baja di Google Maps.</p>
+        <div><p className="home-eyebrow text-brand"><span />Suara pelanggan</p><h2 id="reviews-heading">Pengalaman mereka.<br />Kepercayaan untuk kami.</h2></div>
+        <p>Penilaian pelanggan di Google Maps. Baca cerita mereka, lalu diskusikan kebutuhan Anda bersama tim kami.</p>
       </div>
-      <div className="home-review-layout" data-reveal>
-        <div className="home-rating-card">
-          <span>Google Maps · Toko Besi Mahameru Baja</span>
-          {typeof googleRating === "number" ? <>
-            <strong>{googleRating.toFixed(1)}<small>/ 5</small></strong>
-            <div className="rating-stars" aria-label={`${googleRating.toFixed(1)} dari 5 bintang`}><span>★★★★★</span><span style={{ width: `${googleRating / 5 * 100}%` }} aria-hidden="true">★★★★★</span></div>
-            <p>{typeof googleReviewCount === "number" ? `${new Intl.NumberFormat("id-ID").format(googleReviewCount)} ulasan di Google` : `Rating dilihat ${googleRatingObservedAt}`}</p>
-          </> : <>
-            <strong className="home-rating-prompt">Lihat rating terbaru</strong>
-            <p>Penilaian terbaru tersedia langsung di Google Maps.</p>
-          </>}
-          <a href={mapsUrl} target="_blank" rel="noopener noreferrer">Buka profil Google Maps <span aria-hidden="true">↗</span></a>
-        </div>
-        {reviews.length > 0 ? <div className="home-review-cards proof-marquee" {...marquee} tabIndex={0} aria-label="Ulasan Google, geser untuk melihat ulasan lain">
-          {reviewCopies.flatMap((copy) => reviews.map((review, index) => <article key={`${copy}-${index}`} aria-hidden={copy !== 1}>
-            <div aria-label={`${review.rating} dari 5 bintang`}>{"★".repeat(Math.max(0, Math.min(5, review.rating)))}</div>
-            <p>“{review.text}”</p>
-            <div className="review-author">{review.authorPhoto && <img src={review.authorPhoto} alt="" loading="lazy" />}<div><strong>{review.authorUrl ? <a href={review.authorUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>{review.author}</a> : review.author}</strong><small>{review.when || "Ulasan Google"}</small></div></div>
-            <a className="review-source" href={review.url || mapsUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>Lihat di Google Maps ↗</a>
-          </article>))}
-        </div> : <div className="home-reviews-map"><iframe title="Profil Toko Besi Mahameru Baja di Google Maps" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" /><a href={mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan pelanggan di Google Maps ↗</a></div>}
-      </div>
-      {reviews.length > 0 && <p className="proof-footnote">Kutipan ulasan dari profil Google Maps Mahameru Baja. Geser dengan mouse atau jari untuk menjelajahinya.</p>}
+      <div className="reviews-summary" data-reveal><div className="reviews-google-mark" aria-hidden="true">G</div><strong>{content.rating.toFixed(1)}<small>/ 5</small></strong><div><div className="rating-stars" aria-label={`${content.rating.toFixed(1)} dari 5 bintang`}><span>?????</span><span style={{ width: `${content.rating / 5 * 100}%` }} aria-hidden="true">?????</span></div><p>{content.reviewCount !== null ? `${content.reviewCount} ulasan Google` : "Rating Google Maps"} ? dicatat {content.ratingDate}</p></div><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Lihat semua di Google ?</a>{reviews.length > 0 && <button type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button>}</div>
     </div>
+    {reviews.length > 0 ? <div className="reviews-bleed"><div className="home-review-cards proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Ulasan Google, bergerak ke kanan. Geser untuk menjelajah.">
+      {copies.flatMap(copy => reviews.map(review => <article key={`${copy}-${review.id}`} aria-hidden={copy !== 1}>
+        <header><span className="review-avatar">{review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || "Ulasan Google Maps"}</small></div><span className="review-google-g" aria-hidden="true">G</span></header>
+        <div className="review-card-stars" aria-label={`${review.rating} dari 5 bintang`}>{"?".repeat(review.rating)}<span>{"?".repeat(5 - review.rating)}</span></div>
+        <blockquote>{review.text}</blockquote>
+        <a className="review-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>Baca ulasan asli ?</a>
+      </article>))}
+    </div></div> : <div className="home-shell"><a className="reviews-source-callout" href={content.mapsUrl} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">?</span><div><strong>Baca cerita pelanggan kami.</strong><p>Ulasan lengkap tersedia di profil Google Maps Mahameru Baja.</p></div><b aria-hidden="true">?</b></a></div>}
   </section>;
 }
 
 function Clients() {
-  const marquee = useMarquee(clients.length, 76);
+  const marquee = useMarquee(clients.length, 46);
   return <section className="home-clients" id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
-      <div className="proof-client-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan & kolaborasi</p><h2 id="clients-heading">Perusahaan yang pernah bekerja sama.</h2></div></div>
-      <div className="home-client-logo-grid proof-marquee" {...marquee} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
+      <div className="proof-client-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan & kolaborasi</p><h2 id="clients-heading">Perusahaan yang pernah bekerja sama.</h2></div><button className="marquee-pause" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button></div>
+      <div className="home-client-logo-grid proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
         {[0, 1, 2].flatMap((copy) => clients.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
           <Image src={client.logo} alt={copy === 1 ? `Logo ${client.name}` : ""} width={80} height={80} sizes="80px" draggable={false} />
           <span>{client.name}</span>
@@ -153,6 +151,6 @@ function Clients() {
   </section>;
 }
 
-export default function SocialProof() {
-  return <><Reviews /><Clients /></>;
+export default function SocialProof({ content }: { content: SiteContent }) {
+  return <><Reviews content={content} /><Clients /></>;
 }

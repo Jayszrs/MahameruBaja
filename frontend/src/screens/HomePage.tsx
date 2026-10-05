@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import HeroCarousel from "../components/HeroCarousel";
 import SocialProof from "../components/SocialProof";
+import type { SiteContent } from "../data/siteContent";
 
 const whatsapp = "https://wa.me/6281218052017";
 
@@ -186,6 +187,6 @@ function FinalCallout() {
   );
 }
 
-export default function HomePage() {
-  return <><HeroCarousel /><LaserFeature /><BusinessRoutes /><SocialProof /><CategoryGrid /><StoreStory /><LocationSection /><FinalCallout /></>;
+export default function HomePage({ content }: { content: SiteContent }) {
+  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><LaserFeature /><BusinessRoutes /><SocialProof content={content} /><CategoryGrid /><StoreStory /><LocationSection /><FinalCallout /></>;
 }

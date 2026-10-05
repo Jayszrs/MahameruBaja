@@ -3,8 +3,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
+import ContactDirectory from '../components/ContactDirectory';
+import type { TeamContact } from '../data/siteContent';
 
-export default function KontakPage() {
+export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
   const [formData, setFormData] = useState({ nama: '', whatsapp: '', email: '', subjek: '', pesan: '' });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -68,6 +70,7 @@ export default function KontakPage() {
         </div>
       </section>
 
+      <ContactDirectory contacts={contacts} />
       <section className="py-16 bg-surface" aria-labelledby="kontak-section-heading">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <h2 id="kontak-section-heading" className="sr-only">Informasi Kontak</h2>

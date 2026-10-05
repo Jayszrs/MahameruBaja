@@ -22,7 +22,7 @@ Draft bagian 3 dan 6 menyebut empat jalur bisnis: Mahameru Baja Tambun, Garuda M
 | 11. Database calon pelanggan | Sebagian | Tabel dan endpoint pencatatan lead ada. Pencarian, penugasan admin, serta perubahan status melalui dashboard belum tersambung. |
 | 12. Analitik pengunjung | Belum | Belum ada pengukuran pengunjung, sumber trafik, klik WhatsApp, dan konversi formulir. |
 | 13. Galeri | Sebagian | Galeri dan filter publik ada. Foto, caption, dan kategori belum bisa dikelola lewat CMS. |
-| 14. Kontak empat unit | Sebagian | Empat jalur ditampilkan, tetapi alamat dan WhatsApp khusus Cibitung/Trading/Laser perlu data resmi. |
+| 14. Kontak empat unit | Sebagian | Direktori Satria, Ipung, dan Andra mengikuti screenshot pengguna. CMS menyimpan nomor, email, foto, status terbit, dan pilihan divisi. Alamat khusus serta pembagian PIC per divisi masih perlu data resmi; kontak awal ditampilkan bersama. |
 | 15. SEO lokal | Sebagian | Halaman laser, katalog, divisi, dan unit memuat informasi lokal yang relevan. Perlu foto pekerjaan asli, lokasi terverifikasi, tautan Google Business, dan pemantauan Search Console setelah online. |
 | 17. Integrasi marketing | Sebagian | WhatsApp terhubung. Tautan akun Instagram, TikTok, dan YouTube harus diverifikasi sebelum dipasang sebagai kanal resmi. |
 | 18–19. Struktur & prinsip | Ada untuk navigasi publik | Satu situs menghubungkan katalog, permintaan harga, laser, dan empat unit; alur back-office belum lengkap. |
@@ -31,7 +31,7 @@ Draft bagian 3 dan 6 menyebut empat jalur bisnis: Mahameru Baja Tambun, Garuda M
 
 | Bagian draft | Status | Kondisi sekarang |
 | --- | --- | --- |
-| 16. Panel admin | Sebagian | Login dan sesi admin aktif. Dashboard masih pratinjau lokal, belum membaca lead riil atau angka pengunjung. |
+| 16. Panel admin | Sebagian | Login dan sesi admin aktif. `/admin/konten` menyimpan kontak dan ulasan manual ke disk server. Modul operasional dashboard belum membaca lead riil atau angka pengunjung. Panduan: `CMS_CONTACTS_REVIEWS.md`. |
 | 20. Proses trading | Belum | Status contoh dan skema awal tersedia; cek stok, quotation, PO, invoice, pembayaran, memo, surat jalan, dan pengiriman belum menjadi alur data yang persisten. |
 | 21. Proses laser | Belum | Form request laser ada. Review gambar, penawaran, SPK, jadwal produksi, QC, dan invoice masih contoh tampilan. |
 | 22–23. Status & dashboard | Sebagian | Dua daftar status tampil pada dashboard contoh, tetapi perubahan belum disimpan atau dihubungkan ke lead/order nyata. |

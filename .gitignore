@@ -12,5 +12,6 @@ coverage/
 .admin-local-access.txt
 !.env.example
 tmp/
+.cms-data/
 .DS_Store
 Thumbs.db

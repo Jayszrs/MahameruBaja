@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "../data/heroSlides";
-import { googleMapsUrl, googleRating, googleRatingObservedAt } from "../data/googleReviews";
 
 const ROTATION_INTERVAL = 2500;
 
@@ -16,7 +15,7 @@ function Arrow() {
   );
 }
 
-export default function HeroCarousel() {
+export default function HeroCarousel({ rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { rating: number; ratingDate: string; mapsUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);

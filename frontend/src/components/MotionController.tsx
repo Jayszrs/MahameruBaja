@@ -14,6 +14,7 @@ export default function MotionController() {
     const revealObserver = new IntersectionObserver((entries) => {
       for (const entry of entries) {
         entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        if (!entry.isIntersecting) (entry.target as HTMLElement).style.setProperty("--reveal-direction", entry.boundingClientRect.top < 0 ? "-1" : "1");
       }
     }, { rootMargin: "0px 0px -5% 0px", threshold: 0.05 });
 
@@ -33,12 +34,17 @@ export default function MotionController() {
           : Math.min(190, rect.height * 0.19);
         const offset = Math.max(-limit, Math.min(limit, (viewportCenter - rect.top - rect.height / 2) * speed));
         element.style.setProperty("--parallax-y", `${offset.toFixed(1)}px`);
+        const travel = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
+        element.style.setProperty("--scene-scale", (1.08 - travel * .08).toFixed(3));
       }
     };
     const requestUpdate = () => {
       if (!frame) frame = window.requestAnimationFrame(updateParallax);
     };
     const scan = () => {
+      for (const element of revealed) {
+        if (!element.isConnected) { revealObserver.unobserve(element); revealed.delete(element); }
+      }
       main.querySelectorAll<HTMLElement>("section h1, section h2, section figure, section .business-card, section .unit-visual, article h2").forEach((element) => {
         if (element.closest("[data-reveal], .reveal, .proof-marquee, .projects-lightbox, form, [aria-hidden='true']")) return;
         element.dataset.reveal = "auto";

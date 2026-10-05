@@ -11,7 +11,7 @@ interface NavbarProps {
 
 const bottomLinks = [
   { label: 'Beranda', href: '/', hasMega: false },
-  { label: '4 Divisi', href: '/divisi', hasMega: false },
+  { label: 'Divisi Kami', href: '/divisi', hasMega: false },
   { label: 'Produk', href: '/produk', hasMega: true },
   { label: 'Laser Cutting & Bending', href: '/laser-cutting', hasMega: false },
   { label: 'Layanan', href: '/layanan', hasMega: false },

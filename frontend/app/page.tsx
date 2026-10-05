@@ -1,5 +1,6 @@
 import HomePage from "../src/screens/HomePage";
-import { googleMapsUrl } from "../src/data/googleReviews";
+import { connection } from "next/server";
+import { readSiteContent } from "../src/lib/siteContentStore";
 
 export const metadata = {
   title: { absolute: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia" },
@@ -8,7 +9,10 @@ export const metadata = {
   openGraph: { title: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia", description: "Laser cutting plat, CNC bending, fabrikasi, dan material konstruksi dalam empat divisi Mahameru Baja." },
 };
 
-export default function Page() {
+export default async function Page() {
+  await connection();
+  const stored = await readSiteContent();
+  const content = { ...stored, contacts: [], reviews: stored.reviews.filter(r => r.published) };
   const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mahamerubaja.com";
   const localBusiness = {
     "@context": "https://schema.org",
@@ -20,7 +24,7 @@ export default function Page() {
     description: "Jasa laser cutting plat, CNC bending, retail besi, dan supply material proyek di Kabupaten Bekasi.",
     areaServed: ["Tambun Selatan", "Cibitung", "Kabupaten Bekasi"],
     address: { "@type": "PostalAddress", addressLocality: "Tambun Selatan", addressRegion: "Jawa Barat", addressCountry: "ID" },
-    sameAs: [googleMapsUrl],
+    sameAs: [content.mapsUrl],
   };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness).replace(/</g, "\\u003c") }} /><HomePage /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness).replace(/</g, "\\u003c") }} /><HomePage content={content} /></>;
 }

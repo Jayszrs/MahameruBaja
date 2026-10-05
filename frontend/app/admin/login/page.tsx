@@ -29,7 +29,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
             <input id="admin-password" name="password" type="password" autoComplete="current-password" required placeholder="Masukkan kata sandi" />
             <button type="submit" disabled={!ready}>Masuk ke portal <span aria-hidden="true">→</span></button>
           </form>
-          <small>Akses khusus pengelola. Aktivitas workspace saat ini masih berupa pratinjau sesi.</small>
+          <small>Akses khusus pengelola untuk kontak, ulasan, dan workspace Mahameru Baja.</small>
         </div>
       </div>
     </main>
