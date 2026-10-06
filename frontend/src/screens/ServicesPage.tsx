@@ -96,7 +96,7 @@ function ServicesGrid() {
         <div className="space-y-16">
           {services.map((service, i) => (
             <div key={service.id} className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${i % 2 === 1 ? 'lg:direction-rtl' : ''}`}>
-              <div className={`services-media rounded-2xl overflow-hidden aspect-video bg-graphite ${i % 2 === 1 ? 'lg:order-2' : ''}`} data-reveal>
+              <div className={`services-media rounded-md overflow-hidden aspect-video bg-graphite ${i % 2 === 1 ? 'lg:order-2' : ''}`} data-reveal>
                 <div data-parallax="0.14"><img src={service.image} alt={service.title} className="w-full h-full object-cover" /></div>
                 {service.image.includes('hero-steel-') && <span className="services-visual-note">Visual ilustrasi</span>}
               </div>

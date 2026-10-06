@@ -68,7 +68,7 @@ function CategoryGrid() {
             </Link>
           ))}
         </div>
-        <Link href="/produk" className="home-text-link">Lihat semua produk <Arrow /></Link>
+        <Link href="/produk" className="home-text-link">Lihat semua produk</Link>
       </div>
     </section>
   );
@@ -93,7 +93,7 @@ function BusinessRoutes() {
             </Link>
           ))}
         </div>
-        <Link href="/divisi" prefetch className="home-text-link">Lihat semua divisi <Arrow /></Link>
+        <Link href="/divisi" prefetch className="home-text-link">Lihat semua divisi</Link>
       </div>
     </section>
   );
@@ -117,7 +117,7 @@ function StoreStory() {
             <li><span>03</span><div><strong>Terhubung dengan tim</strong><small>Dapatkan konfirmasi stok atau review gambar.</small></div></li>
           </ol>
           <div className="home-actions">
-            <Link href="/tentang-kami" className="home-button home-button-dark">Tentang perusahaan <Arrow /></Link>
+            <Link href="/tentang-kami" className="home-button home-button-dark">Tentang perusahaan</Link>
             <a href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20konsultasi.`} className="home-inline-wa" target="_blank" rel="noreferrer"><WhatsAppIcon /> Konsultasi WhatsApp</a>
           </div>
         </div>
@@ -139,8 +139,8 @@ function LaserFeature() {
           {["Siapkan desain", "Review", "Penawaran", "Cutting", "Bending", "QC"].map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>)}
         </div>
         <div className="home-actions">
-          <Link href="/laser-cutting#request" className="home-button home-button-primary">Request pekerjaan <Arrow diagonal /></Link>
-          <Link href="/laser-cutting" className="home-button home-button-ghost">Lihat layanan <Arrow /></Link>
+          <Link href="/laser-cutting#request" className="home-button home-button-primary">Request pekerjaan</Link>
+          <Link href="/laser-cutting" className="home-button home-button-ghost">Lihat layanan</Link>
         </div>
       </div>
     </section>
@@ -182,7 +182,7 @@ function FinalCallout() {
         <Eyebrow light>Mulai dari kebutuhan Anda</Eyebrow>
         <h2 id="final-heading">Material, gambar, atau daftar kebutuhan.<br />Kirimkan. Kami bantu arahkan.</h2>
         <div className="home-actions">
-          <Link href="/minta-penawaran" className="home-button home-button-primary">Minta penawaran <Arrow /></Link>
+          <Link href="/minta-penawaran" className="home-button home-button-primary">Minta penawaran</Link>
           <a href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20bertanya.`} target="_blank" rel="noreferrer" className="home-button home-button-whatsapp"><WhatsAppIcon /> Chat WhatsApp</a>
         </div>
       </div>

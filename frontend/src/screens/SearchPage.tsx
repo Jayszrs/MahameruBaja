@@ -82,7 +82,7 @@ export default function SearchPage() {
               </Link>
               <a href="https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20mencari%20produk%20tertentu%20yang%20tidak%20saya%20temukan%20di%20website."
                 target="_blank" rel="noopener noreferrer"
-                className="px-5 py-2.5 bg-[#25D366] text-white text-sm font-semibold rounded-lg hover:bg-[#20b858] transition-colors">
+                className="px-5 py-2.5 bg-[#1A7A3E] text-white text-sm font-semibold rounded-lg hover:bg-[#155f32] transition-colors">
                 Tanya via WhatsApp
               </a>
             </div>

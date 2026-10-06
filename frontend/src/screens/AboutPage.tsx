@@ -6,9 +6,6 @@ import { useReveal } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';
 import MaterialCollage from '../components/MaterialCollage';
 
-function ArrowIcon() {
-  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>;
-}
 function WAIcon() {
   return <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z" /><path d="M11.974 0C5.364 0 0 5.363 0 11.974c0 2.077.537 4.036 1.478 5.745L0 24l6.433-1.448a11.913 11.913 0 005.541 1.371C18.584 23.923 24 18.56 24 11.949 24 5.362 18.584 0 11.974 0zm0 21.893a9.902 9.902 0 01-5.054-1.386l-.362-.215-3.757.984 1.002-3.657-.237-.376a9.868 9.868 0 01-1.515-5.269c0-5.464 4.446-9.909 9.909-9.909 5.463 0 9.908 4.445 9.908 9.908 0 5.463-4.445 9.92-9.894 9.92z" /></svg>;
 }
@@ -101,7 +98,7 @@ function AboutIntro() {
     <section className="py-24 bg-warm-white" aria-labelledby="about-intro-heading">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div className={`relative rounded-2xl overflow-hidden aspect-[4/3] bg-graphite reveal ${visible ? 'visible' : ''}`}>
+          <div className={`relative rounded-md overflow-hidden aspect-[4/3] bg-graphite reveal ${visible ? 'visible' : ''}`}>
             <div className="about-intro-parallax" data-parallax="0.16">
               <img src="/images/steel-indonesia/toko-mahameru.jpg" alt="Toko Mahameru Baja di Tambun Selatan" className="w-full h-full object-cover" />
             </div>
@@ -214,7 +211,7 @@ function WhatWeDoSection() {
           {items.map((item, i) => (
             <div
               key={item.num}
-              className={`bg-white border border-light-steel rounded-2xl p-6 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 reveal reveal-delay-${(i % 2) + 1} ${visible ? 'visible' : ''}`}
+              className={`bg-white border border-light-steel rounded-md p-6 transition-colors duration-300 reveal reveal-delay-${(i % 2) + 1} ${visible ? 'visible' : ''}`}
             >
               <div className="w-11 h-11 rounded-xl bg-brand/8 text-brand flex items-center justify-center mb-4">
                 <div className="w-5 h-5">{item.icon}</div>
@@ -271,7 +268,7 @@ function CustomerSegmentsSection() {
           {segments.map((s, i) => (
             <div
               key={s.label}
-              className={`bg-white/5 border border-white/8 rounded-2xl px-5 py-6 text-center hover:bg-white/10 hover:border-brand/30 transition-all duration-300 group reveal reveal-delay-${(i % 3) + 1} ${visible ? 'visible' : ''}`}
+              className={`bg-white/5 border border-white/8 rounded-md px-5 py-6 text-center hover:bg-white/10 hover:border-brand/30 transition-colors duration-300 group reveal reveal-delay-${(i % 3) + 1} ${visible ? 'visible' : ''}`}
             >
               <div className="w-10 h-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center mx-auto mb-3.5 group-hover:bg-brand/20 transition-colors">
                 <div className="w-5 h-5">{segmentIcons[i]}</div>
@@ -319,7 +316,7 @@ function WhyChooseSection() {
                 to="/produk"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5"
               >
-                Lihat Produk <ArrowIcon />
+                Lihat Produk
               </Link>
               <Link
                 to="/kontak"
@@ -374,13 +371,13 @@ function AboutCTA() {
             to="/minta-penawaran"
             className="inline-flex items-center gap-2 px-6 py-3 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-brand/30"
           >
-            Minta Penawaran <ArrowIcon />
+            Minta Penawaran
           </Link>
           <a
             href="https://wa.me/6281218052017"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A7A3E] hover:bg-[#155f32] text-white font-bold text-sm rounded-xl transition-all hover:-translate-y-0.5"
           >
             <WAIcon /> Chat WhatsApp
           </a>

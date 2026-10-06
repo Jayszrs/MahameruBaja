@@ -7,7 +7,8 @@
     "dev:turbo": "next dev --turbopack -p 3000",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "reviews:import": "node scripts/import-google-reviews.mjs data/google-maps-snapshot.html"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",
