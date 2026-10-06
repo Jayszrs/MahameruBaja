@@ -2055,3 +2055,17 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color:transp
 .request-handoff-actions > a:not(.handoff-secondary):hover { background:#a81d27; }
 .request-handoff-actions > button:not(.handoff-secondary) { background:#1a1c1f; }
 .request-handoff > .handoff-note { border-color:#e6e7e7; }
+
+/* Give large desktop displays room without stretching reading columns. */
+@media (min-width:1600px) {
+  :root { --wide-shell:min(1920px,90vw); }
+  .home-shell,
+  .industrial-container,
+  .division-hero-content,
+  .division-index-hero .industrial-container,
+  .division-photo-story .industrial-container { width:var(--wide-shell); }
+  .max-w-\[1280px\], .unit-header-inner { max-width:var(--wide-shell); }
+  .division-gallery { padding-inline:calc((100vw - var(--wide-shell))/2 + 32px); }
+  .reviews-editorial .quote-ribbon { padding-inline:calc((100vw - var(--wide-shell))/2 + 32px); }
+  .material-collage { height:clamp(520px,30vw,680px); }
+}

@@ -29,3 +29,16 @@ Untuk mengerjakan tampilan saja, jalankan `npm run dev:web`; API Fastify dan Pos
 Untuk setup lengkap, keputusan hosting, environment variables, backup, dan checklist go-live, baca [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 Preview Next.js di Vercel sudah disiapkan. URL, cara deploy ulang, dan batasan preview tercatat di [docs/VERCEL_PREVIEW.md](docs/VERCEL_PREVIEW.md).
+
+## Memperbarui salinan tim yang memakai Docker
+
+Semua gambar website disimpan dan dilacak Git di `frontend/public/images`; font PDF ada di `frontend/public/fonts`. Tidak perlu menyalin aset dari komputer pembuat desain.
+
+Setelah menarik perubahan terbaru, rebuild container web agar gambar masuk ke lokasi yang benar:
+
+```powershell
+git pull
+docker compose -f infrastructure/docker-compose.yml up -d --build web
+```
+
+Periksa `http://localhost:3000/images/hero-steel-warehouse-v2.png`. Jika URL gambar itu belum muncul, pastikan container web yang dibuka sudah memakai image hasil build terbaru. Next.js standalone monorepo melayani aset dari `/app/frontend/public`, sesuai lokasi `frontend/server.js`.
