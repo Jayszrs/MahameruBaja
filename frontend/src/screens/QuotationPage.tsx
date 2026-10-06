@@ -53,6 +53,26 @@ export default function QuotationPage() {
     setRows(r => r.map(row => row.id === id ? { ...row, [field]: value } : row));
   }
 
+  function buildWAMessage() {
+    const selectedUnit = businessUnits.find(item => item.slug === unit)?.label || unit;
+    const products = rows
+      .filter(row => row.produk.trim())
+      .map(row => `- ${row.produk.trim()}${row.spesifikasi.trim() ? ` (${row.spesifikasi.trim()})` : ''}: ${row.jumlah || 'jumlah konfirmasi'} ${row.satuan}`);
+    const message = [
+      'Halo Mahameru Baja, saya ingin meminta penawaran.',
+      `Nama: ${formData.nama || '-'}`,
+      `Perusahaan: ${formData.perusahaan || '-'}`,
+      `WhatsApp: ${formData.whatsapp || '-'}`,
+      `Email: ${formData.email || '-'}`,
+      `Lokasi: ${formData.lokasi || '-'}`,
+      `Divisi: ${selectedUnit}`,
+      'Daftar material:',
+      ...(products.length ? products : ['- Belum diisi']),
+      `Catatan: ${formData.catatan || '-'}`,
+    ].join('\n');
+    return encodeURIComponent(message);
+  }
+
   function validate() {
     const e: Record<string, string> = {};
     if (formData.nama.trim().length < 2) e.nama = 'Nama harus diisi';

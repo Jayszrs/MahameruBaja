@@ -13,7 +13,6 @@ ARG NEXT_PUBLIC_SITE_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
 COPY package.json ./
 COPY frontend ./frontend
 WORKDIR /app/frontend

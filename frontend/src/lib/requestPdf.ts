@@ -1,10 +1,12 @@
 import type { CreateLeadInput } from "./api";
 import { divisions } from "../data/divisionContent";
 
-export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString()) {
+export async function createRequestPdf(input: CreateLeadInput, id: string, createdAt = new Date().toISOString()) {
   const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([import("pdf-lib"), import("@pdf-lib/fontkit")]);
   const pdf = await PDFDocument.create(); pdf.registerFontkit(fontkit);
-  const bytes = fontBytes || new Uint8Array(await fetch("/fonts/NotoSans-Regular.ttf").then(r => { if (!r.ok) throw new Error("Font PDF belum dapat dimuat."); return r.arrayBuffer(); }));
+  const response = await fetch("/fonts/NotoSans-Regular.ttf");
+  if (!response.ok) throw new Error("Font PDF belum dapat dimuat.");
+  const bytes = await response.arrayBuffer();
   const font = await pdf.embedFont(bytes, { subset: true });
   const ink = rgb(.12,.16,.15), muted = rgb(.42,.46,.43), red = rgb(.72,.13,.17), rule = rgb(.85,.87,.83);
   const unit = divisions.find(d => d.slug === input.businessUnitSlug);

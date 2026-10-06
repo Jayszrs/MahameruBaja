@@ -9,8 +9,6 @@ RUN npm ci --workspace @mahameru/backend --workspace @mahameru/database --includ
 FROM node:22-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/backend/node_modules ./backend/node_modules
-COPY --from=deps /app/database/node_modules ./database/node_modules
 COPY package.json ./
 COPY backend ./backend
 COPY database ./database
