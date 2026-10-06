@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 import { products } from "../src/data/products";
 import { articles } from "../src/data/articles";
 import { divisions } from "../src/data/divisionContent";
-import { siteOrigin } from "../src/lib/siteOrigin";
+import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 export default function sitemap(): MetadataRoute.Sitemap {
-  if (process.env.VERCEL_ENV === "preview") return [];
+  if (isPreviewSite()) return [];
   const base = siteOrigin();
   const staticPaths = ["", "/divisi", "/tentang-kami", "/produk", "/layanan", "/laser-cutting", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media"];
   return [

@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
       { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-      ...(process.env.VERCEL_ENV === "preview" ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] : []),
+      ...(process.env.VERCEL_ENV === "preview" || process.env.SITE_PREVIEW_MODE === "1" ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] : []),
     ];
     return [
       { source: "/:path*", headers: baseline },

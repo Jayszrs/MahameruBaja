@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Archivo, IBM_Plex_Mono, Manrope } from "next/font/google";
 import "../src/index.css";
 import AppShell from "../src/components/AppShell";
-import { siteOrigin } from "../src/lib/siteOrigin";
+import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 
 const siteUrl = siteOrigin();
 
@@ -30,7 +30,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  robots: process.env.VERCEL_ENV === "preview" ? { index: false, follow: false } : undefined,
+  robots: isPreviewSite() ? { index: false, follow: false } : undefined,
   metadataBase: new URL(siteUrl),
   title: {
     default: "Mahameru Baja Indonesia | Material, Laser Cutting & Fabrikasi",
