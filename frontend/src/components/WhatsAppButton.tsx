@@ -30,9 +30,9 @@ export default function WhatsAppButton() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3.5 py-2 bg-white text-graphite text-sm font-semibold rounded-xl shadow-lg hover:bg-[#25D366] hover:text-white transition-all hover:-translate-y-0.5 whitespace-nowrap border border-light-steel"
+              className="flex items-center gap-2 px-3.5 py-2 bg-white text-graphite text-sm font-semibold rounded-xl shadow-lg hover:bg-[#1A7A3E] hover:text-white transition-colors whitespace-nowrap border border-light-steel"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] group-hover:bg-white" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#1A7A3E] group-hover:bg-white" />
               {action.label}
             </a>
           ))}
@@ -45,7 +45,7 @@ export default function WhatsAppButton() {
         aria-label={open ? 'Tutup menu WhatsApp' : 'Hubungi via WhatsApp'}
         aria-expanded={open}
         className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all hover:scale-105 ${
-          open ? 'bg-graphite rotate-45' : 'bg-[#25D366] hover:bg-[#20b858]'
+          open ? 'bg-graphite rotate-45' : 'bg-[#1A7A3E] hover:bg-[#155f32]'
         }`}
       >
         {open ? (

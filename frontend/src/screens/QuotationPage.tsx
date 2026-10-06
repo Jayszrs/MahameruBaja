@@ -158,10 +158,10 @@ export default function QuotationPage() {
       <section className="py-12 bg-surface" aria-label="Form Penawaran">
         <div className="max-w-[860px] mx-auto px-6 lg:px-8">
           <form onSubmit={handleSubmit} noValidate>
-            <div className="bg-white border border-rule p-6 mb-5 rounded-xl"><label htmlFor="unit-tujuan" className="block text-sm font-semibold mb-2">Unit tujuan</label><select id="unit-tujuan" value={unit} onChange={event => setUnit(event.target.value)} className="w-full border border-rule p-3 text-sm">{businessUnits.map(item => <option key={item.slug} value={item.slug}>{item.name} — {item.label}</option>)}</select><p className="text-xs text-muted mt-3">Nomor khusus unit menunggu konfirmasi. Ringkasan dikirim melalui kontak utama.</p>{unit === 'laser-cutting' && <Link to="/laser-cutting#request" className="block text-sm text-brand font-semibold mt-3">Gunakan form khusus laser cutting & bending →</Link>}</div>
+            <div className="bg-white border border-rule p-6 mb-5 rounded-md"><label htmlFor="unit-tujuan" className="block text-sm font-semibold mb-2">Unit tujuan</label><select id="unit-tujuan" value={unit} onChange={event => setUnit(event.target.value)} className="w-full border border-rule p-3 text-sm">{businessUnits.map(item => <option key={item.slug} value={item.slug}>{item.name} — {item.label}</option>)}</select><p className="text-xs text-muted mt-3">Nomor khusus unit menunggu konfirmasi. Ringkasan dikirim melalui kontak utama.</p>{unit === 'laser-cutting' && <Link to="/laser-cutting#request" className="block text-sm text-brand font-semibold mt-3">Gunakan form khusus laser cutting & bending →</Link>}</div>
 
             {/* Personal info */}
-            <div className="bg-white rounded-2xl border border-rule p-6 mb-5">
+            <div className="bg-white rounded-md border border-rule p-6 mb-5">
               <h2 className="text-lg font-extrabold text-graphite mb-5">Informasi Kontak</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -205,7 +205,7 @@ export default function QuotationPage() {
             </div>
 
             {/* Product rows */}
-            <div className="bg-white rounded-2xl border border-rule p-6 mb-5">
+            <div className="bg-white rounded-md border border-rule p-6 mb-5">
               <h2 className="text-lg font-extrabold text-graphite mb-5">Daftar Kebutuhan Material</h2>
               {errors.rows && <p className="mb-3 text-sm text-red-500">{errors.rows}</p>}
 
@@ -276,7 +276,7 @@ export default function QuotationPage() {
             </div>
 
             {/* Notes */}
-            <div className="bg-white rounded-2xl border border-rule p-6 mb-6">
+            <div className="bg-white rounded-md border border-rule p-6 mb-6">
               <h2 className="text-lg font-extrabold text-graphite mb-4">Catatan Tambahan</h2>
               <textarea
                 id="catatan" rows={4} value={formData.catatan}
@@ -301,7 +301,7 @@ export default function QuotationPage() {
               <a
                 href={`https://wa.me/6281218052017?text=${buildWAMessage()}`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 py-4 px-5 bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm rounded-xl transition-colors"
+                className="flex items-center justify-center gap-2 py-4 px-5 bg-[#1A7A3E] hover:bg-[#155f32] text-white font-bold text-sm rounded-xl transition-colors"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="white" aria-hidden="true">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z" />

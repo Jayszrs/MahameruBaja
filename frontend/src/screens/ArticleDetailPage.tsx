@@ -115,7 +115,7 @@ export default function ArticleDetailPage() {
       {/* Hero image */}
       <div className="relative bg-graphite">
         <div className="max-w-[800px] mx-auto px-6">
-          <div className="rounded-2xl overflow-hidden aspect-video bg-graphite -mb-8">
+          <div className="rounded-md overflow-hidden aspect-video bg-graphite -mb-8">
             <img src={article.image} alt={article.title} className="auto-parallax w-full h-full object-cover opacity-90" data-parallax="0.08" />
           </div>
         </div>
@@ -124,14 +124,14 @@ export default function ArticleDetailPage() {
       {/* Content */}
       <div className="bg-surface py-16">
         <div className="max-w-[800px] mx-auto px-6">
-          <article className="bg-white rounded-2xl p-6 lg:p-10 shadow-sm border border-rule mb-10">
+          <article className="bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
             <p className="text-base text-muted leading-relaxed mb-6 font-medium">{article.excerpt}</p>
             <hr className="border-rule mb-6" />
             <div>{renderContent(article.content)}</div>
           </article>
 
           {/* CTA card */}
-          <div ref={ref} className={`bg-navy rounded-2xl p-6 mb-10 reveal ${visible ? 'visible' : ''}`}>
+          <div ref={ref} className={`bg-navy rounded-md p-6 mb-10 reveal ${visible ? 'visible' : ''}`}>
             <h3 className="text-lg font-extrabold text-white mb-2">Butuh material yang dibahas di artikel ini?</h3>
             <p className="text-white/60 text-sm mb-4">Tim Mahameru Baja siap membantu Anda mendapatkan material yang tepat sesuai spesifikasi proyek.</p>
             <div className="flex flex-wrap gap-3">
@@ -165,7 +165,7 @@ export default function ArticleDetailPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {related.map(a => (
                 <Link key={a.id} to={`/informasi/${a.slug}`}
-                  className="group bg-surface border border-rule rounded-xl overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all">
+                  className="group bg-surface border border-rule rounded-md overflow-hidden transition-colors hover:border-graphite/40">
                   <div className="aspect-video overflow-hidden bg-graphite">
                     <img src={a.image} alt={a.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                   </div>

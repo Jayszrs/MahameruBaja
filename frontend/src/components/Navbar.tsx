@@ -404,7 +404,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 href="https://wa.me/6281218052017"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#25D366] text-white text-sm font-bold rounded-xl"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#1A7A3E] text-white text-sm font-bold rounded-xl"
               >
                 <WAIcon />
                 Chat WhatsApp

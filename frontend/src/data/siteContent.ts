@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
+import { googleRating, googleReviewCount, googleReviews } from "./googleReviews";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -21,7 +22,8 @@ export const contactSchema = z.object({
 });
 export const reviewSchema = z.object({
   id: text(80).min(1), author: text(100).min(1), rating: z.number().int().min(1).max(5),
-  text: text(2000).min(1), when: text(100), url: googleUrl, published: z.boolean(),
+  text: text(2000).min(1), when: text(100), url: googleUrl,
+  authorPhoto: photo.optional(), authorUrl: googleUrl.optional(), published: z.boolean(),
 });
 export const siteContentSchema = z.object({
   revision: z.number().int().min(0),
@@ -43,8 +45,8 @@ export type TeamContact = SiteContent["contacts"][number];
 // Nama, jabatan, dan nomor disalin dari screenshot kontak yang diberikan pengguna.
 // Penempatan per divisi belum diketahui; daftar kosong berarti kontak bersama.
 export const defaultSiteContent: SiteContent = {
-  revision: 0, rating: 4.5, reviewCount: 125, ratingDate: "5 Oktober 2026",
-  mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: [],
+  revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: "6 Oktober 2026",
+  mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,
   socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
   contacts: [
     { id: "satria", name: "Satria", role: "Marketing", phone: "0813 1409 7771", mobile: "0813 1409 7771", whatsapp: "0813 1409 7771", email: "", photo: "", divisions: [], published: true },

@@ -197,7 +197,7 @@ export default function ProductsPage() {
         <div className="flex gap-8">
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block w-[280px] shrink-0" aria-label="Filter produk">
-            <div className="sticky top-[120px] bg-white border border-light-steel rounded-2xl p-5">
+            <div className="sticky top-[120px] bg-white border border-light-steel rounded-md p-5">
               <div className="flex items-center justify-between mb-5">
                 <span className="font-bold text-graphite font-[family-name:var(--font-display)]">Filter</span>
                 {hasFilters && (

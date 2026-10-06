@@ -57,7 +57,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-16">
           {/* Images */}
           <div>
-            <div className="rounded-2xl overflow-hidden aspect-[4/3] bg-surface-2 mb-3 relative">
+            <div className="rounded-md overflow-hidden aspect-[4/3] bg-surface-2 mb-3 relative">
               <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover transition-opacity duration-300" />
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-1.5">
@@ -152,7 +152,7 @@ export default function ProductDetailPage() {
                 href={`https://wa.me/6281218052017?text=${waMessage}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2.5 w-full py-3.5 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg"
+                className="flex items-center justify-center gap-2.5 w-full py-3.5 bg-[#1A7A3E] hover:bg-[#155f32] text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <WAIcon /> Minta Harga via WhatsApp
               </a>
@@ -237,7 +237,7 @@ export default function ProductDetailPage() {
               <div className="p-4 bg-warm-white rounded-xl border border-light-steel">
                 <h3 className="font-bold text-graphite text-sm mb-1">Tanya Pengiriman</h3>
                 <p className="text-sm text-steel-grey mb-3">Hubungi kami untuk informasi biaya dan estimasi pengiriman ke lokasi Anda.</p>
-                <a href="https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20menanyakan%20pengiriman%20material." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#25D366] text-white font-bold text-sm rounded-lg">
+                <a href="https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20menanyakan%20pengiriman%20material." target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-[#1A7A3E] text-white font-bold text-sm rounded-lg">
                   <WAIcon /> Tanya via WhatsApp
                 </a>
               </div>
@@ -246,7 +246,7 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Help banner */}
-        <div className="bg-graphite rounded-2xl p-6 lg:p-8 mb-16 flex flex-col sm:flex-row items-center gap-6">
+        <div className="bg-graphite rounded-md p-6 lg:p-8 mb-16 flex flex-col sm:flex-row items-center gap-6">
           <div className="sm:flex-1">
             <h3 className="text-lg font-extrabold text-white mb-1 font-[family-name:var(--font-display)]">Butuh Bantuan Memilih?</h3>
             <p className="text-white/60 text-sm">Tim kami siap membantu menentukan spesifikasi yang tepat sesuai kebutuhan proyek Anda.</p>
@@ -290,7 +290,7 @@ export default function ProductDetailPage() {
         <a
           href={`https://wa.me/6281218052017?text=${waMessage}`}
           target="_blank" rel="noopener noreferrer"
-          className="flex-1 py-3 text-sm font-bold bg-[#25D366] text-white rounded-xl text-center"
+          className="flex-1 py-3 text-sm font-bold bg-[#1A7A3E] text-white rounded-xl text-center"
         >
           Chat WA
         </a>

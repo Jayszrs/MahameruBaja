@@ -5,15 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { heroSlides } from "../data/heroSlides";
 
-const ROTATION_INTERVAL = 2500;
-
-function Arrow() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <path d="M5 12h14m-6-6 6 6-6 6" />
-    </svg>
-  );
-}
+const ROTATION_INTERVAL = 7000;
 
 export default function HeroCarousel({ rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { rating: number; ratingDate: string; mapsUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -85,10 +77,10 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
           <p>{activeSlide.description}</p>
           <div className="home-actions">
             <Link href={activeSlide.primaryAction.href} className="home-button home-button-primary">
-              {activeSlide.primaryAction.label}<Arrow />
+              {activeSlide.primaryAction.label}
             </Link>
             <Link href={activeSlide.secondaryAction.href} className="home-button home-button-ghost">
-              {activeSlide.secondaryAction.label}<Arrow />
+              {activeSlide.secondaryAction.label}
             </Link>
           </div>
           {googleRating !== null && <a className="hero-rating-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${googleRating.toFixed(1)} dari 5, lihat ulasan`}>
