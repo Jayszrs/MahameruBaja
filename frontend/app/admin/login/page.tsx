@@ -20,6 +20,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
           <h1>Selamat datang kembali.</h1>
           <p className="admin-login-intro">Masuk untuk membuka workspace Mahameru Baja.</p>
           {error === "credentials" && <p className="admin-login-error" role="alert">Email atau kata sandi salah. Coba lagi.</p>}
+          {error === "rate" && <p className="admin-login-error" role="alert">Terlalu banyak percobaan masuk. Coba lagi dalam 15 menit.</p>}
           {error === "unavailable" && <p className="admin-login-error" role="alert">Akun admin belum dikonfigurasi di server.</p>}
           {!ready && <p className="admin-login-error" role="alert">Akun admin belum dikonfigurasi di server.</p>}
           <form action="/api/admin/login" method="post" className="admin-login-form">

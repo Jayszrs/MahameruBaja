@@ -1,4 +1,4 @@
-    # Mahameru Baja Platform
+# Mahameru Baja Platform
 
 Monorepo company profile, katalog produk, lead/CRM, dan fondasi workflow operasional Mahameru Baja.
 
@@ -22,6 +22,10 @@ Web: `http://localhost:3000`
 API health: `http://localhost:4000/health`  
 MinIO Console: `http://localhost:9001`
 
-Portal admin lokal: `http://localhost:3000/admin/login`, atau tautan **Portal Admin** di footer situs. Kredensial development tersimpan di `frontend/.admin-local-access.txt` (diabaikan Git). Dashboard saat ini memakai data pratinjau sesi; login sudah aktif, sedangkan penyimpanan konten belum tersambung.
+Portal admin lokal: `http://localhost:3000/admin/login`, atau tautan **Portal Admin** di footer situs. Kredensial development tersimpan di `.admin-local-access.txt` pada root proyek (diabaikan Git). Setelah login, dashboard memuat permintaan pelanggan, kontak dan ulasan, serta kanal sosial. Form publik menyimpan permintaan ke `frontend/.cms-data/requests.json` dan menyiapkan PDF ringkasan untuk dibagikan lewat WhatsApp. Konten CMS disimpan di `frontend/.cms-data/site-content.json`; untuk server produksi, atur `CMS_DATA_DIR` ke volume persisten.
+
+Untuk mengerjakan tampilan saja, jalankan `npm run dev:web`; API Fastify dan PostgreSQL tidak diperlukan untuk CMS Next ini. Jika muncul `EADDRINUSE` pada 3000 atau 4000, server sebelumnya masih berjalan: gunakan server itu atau hentikan proses pemilik port sebelum menjalankan ulang.
 
 Untuk setup lengkap, keputusan hosting, environment variables, backup, dan checklist go-live, baca [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+Preview Next.js di Vercel sudah disiapkan. URL, cara deploy ulang, dan batasan preview tercatat di [docs/VERCEL_PREVIEW.md](docs/VERCEL_PREVIEW.md).

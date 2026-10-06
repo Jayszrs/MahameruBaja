@@ -10,7 +10,7 @@ const stories = {
 
 export default function MaterialCollage({ variant = "workshop", href }: Props) {
   const story = stories[variant];
-  return <section className={`material-editorial material-editorial-${variant}`}>
+  return <section className={`material-editorial material-editorial-${variant}`} id={`material-${variant}`}>
     <div className="industrial-container material-editorial-layout">
       <div className="material-editorial-copy" data-reveal>
         <p className="industrial-eyebrow">{story.eyebrow}</p>

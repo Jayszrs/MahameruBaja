@@ -4,18 +4,34 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { requestRecordSchema, type RequestInput, type RequestRecord } from "../data/requests";
+import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 
 const directory = process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data");
 const file = path.join(directory, "requests.json");
 export async function readRequests() {
+  if (usingPreviewBlob()) return (await readPreviewBlob("requests", z.array(requestRecordSchema), [] as RequestRecord[])).value;
   try { return z.array(requestRecordSchema).parse(JSON.parse(await readFile(file, "utf8"))); }
   catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return []; throw error; }
 }
 async function mutate<T>(update: (records: RequestRecord[]) => { records: RequestRecord[]; result: T }): Promise<T> {
+  if (usingPreviewBlob()) {
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const current = await readPreviewBlob("requests", z.array(requestRecordSchema), [] as RequestRecord[]);
+      const { records, result } = update(current.value);
+      if (await writePreviewBlob("requests", current.revision, records)) return result;
+    }
+    throw new Error("BUSY");
+  }
   await mkdir(directory, { recursive: true });
   const lock = `${file}.lock`; const temp = `${file}.${randomUUID()}.tmp`;
-  try { await writeFile(lock, "locked", { flag: "wx" }); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === "EEXIST") throw new Error("BUSY"); throw error; }
+  for (let attempt = 0; attempt < 6; attempt++) {
+    try { await writeFile(lock, "locked", { flag: "wx" }); break; }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+      if (attempt === 5) throw new Error("BUSY");
+      await new Promise(resolve => setTimeout(resolve, 20 * (attempt + 1)));
+    }
+  }
   try {
     const { records, result } = update(await readRequests());
     await writeFile(temp, JSON.stringify(records), "utf8"); await rename(temp, file); return result;

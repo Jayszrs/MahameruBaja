@@ -16,7 +16,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug, section } = await params;
   const division = divisions.find(d => d.slug === slug);
   if (!division || !unitSections.includes(section as UnitSection) || (slug === "laser-cutting" && section === "produk")) notFound();
-  await connection();
+  if (section === "kontak") await connection();
   const contacts = section === "kontak" ? (await readSiteContent()).contacts.filter(c => c.published) : [];
   return <DivisionSubPage division={division} section={section as UnitSection} contacts={contacts} />;
 }

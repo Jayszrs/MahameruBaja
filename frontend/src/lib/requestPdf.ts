@@ -4,13 +4,19 @@ import { divisions } from "../data/divisionContent";
 export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString()) {
   const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([import("pdf-lib"), import("@pdf-lib/fontkit")]);
   const pdf = await PDFDocument.create(); pdf.registerFontkit(fontkit);
-  const bytes = fontBytes || new Uint8Array(await fetch("/fonts/NotoSans-Regular.ttf").then(r => { if (!r.ok) throw new Error("Font PDF belum dapat dimuat."); return r.arrayBuffer(); }));
+  let bytes = fontBytes;
+  if (!bytes) {
+    const response = await fetch("/fonts/NotoSans-Regular.ttf");
+    if (!response.ok) throw new Error("Font PDF belum dapat dimuat.");
+    bytes = new Uint8Array((await response.arrayBuffer()) as ArrayBuffer);
+  }
   const font = await pdf.embedFont(bytes, { subset: true });
+  const supported = new Set(font.getCharacterSet());
   const ink = rgb(.12,.16,.15), muted = rgb(.42,.46,.43), red = rgb(.72,.13,.17), rule = rgb(.85,.87,.83);
   const unit = divisions.find(d => d.slug === input.businessUnitSlug);
   pdf.setTitle(`Permintaan Penawaran ${id}`); pdf.setAuthor("Mahameru Baja Indonesia"); pdf.setLanguage("id-ID");
   let page = pdf.addPage([595.28,841.89]); let y = 0;
-  const clean = (value: string) => value.replace(/[\u0000-\u0008\u000b-\u001f]/g, "").replace(/\t/g, " ");
+  const clean = (value: string) => [...value.replace(/[\u0000-\u0008\u000b-\u001f]/g, "").replace(/\t/g, " ")].map(char => char === "\n" || supported.has(char.codePointAt(0)!) ? char : "?").join("");
   const draw = (text: string, x: number, top: number, size = 10, color = ink) => page.drawText(clean(text), { x, y: top, size, font, color });
   function wrap(text: string, width: number, size: number) {
     const lines: string[] = [];

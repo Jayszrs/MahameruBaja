@@ -26,7 +26,7 @@ export const reviewSchema = z.object({
 export const siteContentSchema = z.object({
   revision: z.number().int().min(0),
   contacts: z.array(contactSchema).max(40),
-  reviews: z.array(reviewSchema).max(100),
+  reviews: z.array(reviewSchema).max(200),
   socialAccounts: z.array(socialAccountSchema).max(4).default(defaultSocialAccounts),
   socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
@@ -40,11 +40,33 @@ export const siteContentSchema = z.object({
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
 
+// Disalin dari tangkapan layar Google Maps yang diberikan pemilik situs.
+// Kutipan tetap terpotong sesuai tampilan sumber, tanpa menambah klaim baru.
+export const screenshotReview: SiteContent["reviews"][number] = {
+  id: "google-mas-tikno-2026",
+  author: "Mas Tikno",
+  rating: 5,
+  text: "Toko Besi Termurah di tambun Selatan.kualitas Barang Ok dan Harga Terjangkau pokonya Joss...",
+  when: "Cuplikan Google Maps · Oktober 2026",
+  url: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8",
+  published: true,
+};
+
+export const secondScreenshotReview: SiteContent["reviews"][number] = {
+  id: "google-diyon-putra-2026",
+  author: "Diyon putra @gmail.com Dulhadi",
+  rating: 5,
+  text: "Sy bingung mau bangun rumah dengan harga bahan bangunan yg cukup tinggi harganya disekitar tempat tinggal saya. sya lupa klau pnya saudara yang buka toko menjual berbagai jenis keperluan bahan bangunan ya itu Toko Mahameru Baja dengan harga ...",
+  when: "Cuplikan Google Maps · Oktober 2026",
+  url: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8",
+  published: true,
+};
+
 // Nama, jabatan, dan nomor disalin dari screenshot kontak yang diberikan pengguna.
 // Penempatan per divisi belum diketahui; daftar kosong berarti kontak bersama.
 export const defaultSiteContent: SiteContent = {
   revision: 0, rating: 4.5, reviewCount: 125, ratingDate: "5 Oktober 2026",
-  mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: [],
+  mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: [screenshotReview, secondScreenshotReview],
   socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
   contacts: [
     { id: "satria", name: "Satria", role: "Marketing", phone: "0813 1409 7771", mobile: "0813 1409 7771", whatsapp: "0813 1409 7771", email: "", photo: "", divisions: [], published: true },

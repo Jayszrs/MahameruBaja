@@ -3,10 +3,12 @@ import { mkdir, readFile, rename, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { defaultSiteContent, siteContentSchema, type SiteContent } from "../data/siteContent";
+import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
 export async function readSiteContent(): Promise<SiteContent> {
+  if (usingPreviewBlob()) return (await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent)).value;
   try { return siteContentSchema.parse(JSON.parse(await readFile(file, "utf8"))); }
   catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") return structuredClone(defaultSiteContent);
@@ -14,6 +16,13 @@ export async function readSiteContent(): Promise<SiteContent> {
   }
 }
 export async function writeSiteContent(input: SiteContent) {
+  if (usingPreviewBlob()) {
+    const current = await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent);
+    if (current.value.revision !== input.revision) throw new Error("CMS_CONFLICT");
+    const saved = siteContentSchema.parse({ ...input, revision: input.revision + 1 });
+    if (!await writePreviewBlob("site-content", current.revision, saved)) throw new Error("CMS_CONFLICT");
+    return saved;
+  }
   await mkdir(path.dirname(file), { recursive: true });
   const lock = `${file}.lock`;
   try { await writeFile(lock, "locked", { flag: "wx" }); }

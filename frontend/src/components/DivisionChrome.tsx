@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { Division } from "../data/divisionContent";
+import { divisions } from "../data/divisionContent";
 
 export function divisionNavigation(division: Division) {
   const base = `/unit/${division.slug}`;
@@ -27,5 +28,22 @@ export function DivisionHeader({ division }: { division: Division }) {
 }
 
 export function DivisionFooter({ division }: { division: Division }) {
-  return <footer className="unit-footer"><div className="industrial-container"><div className="unit-footer-top"><div><p className="industrial-eyebrow">BAGIAN DARI MAHAMERU BAJA</p><h2>{division.name}</h2><p>{division.intro}</p></div><Link href={`/unit/${division.slug}/kontak`} className="industrial-button">Bicarakan kebutuhan Anda ↗</Link></div><div className="unit-footer-bottom"><span>{division.area}</span><nav aria-label="Footer divisi"><Link href={`/unit/${division.slug}/tentang`}>Profil perusahaan</Link><Link href="/sosial-media">Sosial media</Link><Link href="/divisi">Divisi lainnya</Link><Link href="/">Website utama ↗</Link></nav></div></div></footer>;
+  const base = `/unit/${division.slug}`;
+  return <footer className={`unit-footer unit-footer-v2 unit-theme-${division.slug}`}>
+    <div className="industrial-container">
+      <div className="unit-footer-main">
+        <div className="unit-footer-about">
+          <Link className="unit-footer-brand" href={base} aria-label={`Beranda ${division.name}`}><img src="/mbi-mark.svg" alt="" /><span><strong>{division.name}<i>.</i></strong><small>{division.label.toUpperCase()}</small></span></Link>
+          <p>{division.intro}</p>
+          <span className="unit-footer-phone-label">KONTAK UTAMA</span><a className="unit-footer-phone" href="tel:+6281218052017">+62 812-1805-2017</a>
+          <div className="unit-footer-actions"><Link className="unit-footer-contact" href={`${base}/kontak`}>Hubungi divisi ini <span aria-hidden="true">↗</span></Link><button type="button" className="unit-footer-up" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Kembali ke atas">↑</button></div>
+        </div>
+        <nav aria-label={`Navigasi footer ${division.name}`}><strong>Jelajahi unit</strong>{divisionNavigation(division).map(link => <Link href={link.href} key={link.href}>{link.label}</Link>)}</nav>
+        <nav aria-label="Jaringan Mahameru Baja"><strong>Empat divisi</strong>{divisions.filter(item => item.slug !== division.slug).map(item => <Link href={`/unit/${item.slug}`} key={item.slug}>{item.name}</Link>)}<Link href="/divisi">Lihat semua divisi ↗</Link></nav>
+        <nav aria-label="Sosial media Mahameru Baja"><strong>Terhubung</strong><a href="https://www.instagram.com/mahamerubajaindonesia/" target="_blank" rel="noopener noreferrer">Instagram ↗</a><a href="https://www.tiktok.com/@mahameru.baja.ind" target="_blank" rel="noopener noreferrer">TikTok ↗</a><Link href="/sosial-media">Konten sosial ↗</Link><a href="https://wa.me/6281218052017" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></nav>
+      </div>
+      <div className="unit-footer-wordmark" aria-label={division.name}>{division.name.toUpperCase()}<span>.</span></div>
+      <div className="unit-footer-bottom"><span>© {new Date().getFullYear()} Mahameru Baja Indonesia. Seluruh hak cipta dilindungi.</span><span>{division.area}</span><Link href="/">Website utama ↗</Link></div>
+    </div>
+  </footer>;
 }

@@ -165,6 +165,8 @@ export default function Footer() {
           </div>
         </div>
 
+        <div className="footer-wordmark" aria-label="Mahameru Baja Indonesia"><span>MAHAMERU BAJA</span><span>INDONESIA<span className="footer-wordmark-dot">.</span></span></div>
+
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-5">
           <p className="text-white/30 text-xs">

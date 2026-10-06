@@ -2,7 +2,11 @@
   "name": "mahameru-baja-platform",
   "version": "0.1.0",
   "private": true,
-  "workspaces": ["frontend", "backend", "database"],
+  "workspaces": [
+    "frontend",
+    "backend",
+    "database"
+  ],
   "scripts": {
     "dev": "concurrently -n WEB,API -c cyan,magenta \"npm run dev -w @mahameru/frontend\" \"npm run dev -w @mahameru/backend\"",
     "dev:web": "npm run dev -w @mahameru/frontend",
@@ -19,5 +23,11 @@
     "concurrently": "^9.1.2",
     "typescript": "^5.7.3"
   },
-  "engines": { "node": ">=22.0.0" }
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0"
+  }
 }

@@ -2,8 +2,10 @@ import type { MetadataRoute } from "next";
 import { products } from "../src/data/products";
 import { articles } from "../src/data/articles";
 import { divisions } from "../src/data/divisionContent";
+import { siteOrigin } from "../src/lib/siteOrigin";
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mahamerubaja.com";
+  if (process.env.VERCEL_ENV === "preview") return [];
+  const base = siteOrigin();
   const staticPaths = ["", "/divisi", "/tentang-kami", "/produk", "/layanan", "/laser-cutting", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media"];
   return [
     ...staticPaths.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),

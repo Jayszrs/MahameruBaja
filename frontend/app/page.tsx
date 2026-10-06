@@ -1,6 +1,7 @@
 import HomePage from "../src/screens/HomePage";
 import { connection } from "next/server";
 import { readSiteContent } from "../src/lib/siteContentStore";
+import { siteOrigin } from "../src/lib/siteOrigin";
 
 export const metadata = {
   title: { absolute: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia" },
@@ -13,7 +14,7 @@ export default async function Page() {
   await connection();
   const stored = await readSiteContent();
   const content = { ...stored, contacts: [], reviews: stored.reviews.filter(r => r.published), socialAccounts: stored.socialAccounts.filter(a => a.published), socialPosts: stored.socialPosts.filter(p => p.published) };
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mahamerubaja.com";
+  const base = siteOrigin();
   const localBusiness = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",

@@ -12,7 +12,7 @@
 
 Kontak diambil dari screenshot pengguna: Satria (Marketing), Ipung (Direktur), dan Andra (Owner). Email terpotong pada gambar sehingga tidak diisi. Penempatan kontak per divisi belum terverifikasi; semuanya diawali sebagai kontak bersama. Rating 4,5 dan 125 ulasan terlihat pada screenshot Google Maps yang diberikan pengguna pada 5 Oktober 2026.
 
-Teks komentar individual belum tersedia. Jangan mengisi testimoni karangan sebagai ulasan Google. Selama belum ada ulasan asli terbit, situs menampilkan enam kartu contoh cerita berlabel jelas sebagai pratinjau desain. Kartu ini bukan ulasan Google dan tidak disimpan sebagai data pelanggan. Ketika ulasan asli diterbitkan, kartu contoh otomatis diganti oleh ulasan CMS. Rating ringkasan Google tetap ditampilkan terpisah. Website lama `https://steelindonesia.com/company/index.php` mengarah ke beranda direktori ketika diperiksa, sehingga tidak dipakai untuk menebak email atau kontak tambahan.
+Dua ulasan individual dapat dibaca pada screenshot pengguna: Mas Tikno dan Diyon putra @gmail.com Dulhadi, masing-masing 5 bintang, dengan cuplikan komentar yang terpotong. Keduanya dimasukkan ke data awal dan CMS lokal; kutipan tidak dilengkapi dengan kata yang tidak terlihat. Kartu lain dalam carousel adalah ringkasan serta ajakan menuju profil Google Maps, bukan ulasan buatan. Untuk menampilkan 125 komentar satu per satu diperlukan sumber data ulasan lengkap dari pemilik; angka 125 sendiri hanya ringkasan dari screenshot Google Maps. Website lama `https://steelindonesia.com/company/index.php` mengarah ke beranda direktori ketika diperiksa, sehingga tidak dipakai untuk menebak email atau kontak tambahan.
 
 ## Penyimpanan
 
@@ -36,6 +36,6 @@ Endpoint `/api/admin/content` memerlukan sesi admin. Penulisan memeriksa origin,
 
 ## Pembaruan desain ulasan
 
-Kartu mengikuti referensi editorial pengguna: kutipan dengan font serif, warna krem/sage, avatar monogram, bintang SVG, dan carousel ke kanan yang dapat digeser manual. Tombol Jeda tersedia tanpa panah navigasi atau scrollbar. Ikon tautan menggunakan SVG, sehingga tidak bergantung pada named HTML entity. Enam cerita awal adalah ilustrasi dan diberi label pada bagian serta setiap kartu.
+Kartu mengikuti referensi editorial pengguna dengan palet putih, merah, dan hitam: kutipan dengan font serif, avatar monogram, bintang SVG, dan carousel ke kanan yang dapat digeser manual. Tombol Jeda tersedia tanpa panah navigasi atau scrollbar. Saat hanya ada dua ulasan yang sumbernya terlihat, kartu ringkasan dan ajakan menuju Google Maps melengkapi putaran carousel tanpa mengarang komentar pelanggan.
 
-Verifikasi pembaruan: build produksi lulus; tampilan awal enam cerita (tiga set untuk loop), penggantian otomatis oleh ulasan CMS, rating berbeda per ulasan, serta penyembunyian draf telah diuji lewat SSR dengan data terpisah. Tiga belas rute dan 32 gambar merespons berhasil. Server development pengguna di port 3000 sudah mengirim markup ulasan/kolase baru. Belum ada verifikasi visual browser atau interaksi drag melalui perangkat nyata.
+Verifikasi pembaruan: typecheck dan build produksi lulus, 18 rute utama dan 51 tautan internal merespons tanpa error, serta cuplikan Mas Tikno muncul dalam HTML beranda. Belum ada verifikasi visual browser atau interaksi drag melalui perangkat nyata.

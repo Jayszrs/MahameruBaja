@@ -5,10 +5,16 @@ import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import ContactDirectory from '../components/ContactDirectory';
 import type { TeamContact } from '../data/siteContent';
+import { createLead, type CreateLeadInput } from '../lib/api';
+import RequestHandoff from '../components/RequestHandoff';
 
 export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
   const [formData, setFormData] = useState({ nama: '', whatsapp: '', email: '', subjek: '', pesan: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [saved, setSaved] = useState<{ id: string; input: CreateLeadInput } | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { ref, visible } = useReveal();
 
@@ -17,15 +23,24 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
     if (!formData.nama.trim()) e.nama = 'Nama harus diisi';
     if (!formData.whatsapp.trim()) e.whatsapp = 'Nomor WhatsApp harus diisi';
     if (!formData.pesan.trim()) e.pesan = 'Pesan harus diisi';
+    if (!/^\+?[0-9\s()-]{8,24}$/.test(formData.whatsapp.trim())) e.whatsapp = 'Nomor WhatsApp tidak valid';
+    if (formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) e.email = 'Email tidak valid';
+    if (!consent) e.consent = 'Persetujuan diperlukan';
     return e;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (sending) return;
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    setSubmitted(true);
     setErrors({});
+    setSaveError('');
+    setSending(true);
+    const input: CreateLeadInput = { kind: 'GENERAL', businessUnitSlug: 'retail-tambun', name: formData.nama.trim(), whatsapp: formData.whatsapp.trim(), email: formData.email.trim(), request: [formData.subjek.trim(), formData.pesan.trim()].filter(Boolean).join('\n\n'), consent: true, source: 'KONTAK' };
+    try { const record = await createLead(input); setSaved({ id: record.id, input }); setSubmitted(true); }
+    catch (error) { setSaveError(error instanceof Error ? error.message : 'Pesan belum tersimpan. Coba kembali.'); }
+    finally { setSending(false); }
   }
 
   function Field({ id, label, required = false, error, children }: { id: string; label: string; required?: boolean; error?: string; children: React.ReactNode }) {
@@ -167,24 +182,14 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                 <h3 className="text-xl font-extrabold text-graphite mb-6">Kirim Pesan</h3>
 
                 {submitted ? (
-                  <div className="text-center py-10">
-                    <div className="w-14 h-14 rounded-full bg-positive/15 flex items-center justify-center mx-auto mb-4">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-                    <h4 className="text-lg font-extrabold text-graphite mb-2">Ringkasan siap — belum terkirim</h4>
-                    <p className="text-muted text-sm mb-5">Form belum terhubung ke database. Kirim pesan melalui WhatsApp agar tim menerima pertanyaan Anda.</p>
-                    <a
-                      href={`https://wa.me/6281218052017?text=${encodeURIComponent(`Halo Mahameru Baja, nama saya ${formData.nama}. WhatsApp: ${formData.whatsapp}. Pesan: ${formData.pesan}`)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#25D366] text-white font-bold text-sm rounded-lg"
-                    >
-                      Lanjut via WhatsApp
-                    </a>
+                  <div className="py-6">
+                    <h4 className="text-lg font-extrabold text-graphite mb-2">Pesan tersimpan {saved?.id}</h4>
+                    <p className="text-muted text-sm mb-5">Tim kami dapat melihat permintaan ini di portal admin. Anda juga bisa mengirim ringkasan PDF melalui WhatsApp.</p>
+                    {saved && <RequestHandoff input={saved.input} id={saved.id} />}
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                    {saveError && <p role="alert" className="text-sm text-red-600">{saveError}</p>}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <Field id="nama" label="Nama" required error={errors.nama}>
                         <input
@@ -201,7 +206,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                         />
                       </Field>
                     </div>
-                    <Field id="email" label="Email">
+                    <Field id="email" label="Email" error={errors.email}>
                       <input
                         id="email" type="email" value={formData.email}
                         onChange={e => setFormData(f => ({ ...f, email: e.target.value }))}
@@ -222,9 +227,11 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                         className={inputClass('pesan')} placeholder="Tuliskan kebutuhan atau pertanyaan Anda..."
                       />
                     </Field>
-                    <button type="submit"
+                    <label className="flex items-start gap-2 text-xs text-muted"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} /> Saya setuju dihubungi terkait pertanyaan ini.</label>
+                    {errors.consent && <p className="text-xs text-red-500">{errors.consent}</p>}
+                    <button type="submit" disabled={sending}
                       className="w-full py-3.5 bg-graphite hover:bg-navy text-white font-bold text-sm rounded-xl transition-colors">
-                      Kirim Pesan
+                      {sending ? 'Menyimpan…' : 'Kirim Pesan'}
                     </button>
                   </form>
                 )}

@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
+import { siteOrigin } from "../src/lib/siteOrigin";
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mahamerubaja.com";
+  if (process.env.VERCEL_ENV === "preview") return { rules: { userAgent: "*", disallow: "/" } };
+  const base = siteOrigin();
   return { rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/admin-demo", "/cari"] }, sitemap: `${base}/sitemap.xml` };
 }

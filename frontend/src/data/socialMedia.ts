@@ -37,7 +37,8 @@ export const defaultSocialAccounts: SocialAccount[] = [
   { platform: "youtube", handle: "@MahameruBajaIndonesia", url: "https://www.youtube.com/@MahameruBajaIndonesia", published: true },
   { platform: "facebook", handle: "", url: "", published: false },
 ];
-export const defaultSocialPosts: SocialPost[] = [{ id: "youtube-IP6GsNxExVU", platform: "youtube", title: "Proses laser cutting", caption: "Proses pemotongan panel bermotif, dari kanal Mahameru Baja Indonesia.", url: "https://www.youtube.com/shorts/IP6GsNxExVU", image: "https://i.ytimg.com/vi/IP6GsNxExVU/hqdefault.jpg", published: true }];
+// Tautan video terdahulu tidak tersedia pada embed; editor dapat menerbitkan ulang setelah diverifikasi.
+export const defaultSocialPosts: SocialPost[] = [{ id: "youtube-IP6GsNxExVU", platform: "youtube", title: "Proses laser cutting", caption: "Video belum diverifikasi.", url: "https://www.youtube.com/shorts/IP6GsNxExVU", image: "", published: false }];
 export type SocialAccount = z.infer<typeof socialAccountSchema>;
 export type SocialPost = z.infer<typeof socialPostSchema>;
 export function contentId() { return globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; }

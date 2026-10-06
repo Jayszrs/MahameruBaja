@@ -164,8 +164,9 @@ function LocationSection() {
           <div className="home-actions"><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noreferrer" className="home-button home-button-dark">Buka Google Maps <Arrow diagonal /></a></div>
         </div>
         <div className="home-map" data-reveal>
-          <iframe title="Lokasi Toko Besi Mahameru Baja" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
-          <div><span>Area layanan</span><strong>Tambun / Cibitung / Bekasi dan sekitarnya</strong></div>
+          <div className="home-map-heading"><span>01 / KUNJUNGI KAMI</span><strong>Toko Besi Mahameru Baja</strong><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noopener noreferrer">Petunjuk arah ↗</a></div>
+          <div className="home-map-canvas"><iframe title="Lokasi Toko Besi Mahameru Baja" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div>
+          <div className="home-map-caption"><span>AREA LAYANAN</span><strong>Tambun · Cibitung · Bekasi dan sekitarnya</strong></div>
         </div>
       </div>
     </section>
