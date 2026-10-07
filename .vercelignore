@@ -1,0 +1,15 @@
+.git/
+.vercel/
+.env*
+**/.env*
+**/.vercel/
+**/.cms-data/
+**/.cms-data
+**/.next/
+**/node_modules/
+tmp/
+output/
+*.log
+*.tsbuildinfo
+.admin-local-access.txt
+Draft_Permintaan_Mahameru_Baja.pdf

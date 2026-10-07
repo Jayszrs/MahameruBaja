@@ -22,3 +22,5 @@ Untuk pemeriksaan cepat setelah deploy:
 4. Arsipkan permintaan uji dari CMS.
 
 Perintah `vercel deploy --prod` dari root repo memperbarui URL tetap. Gunakan `--target preview` untuk hasil uji terpisah. Jangan menjalankan CLI dari `frontend` setelah Root Directory proyek diatur ke `frontend`; jalankan dari root monorepo.
+
+Saat ini proyek Vercel memakai paket Hobby dan repo GitHub bersifat privat. Vercel memblokir deploy otomatis untuk commit yang penulisnya bukan pemilik proyek. Kontributor dapat mengirim perubahan melalui branch atau PR; pemilik menjalankan deploy atau menggabungkannya dengan commit yang dibuat akun pemilik. Agar kontributor bisa deploy sendiri ke proyek yang sama dengan repo tetap privat, proyek perlu pindah ke paket Pro lalu akun Vercel kontributor ditambahkan sebagai anggota. Alternatif tanpa biaya paket adalah menjadikan repo publik, setelah mempertimbangkan isi repo yang akan terbuka.
