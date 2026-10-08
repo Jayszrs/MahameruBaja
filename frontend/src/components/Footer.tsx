@@ -15,17 +15,16 @@ const produkLinks = [
 ];
 
 const perusahaanLinks = [
-  { label: 'Empat Divisi', href: '/divisi' },
-  { label: 'Tentang Kami', href: '/tentang-kami' },
-  { label: 'Layanan', href: '/layanan' },
-  { label: 'Proyek & Galeri', href: '/proyek' },
+  { label: 'Tentang Kami & Empat Divisi', href: '/tentang-kami#divisi' },
+  { label: 'Jasa', href: '/jasa' },
+  { label: 'Galeri', href: '/proyek' },
   { label: 'Artikel', href: '/informasi' },
   { label: 'Sosial Media', href: '/sosial-media' },
   { label: 'Kontak', href: '/kontak' },
 ];
 
 const bantuanLinks = [
-  { label: 'Cara Memesan', href: '/tentang-kami' },
+  { label: 'Cara Memesan', href: '/#cara-pesan' },
   { label: 'Minta Penawaran', href: '/minta-penawaran' },
   { label: 'Cek Produk', href: '/produk' },
   { label: 'Pertanyaan & Bantuan', href: '/kontak' },

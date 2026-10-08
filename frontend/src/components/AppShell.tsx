@@ -9,6 +9,7 @@ import SearchOverlay from "./SearchOverlay";
 import QuotationDrawer from "./QuotationDrawer";
 import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
+import RouteProgress from "./RouteProgress";
 import { divisions } from "../data/divisionContent";
 import { DivisionHeader, DivisionFooter } from "./DivisionChrome";
 
@@ -27,6 +28,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   return (
     <QuotationProvider>
       <div className="public-site min-h-screen flex flex-col">
+        <RouteProgress />
         {division ? <DivisionHeader division={division} /> : <Navbar onSearchOpen={() => setSearchOpen(true)} />}
         <main className={`flex-1 page-enter ${pathname === "/" ? "pt-0" : division ? "unit-main" : "site-main"}`}>
           {!productPage && <MotionController key={pathname} />}

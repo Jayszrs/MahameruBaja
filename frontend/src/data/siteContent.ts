@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt } from "./googleReviews";
+import { promotionSchema, samplePromotions } from "./promotions";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -31,6 +32,7 @@ export const siteContentSchema = z.object({
   reviews: z.array(reviewSchema).max(200),
   socialAccounts: z.array(socialAccountSchema).max(4).default(defaultSocialAccounts),
   socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
+  promotions: z.array(promotionSchema).max(20).default(samplePromotions),
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
   ratingDate: text(80).min(1), mapsUrl: googleUrl,
 }).superRefine((data, ctx) => {
@@ -38,6 +40,7 @@ export const siteContentSchema = z.object({
     if (new Set(data[key].map(item => item.id)).size !== data[key].length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [key], message: "ID harus unik" });
   }
   if (new Set(data.socialAccounts.map(a => a.platform)).size !== data.socialAccounts.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["socialAccounts"], message: "Platform tidak boleh duplikat" });
+  if (new Set(data.promotions.map(p => p.id)).size !== data.promotions.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["promotions"], message: "ID banner harus unik" });
 });
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
@@ -48,6 +51,7 @@ export const defaultSiteContent: SiteContent = {
   revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: googleReviewsCapturedAt,
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,
   socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
+  promotions: samplePromotions,
   contacts: [
     { id: "satria", name: "Satria", role: "Marketing", phone: "0813 1409 7771", mobile: "0813 1409 7771", whatsapp: "0813 1409 7771", email: "", photo: "", divisions: [], published: true },
     { id: "ipung", name: "Ipung", role: "Direktur", phone: "082110193640", mobile: "082110193640", whatsapp: "082110193640", email: "", photo: "/images/steel-indonesia/company-logo.jpeg", divisions: [], published: true },

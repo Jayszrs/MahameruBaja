@@ -15,7 +15,7 @@ export default function BusinessUnitPage({ division, contacts }: { division: Div
       <div className="division-hero-image" data-parallax="0.3"><Image src={division.hero} alt="" fill priority sizes="100vw" /></div>
       <div className="division-hero-overlay" />
       <div className="industrial-container division-hero-content">
-        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/divisi">Divisi</Link><span>/</span><span>{division.name}</span></nav>
+        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/tentang-kami#divisi">Empat divisi</Link><span>/</span><span>{division.name}</span></nav>
         <p className="industrial-eyebrow" data-reveal>{division.label} / {division.area}</p>
         <h1 id="division-title" data-reveal>{division.title}</h1>
         <p data-reveal>{division.intro}</p>
@@ -41,6 +41,6 @@ export default function BusinessUnitPage({ division, contacts }: { division: Div
 
     <ContactDirectory contacts={contacts} divisionSlug={division.slug} />
     <section className="division-end-section"><div className="industrial-container division-end-grid" data-reveal><div><p className="industrial-eyebrow">LANJUTKAN PERMINTAAN</p><h2>Siapkan daftar atau gambar. Kami bantu arahkan.</h2></div><div className="division-actions"><Link className="industrial-button" href={`${base}/kontak`}>Minta penawaran ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></section>
-    <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Satu ekosistem Mahameru Baja</strong><Link href="/divisi" className="division-switch">Jelajahi divisi lainnya &#8599;</Link></nav>
+    <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Satu ekosistem Mahameru Baja</strong><Link href="/tentang-kami#divisi" className="division-switch">Jelajahi divisi lainnya &#8599;</Link></nav>
   </div>;
 }

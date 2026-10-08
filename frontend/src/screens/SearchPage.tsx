@@ -54,7 +54,7 @@ export default function SearchPage() {
       </section>
 
       <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-10">
-        {/laser|cutting|bending|fabrikasi/i.test(q) && <Link to="/laser-cutting" className="block bg-white border border-brand p-6 mb-8"><span className="industrial-eyebrow text-brand">LAYANAN TERKAIT</span><h2 className="text-xl mt-2">Jasa Laser Cutting & CNC Bending</h2><p className="text-sm text-muted mt-2">Cutting plat, komponen custom, fabrikasi dan request gambar teknik. Jelajahi layanan →</p></Link>}
+        {/laser|cutting|bending|fabrikasi/i.test(q) && <Link to="/jasa#laser-cutting" className="block bg-white border border-brand p-6 mb-8"><span className="industrial-eyebrow text-brand">Jasa terkait</span><h2 className="text-xl mt-2">Jasa Laser Cutting & CNC Bending</h2><p className="text-sm text-muted mt-2">Potong plat, komponen custom, fabrikasi, dan peninjauan gambar kerja. Lihat detail jasa →</p></Link>}
         {!q && (
           <div>
             <p className="text-sm text-muted mb-3 font-medium">Coba cari:</p>

@@ -2,29 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import HeroCarousel from "../components/HeroCarousel";
+import SmoothImage from "../components/SmoothImage";
 import SocialProof from "../components/SocialProof";
 import type { SiteContent } from "../data/siteContent";
 import SocialHub from "../components/SocialHub";
-import MaterialCollage from "../components/MaterialCollage";
+import Promotions from "../components/Promotions";
 
 const whatsapp = "https://wa.me/6281218052017";
 
-const categories = [
-  { name: "Besi Beton", slug: "besi-beton", image: "/images/steel-indonesia/besi-beton.jpg", note: "Polos & ulir" },
-  { name: "Besi Hollow", slug: "besi-hollow", image: "/images/steel-indonesia/hollow.jpg", note: "Beragam dimensi" },
-  { name: "Wiremesh", slug: "wiremesh", image: "/images/steel-indonesia/wiremesh.jpg", note: "Untuk pelat beton" },
-  { name: "Bondek", slug: "bondek", image: "/images/steel-indonesia/bondek.jpg", note: "Floor deck" },
-  { name: "Baja Ringan", slug: "baja-ringan", image: "/images/steel-indonesia/baja-ringan.jpg", note: "Rangka & reng" },
-  { name: "Spandek", slug: "spandek", image: "/images/steel-indonesia/spandek.jpg", note: "Atap metal" },
-  { name: "Plat Hitam", slug: "plat-besi", image: "/images/steel-indonesia/plat-hitam.jpg", note: "Plat konstruksi" },
-  { name: "Pipa Hitam", slug: "pipa-besi", image: "/images/steel-indonesia/pipa-hitam.jpg", note: "Pipa baja" },
-];
-
 const businessRoutes = [
-  { index: "01", tag: "Retail / Tambun", title: "Mahameru Baja", text: "Pembelian material satuan dan kebutuhan renovasi dengan konsultasi langsung dari toko Tambun.", href: "/unit/retail-tambun", cta: "Masuk divisi", image: "/images/steel-indonesia/toko-mahameru.jpg", imageAlt: "Aktivitas toko Mahameru Baja" },
-  { index: "02", tag: "Retail / Cibitung", title: "Garuda Marginal Baja", text: "Jalur retail untuk pelanggan Cibitung dan kawasan industri di sekitarnya.", href: "/unit/retail-cibitung", cta: "Lihat unit", image: "/images/steel-indonesia/hollow.jpg", imageAlt: "Besi hollow untuk kebutuhan retail" },
-  { index: "03", tag: "Trading / Proyek", title: "Mahameru Baja Indonesia", text: "Pengadaan volume proyek, pengecekan stok, penawaran, dan penjadwalan pengiriman.", href: "/unit/trading-proyek", cta: "Masuk divisi", image: "/images/steel-indonesia/besi-beton.jpg", imageAlt: "Material besi beton untuk proyek" },
-  { index: "04", tag: "Produksi / Custom", title: "MBI Laser Cutting", text: "Laser cutting, CNC bending 160 ton, fabrikasi, dan pekerjaan berbasis gambar teknik.", href: "/unit/laser-cutting", cta: "Masuk divisi", image: "/images/laser-cutting-illustration.jpg", imageAlt: "Proses laser cutting material logam" },
+  { index: "01", tag: "Toko besi · Tambun", title: "Mahameru Baja", text: "Beli besi dan material bangunan di Tambun untuk kebutuhan satuan, renovasi, atau bengkel. Tanyakan ukuran, stok, dan harga ke tim toko.", href: "/unit/retail-tambun", image: "/images/steel-indonesia/toko-mahameru.jpg", imageAlt: "Toko besi Mahameru Baja" },
+  { index: "02", tag: "Toko besi · Cibitung", title: "Garuda Marginal Baja", text: "Cari besi, hollow, pipa, atau plat melalui toko di Cibitung. Tim membantu mengecek pilihan material sesuai kebutuhan Anda.", href: "/unit/retail-cibitung", image: "/images/steel-indonesia/hollow.jpg", imageAlt: "Besi hollow di jalur toko material" },
+  { index: "03", tag: "Suplai proyek · Tambun & Cibitung", title: "Mahameru Baja Indonesia", text: "Kirim daftar material, volume, dan lokasi proyek di Tambun, Cibitung, dan Bekasi. Tim menyiapkan pengecekan kebutuhan, penawaran, dan jadwal suplai.", href: "/unit/trading-proyek", image: "/images/steel-indonesia/besi-beton.jpg", imageAlt: "Besi beton untuk kebutuhan proyek" },
+  { index: "04", tag: "Jasa produksi · Sesuai gambar", title: "MBI Laser Cutting", text: "Potong dan tekuk plat sesuai gambar kerja. Kirim file, jenis material, ukuran, dan jumlah untuk ditinjau sebelum penawaran.", href: "/unit/laser-cutting", image: "/images/laser-cutting-illustration.jpg", imageAlt: "Ilustrasi proses laser cutting plat" },
 ];
 
 
@@ -49,76 +39,62 @@ function Eyebrow({ children, light = false }: { children: ReactNode; light?: boo
   return <p className={`home-eyebrow ${light ? "text-white/60" : "text-brand"}`}><span />{children}</p>;
 }
 
-function CategoryGrid() {
-  return (
-    <section className="home-section home-products" id="jelajahi-material" aria-labelledby="products-heading">
-      <div className="home-shell">
-        <div className="home-section-heading" data-reveal>
-          <div><Eyebrow>Katalog material</Eyebrow><h2 id="products-heading">Mulai dari material yang tepat.</h2></div>
-          <p>Foto produk bersumber dari profil publik Mahameru Baja. Harga dan ketersediaan tetap dikonfirmasi saat pemesanan.</p>
-        </div>
-        <div className="home-product-grid">
-          {categories.map((category, index) => (
-            <Link href={`/produk?kategori=${category.slug}`} className={`home-product-tile ${index === 0 || index === 5 ? "home-product-wide" : ""}`} key={category.slug} data-reveal>
-              <Image src={category.image} alt={category.name} fill sizes="(max-width: 640px) 50vw, (max-width: 1000px) 33vw, 25vw" />
-              <div className="home-product-shade" />
-              <span className="home-product-index">{String(index + 1).padStart(2, "0")}</span>
-              <div><small>{category.note}</small><h3>{category.name}</h3></div>
-              <b><Arrow diagonal /></b>
-            </Link>
-          ))}
-        </div>
-        <Link href="/produk" className="home-text-link">Lihat semua produk</Link>
-      </div>
-    </section>
-  );
-}
-
 function BusinessRoutes() {
   return (
-    <section className="home-section home-routes" aria-labelledby="routes-heading">
+    <section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading" data-reveal>
-          <div><Eyebrow light>Satu ekosistem</Eyebrow><h2 id="routes-heading">Kebutuhan berbeda.<br />Alur yang tetap sederhana.</h2></div>
-          <p>Pilih jalur sesuai skala dan jenis pekerjaan. Tim yang tepat akan menerima kebutuhan Anda.</p>
+          <div><h2 id="routes-heading">Kami punya 4 divisi. Pilih yang cocok untuk Anda.</h2></div>
+          <p>Setiap pilihan membuka halaman timnya: layanan, contoh pekerjaan, dan nomor kontak.</p>
         </div>
         <div className="home-route-list">
           {businessRoutes.map((route) => (
-            <Link href={route.href} prefetch className="home-route-card" key={route.index} data-reveal>
-              <div className="home-route-media" data-parallax="0.18"><Image src={route.image} alt={route.imageAlt} fill sizes="(max-width: 700px) 100vw, 42vw" /></div>
+            <Link href={route.href} prefetch={false} className="home-route-card" key={route.index} data-reveal>
+              <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
               <div><small>{route.tag}</small><h3>{route.title}</h3><p>{route.text}</p></div>
-              <strong>{route.cta}<Arrow diagonal /></strong>
+              <strong>Kenali {route.title} <Arrow diagonal /></strong>
             </Link>
           ))}
         </div>
-        <Link href="/divisi" prefetch className="home-text-link">Lihat semua divisi</Link>
+        <div className="home-needs" aria-label="Pilih berdasarkan kebutuhan">
+          <p>Mulai dari kebutuhan Anda</p>
+          <div>
+            <Link href="/unit/retail-tambun">Saya mau beli besi satuan di Tambun <Arrow diagonal /></Link>
+            <Link href="/unit/retail-cibitung">Saya cari hollow, pipa, atau plat di Cibitung <Arrow diagonal /></Link>
+            <Link href="/unit/trading-proyek">Saya butuh material untuk proyek <Arrow diagonal /></Link>
+            <Link href="/unit/laser-cutting">Saya mau potong atau tekuk plat sesuai gambar <Arrow diagonal /></Link>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-function StoreStory() {
+function OrderFlow() {
   return (
-    <section className="home-section home-story" aria-labelledby="story-heading">
-      <div className="home-shell home-story-grid">
-        <div className="home-story-photo" data-reveal>
-          <div className="home-parallax-media" data-parallax="0.16"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="Aktivitas pengiriman material di Toko Besi Mahameru Baja" fill sizes="(max-width: 900px) 100vw, 56vw" /></div>
-          <span>Dokumentasi toko / Tambun Selatan</span>
+    <section className="home-section home-order" id="cara-pesan" aria-labelledby="order-heading">
+      <div className="home-shell">
+        <div className="home-order-heading" data-reveal>
+          <div><h2 id="order-heading">Cara pesan di Mahameru Baja</h2></div>
         </div>
-        <div className="home-story-copy" data-reveal>
-          <Eyebrow>Bukan sekadar katalog</Eyebrow>
-          <h2 id="story-heading">Dari stok toko sampai kebutuhan proyek.</h2>
-          <p>Mahameru Baja melayani kebutuhan material dari satuan sampai volume proyek. Permintaan dicatat, diarahkan ke unit bisnis terkait, lalu ditindaklanjuti melalui penawaran dan WhatsApp.</p>
-          <ol>
-            <li><span>01</span><div><strong>Cari material</strong><small>Telusuri kategori dan spesifikasi dasar.</small></div></li>
-            <li><span>02</span><div><strong>Kirim kebutuhan</strong><small>Isi jumlah, ukuran, lokasi, dan target waktu.</small></div></li>
-            <li><span>03</span><div><strong>Terhubung dengan tim</strong><small>Dapatkan konfirmasi stok atau review gambar.</small></div></li>
-          </ol>
-          <div className="home-actions">
-            <Link href="/tentang-kami" className="home-button home-button-dark">Tentang perusahaan</Link>
-            <a href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20konsultasi.`} className="home-inline-wa" target="_blank" rel="noreferrer"><WhatsAppIcon /> Konsultasi WhatsApp</a>
+        <ol className="home-order-steps">
+          <li data-reveal><span>01</span><div><h3>Pilih divisi yang sesuai</h3><p>Mahameru Baja, Garuda Marginal Baja, suplai proyek, atau MBI Laser Cutting. Lihat layanan tiap divisi dulu.</p><Link href="#pilih-divisi">Lihat pilihan divisi <Arrow diagonal /></Link></div></li>
+          <li data-reveal><span>02</span><div><h3>Kirim kebutuhan</h3><p>Cantumkan material atau gambar, ukuran, jumlah, lokasi, dan tanggal kebutuhan.</p><Link href="/minta-penawaran">Isi permintaan <Arrow diagonal /></Link></div></li>
+          <li data-reveal><span>03</span><div><h3>Setujui penawaran</h3><p>Tim mengecek stok atau proses kerja, lalu mengirim harga, perkiraan waktu, dan ketentuan pembayaran. Pesanan diproses setelah Anda setuju.</p><Link href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20menanyakan%20penawaran%20saya.`} target="_blank" rel="noreferrer">Tanya penawaran saya <Arrow diagonal /></Link></div></li>
+          <li data-reveal><span>04</span><div><h3>Terima barang atau hasil kerja</h3><p>Pengiriman material atau penyelesaian pekerjaan mengikuti jadwal yang disepakati.</p><Link href="/kontak">Lihat kontak tim <Arrow diagonal /></Link></div></li>
+        </ol>
+        <div className="home-order-help">
+          <div className="home-order-card" data-reveal>
+            <h3>Sudah tahu barang yang Anda mau?</h3>
+            <p>Tulis jenis material, ukuran, dan jumlah di formulir. Tim mengecek stok lalu mengirim penawaran.</p>
+            <Link href="/minta-penawaran" className="home-button home-button-primary">Kirim permintaan penawaran</Link>
+          </div>
+          <div className="home-order-card" data-reveal>
+            <h3>Belum tahu ukurannya?</h3>
+            <p>Kirim foto, deskripsi, atau info seadanya lewat WhatsApp. Tim kami membantu menyusunnya sampai jelas.</p>
+            <a className="home-button home-button-primary" href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20belum%20tahu%20ukuran%20yang%20saya%20butuhkan.%20Ini%20info%20yang%20saya%20punya%3A%20`} target="_blank" rel="noreferrer">Tanya lewat WhatsApp</a>
           </div>
         </div>
       </div>
@@ -129,18 +105,17 @@ function StoreStory() {
 function LaserFeature() {
   return (
     <section className="home-laser" aria-labelledby="laser-heading">
-      <div className="home-laser-media" data-parallax="0.22"><Image src="/images/cnc-bending-visual-v1.png" alt="Ilustrasi proses CNC bending pada plat logam" fill sizes="100vw" /></div>
+      <div className="home-laser-media" data-parallax="0.15"><SmoothImage src="/images/cnc-bending-visual-v1.png" alt="Ilustrasi proses CNC bending pada plat logam" sizes="100vw" /></div>
       <div className="home-laser-shade" />
       <div className="home-shell home-laser-content" data-reveal>
-        <Eyebrow light>MBI Laser Cutting / CNC Bending</Eyebrow>
-        <h2 id="laser-heading">Cutting, bending, fabrikasi.<br /><em>Satu alur produksi.</em></h2>
-        <p>Butuh jasa laser cutting plat di Bekasi, Tambun, atau Cibitung? Siapkan gambar DWG, DXF, atau PDF, lalu tim MBI meninjau material, ketebalan, ukuran, jumlah, dan kebutuhan CNC bending sebelum membuat penawaran.</p>
+        <h2 id="laser-heading">Butuh plat dipotong atau ditekuk sesuai gambar?</h2>
+        <p>Kirim gambar DWG, DXF, atau PDF beserta jenis material, ketebalan, ukuran, dan jumlah. Tim MBI Laser Cutting akan meninjau proses cutting dan bending sebelum memberi penawaran.</p>
         <div className="home-process-line" aria-label="Alur produksi">
           {["Siapkan desain", "Review", "Penawaran", "Cutting", "Bending", "QC"].map((step, index) => <div key={step}><span>{String(index + 1).padStart(2, "0")}</span><strong>{step}</strong></div>)}
         </div>
         <div className="home-actions">
-          <Link href="/laser-cutting#request" className="home-button home-button-primary">Request pekerjaan</Link>
-          <Link href="/laser-cutting" className="home-button home-button-ghost">Lihat layanan</Link>
+          <Link href="/jasa#request" className="home-button home-button-primary">Kirim gambar untuk ditinjau</Link>
+          <Link href="/unit/laser-cutting" className="home-button home-button-ghost">Kenali layanan potong & tekuk</Link>
         </div>
       </div>
     </section>
@@ -164,9 +139,9 @@ function LocationSection() {
           <div className="home-actions"><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noreferrer" className="home-button home-button-dark">Buka Google Maps <Arrow diagonal /></a></div>
         </div>
         <div className="home-map" data-reveal>
-          <div className="home-map-heading"><span>01 / KUNJUNGI KAMI</span><strong>Toko Besi Mahameru Baja</strong><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noopener noreferrer">Petunjuk arah ↗</a></div>
+          <div className="home-map-heading"><span>Kunjungi kami</span><strong>Toko Besi Mahameru Baja</strong><a href="https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8" target="_blank" rel="noopener noreferrer">Petunjuk arah ↗</a></div>
           <div className="home-map-canvas"><iframe title="Lokasi Toko Besi Mahameru Baja" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div>
-          <div className="home-map-caption"><span>AREA LAYANAN</span><strong>Tambun · Cibitung · Bekasi dan sekitarnya</strong></div>
+          <div className="home-map-caption"><span>Area layanan</span><strong>Tambun · Cibitung · Bekasi dan sekitarnya</strong></div>
         </div>
       </div>
     </section>
@@ -179,8 +154,8 @@ function FinalCallout() {
       <div className="home-grid" aria-hidden="true" />
       <div className="home-shell" data-reveal>
         <Image src="/images/steel-indonesia/company-logo.jpeg" alt="MBI" width={92} height={92} />
-        <Eyebrow light>Mulai dari kebutuhan Anda</Eyebrow>
-        <h2 id="final-heading">Material, gambar, atau daftar kebutuhan.<br />Kirimkan. Kami bantu arahkan.</h2>
+        <h2 id="final-heading">Siap kirim daftar material atau gambar kerja?</h2>
+        <p>Isi formulir untuk mendapat penawaran, atau tanyakan kebutuhan awal melalui WhatsApp.</p>
         <div className="home-actions">
           <Link href="/minta-penawaran" className="home-button home-button-primary">Minta penawaran</Link>
           <a href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20bertanya.`} target="_blank" rel="noreferrer" className="home-button home-button-whatsapp"><WhatsAppIcon /> Chat WhatsApp</a>
@@ -191,5 +166,5 @@ function FinalCallout() {
 }
 
 export default function HomePage({ content }: { content: SiteContent }) {
-  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><MaterialCollage /><LaserFeature /><BusinessRoutes /><SocialProof content={content} /><CategoryGrid /><StoreStory /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /></>;
+  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><Promotions promotions={content.promotions} /><BusinessRoutes /><LaserFeature /><OrderFlow /><SocialProof content={content} /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /></>;
 }

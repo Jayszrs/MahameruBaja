@@ -33,7 +33,7 @@ export const businessUnits = [
     category: "Cutting / bending / fabrikasi",
     description:
       "Dari gambar teknik ke kebutuhan produksi: cutting plat, bending, komponen custom dan fabrikasi.",
-    destination: "/laser-cutting",
+    destination: "/jasa#laser-cutting",
   },
 ]
 

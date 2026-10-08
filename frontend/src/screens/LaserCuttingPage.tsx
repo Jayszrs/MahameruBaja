@@ -8,18 +8,28 @@ import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
-  { name: "Laser cutting plat & custom", description: "Cutting berdasarkan gambar CAD untuk ornamen, panel dan komponen.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
-  { name: "CNC bending & tekuk plat", description: "Kebutuhan tekukan mengikuti ukuran dan gambar teknik yang disetujui.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
-  { name: "Fabrikasi & finishing", description: "Diskusikan perakitan, finishing serta kebutuhan ereksion dengan tim.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
-  { name: "Produksi & pekerjaan proyek", description: "Konsultasikan jumlah, kebutuhan produksi dan jadwal proyek.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
+  { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
+  { name: "CNC bending & tekuk plat", description: "Pembentukan plat dengan mesin CNC bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
+  { name: "Fabrikasi & finishing", description: "Pekerjaan fabrikasi (perakitan dan pengelasan), finishing, hingga erection (pemasangan di lokasi) sesuai kebutuhan proyek.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
+  { name: "Produksi & pekerjaan proyek", description: "Pengerjaan produksi dalam jumlah tertentu, termasuk kebutuhan custom dan pekerjaan proyek sesuai gambar, spesifikasi, dan jadwal.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
 ]
 
-const workflowSteps: { title: string; icon: IconName }[] = [
-  { title: "Gambar & review", icon: "drawing" },
-  { title: "Penawaran & persetujuan", icon: "quote" },
-  { title: "SPK & jadwal produksi", icon: "calendar" },
-  { title: "Cutting · bending · fabrikasi", icon: "machine" },
-  { title: "Quality control & selesai", icon: "quality" },
+const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
+  { title: "Kirim gambar & kebutuhan", desc: "Kirim gambar kerja, foto, atau daftar barang yang Anda punya. Tidak harus rapi.", icon: "drawing" },
+  { title: "Terima penawaran", desc: "Tim mengecek kebutuhan Anda, lalu mengirim harga dan perkiraan waktu pengerjaan.", icon: "quote" },
+  { title: "Setuju & atur jadwal", desc: "Sudah cocok? Pesanan dicatat dan jadwal pengerjaan disiapkan.", icon: "calendar" },
+  { title: "Barang diproses", desc: "Plat dipotong, ditekuk, dan dirakit sesuai gambar dan spesifikasi.", icon: "machine" },
+  { title: "Cek & terima hasil", desc: "Hasil pekerjaan diperiksa sebelum dikirim atau diambil sesuai jadwal.", icon: "quality" },
+]
+
+const servicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
+  { title: "Laser Cutting & CNC Bending", detail: "Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.", href: "#laser-cutting", action: "Lihat detail" },
+  { title: "Penjualan Material", detail: "Penjualan berbagai jenis besi dan material baja untuk kebutuhan konstruksi, dari satuan hingga volume besar. Stok selalu diperbarui untuk memastikan ketersediaan.", href: "/produk", action: "Lihat produk" },
+  { title: "Konsultasi Material", detail: "Tim berpengalaman kami siap membantu Anda memilih jenis dan spesifikasi material yang tepat, menghitung estimasi kebutuhan, dan memberikan rekomendasi yang sesuai dengan proyek.", href: "https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20konsultasi%20material.", action: "Chat WhatsApp", external: true },
+  { title: "Pemesanan Proyek", detail: "Layanan khusus untuk kebutuhan material proyek konstruksi berskala besar. Kami menyediakan penawaran resmi, faktur, dan dapat menyesuaikan jadwal pengiriman sesuai tahapan proyek.", href: "/unit/trading-proyek", action: "Kenali suplai proyek" },
+  { title: "Pengiriman Material", detail: "Layanan pengiriman material ke lokasi proyek di area Bekasi dan sekitarnya. Kami memastikan material sampai dalam kondisi baik dan sesuai dengan pesanan.", href: "/minta-penawaran", action: "Tanya pengiriman" },
+  { title: "Supply Retail", detail: "Melayani pembelian satuan untuk kebutuhan rumah tangga, renovasi rumah, dan proyek kecil. Tidak ada minimum order untuk pembelian retail.", href: "/unit/retail-tambun", action: "Lihat toko" },
+  { title: "Supply Kontraktor & Perusahaan", detail: "Program khusus untuk kontraktor dan perusahaan yang membutuhkan pasokan material secara rutin. Termasuk penawaran harga khusus dan layanan prioritas.", href: "/unit/trading-proyek", action: "Untuk perusahaan" },
 ]
 
 export default function LaserCuttingPage() {
@@ -84,32 +94,23 @@ export default function LaserCuttingPage() {
   }
   return (
     <>
-      <section className="laser-page-hero">
+      <section className="laser-page-hero jasa-hero">
         <div className="industrial-container">
-          <nav className="industrial-eyebrow">
-            <Link to="/">BERANDA</Link> / JASA LASER CUTTING
-          </nav>
+          <nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/</span><span>Jasa</span></nav>
           <div className="laser-page-grid">
             <div>
               <p className="industrial-eyebrow">
-                MBI / CUTTING · BENDING · FABRIKASI
+                Jasa laser cutting dan layanan material
               </p>
               <h1>
-                Desain Anda.
-                <br />
-                <span>
-                  Langkah produksi
-                  <br />
-                  berikutnya.
-                </span>
+                Berbagai kebutuhan baja, dari <span>material</span> hingga <span>fabrikasi.</span>
               </h1>
               <p>
-                Jasa laser cutting plat dan CNC bending untuk kebutuhan custom,
-                ornamen, panel, komponen, fabrikasi dan proyek di Bekasi, Tambun
-                serta Cibitung.
+                Mahameru Baja menyediakan material baja, laser cutting, CNC bending,
+                dan fabrikasi untuk kebutuhan proyek maupun produksi.
               </p>
               <a className="industrial-button" href="#request">
-                Konsultasikan gambar Anda <span aria-hidden="true">↗</span>
+                Kirim gambar untuk ditinjau <span aria-hidden="true">↗</span>
               </a>
             </div>
             <figure>
@@ -122,18 +123,19 @@ export default function LaserCuttingPage() {
           </div>
         </div>
       </section>
-      <section className="business-section">
+      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
+            const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action} ↗</strong></div></>;
+            if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;
+            if (path.href.startsWith("#")) return <a href={path.href} key={path.title}>{inner}</a>;
+            return <Link to={path.href} key={path.title}>{inner}</Link>;
+          })}</div></div></section>
+      <section id="laser-cutting" className="business-section">
         <div className="industrial-container">
           <div className="section-heading">
             <div>
               <p className="industrial-eyebrow">01 / RUANG LINGKUP</p>
-              <h2>Dari plat ke komponen.</h2>
+              <h2>Detail jasa laser cutting, bending, dan fabrikasi.</h2>
             </div>
-            <p>
-              Setiap kebutuhan ditinjau sesuai gambar kerja.
-              <br />
-              Tidak ada klaim kapasitas tanpa konfirmasi.
-            </p>
           </div>
           <div className="business-grid laser-scope-grid">
             {scopeCards.map((card, index) => (
@@ -151,49 +153,34 @@ export default function LaserCuttingPage() {
           <p className="verification-note">Kapasitas mesin, toleransi, dan material yang dapat diproses dikonfirmasi dalam review teknis sebelum penawaran.</p>
         </div>
       </section>
-      <section className="laser-visual-strip" aria-label="Ilustrasi proses CNC bending">
-        <div className="laser-visual-strip-media" data-parallax="0.27"><img src="/images/cnc-bending-visual-v1.png" alt="Ilustrasi plat logam yang dibentuk dengan mesin CNC bending" /></div>
-        <div className="laser-visual-strip-shade" aria-hidden="true" />
-        <div className="industrial-container laser-visual-strip-copy" data-reveal>
-          <p className="industrial-eyebrow">CUTTING / BENDING / FABRIKASI</p>
-          <h2>Dari gambar kerja<br />ke bentuk nyata.</h2>
-          <span>Visual ilustrasi proses produksi</span>
-        </div>
-      </section>
       <section className="laser-process">
         <div className="industrial-container">
-          <p className="industrial-eyebrow">02 / ALUR PEKERJAAN</p>
-          <h2>Satu gambar. Alur yang jelas.</h2>
+          <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
           <div className="process-grid">
             {workflowSteps.map((step, index) => (
               <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
                 <div className="laser-process-icon"><IndustryIcon name={step.icon} size={42} /></div>
                 <h3>{step.title}</h3>
+                <p>{step.desc}</p>
               </div>
             ))}
           </div>
-          <p>Pekerjaan dimulai setelah review teknis, penawaran, dan kesepakatan dengan tim.</p>
+          <p><strong>Kirim dalam format yang Anda punya.</strong> File DWG, DXF, PDF, foto, atau daftar kebutuhan juga bisa. Tim akan mengecek kebutuhan Anda sebelum memberikan penawaran.</p>
         </div>
       </section>
       <section id="request" className="business-section">
         <div className="industrial-container request-grid">
           <div>
-            <p className="industrial-eyebrow">03 / REQUEST PENAWARAN MBI</p>
-            <h2>
-              Mulai dari
-              <br />
-              gambar Anda.
-            </h2>
+            <h2>Kirim kebutuhan laser cutting atau bending.</h2>
             <p>
               Lengkapi kebutuhan cutting atau bending. Ringkasan akan disiapkan
               untuk dikirim melalui WhatsApp kontak utama dan diteruskan ke unit
               MBI.
             </p>
             <p className="verification-note">
-              Data formulir dicatat sebagai lead. Upload file desain ke object
-              storage masih tahap berikutnya; untuk sementara kirim lampiran
-              langsung di WhatsApp. Nomor khusus MBI menunggu konfirmasi.
+              Setelah permintaan tersimpan, lanjutkan percakapan melalui WhatsApp.
+              File gambar dikirim sebagai lampiran di sana agar tim bisa meninjaunya.
             </p>
           </div>
           <form onSubmit={submit} className="laser-request-form">
@@ -281,8 +268,8 @@ export default function LaserCuttingPage() {
                 }}
               />
               <small>
-                DWG, DXF, PDF, AI, CDR, JPG atau PNG. Pemilihan hanya mencatat
-                nama file.
+                DWG, DXF, PDF, AI, CDR, JPG atau PNG. Setelah mengisi formulir,
+                kirim file tersebut sebagai lampiran WhatsApp.
               </small>
               {fileError && (
                 <span role="alert" className="text-brand">
@@ -304,7 +291,7 @@ export default function LaserCuttingPage() {
             </label>
             {submitError && <p role="alert" className="form-full text-brand">{submitError}</p>}
             <button className="industrial-button form-full" type="submit" disabled={submitting}>
-              {submitting ? "Menyimpan request..." : "Simpan request penawaran"} <span aria-hidden="true">↗</span>
+              {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
             </button>
             {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} /><p className="text-sm">File desain dikirim terpisah sebagai lampiran WhatsApp.</p></div>}
 
@@ -313,7 +300,6 @@ export default function LaserCuttingPage() {
       </section>
       <section className="laser-faq business-section">
         <div className="industrial-container">
-          <p className="industrial-eyebrow">04 / SEBELUM MEMULAI</p>
           <h2>Pertanyaan laser cutting & bending.</h2>
           {laserFAQs.map((item) => (
             <details key={item.question}>

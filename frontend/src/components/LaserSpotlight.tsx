@@ -41,10 +41,10 @@ export default function LaserSpotlight() {
             fabrikasi, dan supply proyek dalam satu ekosistem.
           </p>
           <div className="industrial-actions">
-            <Link className="industrial-button" to="/laser-cutting#request">
+            <Link className="industrial-button" to="/jasa#request">
               Request cutting & bending <span aria-hidden="true">↗</span>
             </Link>
-            <Link className="industrial-button outline" to="/laser-cutting">
+            <Link className="industrial-button outline" to="/jasa#laser-cutting">
               Jelajahi layanan <span aria-hidden="true">→</span>
             </Link>
           </div>

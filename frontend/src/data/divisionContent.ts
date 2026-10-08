@@ -73,7 +73,7 @@ export const divisions = [
       { question: "Format desain apa yang bisa dikirim?", answer: "DWG dan DXF cocok untuk gambar teknik. PDF, AI, CDR, JPG, atau PNG dapat menjadi bahan konsultasi awal. File produksi ditinjau tim." },
       { question: "Apakah bisa cutting sekaligus bending?", answer: "Bisa diajukan bersama. Kelayakan proses serta biaya dikonfirmasi setelah review gambar." },
     ],
-    primary: { label: "Lihat jasa laser cutting", href: "/laser-cutting" }, quote: "/laser-cutting#request",
+    primary: { label: "Lihat jasa laser cutting", href: "/jasa#laser-cutting" }, quote: "/jasa#request",
   },
 ] as const;
 

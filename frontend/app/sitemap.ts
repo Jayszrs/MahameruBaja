@@ -6,7 +6,7 @@ import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 export default function sitemap(): MetadataRoute.Sitemap {
   if (isPreviewSite()) return [];
   const base = siteOrigin();
-  const staticPaths = ["", "/divisi", "/tentang-kami", "/produk", "/layanan", "/laser-cutting", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media"];
+  const staticPaths = ["", "/tentang-kami", "/produk", "/jasa", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media"];
   return [
     ...staticPaths.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),
     ...divisions.map((division) => ({ url: `${base}/unit/${division.slug}`, changeFrequency: "monthly" as const, priority: 0.85 })),

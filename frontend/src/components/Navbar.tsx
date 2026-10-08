@@ -11,12 +11,10 @@ interface NavbarProps {
 
 const bottomLinks = [
   { label: 'Beranda', href: '/', hasMega: false },
-  { label: 'Divisi Kami', href: '/divisi', hasMega: false },
-  { label: 'Produk', href: '/produk', hasMega: true },
-  { label: 'Laser Cutting & Bending', href: '/laser-cutting', hasMega: false },
-  { label: 'Layanan', href: '/layanan', hasMega: false },
-  { label: 'Proyek', href: '/proyek', hasMega: false },
   { label: 'Tentang Kami', href: '/tentang-kami', hasMega: false },
+  { label: 'Produk', href: '/produk', hasMega: true },
+  { label: 'Jasa', href: '/jasa', hasMega: false },
+  { label: 'Galeri', href: '/proyek', hasMega: false },
   { label: 'Artikel', href: '/informasi', hasMega: false },
   { label: 'Kontak', href: '/kontak', hasMega: false },
   { label: 'Sosial Media', href: '/sosial-media', hasMega: false },
@@ -119,7 +117,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
   const isActive = (href: string) =>
     href === '/' ? location.pathname === '/' :
-      href === '/divisi' ? location.pathname.startsWith('/divisi') || location.pathname.startsWith('/unit/') :
+      href === '/tentang-kami' ? location.pathname.startsWith('/tentang-kami') || location.pathname.startsWith('/unit/') :
         location.pathname.startsWith(href);
 
   const navSolid = true;

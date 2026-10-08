@@ -10,8 +10,18 @@ const ROTATION_INTERVAL = 7000;
 export default function HeroCarousel({ rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { rating: number; ratingDate: string; mapsUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [ready, setReady] = useState<Set<number>>(() => new Set());
+  const [failed, setFailed] = useState<Set<number>>(() => new Set());
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const activeSlide = heroSlides[activeIndex];
+  const nextIndex = (activeIndex + 1) % heroSlides.length;
+
+  function goToSlide(index: number) {
+    if (index === activeIndex) return;
+    setPreviousIndex(activeIndex);
+    setActiveIndex(index);
+  }
 
   useEffect(() => {
     const handleVisibility = () => setPaused(document.hidden);
@@ -29,9 +39,19 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setTimeout(() => setActiveIndex((index) => (index + 1) % heroSlides.length), ROTATION_INTERVAL);
+    if (!ready.has(nextIndex)) return;
+    const timer = window.setTimeout(() => {
+      setPreviousIndex(activeIndex);
+      setActiveIndex(nextIndex);
+    }, ROTATION_INTERVAL);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, paused]);
+  }, [activeIndex, nextIndex, paused, ready]);
+
+  useEffect(() => {
+    if (previousIndex === null) return;
+    const timer = window.setTimeout(() => setPreviousIndex(null), 900);
+    return () => window.clearTimeout(timer);
+  }, [previousIndex]);
 
   return (
     <section
@@ -40,10 +60,10 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
       aria-label="Layanan utama Mahameru Baja"
     >
       <div className="hero-carousel-media" aria-hidden="true">
-        {heroSlides.map((slide, index) => (
+        {heroSlides.map((slide, index) => (index === activeIndex || index === nextIndex || index === previousIndex) && (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
             <div className="hero-carousel-parallax" data-parallax="0.32">
-              {slide.type === "video" ? (
+              {failed.has(index) ? null : slide.type === "video" ? (
                 <video
                   ref={(node) => { videoRefs.current[index] = node; }}
                   src={slide.media}
@@ -53,6 +73,8 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
                   playsInline
                   preload={index === 0 ? "auto" : "metadata"}
                   style={{ objectPosition: slide.objectPosition }}
+                  onCanPlay={() => setReady(current => new Set(current).add(index))}
+                  onError={() => { setFailed(current => new Set(current).add(index)); setReady(current => new Set(current).add(index)); }}
                 />
               ) : (
                 <Image
@@ -60,8 +82,13 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
                   alt=""
                   fill
                   priority={index === 0}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
                   sizes="100vw"
                   style={{ objectPosition: slide.objectPosition }}
+                  onLoad={() => setReady(current => new Set(current).add(index))}
+                  onError={() => { setFailed(current => new Set(current).add(index)); setReady(current => new Set(current).add(index)); }}
                 />
               )}
             </div>
@@ -96,9 +123,21 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
           {activeSlide.visualNote && <small>{activeSlide.visualNote}</small>}
         </div>
 
-        <a href="#jelajahi-material" className="hero-scroll-cue" aria-label="Gulir ke konten beranda">
-          <span>Scroll untuk menjelajah</span><i aria-hidden="true" />
-        </a>
+        <div className="hero-slide-dots" role="tablist" aria-label="Pilih layanan unggulan">
+          {heroSlides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              role="tab"
+              aria-selected={index === activeIndex}
+              aria-label={`${index + 1} dari ${heroSlides.length}: ${slide.eyebrow}`}
+              className={index === activeIndex ? "is-active" : ""}
+              onClick={() => goToSlide(index)}
+            >
+              <i aria-hidden="true">{index === activeIndex && <b aria-hidden="true" />}</i>
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="home-hero-rail" aria-label="Layanan utama">

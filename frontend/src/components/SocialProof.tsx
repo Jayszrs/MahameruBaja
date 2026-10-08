@@ -4,15 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { SiteContent } from "../data/siteContent";
 import { googleReviews } from "../data/googleReviews";
-
-const clients = [
-  { name: "Astra", logo: "/images/client-logos/astra.png" },
-  { name: "Mandiri", logo: "/images/client-logos/mandiri.png" },
-  { name: "WIKA", logo: "/images/client-logos/wika.png" },
-  { name: "PP", logo: "/images/client-logos/pp.png" },
-  { name: "ADHI", logo: "/images/client-logos/adhi.png" },
-  { name: "TOTAL", logo: "/images/client-logos/total.png" },
-];
+import { clientPartners } from "../data/clientPartners";
 
 function useMarquee(itemCount: number, pixelsPerSecond: number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -65,10 +57,21 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
       previous = now;
       frame = requestAnimationFrame(tick);
     };
-    frame = requestAnimationFrame(tick);
+    // Keep the marquee idle while it is outside the viewport.
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !reducedMotion.matches) {
+        if (!frame) frame = requestAnimationFrame(tick);
+      } else {
+        if (frame) cancelAnimationFrame(frame);
+        frame = 0;
+        previous = 0;
+      }
+    }, { rootMargin: "200px" });
+    visibilityObserver.observe(element);
     element.addEventListener("scroll", keepInMiddle, { passive: true });
     return () => {
       cancelAnimationFrame(frame);
+      visibilityObserver.disconnect();
       resizeObserver.disconnect();
       element.removeEventListener("scroll", keepInMiddle);
     };
@@ -129,7 +132,7 @@ function Reviews({ content }: { content: SiteContent }) {
   const published = [
     ...importedReviews.filter(review => review.published && review.rating > 4),
     ...content.reviews.filter(review => review.published && review.rating > 4 && !importedIds.has(review.id)),
-  ];
+  ].slice(0, 8);
   const slides: Array<{ kind: "review"; review: typeof published[number] } | { kind: "summary" } | { kind: "invite" }> = published.map(review => ({ kind: "review", review }));
   if (published.length < 3) slides.push({ kind: "summary" }, { kind: "invite" });
   const copies = [0, 1, 2];
@@ -162,12 +165,12 @@ function Reviews({ content }: { content: SiteContent }) {
 }
 
 function Clients() {
-  const marquee = useMarquee(clients.length, 46);
+  const marquee = useMarquee(clientPartners.length, 46);
   return <section className="home-clients" id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
-      <div className="proof-client-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan & kolaborasi</p><h2 id="clients-heading">Perusahaan yang pernah bekerja sama.</h2></div><button className="marquee-pause" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button></div>
+      <div className="proof-client-heading"><div><h2 id="clients-heading">Dipercayai oleh <em>berbagai perusahaan.</em></h2></div><button className="marquee-pause" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan gerak" : "Jeda gerak"}</button></div>
       <div className="home-client-logo-grid proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
-        {[0, 1, 2].flatMap((copy) => clients.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
+        {[0, 1, 2].flatMap((copy) => clientPartners.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
           <Image src={client.logo} alt={copy === 1 ? `Logo ${client.name}` : ""} width={80} height={80} sizes="80px" draggable={false} />
           <span>{client.name}</span>
         </div>))}

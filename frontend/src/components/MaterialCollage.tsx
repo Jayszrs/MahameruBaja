@@ -16,7 +16,7 @@ export default function MaterialCollage({ variant = "workshop", href }: Props) {
         <p className="industrial-eyebrow">{story.eyebrow}</p>
         <h2>{story.title}<br /><em>{story.accent}</em></h2>
         <p>{story.description}</p>
-        <Link className="editorial-link" href={href || (variant === "company" ? "/divisi" : variant === "services" ? "/minta-penawaran" : "/laser-cutting")}><span>{story.cta}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg></Link>
+        <Link className="editorial-link" href={href || (variant === "company" ? "/tentang-kami#divisi" : variant === "services" ? "/minta-penawaran" : "/jasa#laser-cutting")}><span>{story.cta}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14" /></svg></Link>
         <div className="material-editorial-foot"><span>01 / MATERIAL</span><span>02 / PROSES</span><span>03 / BENTUK</span></div>
       </div>
       <div className="material-collage" aria-label="Kolase material dan proses Mahameru Baja">

@@ -1,0 +1,190 @@
+/* Mobile density pass. Keep desktop composition in index.css intact. */
+@media (min-width: 601px) and (max-width: 900px) {
+  .hero-carousel { min-height: 0; }
+  .hero-carousel-layout { min-height: 680px; padding-block: 90px 80px; }
+  .hero-carousel-copy h1 { font-size: clamp(44px, 7vw, 58px); }
+  .home-section { padding-block: 54px; }
+  .reviews-editorial { padding-block: 54px 40px; }
+  .reviews-editorial .proof-heading { margin-bottom: 20px; }
+  .review-rating-seal { width: 125px; min-height: 125px; box-shadow: 7px 8px 0 #d9202e; }
+  .review-rating-seal strong { font-size: 34px; }
+  .reviews-editorial .quote-ribbon .quote-card { flex-basis: 290px; height: 330px; min-height: 0; padding: 22px; }
+  .reviews-editorial .quote-ribbon blockquote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; margin: 15px 0; font-size: 17px; line-height: 1.5; }
+  .home-clients { padding-block: 44px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo,
+  .home-client-logo-grid.proof-marquee .home-client-logo:nth-child(even),
+  .home-client-logo-grid.proof-marquee .home-client-logo:last-child { flex-basis: 170px; min-height: 100px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo img { width: 56px; height: 56px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo span { font-size: 17px; }
+}
+
+@media (max-width: 760px) {
+  .home-section { padding-block: 48px; }
+  .home-section-heading { margin-bottom: 24px; }
+  .material-editorial, .material-editorial-company, .material-editorial-services { padding-block: 48px; }
+  .contact-directory { padding-block: 48px; }
+  main section.py-24, main section.py-20, main section.py-16, main section.py-14 { padding-top: 48px; padding-bottom: 48px; }
+  .unit-footer-v2 .unit-footer-main { padding-block: 48px 56px; }
+  .admin-home > main { padding: 48px 24px 70px; }
+}
+
+@media (max-width: 600px) {
+  .hero-carousel { min-height: 0; }
+  .home-section { padding-block: 38px; }
+  .home-section-heading { gap: 12px; margin-bottom: 20px; }
+  .home-section-heading h2 { font-size: clamp(29px, 7.6vw, 36px); line-height: 1.08; }
+
+  .hero-carousel-media,
+  .hero-carousel-overlay { inset: 0; bottom: 0; }
+  .hero-carousel-overlay { background: linear-gradient(0deg, rgb(8 10 11 / .96) 0%, rgb(8 10 11 / .74) 46%, rgb(8 10 11 / .38) 78%, rgb(8 10 11 / .42) 100%); }
+  .hero-carousel-layout { min-height: 100svh; display: flex; align-items: center; padding-top: 112px; padding-bottom: 72px; }
+  .hero-carousel-copy-wrap { width: 100%; }
+  .hero-carousel-copy { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+  .hero-carousel-copy h1 { font-size: clamp(35px, 9.5vw, 44px); line-height: 1.06; margin-bottom: 18px; text-wrap: balance; }
+  .hero-carousel-copy > p { max-width: 34ch; margin-bottom: 30px; font-size: 14px; line-height: 1.65; }
+  .hero-carousel .home-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+  .hero-carousel .home-button { width: auto; max-width: 100%; min-height: 48px; justify-content: flex-start; gap: 14px; padding: 0 18px; }
+  .hero-rating-link { margin-top: 26px; }
+  .hero-scroll-cue, .home-hero-rail { display: none; }
+  .home-promos { padding-block: 30px; }
+  .home-promos-header { margin-bottom: 14px; }
+  .home-promos-header h2 { font-size: 27px; }
+  .home-promo-card { flex-basis: min(260px, 76vw); height: 248px; }
+  .home-promo-content { padding: 42px 18px 16px; }
+  .home-promo-card h3 { font-size: 21px; }
+  .home-promo-card p { font-size: 12px; line-height: 1.45; }
+
+  .home-routes { padding-block: 40px 44px; }
+  .home-routes .home-section-heading { gap: 14px; margin-bottom: 22px; }
+  .home-routes .home-section-heading h2 { font-size: clamp(32px, 8vw, 39px); }
+  .home-routes .home-route-list { gap: 12px; }
+  .home-routes .home-route-card,
+  .home-routes .home-route-card:nth-child(even),
+  .home-routes .home-route-card:nth-child(3) { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 0; min-height: 340px; padding: 20px; border-radius: 12px; }
+  .home-routes .home-route-card .home-route-number { position: static; flex: none; display: grid; place-items: center; width: 32px; height: 32px; margin: 0 0 14px; padding: 0; border: 1px solid rgb(255 255 255 / .55); border-radius: 50%; color: #fff; font-size: 11px; }
+  .home-routes .home-route-card > div:not(.home-route-media) { position: relative; z-index: 1; width: 100%; }
+  .home-routes .home-route-card > strong { margin-top: 14px; }
+  .home-routes .home-route-card h3 { font-size: clamp(25px, 6.8vw, 31px); }
+  .home-routes .home-route-card p { font-size: 13px; line-height: 1.45; }
+  .home-needs a { min-height: 48px; padding: 10px 12px; font-size: 12px; }
+
+  .home-laser { min-height: 0; }
+  .home-laser-content { padding-block: 52px; }
+  .home-laser-content h2 { font-size: clamp(36px, 9vw, 45px); }
+  .home-laser-content > p { font-size: 14px; line-height: 1.55; }
+  .home-order { padding-block: 38px; }
+  .home-order-heading { gap: 14px; margin-bottom: 24px; }
+  .home-order-heading h2 { font-size: clamp(31px, 8vw, 39px); }
+  .home-order-heading p { font-size: 14px; line-height: 1.55; }
+  .home-order-steps li { min-height: 0; gap: 10px; padding-block: 16px; }
+  .home-order-steps h3 { margin-bottom: 7px; font-size: 19px; }
+  .home-order-steps p { font-size: 13px; line-height: 1.5; }
+  .home-order-card { padding: 16px; }
+
+  .reviews-editorial { padding-block: 40px 32px; }
+  .reviews-editorial .proof-heading { flex-direction: row; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+  .reviews-editorial h2 { font-size: clamp(26px, 6.7vw, 32px); line-height: 1.08; }
+  .review-rating-seal { display: flex; flex: 0 0 108px; flex-direction: column; width: 108px; height: 108px; min-height: 108px; padding: 8px; gap: 0; border-radius: 50%; rotate: 0deg; box-shadow: 5px 6px 0 #d9202e; text-align: center; }
+  .review-rating-seal .review-seal-label { display: block; font-size: 6px; }
+  .review-rating-seal strong { position: static; width: auto; margin: 2px 0 0; font-size: 30px; line-height: 1; transform: none; }
+  .review-rating-seal strong small { margin-left: 2px; font-size: 9px; }
+  .review-rating-seal .review-stars-svg > span, .review-rating-seal .review-stars-svg svg { width: 10px; height: 10px; }
+  .review-rating-seal > span:last-child { margin-top: 4px; font-size: 7px; line-height: 1; }
+  .review-rating-seal > span:last-child svg { display: none; }
+  .review-caption-row { gap: 8px; margin-bottom: 14px; }
+  .reviews-editorial .quote-ribbon { gap: 10px; padding: 4px 18px 8px; }
+  .reviews-editorial .quote-ribbon .quote-card { flex: 0 0 min(280px, 78vw); height: 300px; min-height: 0; padding: 18px; border-radius: 12px; }
+  .reviews-editorial .quote-ribbon blockquote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; margin: 12px 0 14px; font-size: 16px; line-height: 1.5; }
+  .home-clients { padding-block: 28px 30px; }
+  .proof-client-heading { margin-bottom: 14px; }
+  .home-client-logo-grid.proof-marquee { gap: 20px; padding-block: 4px 8px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo,
+  .home-client-logo-grid.proof-marquee .home-client-logo:nth-child(even),
+  .home-client-logo-grid.proof-marquee .home-client-logo:last-child { flex-basis: 145px; min-height: 78px; padding: 8px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo img { width: 48px; height: 48px; }
+  .home-client-logo-grid.proof-marquee .home-client-logo span { font-size: 14px; }
+  .social-hub { padding-block: 40px; }
+  .social-page-hero { padding-block: 48px; }
+  .social-page-hero h1 { font-size: clamp(34px, 9vw, 42px); }
+  .social-page-hero .industrial-container > p:last-child { margin-top: 18px; line-height: 1.55; }
+  .social-profile-frame { height: 320px; }
+  .home-location-grid { gap: 25px; }
+  .home-location .home-map > .home-map-canvas { height: 240px; }
+  .home-location .home-map > .home-map-heading, .home-location .home-map > .home-map-caption { padding: 13px 16px; }
+  .home-final { padding-block: 55px; }
+
+  .division-hero, .division-index-hero { min-height: 490px; }
+  .division-hero-content { padding-block: 42px 54px; }
+  .division-breadcrumb { margin-bottom: 24px; }
+  .division-hero h1, .division-index-hero h1 { font-size: clamp(36px, 9vw, 44px); }
+  .division-page section { padding-block: 42px; }
+  .division-index-cards > a { min-height: 300px; padding: 20px; }
+  .division-index-hero .industrial-container { padding-block: 48px; }
+  .division-index-list { padding-block: 42px; }
+  .division-index-cards h2 { font-size: 30px; }
+  .division-gallery figure { height: 225px; }
+  .division-section-heading { margin-bottom: 24px; }
+  .division-intro-grid h2, .division-section-heading h2, .division-process-grid h2, .division-faq-grid h2, .division-end-grid h2 { font-size: clamp(31px, 8vw, 40px); }
+  .division-intro-grid > p { font-size: 15px; line-height: 1.55; }
+  .division-offerings article { min-height: 0; padding: 16px; }
+  .division-process-grid li { padding-block: 18px; }
+  .contact-directory { padding-block: 42px; }
+  .directory-portrait { height: 145px; }
+  .directory-portrait > img { width: 100px; height: 100px; }
+  .directory-card-body { padding: 17px; }
+
+  .services-hero { min-height: 440px; padding-block: 96px 46px; }
+  .services-hero h1 { font-size: clamp(35px, 9vw, 44px); }
+  .material-editorial, .material-editorial-company, .material-editorial-services { padding-block: 42px; }
+  .material-editorial-copy h2 { font-size: clamp(32px, 8vw, 42px); }
+  .material-collage { height: 275px; }
+  main section.py-24, main section.py-20, main section.py-16, main section.py-14 { padding-top: 42px; padding-bottom: 42px; }
+  .services-hero ~ section .space-y-16 > * + * { margin-top: 30px; }
+  .services-hero ~ section .grid { gap: 18px; }
+  .services-hero ~ section .services-media { aspect-ratio: 2 / 1; }
+  .services-hero ~ section .mb-14, .services-hero ~ section .mb-12 { margin-bottom: 28px; }
+  .services-process-card { min-height: 0; }
+  .services-process-icon { height: 64px; margin-bottom: 10px; }
+  .services-process-grid { gap: 12px; }
+
+  .laser-page-hero { padding-block: 38px; }
+  .laser-page-hero h1 { font-size: clamp(34px, 8.8vw, 43px); }
+  .laser-page-grid { gap: 22px; }
+  .laser-page-grid figure img { aspect-ratio: 16 / 9; }
+  .business-section { padding-block: 42px; }
+  .business-card { padding: 19px; }
+  .business-card h3 { margin-top: 14px; }
+  .business-card p { line-height: 1.55; margin-bottom: 15px; }
+  .laser-scope-media { height: 145px; }
+  .business-card.laser-scope-card { padding-bottom: 16px; }
+  .laser-scope-card-top { padding-top: 12px; }
+  .laser-scope-card p { margin-bottom: 16px; }
+  .laser-process { padding-block: 42px; }
+  .laser-process-icon { height: 60px; margin-block: 8px; }
+  .laser-visual-strip { min-height: 320px; }
+  .laser-visual-strip-copy { padding-block: 80px 36px; }
+  .laser-visual-strip-copy h2 { font-size: clamp(35px, 9vw, 44px); }
+  .laser-process-card { min-height: 0; }
+
+  .projects-hero { min-height: 430px; }
+  .projects-hero-content { padding-block: 70px 42px; }
+  .projects-hero-content nav { margin-bottom: 24px; }
+  .projects-hero-content h1 { font-size: clamp(38px, 10vw, 48px); }
+  .projects-gallery { padding-block: 42px; }
+  .projects-grid { grid-auto-rows: 165px; }
+  .projects-cta { padding-block: 50px; }
+  .projects-cta h2 { font-size: clamp(36px, 9vw, 46px); }
+  .about-photo-story { padding-block: 44px; }
+  .about-photo-heading { margin-bottom: 22px; }
+  .about-photo-heading h2 { font-size: clamp(35px, 9vw, 44px); }
+  .about-photo-grid { gap: 8px; }
+  .about-photo figcaption { left: 12px; right: 12px; bottom: 12px; }
+  .about-photo figcaption strong { font-size: 16px; }
+  .unit-sub-hero { min-height: 370px; padding-block: 48px; }
+  .unit-footer-v2 .unit-footer-main { padding-block: 42px 48px; }
+  .admin-home > main { padding: 35px 18px 60px; }
+  .admin-home h1 { font-size: 36px; }
+  .admin-home-metrics { margin-block: 30px; }
+  .admin-home-sections > a { min-height: 175px; padding: 20px; }
+  .admin-home-recent { margin-top: 45px; }
+}

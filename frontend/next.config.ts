@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com" }],
+  },
   // The team also opens the local dev server from its Windows link-local address.
   allowedDevOrigins: ["169.254.47.102"],
   async headers() {

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Archivo, IBM_Plex_Mono, Manrope } from "next/font/google";
 import "../src/index.css";
+import "../src/mobile-compact.css";
+import "../src/merged-pages.css";
 import AppShell from "../src/components/AppShell";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 
