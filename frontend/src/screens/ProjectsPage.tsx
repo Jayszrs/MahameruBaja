@@ -28,7 +28,23 @@ type GalleryItem = (typeof galleryItems)[number];
 export default function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
+  const [armedId, setArmedId] = useState<number | null>(null);
   const filtered = activeFilter === "Semua" ? galleryItems : galleryItems.filter((item) => item.category === activeFilter);
+
+  const coarsePointer = () =>
+    typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;
+
+  const handleCard = (item: GalleryItem) => {
+    // Layar sentuh: ketukan pertama hanya menyalakan veil,
+    // ketukan kedua baru membuka detail.
+    if (coarsePointer() && armedId !== item.id) {
+      setArmedId(item.id);
+      window.setTimeout(() => setArmedId((current) => (current === item.id ? null : current)), 3000);
+      return;
+    }
+    setArmedId(null);
+    setLightbox(item);
+  };
 
   useEffect(() => {
     if (!lightbox) return;
@@ -61,15 +77,16 @@ export default function ProjectsPage() {
           </div>
           <div className="projects-filters" aria-label="Filter galeri" data-reveal>
             {filters.map((filter) => (
-              <button type="button" onClick={() => setActiveFilter(filter)} aria-pressed={activeFilter === filter} className={activeFilter === filter ? "is-active" : ""} key={filter}>{filter}</button>
+              <button type="button" onClick={() => { setActiveFilter(filter); setArmedId(null); }} aria-pressed={activeFilter === filter} className={activeFilter === filter ? "is-active" : ""} key={filter}>{filter}</button>
             ))}
           </div>
           <div className="projects-grid">
             {filtered.map((item, index) => (
-              <button type="button" key={item.id} onClick={() => setLightbox(item)} aria-label={`Lihat gambar: ${item.title}`} className={`projects-card ${item.span}`} data-reveal>
+              <button type="button" key={item.id} onClick={() => handleCard(item)} aria-label={`Lihat gambar: ${item.title}`} className={`projects-card ${item.span}${armedId === item.id ? " is-armed" : ""}`} data-reveal>
                 <div className="projects-card-parallax" data-parallax={index % 2 === 0 ? "0.13" : "-0.1"}>
                   <Image src={item.src} alt={item.title} fill sizes="(max-width: 768px) 50vw, 25vw" />
                 </div>
+                <span className="projects-card-veil" aria-hidden="true"><b>Lihat detail</b></span>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div><small>{item.category}</small><strong>{item.title}</strong></div>
               </button>

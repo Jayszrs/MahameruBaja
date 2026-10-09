@@ -354,9 +354,9 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                     <Link
                       to={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                      className={`flex items-center px-3 py-2.5 text-sm font-semibold transition-colors ${
                         isActive(link.href)
-                          ? 'bg-brand/8 text-brand border-l-2 border-brand pl-4'
+                          ? 'text-brand font-bold'
                           : 'text-graphite hover:bg-warm-white hover:text-brand'
                       }`}
                     >

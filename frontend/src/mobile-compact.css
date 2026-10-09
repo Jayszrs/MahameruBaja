@@ -43,7 +43,7 @@
   .hero-carousel-copy h1 { font-size: clamp(35px, 9.5vw, 44px); line-height: 1.06; margin-bottom: 18px; text-wrap: balance; }
   .hero-carousel-copy > p { max-width: 34ch; margin-bottom: 30px; font-size: 14px; line-height: 1.65; }
   .hero-carousel .home-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-  .hero-carousel .home-button { width: auto; max-width: 100%; min-height: 48px; justify-content: flex-start; gap: 14px; padding: 0 18px; }
+  .hero-carousel .home-button { width: auto; max-width: 100%; min-height: 48px; justify-content: center; gap: 14px; padding: 0 18px; text-align: center; }
   .hero-rating-link { margin-top: 26px; }
   .hero-scroll-cue, .home-hero-rail { display: none; }
   .home-promos { padding-block: 30px; }
@@ -97,6 +97,7 @@
   .reviews-editorial .quote-ribbon blockquote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; margin: 12px 0 14px; font-size: 16px; line-height: 1.5; }
   .home-clients { padding-block: 28px 30px; }
   .proof-client-heading { margin-bottom: 14px; }
+  .proof-client-heading h2 { max-width: none; font-size: clamp(25px, 7.5vw, 32px); line-height: 1.08; text-wrap: balance; }
   .home-client-logo-grid.proof-marquee { gap: 20px; padding-block: 4px 8px; }
   .home-client-logo-grid.proof-marquee .home-client-logo,
   .home-client-logo-grid.proof-marquee .home-client-logo:nth-child(even),
@@ -187,4 +188,12 @@
   .admin-home-metrics { margin-block: 30px; }
   .admin-home-sections > a { min-height: 175px; padding: 20px; }
   .admin-home-recent { margin-top: 45px; }
+  .public-site .home-button, .public-site .industrial-button, .public-site .merged-button { justify-content: center; text-align: center; }
+}
+
+@media (max-width: 640px) {
+  .social-hub:not(.social-hub-full) .social-heading { align-items: stretch; gap: 0; margin-bottom: 6px; }
+  .social-hub:not(.social-hub-full) .social-heading h2 { max-width: 100%; font-size: clamp(27px, 8.2vw, 32px); line-height: 1.06; text-wrap: balance; }
+  .social-hub:not(.social-hub-full) .social-heading h2 br { display: none; }
+  .social-hub:not(.social-hub-full) .social-heading > a { align-self: flex-end; margin-top: 6px; padding-bottom: 0; line-height: 1.2; }
 }

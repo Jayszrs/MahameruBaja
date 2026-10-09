@@ -115,10 +115,10 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         <div className="flex-1" />
 
         {/* Actions */}
-        <div className="flex gap-1.5">
+        <div className="flex flex-col gap-1.5 sm:flex-row">
           <Link
             to={`/produk/${product.slug}`}
-            className="flex-1 py-2 text-center text-xs font-bold text-graphite border border-light-steel rounded-lg hover:border-graphite/40 hover:text-brand transition-colors"
+            className="flex-1 py-2 px-1 text-center text-xs font-bold whitespace-nowrap text-graphite border border-light-steel rounded-lg hover:border-graphite/40 hover:text-brand transition-colors"
           >
             Lihat Detail
           </Link>
@@ -126,7 +126,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
             onClick={handleAddToQuotation}
             aria-label="Tambah ke daftar penawaran"
             title={added ? 'Sudah ditambahkan' : 'Tambah ke Daftar Penawaran'}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+            className={`flex-1 py-2 px-1 text-xs font-bold whitespace-nowrap rounded-lg transition-all ${
               added
                 ? 'bg-positive/10 text-positive border border-positive/30'
                 : 'bg-brand hover:bg-brand-dark text-white'

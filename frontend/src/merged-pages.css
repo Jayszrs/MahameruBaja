@@ -135,6 +135,7 @@
   .merged-intro p, .merged-purpose-grid > div:first-child p { font-size: 14px; line-height: 1.6; }
   .merged-section-head { align-items: start; gap: 12px; margin-bottom: 20px; }
   .merged-section-head-inline { flex-direction: column; }
+  .merged-section-head-inline p { flex: none; width: 100%; margin-top: 0; }
   .merged-section-head p { font-size: 13px; line-height: 1.55; }
   .merged-section-head > span { display: none; }
   .merged-division-list { grid-template-columns: 1fr; gap: 13px; }

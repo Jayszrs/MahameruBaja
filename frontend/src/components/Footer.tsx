@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Link } from 'react-router';
+import { divisions } from '../data/divisionContent';
 
 const produkLinks = [
   { label: 'Besi Beton', href: '/produk?kategori=besi-beton' },
@@ -65,6 +66,23 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+        <nav aria-label="Empat unit Mahameru Baja" className="footer-divisions">
+          <div className="footer-divisions-heading">
+            <div><span>Empat unit, satu Mahameru Baja</span><h2>Pilih tim sesuai kebutuhan Anda.</h2></div>
+            <Link to="/tentang-kami#divisi">Kenali semua unit <span aria-hidden="true">↗</span></Link>
+          </div>
+          <div className="footer-divisions-grid">
+            {divisions.map((division, index) => (
+              <Link key={division.slug} to={`/unit/${division.slug}`} className="footer-division-link">
+                <span className="footer-division-index">0{index + 1} / {division.label}</span>
+                <strong>{division.name}</strong>
+                <small>{division.slug === 'retail-tambun' ? 'Beli besi dan material di Tambun.' : division.slug === 'retail-cibitung' ? 'Cari material untuk area Cibitung.' : division.slug === 'trading-proyek' ? 'Pengadaan dan suplai material proyek.' : 'Laser cutting, bending, dan fabrikasi.'}</small>
+                <span className="footer-division-arrow" aria-hidden="true">↗</span>
+              </Link>
+            ))}
+          </div>
+        </nav>
 
         {/* Main footer grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 py-14 border-b border-white/8">
