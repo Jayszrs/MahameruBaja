@@ -69,7 +69,13 @@ try{
   assert.equal(base.garudaReviews.mapsUrl,"https://maps.app.goo.gl/QR3pr7p55DKFeHMG9");
   assert.deepEqual(base.garudaReviews.reviews.map(r => r.author), ["Anang Ardiantoro", "Iqbal Haryadi", "Heni Wulansari"], "Only the three public cards from the supplied Garuda HTML");
   assert.ok(base.garudaReviews.reviews.every(r => r.rating === 5 && r.url === base.garudaReviews.mapsUrl && r.authorUrl.startsWith("https://www.google.com/maps/contrib/")));
-  const sharedHomeHtml = await (await call("/")).text();
+  const sharedHomeResponse = await call("/");
+  assert.equal(sharedHomeResponse.headers.get("permissions-policy"),"camera=(), microphone=(), geolocation=()","Our response does not send the unsupported ad/storage or unload policies from the pasted log");
+  const sharedHomeHtml = await sharedHomeResponse.text();
+  assert.ok(sharedHomeHtml.includes('<span></span>LOKASI</p>') && sharedHomeHtml.includes("Dekat. Lengkap.") && sharedHomeHtml.includes("Siap melayani kebutuhan Anda.") && sharedHomeHtml.includes("Solusi material untuk setiap proyek."));
+  assert.ok(sharedHomeHtml.includes("Media sosial kami.") && sharedHomeHtml.includes("Ikuti kegiatan dan pekerjaan kami.") && !sharedHomeHtml.includes("Kabar dari tim."));
+  const socialFrames = sharedHomeHtml.match(/<iframe[^>]*class="social-single-frame"[^>]*>/g) || [];
+  assert.ok(socialFrames.length > 0 && socialFrames.every(frame => /allow="[^"]*fullscreen/.test(frame) && !/allowfullscreen/i.test(frame)),"Social embeds retain fullscreen with a single modern permission attribute");
   assert.equal((sharedHomeHtml.match(/class="directory-card"/g) || []).length,10,"All ten published contacts appear on the main homepage");
   assert.ok(!sharedHomeHtml.includes("home-offering-ribbon"),"Remove the unsolicited five-division service ribbon from the main homepage");
   assert.ok(!sharedHomeHtml.includes("home-gallery-strip") && sharedHomeHtml.includes("project-album-grid project-album-ribbon"),"Replace illustrative gallery preview with actual project albums");
@@ -77,6 +83,7 @@ try{
   assert.ok(sharedHomeHtml.includes("Buka album Lantai Mezanin, 9 foto"));
   assert.ok(sharedHomeHtml.includes('data-collage-images="4"') && sharedHomeHtml.includes('aria-label="Buka logo MBI Laser Cutting &amp; Bending"'),"Main collage has three images plus its white-backed logo");
   const homeSections = html => [...html.matchAll(/data-home-section="([^"]+)"/g)].map(match => match[1]);
+  assert.ok(!homeSections(sharedHomeHtml).includes("faq") && !sharedHomeHtml.includes("Yang sering ditanyakan."),"Remove the requested FAQ block from the main homepage");
   assert.ok(sharedHomeHtml.includes('data-home-template="mahameru"'));
   assert.ok(sharedHomeHtml.includes('aria-label="Identitas Mahameru Baja Indonesia"') && sharedHomeHtml.includes('class="company-footer-wordmark"'));
   assert.ok(!sharedHomeHtml.includes('href="/admin/login"'), "No public link to admin login");
@@ -88,9 +95,11 @@ try{
   for (const slug of slugs) {
     const divisionHtml=await (await call(`/unit/${slug}`)).text();
     assert.ok(divisionHtml.includes("hero-carousel") && divisionHtml.includes("site-navbar") && divisionHtml.includes("company-footer"),slug+" uses shared site UI");
+    assert.ok(divisionHtml.includes("Dekat. Lengkap.") && divisionHtml.includes("Media sosial kami."),slug+" shares the updated plain-language location and social headings");
     assert.ok(divisionHtml.includes("VISI MAHAMERU GROUP") && divisionHtml.includes("MISI DIVISI"),slug+" has vision and mission");
     assert.ok(divisionHtml.includes("data-parallax"));
-    assert.deepEqual(homeSections(divisionHtml).filter(section => section !== "offerings"),homeSections(sharedHomeHtml),slug+" shares the main section order; division-specific service choices remain only on unit sites");
+    assert.ok(homeSections(divisionHtml).includes("faq"),slug+" retains its existing division-specific FAQ");
+    assert.deepEqual(homeSections(divisionHtml).filter(section => section !== "offerings" && section !== "faq"),homeSections(sharedHomeHtml),slug+" shares the main section order; division-specific service choices and FAQ remain only on unit sites");
     assert.ok(divisionHtml.includes("project-album-ribbon"),slug+" uses the same project ribbon layout");
     const unitAbout = await (await call(`/unit/${slug}/tentang`)).text();
     assert.ok(unitAbout.includes('class="division-collage-grid"') && (unitAbout.match(/class="division-collage-photo /g) || []).length === 3,slug+" about page uses the same clickable collage");
