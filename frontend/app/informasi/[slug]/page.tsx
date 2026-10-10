@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import ArticleDetailPage from "../../../src/screens/ArticleDetailPage";
-import { articles, getArticleBySlug } from "../../../src/data/articles";
+import { readPublishedArticles } from "../../../src/lib/articleStore";
 
-export function generateStaticParams() { return articles.map((article) => ({ slug: article.slug })); }
+export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const article = getArticleBySlug((await params).slug);
+  const slug = (await params).slug;
+  const article = (await readPublishedArticles()).find(article => article.slug === slug);
   if (!article) return {};
   return {
     title: article.title,
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: article.excerpt,
       type: "article",
       url: `/informasi/${article.slug}`,
-      images: [{ url: article.image, alt: article.title }],
+      images: [{ url: article.image, alt: article.imageAlt || article.title }],
     },
     twitter: {
       card: "summary_large_image",
@@ -26,6 +27,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  if (!getArticleBySlug((await params).slug)) notFound();
-  return <ArticleDetailPage />;
+  const { slug } = await params;
+  const articles = await readPublishedArticles();
+  const article = articles.find(article => article.slug === slug);
+  if (!article) notFound();
+  return <ArticleDetailPage article={article} related={articles.filter(item => item.id !== article.id).slice(0, 3)} />;
 }

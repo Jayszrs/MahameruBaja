@@ -6,6 +6,7 @@ export interface Article {
   date: string;
   excerpt: string;
   image: string;
+  imageAlt?: string;
   readTime: string;
   content: string;
 }

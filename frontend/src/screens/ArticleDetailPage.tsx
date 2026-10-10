@@ -1,88 +1,18 @@
 "use client";
 
-import type { ReactNode } from 'react';
-import { Link, useParams, Navigate } from 'react-router';
-import { getArticleBySlug, articles } from '../data/articles';
+import type { Article } from '../data/articles';
+import ArticleContent from '../components/ArticleContent';
+import { Link } from 'react-router';
+
 import { useReveal } from '../hooks/useReveal';
 import ShareArticle from '../components/ShareArticle';
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
 }
 
-export default function ArticleDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const article = getArticleBySlug(slug ?? '');
+export default function ArticleDetailPage({ article, related }: { article: Article; related: Article[] }) {
   const { ref, visible } = useReveal();
-
-  if (!article) return <Navigate to="/informasi" replace />;
-
-  const related = articles.filter(a => a.id !== article.id).slice(0, 3);
-
-  function renderContent(content: string) {
-    const lines = content.trim().split('\n');
-    const elements: ReactNode[] = [];
-    let i = 0;
-    while (i < lines.length) {
-      const line = lines[i].trim();
-      if (!line) { i++; continue; }
-      if (line.startsWith('## ')) {
-        elements.push(<h2 key={i} className="text-xl font-extrabold text-graphite mt-8 mb-3">{line.slice(3)}</h2>);
-      } else if (line.startsWith('**') && line.endsWith('**')) {
-        elements.push(<p key={i} className="font-bold text-graphite mb-2">{line.slice(2, -2)}</p>);
-      } else if (line.startsWith('- ')) {
-        const items = [line];
-        while (i + 1 < lines.length && lines[i + 1].trim().startsWith('- ')) {
-          i++;
-          items.push(lines[i].trim());
-        }
-        elements.push(
-          <ul key={i} className="list-none space-y-1.5 mb-4">
-            {items.map((item, j) => (
-              <li key={j} className="flex items-start gap-2 text-sm text-muted">
-                <span className="w-1.5 h-1.5 rounded-full bg-accent shrink-0 mt-1.5" />
-                <span dangerouslySetInnerHTML={{ __html: item.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-              </li>
-            ))}
-          </ul>
-        );
-      } else if (line.startsWith('|')) {
-        const rows = [line];
-        while (i + 1 < lines.length && lines[i + 1].trim().startsWith('|')) {
-          i++;
-          rows.push(lines[i].trim());
-        }
-        const headers = rows[0].split('|').filter(Boolean).map(h => h.trim());
-        const dataRows = rows.slice(2).map(r => r.split('|').filter(Boolean).map(c => c.trim()));
-        elements.push(
-          <div key={i} className="overflow-x-auto mb-5">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-surface-2">
-                  {headers.map((h, j) => <th key={j} className="px-3 py-2 text-left font-semibold text-graphite border border-rule">{h}</th>)}
-                </tr>
-              </thead>
-              <tbody>
-                {dataRows.map((row, j) => (
-                  <tr key={j} className="hover:bg-surface transition-colors">
-                    {row.map((cell, k) => <td key={k} className="px-3 py-2 text-muted border border-rule">{cell}</td>)}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        );
-      } else {
-        elements.push(
-          <p key={i} className="text-sm text-muted leading-relaxed mb-4"
-            dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-graphite">$1</strong>') }}
-          />
-        );
-      }
-      i++;
-    }
-    return elements;
-  }
 
   return (
     <>
@@ -107,7 +37,7 @@ export default function ArticleDetailPage() {
           </h1>
           <div className="flex items-center gap-3 text-white/40 text-xs">
             <span>{formatDate(article.date)}</span>
-            <span>•</span>
+            <span>&bull;</span>
             <span>Mahameru Baja</span>
           </div>
         </div>
@@ -117,7 +47,7 @@ export default function ArticleDetailPage() {
       <div className="relative bg-graphite">
         <div className="max-w-[800px] mx-auto px-6">
           <div className="rounded-md overflow-hidden aspect-video bg-graphite -mb-8">
-            <img src={article.image} alt={article.title} className="auto-parallax w-full h-full object-cover opacity-90" data-parallax="0.08" />
+            <img src={article.image} alt={article.imageAlt || article.title} className="auto-parallax w-full h-full object-cover opacity-90" data-parallax="0.08" />
           </div>
         </div>
       </div>
@@ -128,7 +58,7 @@ export default function ArticleDetailPage() {
           <article className="bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
             <p className="text-base text-muted leading-relaxed mb-6 font-medium">{article.excerpt}</p>
             <hr className="border-rule mb-6" />
-            <div>{renderContent(article.content)}</div>
+            <ArticleContent content={article.content} />
           </article>
 
           {/* CTA card */}

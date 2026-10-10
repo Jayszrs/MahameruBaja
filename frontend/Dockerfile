@@ -28,6 +28,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/standalone ./
 # The monorepo server runs from /app/frontend, so public assets must live beside it.
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/public ./frontend/public
 COPY --from=builder --chown=nextjs:nodejs /app/frontend/.next/static ./frontend/.next/static
+RUN mkdir -p /app/frontend/.cms-data && chown nextjs:nodejs /app/frontend/.cms-data
 USER nextjs
 EXPOSE 3000
 CMD ["node", "frontend/server.js"]
