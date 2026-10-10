@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Image from "next/image";
+import { mainLogo } from "../../../src/data/companyIdentity";
 import { ADMIN_COOKIE, adminConfigured, verifyAdminSession } from "../../../src/lib/adminAuth";
 
 export const metadata = { title: "Masuk Portal Admin", robots: { index: false, follow: false } };
@@ -15,7 +17,7 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: P
       <div className="admin-login-panel">
         <a className="admin-login-back" href="/">← Kembali ke situs</a>
         <div className="admin-login-card">
-          <img src="/mbi-mark.svg" alt="Mahameru Baja Indonesia" width="58" height="58" />
+          <Image src={mainLogo} alt="Mahameru Baja Indonesia — MBI Laser Cutting" width={64} height={58} sizes="64px" />
           <p className="admin-login-kicker">PORTAL ADMIN / AKSES TERBATAS</p>
           <h1>Selamat datang kembali.</h1>
           <p className="admin-login-intro">Masuk untuk membuka workspace Mahameru Baja.</p>

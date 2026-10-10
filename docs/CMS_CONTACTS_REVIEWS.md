@@ -1,5 +1,7 @@
 # CMS kontak dan ulasan
 
+> Pembaruan 10 Oktober 2026: sumber kontak sekarang Excel (sepuluh admin, lima divisi), upload foto tersedia, dan konflik CMS memakai merge bagian independen. Lihat [audit terbaru](NOTULENSI-2026-10-10.md) dan [panduan local/hosting](DEPLOYMENT.md). Bagian sumber screenshot dan pengujian di bawah adalah riwayat implementasi lama, bukan sumber kontak aktif sekarang.
+
 ## Akses dan alur
 
 - Masuk melalui `/admin/login`, lalu pilih **Kelola kontak & ulasan** atau buka `/admin/konten`.

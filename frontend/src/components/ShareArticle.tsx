@@ -89,7 +89,14 @@ export default function ShareArticle({ title }: { title: string }) {
     setCanNativeShare("share" in navigator);
   }, []);
 
-  const pageUrl = () => window.location.href;
+  const pageUrl = () => {
+    // Share the canonical article rather than generating separate preview caches
+    // for every tracking query or scroll anchor.
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    return url.href;
+  };
   const text = () => `${title} — Mahameru Baja`;
 
   const open = (url: string) => window.open(url, "_blank", "noopener,noreferrer,width=640,height=560");

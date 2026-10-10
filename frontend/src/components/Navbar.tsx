@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image';
+import { mainLogo } from "../data/companyIdentity";
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
@@ -417,8 +418,8 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
 function LogoMark({ light }: { light: boolean }) {
   return (
-    <span className={`relative block h-10 w-10 overflow-hidden rounded-full ${light ? 'ring-1 ring-white/20' : 'ring-1 ring-black/10'} bg-white`} aria-hidden="true">
-      <Image src="/images/steel-indonesia/company-logo.jpeg" alt="" fill sizes="40px" className="object-contain" />
+    <span className={`relative block h-14 w-16 overflow-hidden ${light ? 'ring-1 ring-white/20' : 'ring-1 ring-black/10'} bg-white`} aria-hidden="true">
+      <Image src={mainLogo} alt="" fill sizes="64px" className="object-contain" />
     </span>
   );
 }

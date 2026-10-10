@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { mainLogo } from "../data/companyIdentity";
+import { useEffect, useRef, useState } from "react";
 import { contentId } from "../data/socialMedia";
 import { promotionDestinations, type Promotion } from "../data/promotions";
 import type { SiteContent } from "../data/siteContent";
@@ -12,6 +14,7 @@ function Field({ label, value, onChange, type = "text", hint }: { label: string;
 
 export default function PromotionEditor({ initialContent }: { initialContent: SiteContent }) {
   const [content, setContent] = useState(initialContent);
+  const baseContent = useRef(initialContent);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<string | null>(null);
@@ -27,8 +30,8 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
     if (file.size > 4_000_000) { setError(true); setMessage("Gambar maksimal 4 MB."); return; }
     setUploading(id); setMessage(""); setError(false);
     try {
-      const form = new FormData(); form.append("image", file);
-      const response = await fetch("/api/admin/promotions/upload", { method: "POST", body: form });
+      const form = new FormData(); form.append("media", file);
+      const response = await fetch("/api/admin/media", { method: "POST", body: form });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Gambar gagal diunggah.");
       promotion(id, { image: result.url });
@@ -39,20 +42,20 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
   async function save() {
     setSaving(true); setMessage(""); setError(false);
     try {
-      const response = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(content) });
+      const response = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...content, _base: baseContent.current }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Gagal menyimpan.");
-      setContent(result); setDirty(false); setMessage("Tersimpan. Banner yang terbit dan berada dalam periode tayang kini muncul di Beranda.");
+      setContent(result); baseContent.current = result; setDirty(false); setMessage("Tersimpan. Banner yang terbit dan berada dalam periode tayang kini muncul di Beranda.");
     } catch (caught) { setError(true); setMessage((caught as Error).message); }
     finally { setSaving(false); }
   }
   return <div className="content-editor promotion-editor">
-    <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><img src="/mbi-mark.svg" alt="" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><p>WEBSITE</p><Link className="editor-sidebar-link" href="/admin/konten">01 · Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/sosial">02 · Sosial media</Link><span className="editor-sidebar-link active">03 · Banner & promo</span><Link className="editor-sidebar-link" href="/admin/permintaan">04 · Permintaan pelanggan ↗</Link><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/#home-promos-heading" target="_blank" rel="noopener noreferrer">Lihat banner di Beranda ↗</a><form action="/api/admin/logout" method="post"><button type="submit">Keluar</button></form></div></aside>
+    <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><Image src={mainLogo} alt="MBI Laser Cutting" width={64} height={58} sizes="64px" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><p>WEBSITE</p><Link className="editor-sidebar-link" href="/admin/konten">01 · Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/sosial">02 · Sosial media</Link><span className="editor-sidebar-link active">03 · Banner & promo</span><Link className="editor-sidebar-link" href="/admin/permintaan">04 · Permintaan pelanggan ↗</Link><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/#home-promos-heading" target="_blank" rel="noopener noreferrer">Lihat banner di Beranda ↗</a><form action="/api/admin/logout" method="post"><button type="submit">Keluar</button></form></div></aside>
     <main className="editor-main"><header className="editor-topbar"><span>Workspace / Banner & promo</span><div><span className={`editor-save-state ${dirty ? "is-dirty" : ""}`}>{dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span><button type="button" className="editor-save" disabled={saving || Boolean(uploading) || !dirty} onClick={save}>{saving ? "Menyimpan…" : "Simpan perubahan ↗"}</button></div></header>
       <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">BERANDA / BANNER</p><h1>Acara & promo.<br /><em>Jelas sebelum tayang.</em></h1><p>Unggah gambar, jelaskan manfaat dan cakupannya, lalu atur tanggal tayang. Contoh tema bawaan masih berupa draf dan tidak mengklaim diskon atau harga.</p></div>
         {message && <div className={`editor-notice ${error ? "error" : "success"}`} role={error ? "alert" : "status"}>{message}</div>}
         <div className="editor-list-heading"><h2>Banner Beranda <span>{content.promotions.length}</span></h2><button type="button" disabled={content.promotions.length >= 20} onClick={() => change(current => ({ ...current, promotions: [...current.promotions, { id: contentId(), label: "Acara Mahameru", title: "Banner baru", summary: "Jelaskan untuk siapa banner ini dan kebutuhan apa yang dilayani.", benefit: "", appliesTo: "", terms: "", image: "", imageAlt: "", startDate: "", endDate: "", ctaLabel: "Tanya kebutuhan", ctaHref: "/minta-penawaran", published: false }] }))}>+ Tambah banner</button></div>
-        <p className="promotion-editor-note">Banner draf tidak tayang. Jika belum ada promo resmi yang aktif, Beranda menampilkan contoh tema acara dengan penanda yang jelas.</p>
+        <p className="promotion-editor-note">Banner draf tidak tayang. Contoh diskon jangan diterbitkan sebelum nilai, periode, dan ketentuan disetujui klien. Jika tidak ada banner aktif, section tidak ditampilkan.</p>
         <fieldset className="editor-fields" disabled={saving || Boolean(uploading)}>
           {content.promotions.map((item, index) => {
             const ready = Boolean(item.benefit && item.appliesTo && item.terms && item.image && item.imageAlt);

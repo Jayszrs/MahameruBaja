@@ -12,7 +12,7 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
   return <section className="contact-directory" id="tim-kontak">
     <div className="industrial-container">
       <div className="directory-heading" data-reveal><div><p className="industrial-eyebrow">ORANG YANG TEPAT / LANGKAH BERIKUTNYA</p><h2>Mari bicarakan<br /><em>kebutuhan Anda.</em></h2></div><p>Pilih divisi, lalu hubungi tim untuk produk, gambar kerja, atau kebutuhan proyek Anda.</p></div>
-      {!divisionSlug && <div className="directory-toolbar"><label htmlFor="contact-division">Hubungi divisi<select id="contact-division" value={selected} onChange={e => setSelected(e.target.value)}><option value="all">Semua divisi</option>{divisions.map(d => <option value={d.slug} key={d.slug}>{d.name} — {d.label}</option>)}</select></label>{unit && <Link href={`/unit/${unit.slug}`}>Lihat profil divisi ↗</Link>}</div>}
+      {!divisionSlug && <div className="directory-toolbar"><label htmlFor="contact-division">Hubungi kami — pilih divisi<select id="contact-division" value={selected} onChange={e => setSelected(e.target.value)}><option value="all">Semua divisi</option>{divisions.map(d => <option value={d.slug} key={d.slug}>{d.name} — {d.label}</option>)}</select></label>{unit && <Link href={`/unit/${unit.slug}`}>Lihat profil divisi ↗</Link>}</div>}
       <div className="directory-cards">{visible.map((contact, index) => {
         const message = `Halo ${contact.name}, saya ingin berkonsultasi${unit ? ` tentang ${unit.name} (${unit.label})` : " dengan Mahameru Baja"}.`;
         return <article className="directory-card" key={contact.id} data-reveal>

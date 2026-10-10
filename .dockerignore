@@ -14,5 +14,6 @@ Draft_Permintaan_Mahameru_Baja.pdf
 **/.vercel
 **/.admin-local-access.txt
 .admin-local-access.txt
+.admin-divisions-access.local.txt
 output
 **/*.tsbuildinfo

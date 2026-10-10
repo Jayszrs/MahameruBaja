@@ -37,7 +37,7 @@ export default function BusinessUnits() {
               <p className="business-label">{unit.label}</p>
               <p>{unit.description}</p>
               <Link to={`/unit/${unit.slug}`} className="business-link">
-                Jelajahi unit <span aria-hidden="true">↗</span>
+                Jelajahi divisi <span aria-hidden="true">↗</span>
               </Link>
             </article>
           ))}

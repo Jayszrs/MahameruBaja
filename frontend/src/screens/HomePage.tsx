@@ -7,6 +7,8 @@ import SocialProof from "../components/SocialProof";
 import type { SiteContent } from "../data/siteContent";
 import SocialHub from "../components/SocialHub";
 import Promotions from "../components/Promotions";
+import { divisions } from "../data/divisionContent";
+import { divisionIdentity, mainLogo } from "../data/companyIdentity";
 
 const whatsapp = "https://wa.me/6281218052017";
 
@@ -44,19 +46,22 @@ function BusinessRoutes() {
     <section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading" data-reveal>
-          <div><h2 id="routes-heading">Kami punya 4 divisi. Pilih yang cocok untuk Anda.</h2></div>
-          <p>Setiap pilihan membuka halaman timnya: layanan, contoh pekerjaan, dan nomor kontak.</p>
+          <div><Eyebrow>Jaringan Mahameru Group</Eyebrow><h2 id="routes-heading">Lima divisi.<br />Satu Mahameru, satu solusi.</h2></div>
+          <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
         </div>
         <div className="home-route-list">
-          {businessRoutes.map((route) => (
+          {divisions.map((division, index) => {
+            const route = businessRoutes[index] || { index: "05", tag: division.label, title: division.name, text: division.intro, href: `/unit/${division.slug}`, image: division.hero, imageAlt: division.name };
+            return (
             <Link href={route.href} prefetch={false} className="home-route-card" key={route.index} data-reveal>
               <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
-              <div><small>{route.tag}</small><h3>{route.title}</h3><p>{route.text}</p></div>
-              <strong>Kenali {route.title} <Arrow diagonal /></strong>
+              <Image className="route-division-logo" src={divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} />
+              <div><small>{route.tag}</small><h3>{division.name}</h3><p>{route.text}</p></div>
+              <strong>Buka website divisi <Arrow diagonal /></strong>
             </Link>
-          ))}
+          ); })}
         </div>
         <div className="home-needs" aria-label="Pilih berdasarkan kebutuhan">
           <p>Mulai dari kebutuhan Anda</p>
@@ -65,6 +70,7 @@ function BusinessRoutes() {
             <Link href="/unit/retail-cibitung">Saya cari hollow, pipa, atau plat di Cibitung <Arrow diagonal /></Link>
             <Link href="/unit/trading-proyek">Saya butuh material untuk proyek <Arrow diagonal /></Link>
             <Link href="/unit/laser-cutting">Saya mau potong atau tekuk plat sesuai gambar <Arrow diagonal /></Link>
+            <Link href="/unit/fabrikasi-erection/kontak">Saya ingin konsultasi fabrikasi dan erection <Arrow diagonal /></Link>
           </div>
         </div>
       </div>
@@ -80,7 +86,7 @@ function OrderFlow() {
           <div><h2 id="order-heading">Cara pesan di Mahameru Baja</h2></div>
         </div>
         <ol className="home-order-steps">
-          <li data-reveal><span>01</span><div><h3>Pilih divisi yang sesuai</h3><p>Mahameru Baja, Garuda Marginal Baja, suplai proyek, atau MBI Laser Cutting. Lihat layanan tiap divisi dulu.</p><Link href="#pilih-divisi">Lihat pilihan divisi <Arrow diagonal /></Link></div></li>
+          <li data-reveal><span>01</span><div><h3>Pilih divisi yang sesuai</h3><p>Retail Tambun, Retail Cibitung, MBI Trading, MBI Laser Cutting & Bending, atau MBI Project Fabrikasi & Erection.</p><Link href="#pilih-divisi">Lihat pilihan divisi <Arrow diagonal /></Link></div></li>
           <li data-reveal><span>02</span><div><h3>Kirim kebutuhan</h3><p>Cantumkan material atau gambar, ukuran, jumlah, lokasi, dan tanggal kebutuhan.</p><Link href="/minta-penawaran">Isi permintaan <Arrow diagonal /></Link></div></li>
           <li data-reveal><span>03</span><div><h3>Setujui penawaran</h3><p>Tim mengecek stok atau proses kerja, lalu mengirim harga, perkiraan waktu, dan ketentuan pembayaran. Pesanan diproses setelah Anda setuju.</p><Link href={`${whatsapp}?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20menanyakan%20penawaran%20saya.`} target="_blank" rel="noreferrer">Tanya penawaran saya <Arrow diagonal /></Link></div></li>
           <li data-reveal><span>04</span><div><h3>Terima barang atau hasil kerja</h3><p>Pengiriman material atau penyelesaian pekerjaan mengikuti jadwal yang disepakati.</p><Link href="/kontak">Lihat kontak tim <Arrow diagonal /></Link></div></li>
@@ -128,8 +134,9 @@ function LocationSection() {
     <section className="home-section home-location" aria-labelledby="location-heading">
       <div className="home-shell home-location-grid">
         <div className="home-location-copy" data-reveal>
-          <Eyebrow>Lokasi & pengiriman</Eyebrow>
-          <h2 id="location-heading">Dekat untuk retail.<br />Siap untuk proyek.</h2>
+          <Eyebrow>Lokasi</Eyebrow>
+          <h2 id="location-heading">Dekat. Lengkap.<br />Siap melayani kebutuhan Anda.</h2>
+          <p>Solusi material untuk setiap proyek. Kunjungi tim kami untuk kebutuhan baja, laser cutting, dan CNC bending.</p>
           <p>Jl. Permata Regensi Blok K1 No. 38-39, Tambun Selatan, Kabupaten Bekasi, Jawa Barat.</p>
           <dl>
             <div><dt>Jam layanan</dt><dd>Senin-Sabtu, 07:00-17:00 WIB</dd></div>
@@ -153,7 +160,7 @@ function FinalCallout() {
     <section className="home-final" aria-labelledby="final-heading">
       <div className="home-grid" aria-hidden="true" />
       <div className="home-shell" data-reveal>
-        <Image src="/images/steel-indonesia/company-logo.jpeg" alt="MBI" width={92} height={92} />
+        <Image src={mainLogo} alt="Mahameru Baja Indonesia — MBI Laser Cutting" width={160} height={130} />
         <h2 id="final-heading">Siap kirim daftar material atau gambar kerja?</h2>
         <p>Isi formulir untuk mendapat penawaran, atau tanyakan kebutuhan awal melalui WhatsApp.</p>
         <div className="home-actions">
@@ -166,5 +173,5 @@ function FinalCallout() {
 }
 
 export default function HomePage({ content }: { content: SiteContent }) {
-  return <><HeroCarousel rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><Promotions promotions={content.promotions} /><BusinessRoutes /><LaserFeature /><OrderFlow /><SocialProof content={content} /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /></>;
+  return <><HeroCarousel slides={content.heroSlides} rating={content.rating} ratingDate={content.ratingDate} mapsUrl={content.mapsUrl} /><Promotions promotions={content.promotions} /><LaserFeature /><OrderFlow /><SocialProof content={content} /><SocialHub accounts={content.socialAccounts} posts={content.socialPosts} /><LocationSection /><FinalCallout /><BusinessRoutes /></>;
 }

@@ -13,11 +13,19 @@ export const requestInputSchema = z.object({
   items: z.array(z.object({ productName: z.string().trim().min(1).max(200), specification: z.string().trim().max(1000).optional(), quantity: z.number().positive().max(100000000).optional(), unit: z.string().trim().max(32).optional() })).max(50).default([]),
 });
 export const requestStatuses = ["Baru", "Review kebutuhan", "Menyiapkan penawaran", "Menunggu pelanggan", "Diproses", "Selesai", "Dibatalkan"] as const;
+export const invoiceSchema = z.object({
+  number: z.string().trim().min(1).max(80), issuedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  dueAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal("")),
+  lines: z.array(z.object({ description: z.string().trim().min(1).max(250), quantity: z.number().positive().max(1000000), unit: z.string().trim().max(30), price: z.number().nonnegative().max(1e12) })).min(1).max(40),
+  notes: z.string().max(2000),
+});
+export type Invoice = z.infer<typeof invoiceSchema>;
 export const requestRecordSchema = requestInputSchema.extend({
   id: z.string(), revision: z.number().int().nonnegative(), createdAt: z.string(), updatedAt: z.string(),
   status: z.enum(requestStatuses), notes: z.string().max(5000), archived: z.boolean(),
   idempotencyKey: z.string().max(100).optional(),
+  invoice: invoiceSchema.optional(),
 });
-export const requestPatchSchema = z.object({ revision: z.number().int().nonnegative(), input: requestInputSchema.optional(), status: z.enum(requestStatuses).optional(), notes: z.string().max(5000).optional(), archived: z.boolean().optional() });
+export const requestPatchSchema = z.object({ revision: z.number().int().nonnegative(), input: requestInputSchema.optional(), status: z.enum(requestStatuses).optional(), notes: z.string().max(5000).optional(), archived: z.boolean().optional(), invoice: invoiceSchema.optional() });
 export type RequestInput = z.infer<typeof requestInputSchema>;
 export type RequestRecord = z.infer<typeof requestRecordSchema>;

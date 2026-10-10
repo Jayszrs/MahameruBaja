@@ -7,7 +7,7 @@ export const metadata = {
   title: { absolute: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia" },
   description: "MBI melayani jasa laser cutting plat, CNC bending, fabrikasi, dan supply besi proyek di Bekasi, Tambun, serta Cibitung. Kirim gambar kerja atau cari material dan minta penawaran.",
   alternates: { canonical: "/" },
-  openGraph: { title: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia", description: "Laser cutting plat, CNC bending, fabrikasi, dan material konstruksi dalam empat divisi Mahameru Baja." },
+  openGraph: { title: "Jasa Laser Cutting Bekasi | Mahameru Baja Indonesia", description: "Laser cutting plat, CNC bending, fabrikasi, dan material konstruksi dalam lima divisi Mahameru Baja.", images: [{ url: "/images/laser-cutting-illustration.jpg", width: 1800, height: 1013, alt: "MBI Laser Cutting — ilustrasi proses produksi" }] },
 };
 
 export default async function Page() {

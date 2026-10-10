@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ContactDirectory from "../components/ContactDirectory";
+import DivisionLocation from "../components/DivisionLocation";
 import { internationalPhone, type TeamContact } from "../data/siteContent";
 import { divisions, type Division } from "../data/divisionContent";
 
@@ -15,13 +16,13 @@ export default function BusinessUnitPage({ division, contacts }: { division: Div
       <div className="division-hero-image" data-parallax="0.3"><Image src={division.hero} alt="" fill priority sizes="100vw" /></div>
       <div className="division-hero-overlay" />
       <div className="industrial-container division-hero-content">
-        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/tentang-kami#divisi">Empat divisi</Link><span>/</span><span>{division.name}</span></nav>
+        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/tentang-kami#divisi">Lima divisi</Link><span>/</span><span>{division.name}</span></nav>
         <p className="industrial-eyebrow" data-reveal>{division.label} / {division.area}</p>
         <h1 id="division-title" data-reveal>{division.title}</h1>
         <p data-reveal>{division.intro}</p>
         <div className="division-actions" data-reveal><Link className="industrial-button" href={serviceHref}>{division.slug.startsWith("retail") ? "Jelajahi produk" : "Jelajahi layanan"} ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">Chat tim ↗</a></div>
       </div>
-      <span className="division-hero-index" aria-hidden="true">0{divisions.findIndex((item) => item.slug === division.slug) + 1} / 04</span>
+      <span className="division-hero-index" aria-hidden="true">0{divisions.findIndex((item) => item.slug === division.slug) + 1} / 05</span>
     </section>
 
 
@@ -40,6 +41,7 @@ export default function BusinessUnitPage({ division, contacts }: { division: Div
     <section className="division-faq-section"><div className="industrial-container division-faq-grid"><div data-reveal><p className="industrial-eyebrow">04 / PERTANYAAN</p><h2>Yang sering ditanyakan.</h2></div><div>{division.faq.map((item) => <details key={item.question} data-reveal><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div></div></section>
 
     <ContactDirectory contacts={contacts} divisionSlug={division.slug} />
+    <DivisionLocation slug={division.slug} />
     <section className="division-end-section"><div className="industrial-container division-end-grid" data-reveal><div><p className="industrial-eyebrow">LANJUTKAN PERMINTAAN</p><h2>Siapkan daftar atau gambar. Kami bantu arahkan.</h2></div><div className="division-actions"><Link className="industrial-button" href={`${base}/kontak`}>Minta penawaran ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></section>
     <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Satu ekosistem Mahameru Baja</strong><Link href="/tentang-kami#divisi" className="division-switch">Jelajahi divisi lainnya &#8599;</Link></nav>
   </div>;

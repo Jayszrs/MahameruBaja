@@ -168,7 +168,8 @@ function Clients() {
   const marquee = useMarquee(clientPartners.length, 46);
   return <section className="home-clients" id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
-      <div className="proof-client-heading"><div><h2 id="clients-heading">Dipercayai oleh <em>berbagai perusahaan.</em></h2></div></div>
+      <div className="proof-client-heading"><div><h2 id="clients-heading">Ruang untuk <em>mitra Mahameru.</em></h2></div></div>
+      <p className="client-preview-note">Logo contoh untuk preview tata letak, bukan pernyataan kerja sama. Daftar mitra resmi menunggu konfirmasi.</p>
       <div className="home-client-logo-grid proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
         {[0, 1, 2].flatMap((copy) => clientPartners.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
           <Image src={client.logo} alt={copy === 1 ? `Logo ${client.name}` : ""} width={80} height={80} sizes="80px" draggable={false} />

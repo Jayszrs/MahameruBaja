@@ -1,0 +1,6 @@
+import { divisionWhatsApp } from "../data/companyIdentity";
+export default function DivisionLocation({ slug }: { slug: string }) {
+  const garuda = slug === "retail-cibitung";
+  const query = garuda ? "Garuda Marginal Baja Cibitung Bekasi" : "Toko Besi Mahameru Baja Tambun Selatan";
+  return <section className="division-location home-shell"><div><p className="industrial-eyebrow">LOKASI</p><h2>{garuda ? "Temui tim Garuda di Cibitung." : "Satu kawasan layanan di Tambun."}</h2><p>{garuda ? "Garuda Marginal Baja memiliki lokasi berbeda di Cibitung. Konfirmasikan alamat dan titik kunjungan dengan admin sebelum berangkat." : "Mahameru Baja, MBI Trading, MBI Laser Cutting & Bending, serta MBI Project berada di kawasan yang berdekatan di Tambun Selatan. Hubungi admin untuk titik kunjungan divisi Anda."}</p><a href={divisionWhatsApp(slug)} target="_blank" rel="noopener noreferrer">Tanyakan lokasi ke admin ↗</a><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`} target="_blank" rel="noopener noreferrer">Buka Google Maps ↗</a></div><iframe title={garuda ? "Pencarian lokasi Garuda Marginal Baja di Cibitung" : "Lokasi kawasan Mahameru di Tambun"} src={`https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></section>;
+}

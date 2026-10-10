@@ -6,6 +6,7 @@ import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead, type CreateLeadInput } from "../lib/api"
 import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
+import { divisions } from "../data/divisionContent"
 
 const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
   { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
@@ -40,6 +41,7 @@ export default function LaserCuttingPage() {
   const [submitError, setSubmitError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [leadId, setLeadId] = useState("")
+  const [divisionSlug, setDivisionSlug] = useState("laser-cutting")
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -62,8 +64,8 @@ export default function LaserCuttingPage() {
     setSubmitError("")
     try {
       const input: CreateLeadInput = {
-        kind: "LASER",
-        businessUnitSlug: "laser-cutting",
+        kind: divisionSlug === "laser-cutting" ? "LASER" : divisionSlug === "trading-proyek" ? "TRADING" : "GENERAL",
+        businessUnitSlug: divisionSlug,
         name: String(data.get("nama") || ""),
         company: String(data.get("perusahaan") || "") || undefined,
         whatsapp: String(data.get("whatsapp") || ""),
@@ -100,17 +102,17 @@ export default function LaserCuttingPage() {
           <div className="laser-page-grid">
             <div>
               <p className="industrial-eyebrow">
-                Jasa laser cutting dan layanan material
+                LASER CUTTING / CNC BENDING / FABRIKASI
               </p>
               <h1>
-                Berbagai kebutuhan baja, dari <span>material</span> hingga <span>fabrikasi.</span>
+                Potong. Tekuk.<br /><span>Kerjakan dengan presisi.</span>
               </h1>
               <p>
                 Mahameru Baja menyediakan material baja, laser cutting, CNC bending,
                 dan fabrikasi untuk kebutuhan proyek maupun produksi.
               </p>
               <a className="industrial-button" href="#request">
-                Kirim gambar untuk ditinjau <span aria-hidden="true">↗</span>
+                Konsultasikan kebutuhan <span aria-hidden="true">↗</span>
               </a>
             </div>
             <figure>
@@ -172,11 +174,9 @@ export default function LaserCuttingPage() {
       <section id="request" className="business-section">
         <div className="industrial-container request-grid">
           <div>
-            <h2>Kirim kebutuhan laser cutting atau bending.</h2>
+            <h2>Ceritakan kebutuhan material atau jasa Anda.</h2>
             <p>
-              Lengkapi kebutuhan cutting atau bending. Ringkasan akan disiapkan
-              untuk dikirim melalui WhatsApp kontak utama dan diteruskan ke unit
-              MBI.
+              Pilih divisi dan ceritakan kebutuhan material atau jasa Anda. Ringkasan tersimpan di portal dan dapat dikirim langsung ke WhatsApp admin divisi.
             </p>
             <p className="verification-note">
               Setelah permintaan tersimpan, lanjutkan percakapan melalui WhatsApp.
@@ -184,8 +184,9 @@ export default function LaserCuttingPage() {
             </p>
           </div>
           <form onSubmit={submit} className="laser-request-form">
+            <label className="form-full">Divisi tujuan<select value={divisionSlug} onChange={e => setDivisionSlug(e.target.value)}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
             <label className="form-full">
-              Jenis pekerjaan
+              Kebutuhan / layanan
               <select
                 value={selected}
                 onChange={(event) => setSelected(event.target.value)}
@@ -205,22 +206,22 @@ export default function LaserCuttingPage() {
                 type: "tel",
               },
               { name: "kota", label: "Kota / lokasi proyek", required: true },
-              { name: "material", label: "Jenis material", required: true },
+              { name: "material", label: "Material / produk (jika sudah diketahui)" },
               {
                 name: "ketebalan",
                 label: "Ketebalan (mm)",
-                required: true,
+                required: false,
                 type: "number",
               },
               {
                 name: "ukuran",
-                label: "Ukuran (panjang × lebar)",
-                required: true,
+                label: "Spesifikasi / ukuran (jika diketahui)",
+                required: false,
               },
               {
                 name: "jumlah",
-                label: "Jumlah komponen",
-                required: true,
+                label: "Jumlah kebutuhan",
+                required: false,
                 type: "number",
               },
             ].map((field) => (
@@ -278,7 +279,7 @@ export default function LaserCuttingPage() {
               )}
             </label>
             <label className="form-full">
-              Catatan pekerjaan
+              Detail kebutuhan / pekerjaan
               <textarea
                 name="catatan"
                 rows={3}

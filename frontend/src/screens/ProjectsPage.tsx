@@ -120,7 +120,7 @@ export default function ProjectsPage() {
         <div className="home-shell" data-reveal>
           <p className="home-eyebrow"><span />Mulai kebutuhan berikutnya</p>
           <h2>Butuh material untuk proyek Anda?</h2>
-          <p>Kirim daftar material, volume, lokasi, dan target waktu. Tim kami membantu mengarahkan kebutuhan ke unit yang tepat.</p>
+          <p>Kirim daftar material, volume, lokasi, dan target waktu. Tim kami membantu mengarahkan kebutuhan ke divisi yang tepat.</p>
           <div className="home-actions"><Link to="/minta-penawaran" className="home-button home-button-primary">Minta penawaran →</Link><Link to="/produk" className="home-button home-button-ghost">Lihat produk →</Link></div>
         </div>
       </section>

@@ -3,19 +3,34 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { heroSlides } from "../data/heroSlides";
+import type { HeroSlide } from "../data/heroSlides";
 
-const ROTATION_INTERVAL = 7000;
+const ROTATION_INTERVAL = 4000;
 
-export default function HeroCarousel({ rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { rating: number; ratingDate: string; mapsUrl: string }) {
+export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [ready, setReady] = useState<Set<number>>(() => new Set());
+  const [userPaused, setUserPaused] = useState(false);
+  const [playedVideos, setPlayedVideos] = useState<Set<number>>(() => new Set());
   const [failed, setFailed] = useState<Set<number>>(() => new Set());
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const activeSlide = heroSlides[activeIndex];
-  const nextIndex = (activeIndex + 1) % heroSlides.length;
+  function nextSlide(completed = playedVideos) {
+    for (let offset = 1; offset < heroSlides.length; offset++) {
+      const index = (activeIndex + offset) % heroSlides.length;
+      if (heroSlides[index].type !== "video" || !completed.has(index) && !failed.has(index)) return index;
+    }
+    return activeIndex;
+  }
+  const nextIndex = nextSlide();
+
+  function videoEnded(index: number) {
+    if (index !== activeIndex) return;
+    const completed = new Set(playedVideos).add(index);
+    setPlayedVideos(completed);
+    goToSlide(nextSlide(completed));
+  }
 
   function goToSlide(index: number) {
     if (index === activeIndex) return;
@@ -32,20 +47,19 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
-      if (index === activeIndex && !paused) void video.play().catch(() => undefined);
+      if (index === activeIndex && !paused && !userPaused && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) void video.play().catch(() => { setFailed(current => new Set(current).add(index)); });
       else video.pause();
     });
-  }, [activeIndex, paused]);
+  }, [activeIndex, paused, userPaused]);
 
   useEffect(() => {
-    if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (!ready.has(nextIndex)) return;
+    if (paused || userPaused || nextIndex === activeIndex || window.matchMedia("(prefers-reduced-motion: reduce)").matches || activeSlide.type === "video" && !failed.has(activeIndex)) return;
     const timer = window.setTimeout(() => {
       setPreviousIndex(activeIndex);
       setActiveIndex(nextIndex);
     }, ROTATION_INTERVAL);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, nextIndex, paused, ready]);
+  }, [activeIndex, nextIndex, paused, userPaused, activeSlide.type, failed]);
 
   useEffect(() => {
     if (previousIndex === null) return;
@@ -55,7 +69,7 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
 
   return (
     <section
-      className={`hero-carousel ${paused ? "is-paused" : ""}`}
+      className={`hero-carousel ${paused || userPaused ? "is-paused" : ""}`}
       aria-roledescription="carousel"
       aria-label="Layanan utama Mahameru Baja"
     >
@@ -63,22 +77,22 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
         {heroSlides.map((slide, index) => (index === activeIndex || index === nextIndex || index === previousIndex) && (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
             <div className="hero-carousel-parallax" data-parallax="0.32">
-              {failed.has(index) ? null : slide.type === "video" ? (
+              {failed.has(index) ? <Image unoptimized src={slide.poster || heroSlides.find(s=>s.type === "image")?.media || "/images/laser-cutting-illustration.jpg"} alt="" fill sizes="100vw" /> : slide.type === "video" ? (
                 <video
                   ref={(node) => { videoRefs.current[index] = node; }}
                   src={slide.media}
                   poster={slide.poster}
                   muted
-                  loop
+                  onEnded={() => videoEnded(index)}
                   playsInline
                   preload={index === 0 ? "auto" : "metadata"}
                   style={{ objectPosition: slide.objectPosition }}
-                  onCanPlay={() => setReady(current => new Set(current).add(index))}
-                  onError={() => { setFailed(current => new Set(current).add(index)); setReady(current => new Set(current).add(index)); }}
+                  onError={() => setFailed(current => new Set(current).add(index))}
                 />
               ) : (
                 <Image
                   src={slide.media}
+                  unoptimized={slide.media.startsWith("https://")}
                   alt=""
                   fill
                   priority={index === 0}
@@ -87,8 +101,7 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
                   decoding="async"
                   sizes="100vw"
                   style={{ objectPosition: slide.objectPosition }}
-                  onLoad={() => setReady(current => new Set(current).add(index))}
-                  onError={() => { setFailed(current => new Set(current).add(index)); setReady(current => new Set(current).add(index)); }}
+                  onError={() => setFailed(current => new Set(current).add(index))}
                 />
               )}
             </div>
@@ -143,6 +156,7 @@ export default function HeroCarousel({ rating: googleRating, ratingDate: googleR
       <div className="home-hero-rail" aria-label="Layanan utama">
         <div className="home-shell"><span>Retail besi</span><i /><span>Supply proyek</span><i /><span>Laser cutting</span><i /><span>CNC bending</span><i /><span>Fabrikasi</span></div>
       </div>
+      <button type="button" className="hero-carousel-pause" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan slideshow ▶" : "Jeda slideshow Ⅱ"}</button>
     </section>
   );
 }

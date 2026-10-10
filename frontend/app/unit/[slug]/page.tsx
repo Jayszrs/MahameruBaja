@@ -13,6 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     "retail-cibitung": "Toko Besi Cibitung | Garuda Marginal Baja",
     "trading-proyek": "Supply Baja Proyek | Mahameru Baja Indonesia",
     "laser-cutting": "Laser Cutting & CNC Bending Bekasi | MBI",
+    "fabrikasi-erection": "Fabrikasi & Erection Bekasi | MBI Project",
   };
   return unit ? { title: { absolute: titles[slug] }, description: unit.description, alternates: { canonical: `/unit/${slug}` } } : {};
 }

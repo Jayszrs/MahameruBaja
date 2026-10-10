@@ -1,36 +1,45 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { divisions } from '../data/divisionContent';
+import { divisionIdentity, divisionWhatsApp } from '../data/companyIdentity';
+import { internationalPhone, type TeamContact } from '../data/siteContent';
 
-const actions = [
-  { label: 'Retail Tambun', msg: 'Halo, mohon arahkan saya ke unit Mahameru Baja Retail Tambun.' },
-  { label: 'Retail Cibitung', msg: 'Halo, mohon arahkan saya ke unit Garuda Marginal Baja Retail Cibitung.' },
-  { label: 'Trading Proyek', msg: 'Halo, mohon arahkan saya ke Mahameru Baja Indonesia untuk supply proyek.' },
-  { label: 'Laser Cutting & Bending', msg: 'Halo, mohon arahkan saya ke MBI Laser Cutting & Bending untuk konsultasi gambar dan penawaran.' },
-  { label: 'Tanya Harga', msg: 'Halo Mahameru Baja, saya ingin menanyakan harga material.' },
-  { label: 'Cek Produk', msg: 'Halo Mahameru Baja, saya ingin mengecek ketersediaan produk.' },
-  { label: 'Cek Stok', msg: 'Halo Mahameru Baja, saya ingin mengecek stok material.' },
-  { label: 'Minta Penawaran', msg: 'Halo Mahameru Baja, saya ingin meminta penawaran untuk kebutuhan material proyek saya.' },
-  { label: 'Info Pengiriman', msg: 'Halo Mahameru Baja, saya ingin menanyakan informasi pengiriman material ke lokasi saya.' },
-];
+const actions = divisions.flatMap(division => divisionIdentity[division.slug].admins.map(admin => ({ label: `${division.slug === "laser-cutting" ? "MBI Laser Bending" : division.name} · ${admin.name}`, href: `${divisionWhatsApp(division.slug, admin.name)}?text=${encodeURIComponent(`Halo Admin ${admin.name}, saya ingin konsultasi kebutuhan ${division.label}.`)}` })));
 
 export default function WhatsAppButton() {
   const [open, setOpen] = useState(false);
+  const [liveActions, setLiveActions] = useState(actions);
+  useEffect(() => {
+    if (!open) return;
+    const controller = new AbortController();
+    void fetch('/api/contacts', { signal: controller.signal }).then(r => { if (!r.ok) throw new Error(); return r.json(); }).then((contacts: Array<Pick<TeamContact, 'id' | 'name' | 'whatsapp' | 'divisions'>>) => {
+      setLiveActions(contacts.flatMap(contact => {
+        const assigned = contact.divisions.length ? contact.divisions : [null];
+        return assigned.map(slug => {
+          const division = divisions.find(d => d.slug === slug);
+          const label = `${slug === 'laser-cutting' ? 'MBI Laser Bending' : division?.name || 'Admin Mahameru'} · ${contact.name}`;
+          return { label, href: `https://wa.me/${internationalPhone(contact.whatsapp)}?text=${encodeURIComponent(`Halo Admin ${contact.name}, saya ingin konsultasi kebutuhan ${division?.label || 'Mahameru Baja'}.`)}` };
+        });
+      }));
+    }).catch(() => { /* Keep Excel defaults if the CMS is temporarily unavailable. */ });
+    return () => controller.abort();
+  }, [open]);
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
       {/* Action menu */}
       {open && (
-        <div className="flex flex-col gap-1.5 mb-1 items-end">
-          <p className="max-w-60 p-3 text-[10px] bg-white rounded-lg shadow-lg text-graphite">Pilih unit layanan. Nomor khusus unit belum tersedia; chat diarahkan melalui kontak utama.</p>
-          {actions.slice(0, 4).map(action => (
+        <div className="wa-admin-menu flex flex-col gap-1.5 mb-1 items-end">
+          <p className="max-w-80 p-3 text-xs bg-white rounded-lg shadow-lg text-graphite">Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat.</p>
+          {liveActions.map(action => (
             <a
               key={action.label}
-              href={`https://wa.me/6281218052017?text=${encodeURIComponent(action.msg)}`}
+              href={action.href}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3.5 py-2 bg-white text-graphite text-sm font-semibold rounded-xl shadow-lg hover:bg-[#1A7A3E] hover:text-white transition-colors whitespace-nowrap border border-light-steel"
+              className="flex items-center gap-2 px-3.5 py-2 bg-white text-graphite text-sm font-semibold rounded-xl shadow-lg hover:bg-[#1A7A3E] hover:text-white transition-colors text-left border border-light-steel"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-[#1A7A3E] group-hover:bg-white" />
               {action.label}

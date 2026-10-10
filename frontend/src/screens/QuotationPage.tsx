@@ -158,7 +158,7 @@ export default function QuotationPage() {
       <section className="py-12 bg-surface" aria-label="Form Penawaran">
         <div className="max-w-[860px] mx-auto px-6 lg:px-8">
           <form onSubmit={handleSubmit} noValidate>
-            <div className="bg-white border border-rule p-6 mb-5 rounded-xl"><label htmlFor="unit-tujuan" className="block text-sm font-semibold mb-2">Unit tujuan</label><select id="unit-tujuan" value={unit} onChange={event => setUnit(event.target.value)} className="w-full border border-rule p-3 text-sm">{businessUnits.map(item => <option key={item.slug} value={item.slug}>{item.name} — {item.label}</option>)}</select><p className="text-xs text-muted mt-3">Nomor khusus unit menunggu konfirmasi. Ringkasan dikirim melalui kontak utama.</p>{unit === 'laser-cutting' && <Link to="/jasa#request" className="block text-sm text-brand font-semibold mt-3">Gunakan form khusus laser cutting & bending →</Link>}</div>
+            <div className="bg-white border border-rule p-6 mb-5 rounded-xl"><label htmlFor="unit-tujuan" className="block text-sm font-semibold mb-2">Divisi tujuan</label><select id="unit-tujuan" value={unit} onChange={event => setUnit(event.target.value)} className="w-full border border-rule p-3 text-sm">{businessUnits.map(item => <option key={item.slug} value={item.slug}>{item.name} — {item.label}</option>)}</select><p className="text-xs text-muted mt-3">Ringkasan kebutuhan dikirim langsung ke admin divisi yang Anda pilih.</p>{unit === 'laser-cutting' && <Link to="/jasa#request" className="block text-sm text-brand font-semibold mt-3">Gunakan form khusus laser cutting & bending →</Link>}</div>
 
             {/* Personal info */}
             <div className="bg-white rounded-2xl border border-rule p-6 mb-5">

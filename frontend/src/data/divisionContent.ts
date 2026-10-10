@@ -1,3 +1,4 @@
+import { tradingProducts } from "./companyIdentity";
 export const divisions = [
   {
     slug: "retail-tambun", name: "Mahameru Baja", label: "Retail Tambun", area: "Tambun Selatan, Bekasi",
@@ -22,7 +23,7 @@ export const divisions = [
     slug: "retail-cibitung", name: "Garuda Marginal Baja", label: "Retail Cibitung", area: "Cibitung dan sekitarnya",
     title: "Jalur material untuk Cibitung.",
     intro: "Konsultasikan kebutuhan besi, plat, dan profil baja untuk pekerjaan di Cibitung melalui unit retail Garuda Marginal Baja.",
-    description: "Garuda Marginal Baja adalah jalur retail untuk pelanggan di Cibitung dan kawasan sekitarnya. Halaman ini membantu Anda mencari material dan mengirim permintaan ke unit yang tepat. Detail lokasi, stok, harga, dan jam layanan unit dikonfirmasi langsung oleh tim.",
+    description: "Garuda Marginal Baja adalah jalur retail untuk pelanggan di Cibitung dan kawasan sekitarnya. Halaman ini membantu Anda mencari material dan mengirim permintaan ke divisi yang tepat. Detail lokasi, stok, harga, dan jam layanan divisi dikonfirmasi langsung oleh tim.",
     hero: "/images/steel-indonesia/hollow.jpg",
     images: [
       { src: "/images/steel-indonesia/plat-hitam.jpg", title: "Plat besi" },
@@ -38,7 +39,7 @@ export const divisions = [
     primary: { label: "Lihat pilihan material", href: "/produk" }, quote: "/minta-penawaran?unit=retail-cibitung",
   },
   {
-    slug: "trading-proyek", name: "Mahameru Baja Indonesia", label: "Trading & supply proyek", area: "Bekasi dan area proyek",
+    slug: "trading-proyek", name: "MBI Trading", label: "Trading & supply proyek", area: "Tambun Selatan, Bekasi",
     title: "Pengadaan material proyek dengan alur yang jelas.",
     intro: "Kirim daftar material, spesifikasi, volume, lokasi, serta target waktu. Tim meninjau permintaan sebelum membuat penawaran.",
     description: "Mahameru Baja Indonesia menangani kebutuhan trading dan suplai material untuk proyek. Pengadaan volume besar memerlukan pengecekan stok, penawaran, dokumen pemesanan, serta koordinasi pengiriman. Informasi lengkap sejak awal membantu tim menyiapkan tindak lanjut yang tepat.",
@@ -48,7 +49,7 @@ export const divisions = [
       { src: "/images/steel-indonesia/plat-hitam.jpg", title: "Plat baja" },
       { src: "/images/steel-indonesia/besi-beton.jpg", title: "Besi beton" },
     ],
-    offerings: ["Daftar kebutuhan proyek", "Pengecekan & penawaran", "Dokumen pemesanan", "Koordinasi suplai & pengiriman"],
+    offerings: tradingProducts,
     process: ["Kirim daftar material dan lokasi", "Review stok atau pengadaan", "Setujui penawaran dan jadwal"],
     faq: [
       { question: "Bisa mengirim banyak item material?", answer: "Bisa. Kirim daftar barang, spesifikasi, ukuran, jumlah, lokasi proyek, dan tanggal kebutuhan." },
@@ -57,7 +58,7 @@ export const divisions = [
     primary: { label: "Kirim kebutuhan proyek", href: "/minta-penawaran?unit=trading-proyek" }, quote: "/minta-penawaran?unit=trading-proyek",
   },
   {
-    slug: "laser-cutting", name: "MBI Laser Cutting", label: "Laser cutting & CNC bending", area: "Bekasi, Tambun & Cibitung",
+    slug: "laser-cutting", name: "MBI Laser Cutting & Bending", label: "Laser cutting & CNC bending", area: "Tambun Selatan, Bekasi",
     title: "Jasa laser cutting plat dari gambar ke komponen.",
     intro: "Mulai dari gambar kerja. Tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
     description: "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, CNC bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
@@ -74,6 +75,18 @@ export const divisions = [
       { question: "Apakah bisa cutting sekaligus bending?", answer: "Bisa diajukan bersama. Kelayakan proses serta biaya dikonfirmasi setelah review gambar." },
     ],
     primary: { label: "Lihat jasa laser cutting", href: "/jasa#laser-cutting" }, quote: "/jasa#request",
+  },
+  {
+    slug: "fabrikasi-erection", name: "MBI Project Fabrikasi & Erection", label: "Fabrikasi & erection", area: "Tambun Selatan, Bekasi",
+    title: "Dari fabrikasi hingga pemasangan di lapangan.",
+    intro: "Diskusikan gambar struktur, volume pekerjaan, lokasi, dan jadwal langsung dengan admin proyek kami.",
+    description: "MBI Project menangani konsultasi kebutuhan fabrikasi dan erection. Tim meninjau gambar kerja, spesifikasi, kondisi lapangan, dan keselamatan sebelum menyepakati ruang lingkup dan jadwal pekerjaan.",
+    hero: "/images/hero-steel-warehouse-v2.png",
+    images: [{ src: "/images/hero-steel-warehouse-v2.png", title: "Ilustrasi material struktur baja" }, { src: "/images/steel-indonesia/plat-hitam.jpg", title: "Plat untuk fabrikasi" }],
+    offerings: ["Fabrikasi struktur baja", "Erection & pemasangan", "Konsultasi gambar struktur", "Koordinasi pekerjaan lapangan"],
+    process: ["Hubungi admin proyek", "Review gambar dan lokasi", "Sepakati penawaran dan jadwal"],
+    faq: [{ question: "Bagaimana membahas pekerjaan struktur?", answer: "Hubungi admin Andi atau Andra dengan gambar struktur, lokasi proyek, volume, dan target jadwal. Kapasitas serta ruang lingkup dikonfirmasi tim." }],
+    primary: { label: "Hubungi admin proyek", href: "/unit/fabrikasi-erection/kontak" }, quote: "/minta-penawaran?unit=fabrikasi-erection",
   },
 ] as const;
 

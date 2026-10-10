@@ -19,7 +19,7 @@ export const businessUnits = [
   },
   {
     slug: "trading-proyek",
-    name: "Mahameru Baja Indonesia",
+    name: "MBI Trading",
     label: "Trading & supply proyek",
     category: "Pengadaan / proyek",
     description:
@@ -35,6 +35,7 @@ export const businessUnits = [
       "Dari gambar teknik ke kebutuhan produksi: cutting plat, bending, komponen custom dan fabrikasi.",
     destination: "/jasa#laser-cutting",
   },
+  { slug: "fabrikasi-erection", name: "MBI Project Fabrikasi & Erection", label: "Fabrikasi & erection", category: "Struktur / proyek", description: "Konsultasi gambar struktur, fabrikasi dan pemasangan langsung dengan admin proyek.", destination: "/unit/fabrikasi-erection/kontak" },
 ]
 
 export const laserImage = "/images/laser-cutting-illustration.jpg"
@@ -44,6 +45,9 @@ export const laserServices = [
   "Laser Cutting + Bending",
   "Fabrikasi",
   "Pekerjaan Proyek",
+  "Pengadaan Material",
+  "Konsultasi Material",
+  "Pengiriman Material",
 ]
 export const laserFAQs = [
   {

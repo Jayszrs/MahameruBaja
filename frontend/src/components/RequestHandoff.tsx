@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { divisionWhatsApp } from "../data/companyIdentity";
 import type { CreateLeadInput } from "../lib/api";
 
-export default function RequestHandoff({ input, id, phone = "6281218052017" }: { input: CreateLeadInput; id: string; phone?: string }) {
+export default function RequestHandoff({ input, id, phone = "" }: { input: CreateLeadInput; id: string; phone?: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
@@ -28,6 +29,7 @@ export default function RequestHandoff({ input, id, phone = "6281218052017" }: {
     return () => { stopped = true; if (objectUrl) URL.revokeObjectURL(objectUrl); };
   }, [input, id, retry]);
 
+  phone ||= divisionWhatsApp(input.businessUnitSlug || "laser-cutting").split("/").at(-1)!;
   const details = input.items?.map(item => `- ${item.productName}: ${item.quantity ?? "konfirmasi"} ${item.unit || ""}`).join("\n") || input.request || "Mohon tindak lanjut penawaran.";
   const baseMessage = `Halo Mahameru Baja, saya ${input.name}. Nomor permintaan saya ${id}.\nDivisi: ${input.businessUnitSlug || "retail-tambun"}\n${details}`;
   const message = `${baseMessage}\nSaya akan melampirkan PDF ringkasan kebutuhan. Mohon review spesifikasi, harga, dan jadwal.`;

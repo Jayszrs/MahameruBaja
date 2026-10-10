@@ -19,23 +19,29 @@ export function socialEmbedUrl(platform: SocialPlatform, value: string) {
     const id = url.pathname.match(/\/video\/(\d+)/)?.[1];
     return id ? `https://www.tiktok.com/player/v1/${id}?autoplay=0&description=1` : null;
   }
-  return null; // Instagram cards link to the original post; no unverified embed scripts.
+  if (platform === "instagram") {
+    const code = url.pathname.match(/^\/(?:p|reel|tv)\/([\w-]+)\/?$/)?.[1];
+    return code ? `https://www.instagram.com/p/${code}/embed/` : null;
+  }
+  return null;
 }
 export const socialAccountSchema = z.object({ platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean() }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "URL harus sesuai platform dan menggunakan HTTPS" });
 });
 export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), published: z.boolean() }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan tautan unggahan sesuai platform" });
-  if (value.image && !/^\/images\/[\w/ .-]+$/.test(value.image)) {
+  if (value.image && !/^\/(?:images|media)\/[\w/ .-]+$/.test(value.image)) {
     try { if (new URL(value.image).protocol !== "https:") throw new Error(); }
     catch { ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["image"], message: "Gambar harus /images/... atau URL HTTPS" }); }
   }
 });
 export const defaultSocialAccounts: SocialAccount[] = [
-  { platform: "instagram", handle: "@mahamerubajaindonesia", url: "https://www.instagram.com/mahamerubajaindonesia/", published: true },
-  { platform: "tiktok", handle: "@mahameru.baja.ind", url: "https://www.tiktok.com/@mahameru.baja.ind", published: true },
-  { platform: "youtube", handle: "@MahameruBajaIndonesia", url: "https://www.youtube.com/@MahameruBajaIndonesia", published: true },
-  { platform: "facebook", handle: "", url: "", published: false },
+  { platform: "instagram", handle: "@mbilasercutting", url: "https://www.instagram.com/mbilasercutting/", published: true },
+  { platform: "instagram", handle: "@gmbgarudaofficial", url: "https://www.instagram.com/gmbgarudaofficial/", published: true },
+  { platform: "tiktok", handle: "Mahameru baja", url: "", published: false },
+  { platform: "tiktok", handle: "Garuda Marginal Baja", url: "", published: false },
+  { platform: "youtube", handle: "Mahameru Baja Indonesia", url: "", published: false },
+  { platform: "youtube", handle: "Garuda Marginal Baja Official", url: "", published: false },
 ];
 // Tautan video terdahulu tidak tersedia pada embed; editor dapat menerbitkan ulang setelah diverifikasi.
 export const defaultSocialPosts: SocialPost[] = [{ id: "youtube-IP6GsNxExVU", platform: "youtube", title: "Proses laser cutting", caption: "Video belum diverifikasi.", url: "https://www.youtube.com/shorts/IP6GsNxExVU", image: "", published: false }];

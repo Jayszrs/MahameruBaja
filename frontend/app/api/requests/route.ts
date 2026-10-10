@@ -25,6 +25,7 @@ export async function POST(request: Request) {
     const saved = await createRequest(result.data, idempotencyKey);
     return Response.json({ data: { id: saved.id, status: saved.status } }, { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
+    console.error("Request storage failure", { code: (error as NodeJS.ErrnoException).code || ((error as Error).message === "BUSY" ? "BUSY" : "UNKNOWN") });
     return Response.json({ message: (error as Error).message === "BUSY" ? "Penyimpanan sedang sibuk. Silakan coba kembali." : "Permintaan belum tersimpan. Coba kembali." }, { status: 503 });
   }
 }

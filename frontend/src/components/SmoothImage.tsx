@@ -20,6 +20,7 @@ export default function SmoothImage({ src, alt, sizes, eager = false, className 
   return (
     <Image
       src={src}
+      unoptimized={src.startsWith("https://")}
       alt={alt}
       fill
       sizes={sizes}

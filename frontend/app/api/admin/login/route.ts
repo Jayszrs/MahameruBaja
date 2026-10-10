@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   }
   attempts.delete(ip);
   const response = NextResponse.redirect(new URL("/admin", origin), 303);
-  response.cookies.set(ADMIN_COOKIE, createAdminSession(), adminCookieOptions);
+  response.cookies.set(ADMIN_COOKIE, createAdminSession(email), adminCookieOptions);
   response.headers.set("Cache-Control", "no-store");
   return response;
 }

@@ -1,10 +1,11 @@
 import "server-only";
-import { mkdir, readFile, writeFile, rename, unlink } from "node:fs/promises";
+import { readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { requestRecordSchema, type RequestInput, type RequestRecord } from "../data/requests";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
+import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 
 const directory = process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data");
 const file = path.join(directory, "requests.json");
@@ -22,20 +23,15 @@ async function mutate<T>(update: (records: RequestRecord[]) => { records: Reques
     }
     throw new Error("BUSY");
   }
-  await mkdir(directory, { recursive: true });
-  const lock = `${file}.lock`; const temp = `${file}.${randomUUID()}.tmp`;
-  for (let attempt = 0; attempt < 6; attempt++) {
-    try { await writeFile(lock, "locked", { flag: "wx" }); break; }
-    catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
-      if (attempt === 5) throw new Error("BUSY");
-      await new Promise(resolve => setTimeout(resolve, 20 * (attempt + 1)));
-    }
-  }
-  try {
-    const { records, result } = update(await readRequests());
-    await writeFile(temp, JSON.stringify(records), "utf8"); await rename(temp, file); return result;
-  } finally { await unlink(temp).catch(() => {}); await unlink(lock).catch(() => {}); }
+  return withCmsFileLock(file, async () => {
+    const temp = `${file}.${randomUUID()}.tmp`;
+    try {
+      const { records, result } = update(await readRequests());
+      await writeFile(temp, JSON.stringify(records), "utf8");
+      await replaceCmsFile(temp, file);
+      return result;
+    } finally { await unlink(temp).catch(() => {}); }
+  });
 }
 export async function createRequest(input: RequestInput, idempotencyKey?: string) {
   return mutate(records => {
@@ -46,10 +42,11 @@ export async function createRequest(input: RequestInput, idempotencyKey?: string
     return { records: [record, ...records], result: record };
   });
 }
-export async function updateRequest(id: string, revision: number, update: Partial<RequestInput> & { status?: RequestRecord["status"]; notes?: string; archived?: boolean }) {
+export async function updateRequest(id: string, revision: number, update: Partial<RequestInput> & { status?: RequestRecord["status"]; notes?: string; archived?: boolean; invoice?: RequestRecord["invoice"] }, allowedDivision?: string | null) {
   return mutate(records => {
     const current = records.find(r => r.id === id);
     if (!current) throw new Error("NOT_FOUND");
+    if (allowedDivision && (current.businessUnitSlug !== allowedDivision || update.businessUnitSlug && update.businessUnitSlug !== allowedDivision)) throw new Error("FORBIDDEN");
     if (current.revision !== revision) throw new Error("CONFLICT");
     const saved = requestRecordSchema.parse({ ...current, ...update, id, revision: revision + 1, updatedAt: new Date().toISOString() });
     return { records: records.map(r => r.id === id ? saved : r), result: saved };
