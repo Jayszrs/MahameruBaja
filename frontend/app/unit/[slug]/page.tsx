@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import BusinessUnitPage from "../../../src/screens/BusinessUnitPage";
 import { divisions } from "../../../src/data/divisionContent";
 import { connection } from "next/server";
-import { readSiteContent } from "../../../src/lib/siteContentStore";
+import { readPublicSiteContent } from "../../../src/lib/siteContentStore";
 
 export function generateStaticParams() { return divisions.map((unit) => ({ slug: unit.slug })); }
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
@@ -22,6 +22,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const division = divisions.find((unit) => unit.slug === slug);
   if (!division) notFound();
-  const content = await readSiteContent();
+  const content = await readPublicSiteContent();
   return <BusinessUnitPage division={division} contacts={content.contacts.filter(c => c.published)} content={content} />;
 }

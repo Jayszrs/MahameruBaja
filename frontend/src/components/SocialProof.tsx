@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { SiteContent } from "../data/siteContent";
 import { googleReviews } from "../data/googleReviews";
 import { clientPartners } from "../data/clientPartners";
+import { supplierPartners } from "../data/supplierPartners";
 
 function useMarquee(itemCount: number, pixelsPerSecond: number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -169,8 +170,8 @@ function Clients() {
   const marquee = useMarquee(clientPartners.length, 46);
   return <section className="home-clients" id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
-      <div className="proof-client-heading"><div><h2 id="clients-heading">Ruang untuk <em>mitra Mahameru.</em></h2></div></div>
-      <p className="client-preview-note">Logo contoh untuk preview tata letak, bukan pernyataan kerja sama. Daftar mitra resmi menunggu konfirmasi.</p>
+      <div className="proof-client-heading"><div><h2 id="clients-heading">Kepercayaan yang tumbuh<br /><em>melalui kerja sama.</em></h2></div></div>
+      <p className="partnership-intro">Perusahaan yang telah bekerja sama dengan Mahameru Baja Indonesia dalam memenuhi kebutuhan material dan pekerjaan proyek.</p>
       <div className="home-client-logo-grid proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
         {[0, 1, 2].flatMap((copy) => clientPartners.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
           <Image src={client.logo} alt={copy === 1 ? `Logo ${client.name}` : ""} width={80} height={80} sizes="80px" draggable={false} />
@@ -181,6 +182,13 @@ function Clients() {
   </section>;
 }
 
+function Suppliers() {
+  return <section className="home-suppliers" id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
+    <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Didukung jaringan pemasok material baja untuk kebutuhan retail, fabrikasi, dan proyek.</p></div>
+    <div className="supplier-logo-grid">{supplierPartners.map(supplier => <figure key={supplier.id}><Image src={supplier.logo} alt={supplier.name ? `Logo ${supplier.name}` : "Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="(max-width: 600px) 42vw, 200px" /><figcaption>{supplier.name || "\u00a0"}</figcaption></figure>)}</div>
+  </div></section>;
+}
+
 export default function SocialProof({ content, companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: SiteContent; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
-  return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <Clients />}</>;
+  return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <><Clients /><Suppliers /></>}</>;
 }

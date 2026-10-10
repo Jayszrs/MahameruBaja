@@ -20,6 +20,7 @@ export default function Footer({ division }: { division?: Division }) {
     <nav aria-label="Website divisi"><h3>Website divisi</h3>{divisions.map(division => <Link key={division.slug} href={`/unit/${division.slug}`}>{division.name} ↗</Link>)}</nav>
     <nav aria-label="Navigasi perusahaan"><h3>{division ? "Jelajahi divisi" : "Perusahaan"}</h3>{division ? divisionNavigation(division).map(link => <Link href={link.href} key={link.href}>{link.label}</Link>) : <><Link href="/tentang-kami">Tentang kami</Link><Link href="/produk">Katalog produk</Link><Link href="/jasa">Jasa laser cutting & bending</Link><Link href="/proyek">Galeri pekerjaan</Link><Link href="/informasi">Artikel</Link><Link href="/sosial-media">Sosial media</Link></>}</nav>
     <nav aria-label="Bantuan"><h3>Bantuan</h3><Link href="/#cara-pesan">Cara pemesanan</Link><Link href={quote}>Permintaan penawaran</Link><Link href={contactHref}>Hubungi kami</Link><Link href="/admin/login">Portal admin</Link></nav></div>
+    {division && <div className="company-footer-wordmark" aria-label={`Identitas ${division.name}`}><span>{division.name}</span><span className="company-footer-wordmark-dot" aria-hidden="true">.</span></div>}
     <div className="company-footer-bottom"><p>© {new Date().getFullYear()} Mahameru Baja Indonesia.</p><div><Link href="/kebijakan-privasi">Kebijakan privasi</Link><Link href="/syarat-ketentuan">Syarat & ketentuan</Link></div></div>
   </div></footer>;
 }

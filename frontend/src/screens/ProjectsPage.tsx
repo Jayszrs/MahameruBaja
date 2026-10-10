@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { laserImage } from "../data/business";
+import ProjectAlbums from "../components/ProjectAlbums";
+import type { GalleryProject } from "../data/projectGallery";
 
 const filters = ["Semua", "Laser Cutting & Bending", "Retail", "Mesin", "Produk", "Warehouse", "Ilustrasi"];
 
@@ -25,7 +27,7 @@ const galleryItems = [
 
 type GalleryItem = (typeof galleryItems)[number];
 
-export default function ProjectsPage() {
+export default function ProjectsPage({ projects = [] }: { projects?: GalleryProject[] }) {
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
   const [armedId, setArmedId] = useState<number | null>(null);
@@ -68,6 +70,8 @@ export default function ProjectsPage() {
           <p>Galeri Mahameru Baja menampilkan material, aktivitas toko, proses produksi, hingga hasil pekerjaan yang kami kerjakan.</p>
         </div>
       </section>
+
+      <ProjectAlbums projects={projects} />
 
       <section className="projects-gallery" aria-labelledby="gallery-heading">
         <div className="home-shell">

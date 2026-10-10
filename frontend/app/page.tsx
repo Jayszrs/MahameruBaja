@@ -1,6 +1,6 @@
 import HomePage from "../src/screens/HomePage";
 import { connection } from "next/server";
-import { readSiteContent } from "../src/lib/siteContentStore";
+import { readPublicSiteContent } from "../src/lib/siteContentStore";
 import { siteOrigin } from "../src/lib/siteOrigin";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 
 export default async function Page() {
   await connection();
-  const stored = await readSiteContent();
+  const stored = await readPublicSiteContent();
   const content = { ...stored, contacts: [], reviews: stored.reviews.filter(r => r.published), socialAccounts: stored.socialAccounts.filter(a => a.published), socialPosts: stored.socialPosts.filter(p => p.published) };
   const base = siteOrigin();
   const localBusiness = {

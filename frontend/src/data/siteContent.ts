@@ -6,6 +6,7 @@ import { divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
 import { defaultGarudaReviews } from "./divisionLocations";
 import { inventoryListSchema, defaultInventory } from "./inventory";
+import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -42,6 +43,7 @@ export const siteContentSchema = z.object({
   showcaseVersion: z.number().int().min(0).default(0),
   garudaReviewVersion: z.number().int().min(0).default(0),
   inventory: inventoryListSchema.default(defaultInventory),
+  galleryProjects: galleryProjectsSchema.default(defaultGalleryProjects),
   heroSlides: z.array(heroSlideSchema).min(1).max(10).default(heroSlides),
   contacts: z.array(contactSchema).max(40),
   reviews: z.array(reviewSchema).max(200),
@@ -66,6 +68,7 @@ export type TeamContact = SiteContent["contacts"][number];
 export const defaultSiteContent: SiteContent = {
   garudaReviews: defaultGarudaReviews,
   inventory: defaultInventory,
+  galleryProjects: defaultGalleryProjects,
   identityVersion: 1, showcaseVersion: 1, garudaReviewVersion: 1, heroSlides,
   revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: googleReviewsCapturedAt,
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,

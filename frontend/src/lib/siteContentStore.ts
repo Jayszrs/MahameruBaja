@@ -52,6 +52,10 @@ export async function readSiteContent(): Promise<SiteContent> {
     throw error;
   }
 }
+export async function readPublicSiteContent(): Promise<SiteContent> {
+  const content = await readSiteContent();
+  return { ...content, galleryProjects: content.galleryProjects.filter(p => p.published && p.photos.length) };
+}
 export async function writeSiteContent(input: SiteContent, base?: SiteContent) {
   if (usingPreviewBlob()) {
     const current = await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent);
