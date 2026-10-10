@@ -63,6 +63,12 @@ export const siteContentSchema = z.object({
 });
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
+export type ReviewContent = Pick<SiteContent, "rating" | "reviewCount" | "ratingDate" | "mapsUrl" | "reviews">;
+// Only review fields cross the reviews widget's client boundary. Do not ship
+// unrelated division projects, contacts or other CMS content in its props.
+export function reviewContent(content: ReviewContent): ReviewContent {
+  return { rating: content.rating, reviewCount: content.reviewCount, ratingDate: content.ratingDate, mapsUrl: content.mapsUrl, reviews: content.reviews };
+}
 
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.

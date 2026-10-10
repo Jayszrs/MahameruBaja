@@ -6,8 +6,24 @@ import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
+import postcss from "postcss";
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const root = path.dirname(frontend);
+// CSS structure checks, not a substitute for viewport/browser rendering.
+const polishCss = postcss.parse(await readFile(path.join(frontend,"src/unified-home.css"),"utf8"));
+const collageCss = postcss.parse(await readFile(path.join(frontend,"src/project-gallery.css"),"utf8"));
+const hasDeclaration = (css, selector, property, value) => {
+  let matched = false;
+  css.walkRules(rule => { if (rule.selector.includes(selector)) rule.walkDecls(property, declaration => { if (declaration.value === value) matched = true; }); });
+  return matched;
+};
+assert.ok(hasDeclaration(polishCss,".home-promos-track::-webkit-scrollbar-button","display","none"));
+assert.ok(hasDeclaration(polishCss,".project-album-ribbon::-webkit-scrollbar-button","display","none"));
+assert.ok(hasDeclaration(polishCss,".project-album-grid.project-album-ribbon","overflow-x","auto"));
+assert.ok(hasDeclaration(collageCss,".division-collage-grid","display","grid") && hasDeclaration(collageCss,".division-collage-primary","grid-row","1 / 3"));
+assert.ok(hasDeclaration(collageCss,".division-collage-grid","min-height","255px"),"Small-screen collage tiles retain non-zero height");
+assert.ok(hasDeclaration(polishCss,".home-intro .home-vision p","font-size","17px"),"Mobile vision/mission body text remains readable");
+console.log("PASS: horizontal scroll without native arrows, stable three-tile collage and responsive typography CSS");
 await mkdir(path.join(root,"tmp"),{recursive:true});
 const directory=await mkdtemp(path.join(root,"tmp","revision-qa-"));
 const origin="http://localhost:3162";
@@ -54,6 +70,12 @@ try{
   assert.deepEqual(base.garudaReviews.reviews.map(r => r.author), ["Anang Ardiantoro", "Iqbal Haryadi", "Heni Wulansari"], "Only the three public cards from the supplied Garuda HTML");
   assert.ok(base.garudaReviews.reviews.every(r => r.rating === 5 && r.url === base.garudaReviews.mapsUrl && r.authorUrl.startsWith("https://www.google.com/maps/contrib/")));
   const sharedHomeHtml = await (await call("/")).text();
+  assert.equal((sharedHomeHtml.match(/class="directory-card"/g) || []).length,10,"All ten published contacts appear on the main homepage");
+  assert.ok(!sharedHomeHtml.includes("home-offering-ribbon"),"Remove the unsolicited five-division service ribbon from the main homepage");
+  assert.ok(!sharedHomeHtml.includes("home-gallery-strip") && sharedHomeHtml.includes("project-album-grid project-album-ribbon"),"Replace illustrative gallery preview with actual project albums");
+  assert.equal((sharedHomeHtml.match(/aria-label="Buka album /g) || []).length,11,"Eleven published project albums are clickable from the homepage");
+  assert.ok(sharedHomeHtml.includes("Buka album Lantai Mezanin, 9 foto"));
+  assert.ok(sharedHomeHtml.includes('data-collage-images="4"') && sharedHomeHtml.includes('aria-label="Buka logo MBI Laser Cutting &amp; Bending"'),"Main collage has three images plus its white-backed logo");
   const homeSections = html => [...html.matchAll(/data-home-section="([^"]+)"/g)].map(match => match[1]);
   assert.ok(sharedHomeHtml.includes('data-home-template="mahameru"'));
   assert.ok(sharedHomeHtml.includes('aria-label="Identitas Mahameru Baja Indonesia"') && sharedHomeHtml.includes('class="company-footer-wordmark"'));
@@ -61,12 +83,17 @@ try{
   const aboutHtml = await (await call("/tentang-kami")).text();
   assert.equal((aboutHtml.match(/aria-label="Kolase /g) || []).length,5,"Five individual about-page collages");
   assert.ok(aboutHtml.includes("division-collage-detail-0") && aboutHtml.includes("collage-composition-1"));
+  assert.equal((aboutHtml.match(/class="division-collage-photo /g) || []).length,15,"All five about-page collages render three independently clickable image tiles");
+  assert.ok([...aboutHtml.matchAll(/data-collage-images="(\d+)"/g)].every(match => Number(match[1]) >= 3));
   for (const slug of slugs) {
     const divisionHtml=await (await call(`/unit/${slug}`)).text();
     assert.ok(divisionHtml.includes("hero-carousel") && divisionHtml.includes("site-navbar") && divisionHtml.includes("company-footer"),slug+" uses shared site UI");
     assert.ok(divisionHtml.includes("VISI MAHAMERU GROUP") && divisionHtml.includes("MISI DIVISI"),slug+" has vision and mission");
     assert.ok(divisionHtml.includes("data-parallax"));
-    assert.deepEqual(homeSections(divisionHtml),homeSections(sharedHomeHtml),slug+" shares the complete main homepage section order");
+    assert.deepEqual(homeSections(divisionHtml).filter(section => section !== "offerings"),homeSections(sharedHomeHtml),slug+" shares the main section order; division-specific service choices remain only on unit sites");
+    assert.ok(divisionHtml.includes("project-album-ribbon"),slug+" uses the same project ribbon layout");
+    const unitAbout = await (await call(`/unit/${slug}/tentang`)).text();
+    assert.ok(unitAbout.includes('class="division-collage-grid"') && (unitAbout.match(/class="division-collage-photo /g) || []).length === 3,slug+" about page uses the same clickable collage");
     assert.ok(!divisionHtml.includes('href="/admin/login"'),slug+" has no public portal link");
     const footerMarkup = divisionHtml.slice(divisionHtml.indexOf('<footer class="company-footer"'));
     assert.ok(footerMarkup.includes('class="company-footer-wordmark"'),slug+" restores large footer identity");
@@ -193,6 +220,9 @@ try{
   assert.equal((await call("/api/admin/content","PUT",{...base,_base:base,ratingDate:"QA overwritten"},owner)).status,409);
   console.log("PASS: independent CMS edits merge, same-section conflict rejected");
   const contactBase=await (await call("/api/admin/content","GET",undefined,owner)).json();const hiddenId=contactBase.contacts[0].id;contactBase.contacts[0].published=false;assert.equal((await call("/api/admin/content","PUT",contactBase,owner)).status,200);const liveContacts=await (await call("/api/contacts")).json();assert.equal(liveContacts.length,9);assert.ok(liveContacts.every(c=>c.id!==hiddenId));
+  const hiddenContactHome = await (await call("/")).text();
+  assert.equal((hiddenContactHome.match(/class="directory-card"/g) || []).length,9,"Unpublished contacts stay hidden on the homepage");
+  assert.ok(!hiddenContactHome.includes(hiddenId),"Private contact records are not sent in main-home client props");
   const media=new FormData();media.append("media",new Blob([await readFile(path.join(frontend,"public/images/brand/mbi-laser.png"))],{type:"image/png"}),"qa-logo.png");
   const uploaded=await fetch(origin+"/api/admin/media",{method:"POST",headers:{Origin:origin,Cookie:owner},body:media});assert.equal(uploaded.status,200);const asset=await uploaded.json();
   const full=await call(asset.url);assert.equal(full.status,200);assert.equal(full.headers.get("content-type"),"image/png");
@@ -229,6 +259,10 @@ try{
   assert.equal((await call("/api/admin/content", "PUT", duplicatePhoto, owner)).status,400,"Duplicate photo IDs rejected");
   const foreignCover = structuredClone(gallerySaved); foreignCover.galleryProjects.at(-1).coverId = "unrelated-photo";
   assert.equal((await call("/api/admin/content", "PUT", foreignCover, owner)).status,400,"Cover must belong to album");
+  for (const route of ["/", "/tentang-kami", "/unit/fabrikasi-erection", "/unit/fabrikasi-erection/tentang"]) {
+    const privateHtml = await (await call(route)).text();
+    assert.ok(!privateHtml.includes("QA private project title") && !privateHtml.includes("qa-private-album"),route+" does not expose unpublished albums in UI or client props");
+  }
   const expanded = structuredClone(gallerySaved); const changedAlbum = expanded.galleryProjects.at(-1);
   changedAlbum.title = "QA published project title"; changedAlbum.published = true; changedAlbum.photos.reverse();
   const galleryPut = await call("/api/admin/content", "PUT", {...expanded,_base:gallerySaved}, sessions[4]); assert.equal(galleryPut.status,200);
@@ -237,6 +271,13 @@ try{
   assert.equal(publishedGallery.galleryProjects.at(-1).coverId,"qa-photo-1");
   const updatedPortfolio = await (await call("/proyek")).text();
   assert.ok(updatedPortfolio.includes("QA published project title") && updatedPortfolio.includes("QA caption 1") && updatedPortfolio.includes(asset.url),"Uploaded images/captions persist in multi-photo project");
+  const publishedHome = await (await call("/")).text();
+  assert.ok(publishedHome.includes(`Buka album ${changedAlbum.title}, ${changedAlbum.photos.length} foto`),"Published CMS project appears in main-home ribbon");
+  const publishedUnitHome = await (await call("/unit/fabrikasi-erection")).text();
+  assert.ok(publishedUnitHome.includes(`Buka album ${changedAlbum.title}, ${changedAlbum.photos.length} foto`),"Assigned project appears in the division-home ribbon");
+  assert.ok((await (await call("/unit/fabrikasi-erection/tentang")).text()).includes("QA caption 1"),"CMS photos and captions are included in the assigned about collage");
+  assert.ok(!(await (await call("/unit/retail-cibitung")).text()).includes("QA published project title"),"Other division homes do not borrow the project");
+
   assert.ok((await (await call("/unit/fabrikasi-erection/galeri")).text()).includes("QA published project title"));
   assert.ok(!(await (await call("/unit/retail-cibitung/galeri")).text()).includes("QA published project title"),"Project album only appears under assigned division");
   assert.equal((await call("/api/admin/content", "PUT", {...gallerySaved,galleryProjects:gallerySaved.galleryProjects.slice(1),_base:gallerySaved},owner)).status,409,"Concurrent gallery edits cannot silently overwrite");

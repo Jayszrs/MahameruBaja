@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import type { SiteContent } from "../data/siteContent";
+import type { ReviewContent } from "../data/siteContent";
 import { googleReviews } from "../data/googleReviews";
 import { clientPartners } from "../data/clientPartners";
 import { supplierPartners } from "../data/supplierPartners";
@@ -126,7 +126,7 @@ function Stars({ rating }: { rating: number }) {
   return <span className="review-stars-svg" role="img" aria-label={`${rating} dari 5 bintang`}>{[0, 1, 2, 3, 4].map(index => <span key={index}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg><svg viewBox="0 0 24 24" aria-hidden="true" style={{ clipPath: `inset(0 ${(1 - Math.max(0, Math.min(1, rating - index))) * 100}% 0 0)` }}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg></span>)}</span>;
 }
 
-function Reviews({ content, companyName, includeImported }: { content: SiteContent; companyName: string; includeImported: boolean }) {
+function Reviews({ content, companyName, includeImported }: { content: ReviewContent; companyName: string; includeImported: boolean }) {
   const configuredReviews = new Map(content.reviews.map(review => [review.id, review]));
   const imports = includeImported ? googleReviews : [];
   const importedIds = new Set(imports.map(review => review.id));
@@ -191,6 +191,6 @@ function Suppliers() {
   </div></section>;
 }
 
-export default function SocialProof({ content, companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: SiteContent; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
+export default function SocialProof({ content, companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: ReviewContent; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
   return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <><Clients /><Suppliers /></>}</>;
 }

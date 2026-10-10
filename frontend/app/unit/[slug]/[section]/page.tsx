@@ -16,10 +16,10 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug, section } = await params;
   const division = divisions.find(d => d.slug === slug);
   if (!division || !unitSections.includes(section as UnitSection)) notFound();
-  if (["kontak", "produk", "galeri"].includes(section)) await connection();
-  const content = ["kontak", "produk", "galeri"].includes(section) ? await readSiteContent() : null;
+  if (["kontak", "produk", "galeri", "tentang"].includes(section)) await connection();
+  const content = ["kontak", "produk", "galeri", "tentang"].includes(section) ? await readSiteContent() : null;
   const contacts = section === "kontak" ? content!.contacts.filter(c => c.published) : [];
   const inventory = section === "produk" ? content!.inventory : [];
-  const projects = section === "galeri" ? content!.galleryProjects.filter(p => p.published && p.photos.length && p.division === division.slug) : [];
+  const projects = ["galeri", "tentang"].includes(section) ? content!.galleryProjects.filter(p => p.published && p.photos.length && p.division === division.slug) : [];
   return <DivisionSubPage division={division} section={section as UnitSection} contacts={contacts} inventory={inventory} projects={projects} />;
 }

@@ -13,7 +13,7 @@ export const metadata = {
 export default async function Page() {
   await connection();
   const stored = await readPublicSiteContent();
-  const content = { ...stored, contacts: [], reviews: stored.reviews.filter(r => r.published), socialAccounts: stored.socialAccounts.filter(a => a.published), socialPosts: stored.socialPosts.filter(p => p.published) };
+  const content = { ...stored, contacts: stored.contacts.filter(c => c.published), reviews: stored.reviews.filter(r => r.published), socialAccounts: stored.socialAccounts.filter(a => a.published), socialPosts: stored.socialPosts.filter(p => p.published) };
   const base = siteOrigin();
   const localBusiness = {
     "@context": "https://schema.org",

@@ -10,3 +10,22 @@
 .supplier-logo-ribbon:focus-visible,.home-offering-ribbon:focus-visible{outline:2px solid var(--color-brand);outline-offset:4px}
 @media(max-width:800px){.unified-home .home-intro .company-division-main{gap:28px}.home-intro-copy h2{font-size:clamp(30px,6vw,45px)}.home-gallery-strip figure{flex-basis:72%;min-width:220px}.home-gallery-strip figure>div{height:235px}.home-offering-card{flex-basis:75%;max-width:310px}.social-native-video{height:400px}}
 @media(prefers-reduced-motion:reduce){.home-offering-card img{transition:none}}
+
+/* Larger, readable vision/mission copy across home and about pages. */
+.home-intro .home-vision h3{font:700 clamp(14px,1.2vw,16px)/1.5 var(--font-mono);letter-spacing:.04em;margin-block:22px 10px}
+.home-intro .home-vision p,.company-division-mission p,.company-vision p:not(.industrial-eyebrow),.division-vision article>p:last-child{font-size:clamp(17px,1.45vw,20px);line-height:1.85;color:#464d53}
+.company-division-mission h4{font-size:15px;line-height:1.5}.home-intro-copy>p:not(.home-eyebrow){font-size:16px;line-height:1.85}
+.home-project-experience{background:#fff}
+.project-gallery-link{display:inline-block;margin-top:16px;font-size:13px;font-weight:700;color:var(--color-brand);padding-block:8px}
+.project-album-grid.project-album-ribbon{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x proximity;padding:4px 2px 20px;overscroll-behavior-inline:contain;max-width:100%}
+.project-album-ribbon article{flex:0 0 clamp(290px,31vw,385px);scroll-snap-align:start}
+.project-album-ribbon .project-album-cover{height:260px}
+.project-album-ribbon .project-album-copy{padding:24px}.project-album-ribbon .project-album-copy h3{font-size:24px}.project-album-ribbon .project-album-copy>p{font-size:14px;line-height:1.75}
+/* Keep a draggable scrollbar, but remove the native end-arrow buttons. */
+@supports selector(::-webkit-scrollbar){.home-promos-track,.project-album-ribbon{scrollbar-width:auto}}
+.home-promos-track::-webkit-scrollbar,.project-album-ribbon::-webkit-scrollbar{height:6px}
+.home-promos-track::-webkit-scrollbar-button,.project-album-ribbon::-webkit-scrollbar-button{display:none;width:0;height:0}
+.project-album-ribbon::-webkit-scrollbar-track{background:#eee;border-radius:6px}.project-album-ribbon::-webkit-scrollbar-thumb{background:#a4a8ac;border-radius:6px}
+.directory-card .directory-whatsapp{min-height:44px}.directory-links a{overflow-wrap:anywhere}
+@media(max-width:800px){.home-intro .company-division-main,.unit-about.company-division-main{grid-template-columns:minmax(0,1fr)}.home-intro .home-vision p,.company-division-mission p,.company-vision p:not(.industrial-eyebrow),.division-vision article>p:last-child{font-size:17px;line-height:1.8}.home-intro .home-vision{padding-left:16px}.home-project-experience .home-section-heading{gap:20px}.project-album-ribbon article{flex-basis:80%;min-width:260px;max-width:350px}.project-album-ribbon .project-album-cover{height:235px}.project-album-ribbon .project-album-copy{padding:20px}.project-album-ribbon .project-album-copy h3{font-size:22px}.home-project-experience .home-shell,.division-collage,.home-intro-copy{min-width:0}}
+@media(max-width:480px){.project-album-ribbon article{flex-basis:86%;min-width:235px}.home-intro-copy h2{font-size:32px}.home-intro .home-vision h3{font-size:13px}.company-division-mission h4{font-size:14px}.directory-toolbar label{width:100%}.directory-cards{grid-template-columns:minmax(0,1fr)}}

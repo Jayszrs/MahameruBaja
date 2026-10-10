@@ -9,19 +9,35 @@
 .supplier-logo-ribbon{position:relative;padding-block:8px 20px;scrollbar-width:thin;scrollbar-color:#b8b8b8 transparent;overscroll-behavior-inline:contain;touch-action:pan-x pan-y}
 .supplier-logo-ribbon::-webkit-scrollbar{display:block;height:5px}.supplier-logo-ribbon::-webkit-scrollbar-thumb{background:#b8b8b8;border-radius:10px}
 .supplier-logo-ribbon figure{flex:0 0 clamp(200px,23vw,280px);min-height:175px}.supplier-ribbon-controls{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:14px}.supplier-ribbon-controls p{font-size:12px;color:var(--color-steel-grey)}
-.company-division-main .division-collage{position:relative;min-width:0;aspect-ratio:1.15;isolation:isolate;margin-block:10px 28px}
-.company-division-main .division-collage figure{margin:0;position:absolute;height:auto;overflow:hidden;box-shadow:0 14px 35px #10121412}
-.company-division-main .division-collage figure>div{inset:-4% 0}.division-collage img{object-fit:cover}
-.company-division-main .division-collage-primary{inset:0 14% 15% 0;border-radius:90px 18px 60px 18px}
-.company-division-main .division-collage-detail-0{width:42%;height:44%;right:0;bottom:4%;transform:rotate(5deg);border:7px solid #fff;border-radius:5px 26px 5px 26px;z-index:2}
-.company-division-main .division-collage-detail-1{width:28%;height:31%;right:0;top:1%;border:6px solid #fff;border-radius:50% 50% 12px 12px;z-index:2}
-.company-division-main .division-collage-detail figcaption{inset:auto 0 0;padding:7px 9px;font-size:9px;background:#ffffffed;color:#202123}
-.division-collage-outline{position:absolute;inset:4% 6% 8% 8%;border:1px solid #df2029;border-radius:80px 20px 70px 20px;transform:rotate(-5deg);z-index:-1}
-.division-collage-label{position:absolute;left:3%;bottom:0;display:flex;gap:12px;align-items:center;padding:15px 20px;background:#111;color:#fff;border-radius:3px 28px 3px 3px;z-index:3;max-width:62%}
-.division-collage-label strong{font:700 clamp(22px,3vw,38px)/1 var(--font-display);color:var(--color-brand)}.division-collage-label>span{font-size:11px;line-height:1.4}.division-collage-label small{display:block;font:8px var(--font-mono);letter-spacing:.1em;margin-top:5px;color:#b9bcc1}
-.company-division-main .collage-composition-1 .division-collage-primary{border-radius:20px 90px 20px 70px}.collage-composition-1 .division-collage-outline{transform:rotate(4deg)}.company-division-main .collage-composition-1 .division-collage-detail-0{transform:rotate(-5deg)}
-.company-division:nth-of-type(even) .company-division-copy{grid-column:1;grid-row:1}.company-division:nth-of-type(even) .division-collage{grid-column:2;grid-row:1}
-@media(max-width:800px){.company-division:nth-of-type(even) .company-division-copy,.company-division:nth-of-type(even) .division-collage{grid-column:auto;grid-row:auto}.company-division-main .division-collage{max-width:620px;width:100%;margin-inline:auto}.company-division-main .division-collage-primary{border-radius:65px 16px 45px 16px}.supplier-logo-ribbon figure{flex-basis:210px}}
+/* Three visible tiles, with a white-backed brand tile opening the same album. */
+.division-collage{position:relative;min-width:0;width:100%;isolation:isolate;margin-block:8px}
+.division-collage-grid{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;aspect-ratio:1.14;min-height:280px}
+.division-collage-photo{position:relative;display:block;min-width:0;min-height:0;border:0;padding:0;overflow:hidden;background:#eee;cursor:pointer;text-align:left;box-shadow:0 10px 26px #1012140c}
+.division-collage-photo img{object-fit:cover;transition:transform .35s ease}
+.division-collage-photo:hover img{transform:scale(1.035)}
+.division-collage-photo.is-logo,.collage-photo-dialog .album-viewer.is-logo{background:#fff}
+.division-collage-photo.is-logo img{object-fit:contain;padding:12px}
+.division-collage-photo>span{position:absolute;inset:auto 0 0;z-index:1;padding:24px 12px 12px;color:#fff;font-size:12px;line-height:1.55;background:linear-gradient(transparent,#101214dd);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.division-collage-primary{grid-row:1 / 3;border-radius:70px 14px 14px 24px}
+.division-collage-detail-0{border-radius:14px 44px 14px 14px}
+.division-collage-detail-1{border-radius:14px 14px 44px 14px}
+.collage-composition-1 .division-collage-primary{border-radius:14px 70px 24px 14px}
+.collage-composition-1 .division-collage-detail-0{border-radius:44px 14px 14px 14px}
+.division-collage-brand{position:absolute;top:20px;left:calc(61.5% - 40px);z-index:2;display:grid;place-items:center;width:80px;height:76px;background:#fff;border:0;border-radius:16px;padding:8px;box-shadow:0 6px 24px #0002;cursor:pointer}
+.division-collage-brand img{width:100%;height:100%;object-fit:contain}
+.division-collage-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;padding-top:14px}
+.division-collage-footer>span{display:flex;align-items:center;gap:12px;font-size:12px;line-height:1.5;color:#454b50}
+.division-collage-footer strong{font:750 24px/1 var(--font-display);color:var(--color-brand)}
+.division-collage-open{border:0;padding:10px 0;min-height:44px;background:none;color:var(--color-brand);font-size:13px;font-weight:700;cursor:pointer}
+.division-collage button:focus-visible,.project-album-ribbon:focus-visible{outline:2px solid var(--color-brand);outline-offset:4px}
+.company-division:nth-of-type(even) .company-division-copy{grid-column:1;grid-row:1}
+.company-division:nth-of-type(even) .division-collage{grid-column:2;grid-row:1}
+.collage-photo-dialog .album-viewer{touch-action:pan-y}
+.collage-photo-dialog .album-viewer.is-logo>img{padding:30px}
+.collage-photo-dialog .album-thumbnails>button{min-height:44px}
+@media(max-width:800px){.company-division:nth-of-type(even) .company-division-copy,.company-division:nth-of-type(even) .division-collage{grid-column:auto;grid-row:auto}.division-collage{max-width:620px;margin-inline:auto}.supplier-logo-ribbon figure{flex-basis:210px}}
+@media(max-width:480px){.division-collage-grid{gap:8px;min-height:255px;aspect-ratio:1.06}.division-collage-primary{border-top-left-radius:48px}.collage-composition-1 .division-collage-primary{border-top-right-radius:48px}.division-collage-brand{top:14px;left:calc(61.5% - 32px);width:64px;height:60px;border-radius:12px}.division-collage-photo>span{font-size:11px;padding:20px 9px 9px}.division-collage-footer>span{font-size:11px;gap:8px}.division-collage-open{font-size:12px}.collage-photo-dialog .album-caption{align-items:flex-start}.collage-photo-dialog .album-viewer>button{min-width:44px;min-height:44px}}
+@media(prefers-reduced-motion:reduce){.division-collage-photo img{transition:none}.division-collage-photo:hover img{transform:none}}
 .project-albums{padding-block:clamp(50px,7vw,100px);background:#f7f7f7;color:var(--color-gunmetal)}
 .project-albums .home-section-heading{margin-bottom:32px}.project-albums .home-section-heading h2{font-size:clamp(30px,4vw,52px);line-height:1.13}
 .project-albums .projects-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
