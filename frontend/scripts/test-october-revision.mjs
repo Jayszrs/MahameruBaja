@@ -48,6 +48,38 @@ try{
   assert.equal((await call(`/api/admin/requests?id=${record.id}`,"PATCH",{revision:archiveBody.revision,archived:false},owner)).status,200);
   console.log(`PASS: ${concurrency} simultaneous submissions, no lost records, stale edits rejected, archive/restore and forbidden edits checked`);
   const base=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(base.garudaReviews.rating,5); assert.equal(base.garudaReviews.reviewCount,43);
+  assert.equal(base.garudaReviews.mapsUrl,"https://maps.app.goo.gl/QR3pr7p55DKFeHMG9");
+  assert.deepEqual(base.garudaReviews.reviews,[],"No invented Garuda review quotations");
+  for (const slug of slugs) {
+    const divisionHtml=await (await call(`/unit/${slug}`)).text();
+    assert.ok(divisionHtml.includes("hero-carousel") && divisionHtml.includes("site-navbar") && divisionHtml.includes("company-footer"),slug+" uses shared site UI");
+    assert.ok(divisionHtml.includes("VISI MAHAMERU GROUP") && divisionHtml.includes("MISI DIVISI"),slug+" has vision and mission");
+    assert.ok(divisionHtml.includes("data-parallax"));
+  }
+  const garudaHtml=await (await call("/unit/retail-cibitung")).text();
+  assert.ok(garudaHtml.includes("43 ulasan") && garudaHtml.includes("5.0"));
+  assert.ok(garudaHtml.includes("107.1194034") && garudaHtml.includes("Wanajaya"));
+  assert.ok(!garudaHtml.includes("<blockquote"),"Garuda must not inherit Mahameru quotations");
+  assert.ok(!garudaHtml.includes("Alamat lengkap unit belum dipublikasikan"));
+  const garudaContact=await (await call("/unit/retail-cibitung/kontak")).text();
+  assert.ok(garudaContact.includes("QR3pr7p55DKFeHMG9") && garudaContact.includes("107.1194034"));
+  const jasaHtml=await (await call("/jasa")).text();
+  assert.ok(jasaHtml.includes("Kami menyediakan jasa") && jasaHtml.includes("company-about-background"));
+  assert.ok(!jasaHtml.includes('class="laser-page-grid"'));
+  const mainHtml=await (await call("/")).text();
+  assert.ok(mainHtml.includes("MBI LASER CUTTING") && mainHtml.includes("mbi-symbol-v2.png"));
+  assert.ok(mainHtml.includes("promos-restored") && mainHtml.includes("promo-preview-dialog"));
+  assert.equal((await call("/images/brand/mbi-symbol-v2.png")).status,200);
+  const changedGaruda=await call("/api/admin/content","PUT",{...base,garudaReviews:{...base.garudaReviews,rating:4.8,reviewCount:44}},owner);
+  assert.equal(changedGaruda.status,200);
+  const changedGarudaHtml=await (await call("/unit/retail-cibitung")).text();
+  assert.ok(changedGarudaHtml.includes("44 ulasan") && changedGarudaHtml.includes("4.8"));
+  const unchangedMain=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(unchangedMain.rating,base.rating); assert.equal(unchangedMain.reviewCount,base.reviewCount);
+  assert.equal((await call("/api/admin/content","PUT",{...unchangedMain,garudaReviews:base.garudaReviews},owner)).status,200);
+  Object.assign(base,await (await call("/api/admin/content","GET",undefined,owner)).json());
+  console.log("PASS: shared division UI, five vision/missions, distinct Garuda Maps/rating, independent CMS profiles, full-image Jasa hero and restored promo preview");
   const first=await call("/api/admin/content","PUT",{...base,_base:base,ratingDate:"QA observed"},owner);assert.equal(first.status,200);
   const second=await call("/api/admin/content","PUT",{...base,_base:base,reviewCount:146},owner);assert.equal(second.status,200);
   const merged=await second.json();assert.equal(merged.ratingDate,"QA observed");assert.equal(merged.reviewCount,146);

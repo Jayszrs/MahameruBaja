@@ -4,6 +4,7 @@ import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt
 import { promotionSchema, samplePromotions } from "./promotions";
 import { divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
+import { defaultGarudaReviews } from "./divisionLocations";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -28,12 +29,19 @@ export const reviewSchema = z.object({
   text: text(2000).min(1), when: text(100), url: googleUrl,
   authorPhoto: photo.optional(), authorUrl: googleUrl.optional(), published: z.boolean(),
 });
+export const reviewProfileSchema = z.object({
+  rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
+  ratingDate: text(80).min(1), mapsUrl: googleUrl, reviews: z.array(reviewSchema).max(200),
+}).superRefine((profile, ctx) => {
+  if (new Set(profile.reviews.map(r => r.id)).size !== profile.reviews.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reviews"], message: "ID ulasan harus unik" });
+});
 export const siteContentSchema = z.object({
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),
   heroSlides: z.array(heroSlideSchema).min(1).max(10).default(heroSlides),
   contacts: z.array(contactSchema).max(40),
   reviews: z.array(reviewSchema).max(200),
+  garudaReviews: reviewProfileSchema.default(defaultGarudaReviews),
   socialAccounts: z.array(socialAccountSchema).max(20).default(defaultSocialAccounts),
   socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
   promotions: z.array(promotionSchema).max(20).default(samplePromotions),
@@ -52,6 +60,7 @@ export type TeamContact = SiteContent["contacts"][number];
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  garudaReviews: defaultGarudaReviews,
   identityVersion: 1, heroSlides,
   revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: googleReviewsCapturedAt,
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,

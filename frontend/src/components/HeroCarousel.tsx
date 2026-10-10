@@ -7,7 +7,7 @@ import type { HeroSlide } from "../data/heroSlides";
 
 const ROTATION_INTERVAL = 4000;
 
-export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string }) {
+export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl, companyName = "Mahameru Baja", area = "Bekasi / Jawa Barat", servicesLabel = "Retail • Trading • Production", ratingSourceName = "Mahameru Baja", serviceItems = ["Retail besi", "Supply proyek", "Laser cutting", "CNC bending", "Fabrikasi"] }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string; companyName?: string; area?: string; servicesLabel?: string; ratingSourceName?: string; serviceItems?: string[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
@@ -71,7 +71,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
     <section
       className={`hero-carousel ${paused || userPaused ? "is-paused" : ""}`}
       aria-roledescription="carousel"
-      aria-label="Layanan utama Mahameru Baja"
+      aria-label={`Layanan utama ${companyName}`}
     >
       <div className="hero-carousel-media" aria-hidden="true">
         {heroSlides.map((slide, index) => (index === activeIndex || index === nextIndex || index === previousIndex) && (
@@ -123,16 +123,16 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
               {activeSlide.secondaryAction.label}
             </Link>
           </div>
-          {googleRating !== null && <a className="hero-rating-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${googleRating.toFixed(1)} dari 5, lihat ulasan`}>
+          {googleRating !== null && <a className="hero-rating-link" href={googleMapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${ratingSourceName} ${googleRating.toFixed(1)} dari 5, lihat ulasan`}>
             <span className="hero-rating-stars" aria-hidden="true"><span>★★★★★</span><span style={{ width: `${googleRating / 5 * 100}%` }}>★★★★★</span></span>
             <strong>{googleRating.toFixed(1)} / 5</strong>
-            <small>Rating Google Maps · dilihat {googleRatingObservedAt} ↗</small>
+            <small>{ratingSourceName} · Google Maps · dicatat {googleRatingObservedAt} ↗</small>
           </a>}
         </div></div>
 
         <div className="hero-carousel-meta" aria-label="Ringkasan perusahaan">
-          <span>Bekasi / Jawa Barat</span>
-          <strong>Retail • Trading • Production</strong>
+          <span>{area}</span>
+          <strong>{servicesLabel}</strong>
           {activeSlide.visualNote && <small>{activeSlide.visualNote}</small>}
         </div>
 
@@ -154,7 +154,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
       </div>
 
       <div className="home-hero-rail" aria-label="Layanan utama">
-        <div className="home-shell"><span>Retail besi</span><i /><span>Supply proyek</span><i /><span>Laser cutting</span><i /><span>CNC bending</span><i /><span>Fabrikasi</span></div>
+        <div className="home-shell">{serviceItems.map((service, index) => <span key={service}>{index > 0 && <i aria-hidden="true" />}{service}</span>)}</div>
       </div>
       <button type="button" className="hero-carousel-pause" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan slideshow ▶" : "Jeda slideshow Ⅱ"}</button>
     </section>

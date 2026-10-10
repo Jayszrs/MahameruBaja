@@ -1,16 +1,19 @@
 "use client";
 
 import Image from 'next/image';
-import { mainLogo } from "../data/companyIdentity";
+import { divisionIdentity, divisionWhatsApp } from "../data/companyIdentity";
+import type { Division } from "../data/divisionContent";
+import { divisionNavigation } from "./DivisionChrome";
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
 
 interface NavbarProps {
+  division?: Division;
   onSearchOpen: () => void;
 }
 
-const bottomLinks = [
+const mainBottomLinks = [
   { label: 'Beranda', href: '/', hasMega: false },
   { label: 'Tentang Kami', href: '/tentang-kami', hasMega: false },
   { label: 'Produk', href: '/produk', hasMega: true },
@@ -58,8 +61,12 @@ const megaMenuCols = [
   },
 ];
 
-export default function Navbar({ onSearchOpen }: NavbarProps) {
+export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   const location = useLocation();
+  const base = division ? `/unit/${division.slug}` : "/";
+  const brandName = division && division.slug !== "laser-cutting" ? division.name.toUpperCase() : "MBI LASER CUTTING";
+  const brandLabel = division?.label || "MAHAMERU BAJA INDONESIA";
+  const bottomLinks = division ? [...divisionNavigation(division).map(link => ({ ...link, hasMega: false })), { label: "Website utama", href: "/", hasMega: false }] : mainBottomLinks;
   const navigate = useNavigate();
   const { count, setOpen: setQuotationOpen } = useQuotation();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -71,10 +78,11 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   useEffect(() => { setMobileOpen(false); setMegaOpen(false); }, [location.pathname]);
 
   useEffect(() => {
-    const update = () => setHomeNavVisible(window.scrollY > Math.min(180, window.innerHeight * 0.22));
+    const update = () => setHomeNavVisible(window.matchMedia("(max-width: 760px)").matches || window.scrollY > Math.min(180, window.innerHeight * 0.22));
     update();
     window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
+    window.addEventListener('resize', update);
+    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
   }, [location.pathname]);
 
   useEffect(() => {
@@ -117,12 +125,12 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   }, [mobileOpen]);
 
   const isActive = (href: string) =>
-    href === '/' ? location.pathname === '/' :
+    href === base || href === '/' ? location.pathname === href :
       href === '/tentang-kami' ? location.pathname.startsWith('/tentang-kami') || location.pathname.startsWith('/unit/') :
         location.pathname.startsWith(href);
 
   const navSolid = true;
-  const homeNavHidden = location.pathname === '/' && !homeNavVisible && !mobileOpen;
+  const homeNavHidden = location.pathname === base && !homeNavVisible && !mobileOpen;
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -146,14 +154,14 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
           <div className="flex items-center gap-2 sm:gap-4 h-14 lg:h-16">
             {/* Logo */}
             <Link
-              to="/"
+              to={base}
               className="flex items-center gap-2.5 shrink-0"
-              aria-label="Mahameru Baja - Beranda"
+              aria-label={`${brandName} - Beranda`}
             >
-              <LogoMark light={!navSolid} />
+              <LogoMark division={division} />
               <div className="navbar-wordmark leading-tight">
-                <div className={`font-extrabold text-[13px] tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>MAHAMERU BAJA</div>
-                <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
+                <div className={`font-extrabold text-[13px] tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>{brandName}</div>
+                <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">{brandLabel}</div>
               </div>
             </Link>
 
@@ -191,7 +199,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
               {/* WA */}
               <a
-                href="https://wa.me/6281218052017"
+                href={division ? divisionWhatsApp(division.slug) : divisionWhatsApp("laser-cutting")}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat WhatsApp"
@@ -216,7 +224,7 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
 
               {/* Penawaran CTA (desktop) */}
               <Link
-                to="/minta-penawaran"
+                to={division?.quote || "/minta-penawaran"}
                 className="hidden lg:flex items-center gap-1.5 ml-1 px-4 py-2 bg-brand hover:bg-brand-dark text-white text-sm font-bold rounded-lg transition-all hover:-translate-y-0.5 hover:shadow-md font-[family-name:var(--font-display)]"
               >
                 Minta Penawaran
@@ -337,11 +345,11 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
           <div className="absolute inset-0 bg-gunmetal/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
           <div className="absolute top-0 right-0 bottom-0 w-[min(340px,100vw)] bg-white shadow-xl flex flex-col">
             <div className="flex items-center justify-between px-5 h-16 border-b border-light-steel">
-              <Link to="/" className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-                <LogoMark light={false} />
+              <Link to={base} className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
+                <LogoMark division={division} />
                 <div className="navbar-wordmark leading-tight">
-                  <div className="font-extrabold text-[13px] text-gunmetal tracking-tight font-[family-name:var(--font-display)]">MAHAMERU BAJA</div>
-                  <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">INDONESIA</div>
+                  <div className="font-extrabold text-[13px] text-gunmetal tracking-tight font-[family-name:var(--font-display)]">{brandName}</div>
+                  <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">{brandLabel}</div>
                 </div>
               </Link>
               <button onClick={() => setMobileOpen(false)} aria-label="Tutup menu" className="p-2 text-steel-grey">
@@ -393,14 +401,14 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
                 Daftar Penawaran {count > 0 && <span className="ml-1 px-1.5 py-0.5 bg-brand text-white text-[10px] rounded-full">{count}</span>}
               </button>
               <Link
-                to="/minta-penawaran"
+                to={division?.quote || "/minta-penawaran"}
                 onClick={() => setMobileOpen(false)}
                 className="block w-full text-center px-4 py-3 bg-brand hover:bg-brand-dark text-white text-sm font-bold rounded-xl transition-colors"
               >
                 Minta Penawaran
               </Link>
               <a
-                href="https://wa.me/6281218052017"
+                href={division ? divisionWhatsApp(division.slug) : divisionWhatsApp("laser-cutting")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#1A7A3E] text-white text-sm font-bold rounded-xl"
@@ -416,10 +424,11 @@ export default function Navbar({ onSearchOpen }: NavbarProps) {
   );
 }
 
-function LogoMark({ light }: { light: boolean }) {
+function LogoMark({ division }: { division?: Division }) {
+  const src = !division || division.slug === "laser-cutting" ? "/images/brand/mbi-symbol-v2.png" : divisionIdentity[division.slug].logo;
   return (
-    <span className={`relative block h-14 w-16 overflow-hidden ${light ? 'ring-1 ring-white/20' : 'ring-1 ring-black/10'} bg-white`} aria-hidden="true">
-      <Image src={mainLogo} alt="" fill sizes="64px" className="object-contain" />
+    <span className="navbar-symbol relative block h-12 w-16 shrink-0 bg-white" aria-hidden="true">
+      <Image src={src} alt="" fill sizes="64px" className="object-contain" />
     </span>
   );
 }

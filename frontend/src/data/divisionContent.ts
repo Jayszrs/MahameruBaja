@@ -22,8 +22,8 @@ export const divisions = [
   {
     slug: "retail-cibitung", name: "Garuda Marginal Baja", label: "Retail Cibitung", area: "Cibitung dan sekitarnya",
     title: "Jalur material untuk Cibitung.",
-    intro: "Konsultasikan kebutuhan besi, plat, dan profil baja untuk pekerjaan di Cibitung melalui unit retail Garuda Marginal Baja.",
-    description: "Garuda Marginal Baja adalah jalur retail untuk pelanggan di Cibitung dan kawasan sekitarnya. Halaman ini membantu Anda mencari material dan mengirim permintaan ke divisi yang tepat. Detail lokasi, stok, harga, dan jam layanan divisi dikonfirmasi langsung oleh tim.",
+    intro: "Konsultasikan kebutuhan besi, plat, dan profil baja untuk pekerjaan di Cibitung melalui divisi retail Garuda Marginal Baja.",
+    description: "Garuda Marginal Baja adalah jalur retail untuk pelanggan di Cibitung dan kawasan sekitarnya. Kunjungi toko kami di Jl. Kp. Rw. Lele, RT.02/RW.05, Wanajaya, Cibitung. Tim membantu pengecekan spesifikasi, stok, harga, dan pengiriman sebelum pesanan dikonfirmasi.",
     hero: "/images/steel-indonesia/hollow.jpg",
     images: [
       { src: "/images/steel-indonesia/plat-hitam.jpg", title: "Plat besi" },
@@ -34,7 +34,7 @@ export const divisions = [
     process: ["Cari kategori material", "Kirim ukuran, jumlah, dan lokasi Cibitung", "Dapatkan konfirmasi dari tim"],
     faq: [
       { question: "Apakah katalog Cibitung berbeda?", answer: "Pilihan produk dapat dilihat di katalog bersama. Ketersediaan khusus unit Cibitung dikonfirmasi oleh tim." },
-      { question: "Di mana lokasi unit Cibitung?", answer: "Alamat lengkap unit belum dipublikasikan. Hubungi kontak utama untuk lokasi dan jam layanan terkini." },
+      { question: "Di mana lokasi unit Cibitung?", answer: "Toko kami berada di Jl. Kp. Rw. Lele, RT.02/RW.05, Wanajaya, Cibitung, Kabupaten Bekasi 17520. Buka pin Google Maps pada bagian Lokasi dan hubungi admin untuk jam kunjungan." },
     ],
     primary: { label: "Lihat pilihan material", href: "/produk" }, quote: "/minta-penawaran?unit=retail-cibitung",
   },

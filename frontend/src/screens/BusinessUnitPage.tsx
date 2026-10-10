@@ -1,33 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
+import HeroCarousel from "../components/HeroCarousel";
+import DivisionVision from "../components/DivisionVision";
+import SocialProof from "../components/SocialProof";
+import type { HeroSlide } from "../data/heroSlides";
 import ContactDirectory from "../components/ContactDirectory";
 import DivisionLocation from "../components/DivisionLocation";
-import { internationalPhone, type TeamContact } from "../data/siteContent";
+import { internationalPhone, type TeamContact, type SiteContent } from "../data/siteContent";
 import { divisions, type Division } from "../data/divisionContent";
 
-export default function BusinessUnitPage({ division, contacts }: { division: Division; contacts: TeamContact[] }) {
+export default function BusinessUnitPage({ division, contacts, content }: { division: Division; contacts: TeamContact[]; content: SiteContent }) {
   const base = `/unit/${division.slug}`;
   const serviceHref = `${base}/${division.slug.startsWith("retail") ? "produk" : "layanan"}`;
   const contact = contacts.find(c => c.published && c.whatsapp && c.divisions.includes(division.slug))
     ?? contacts.find(c => c.published && c.whatsapp && !c.divisions.length);
   const whatsapp = `https://wa.me/${internationalPhone(contact?.whatsapp || "081218052017")}?text=${encodeURIComponent(`Halo ${contact?.name || "Mahameru Baja"}, saya ingin bertanya tentang ${division.name} (${division.label}).`)}`;
+  const reviewContent = division.slug === "retail-cibitung" ? { ...content, ...content.garudaReviews } : content;
+  const slides: HeroSlide[] = [division.hero, ...division.images.map(image => image.src)].filter((src, i, all) => all.indexOf(src) === i).slice(0, 3).map((media, i) => ({
+    id: `${division.slug}-${i}`, type: "image", media, alt: division.name,
+    eyebrow: `${division.label} / ${division.area}`,
+    title: i === 0 ? division.name : i === 1 ? "Untuk kebutuhan Anda." : "Mulai dari konsultasi.",
+    accent: i === 0 ? division.slug.startsWith("retail") ? "Material untuk setiap rencana." : "Dari kebutuhan hingga pengerjaan." : i === 1 ? division.offerings[0] : "Hubungi tim divisi kami.",
+    description: i === 0 ? division.intro : i === 1 ? division.description : "Kirim daftar material atau gambar kerja. Admin membantu mengecek spesifikasi, ketersediaan, harga, dan jadwal sesuai kebutuhan Anda.",
+    primaryAction: {label: division.slug.startsWith("retail") ? "Jelajahi produk" : "Jelajahi layanan", href: serviceHref},
+    secondaryAction: {label: "Hubungi admin", href: `${base}/kontak`},
+    visualNote: media.includes("illustration") || media.includes("visual") || media.includes("hero-steel") ? "Visual ilustrasi" : "Foto material Mahameru",
+  }));
   return <div className="division-page">
-    <section className="division-hero" aria-labelledby="division-title">
-      <div className="division-hero-image" data-parallax="0.3"><Image src={division.hero} alt="" fill priority sizes="100vw" /></div>
-      <div className="division-hero-overlay" />
-      <div className="industrial-container division-hero-content">
-        <nav className="division-breadcrumb" aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href="/tentang-kami#divisi">Lima divisi</Link><span>/</span><span>{division.name}</span></nav>
-        <p className="industrial-eyebrow" data-reveal>{division.label} / {division.area}</p>
-        <h1 id="division-title" data-reveal>{division.title}</h1>
-        <p data-reveal>{division.intro}</p>
-        <div className="division-actions" data-reveal><Link className="industrial-button" href={serviceHref}>{division.slug.startsWith("retail") ? "Jelajahi produk" : "Jelajahi layanan"} ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">Chat tim ↗</a></div>
-      </div>
-      <span className="division-hero-index" aria-hidden="true">0{divisions.findIndex((item) => item.slug === division.slug) + 1} / 05</span>
-    </section>
+    <HeroCarousel slides={slides} rating={reviewContent.rating} ratingDate={reviewContent.ratingDate} mapsUrl={reviewContent.mapsUrl} companyName={division.name} ratingSourceName={division.slug === "retail-cibitung" ? division.name : "Mahameru Baja"} serviceItems={division.offerings.slice(0, 4)} area={division.area} servicesLabel={division.label} />
 
 
     <section className="division-intro-section" id="profil"><div className="industrial-container division-intro-grid"><div data-reveal><p className="industrial-eyebrow">MENGENAL DIVISI</p><h2>{division.name}</h2></div><p data-reveal>{division.description}</p></div></section>
 
+    <DivisionVision slug={division.slug} />
     <section className="division-services-section" id="layanan-unit"><div className="industrial-container">
       <div className="division-section-heading" data-reveal><p className="industrial-eyebrow">01 / LAYANAN & PRODUK</p><h2>Mulai dari kebutuhan Anda.</h2><p>Pilih jalur yang sesuai, lalu kirim spesifikasi untuk ditinjau tim.</p></div>
       <div className="division-offerings">{division.offerings.map((offering, index) => <article key={offering} data-reveal><div className="division-offering-image"><Image src={division.images[index % division.images.length].src} alt="" fill sizes="(max-width: 650px) 50vw, 25vw" /></div><span>0{index + 1}</span><h3>{offering}</h3><Link href={`${base}/kontak`}>Konsultasikan <span aria-hidden="true">↗</span></Link></article>)}</div>
@@ -42,6 +47,7 @@ export default function BusinessUnitPage({ division, contacts }: { division: Div
 
     <ContactDirectory contacts={contacts} divisionSlug={division.slug} />
     <DivisionLocation slug={division.slug} />
+    <SocialProof content={reviewContent} companyName={division.slug === "retail-cibitung" ? division.name : "Mahameru Baja"} includeImported={division.slug !== "retail-cibitung"} reviewsOnly />
     <section className="division-end-section"><div className="industrial-container division-end-grid" data-reveal><div><p className="industrial-eyebrow">LANJUTKAN PERMINTAAN</p><h2>Siapkan daftar atau gambar. Kami bantu arahkan.</h2></div><div className="division-actions"><Link className="industrial-button" href={`${base}/kontak`}>Minta penawaran ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></section>
     <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Satu ekosistem Mahameru Baja</strong><Link href="/tentang-kami#divisi" className="division-switch">Jelajahi divisi lainnya &#8599;</Link></nav>
   </div>;

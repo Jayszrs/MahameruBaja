@@ -125,10 +125,11 @@ function Stars({ rating }: { rating: number }) {
   return <span className="review-stars-svg" role="img" aria-label={`${rating} dari 5 bintang`}>{[0, 1, 2, 3, 4].map(index => <span key={index}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg><svg viewBox="0 0 24 24" aria-hidden="true" style={{ clipPath: `inset(0 ${(1 - Math.max(0, Math.min(1, rating - index))) * 100}% 0 0)` }}><path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8l-6.2 3.3L7 14.2 2 9.3l6.9-1z" /></svg></span>)}</span>;
 }
 
-function Reviews({ content }: { content: SiteContent }) {
+function Reviews({ content, companyName, includeImported }: { content: SiteContent; companyName: string; includeImported: boolean }) {
   const configuredReviews = new Map(content.reviews.map(review => [review.id, review]));
-  const importedIds = new Set(googleReviews.map(review => review.id));
-  const importedReviews = googleReviews.map(review => configuredReviews.get(review.id) ?? review);
+  const imports = includeImported ? googleReviews : [];
+  const importedIds = new Set(imports.map(review => review.id));
+  const importedReviews = imports.map(review => configuredReviews.get(review.id) ?? review);
   const published = [
     ...importedReviews.filter(review => review.published && review.rating > 4),
     ...content.reviews.filter(review => review.published && review.rating > 4 && !importedIds.has(review.id)),
@@ -151,16 +152,16 @@ function Reviews({ content }: { content: SiteContent }) {
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{String.fromCharCode(8220)}</span><small>ULASAN GOOGLE</small></div>
         <Stars rating={review.rating} />
         <blockquote>{review.text}</blockquote>
-        <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || "Pelanggan Mahameru Baja"}</small></div><a className="quote-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
+        <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || `Pelanggan ${companyName}`}</small></div><a className="quote-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
         </>; })()}
       </article> : <article className={`quote-card quote-tone-${index % 3} quote-info-card`} key={`${copy}-${slide.kind}`} aria-hidden={copy !== 1}>
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{slide.kind === "summary" ? "★" : "+"}</span><small>{slide.kind === "summary" ? "PROFIL GOOGLE MAPS" : "CERITA BERIKUTNYA"}</small></div>
         <h3>{slide.kind === "summary" ? `${content.rating.toFixed(1)} dari 5 bintang.` : "Pernah belanja atau bekerja sama?"}</h3>
-        <p>{slide.kind === "summary" ? `${content.reviewCount ?? "Lebih banyak"} ulasan tersedia pada profil Google Maps Mahameru Baja. Lihat cerita pelanggan langsung di sumbernya.` : "Pengalaman Anda membantu pelanggan berikutnya mengenal toko, material, dan layanan kami."}</p>
+        <p>{slide.kind === "summary" ? `${content.reviewCount ?? "Lebih banyak"} ulasan tersedia pada profil Google Maps ${companyName}. Lihat cerita pelanggan langsung di sumbernya.` : "Pengalaman Anda membantu pelanggan berikutnya mengenal toko, material, dan layanan kami."}</p>
         <a href={content.mapsUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>{slide.kind === "summary" ? "Baca seluruh ulasan" : "Tulis ulasan di Google Maps"} <ReviewArrow /></a>
       </article>))}
     </div></div>
-    <div className="home-shell review-bottomline"><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
+    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
   </section>;
 }
 
@@ -180,6 +181,6 @@ function Clients() {
   </section>;
 }
 
-export default function SocialProof({ content }: { content: SiteContent }) {
-  return <><Reviews content={content} /><Clients /></>;
+export default function SocialProof({ content, companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: SiteContent; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
+  return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <Clients />}</>;
 }

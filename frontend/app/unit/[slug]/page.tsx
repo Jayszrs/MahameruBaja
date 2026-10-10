@@ -22,5 +22,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const division = divisions.find((unit) => unit.slug === slug);
   if (!division) notFound();
-  return <BusinessUnitPage division={division} contacts={(await readSiteContent()).contacts.filter(c => c.published)} />;
+  const content = await readSiteContent();
+  return <BusinessUnitPage division={division} contacts={content.contacts.filter(c => c.published)} content={content} />;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image"
 import { useState } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
@@ -96,33 +97,14 @@ export default function LaserCuttingPage() {
   }
   return (
     <>
-      <section className="laser-page-hero jasa-hero">
-        <div className="industrial-container">
-          <nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/</span><span>Jasa</span></nav>
-          <div className="laser-page-grid">
-            <div>
-              <p className="industrial-eyebrow">
-                LASER CUTTING / CNC BENDING / FABRIKASI
-              </p>
-              <h1>
-                Potong. Tekuk.<br /><span>Kerjakan dengan presisi.</span>
-              </h1>
-              <p>
-                Mahameru Baja menyediakan material baja, laser cutting, CNC bending,
-                dan fabrikasi untuk kebutuhan proyek maupun produksi.
-              </p>
-              <a className="industrial-button" href="#request">
-                Konsultasikan kebutuhan <span aria-hidden="true">↗</span>
-              </a>
-            </div>
-            <figure>
-              <img
-                src={laserImage}
-                alt="Ilustrasi proses pemotongan plat dengan mesin"
-              />
-              <figcaption>Visual ilustrasi proses laser cutting.</figcaption>
-            </figure>
-          </div>
+      <section className="company-about-hero jasa-hero">
+        <div className="company-about-background" data-parallax="0.22"><Image src={laserImage} alt="Ilustrasi proses laser cutting plat" fill sizes="100vw" priority /></div>
+        <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
+          <p className="industrial-eyebrow">LASER CUTTING / CNC BENDING / FABRIKASI</p>
+          <h1>Kami menyediakan jasa<br /><em>laser cutting & bending.</em></h1>
+          <p>Dari gambar kerja hingga komponen siap pakai. Kami melayani pemotongan, pembentukan plat, dan fabrikasi sesuai spesifikasi kebutuhan Anda. Kirim gambar untuk ditinjau tim sebelum penawaran.</p>
+          <a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a>
+          <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>
       </section>
       <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
