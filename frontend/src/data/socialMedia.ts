@@ -25,10 +25,16 @@ export function socialEmbedUrl(platform: SocialPlatform, value: string) {
   }
   return null;
 }
-export const socialAccountSchema = z.object({ platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean() }).superRefine((value, ctx) => {
+export const socialDivisions = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
+export const socialAccountSchema = z.object({ platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean(), divisions: z.array(z.enum(socialDivisions)).max(5).optional() }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "URL harus sesuai platform dan menggunakan HTTPS" });
 });
-export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), published: z.boolean(), division: z.enum(["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"]).default("laser-cutting"), handle: z.string().trim().max(100).default("") }).superRefine((value, ctx) => {
+export function isSocialVideoUrl(value: string) {
+  if (/^\/(?:media|videos)\/[\w/ .-]+\.mp4$/i.test(value) && value.split("/").slice(1).every(part => part && part !== "." && part !== "..")) return true;
+  try { const url = new URL(value); return url.protocol === "https:" && url.hostname.endsWith(".public.blob.vercel-storage.com") && /\.mp4$/i.test(url.pathname); } catch { return false; }
+}
+export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), videoUrl: z.string().trim().max(1000).optional(), published: z.boolean(), division: z.enum(socialDivisions).default("laser-cutting"), handle: z.string().trim().max(100).default("") }).superRefine((value, ctx) => {
+  if (value.videoUrl && !isSocialVideoUrl(value.videoUrl)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["videoUrl"], message: "Gunakan video MP4 dari unggahan media lokal atau Vercel Blob" });
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan tautan unggahan sesuai platform" });
   if (value.published && value.platform !== "facebook" && !socialEmbedUrl(value.platform, value.url)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan URL post/reel/video, bukan URL profil akun" });
   if (value.image && !/^\/(?:images|media)\/[\w/ .-]+$/.test(value.image)) {
@@ -41,8 +47,8 @@ export const defaultSocialAccounts: SocialAccount[] = [
   { platform: "instagram", handle: "@gmbgarudaofficial", url: "https://www.instagram.com/gmbgarudaofficial/", published: true },
   { platform: "tiktok", handle: "Mahameru baja", url: "", published: false },
   { platform: "tiktok", handle: "Garuda Marginal Baja", url: "", published: false },
-  { platform: "youtube", handle: "Mahameru Baja Indonesia", url: "", published: false },
-  { platform: "youtube", handle: "Garuda Marginal Baja Official", url: "", published: false },
+  { platform: "youtube", handle: "Mahameru Baja Indonesia", url: "https://www.youtube.com/@MahameruBajaIndonesia", published: true },
+  { platform: "youtube", handle: "Garuda Marginal Baja Official", url: "https://www.youtube.com/@GarudaMarginalbaja", published: true, divisions: ["retail-cibitung"] },
 ];
 // Tautan video terdahulu tidak tersedia pada embed; editor dapat menerbitkan ulang setelah diverifikasi.
 // Verified from the official profile embed, 10 October 2026. No profile-grid embeds.
@@ -52,7 +58,27 @@ export const verifiedInstagramPosts: SocialPost[] = [
   { id: "ig-Dd5a7EzDk9N", platform: "instagram", title: "Siap membantu kebutuhan Anda", caption: "Kabar dari toko dan tim Mahameru Baja.", url: "https://www.instagram.com/p/Dd5a7EzDk9N/", image: "", published: true, division: "retail-tambun", handle: "@mbilasercutting" },
   { id: "ig-Dd3OyLoB_7p", platform: "instagram", title: "Kebutuhan besi untuk bangunan", caption: "Kenali pilihan material bersama Mahameru Baja.", url: "https://www.instagram.com/reel/Dd3OyLoB_7p/", image: "", published: true, division: "retail-tambun", handle: "@mbilasercutting" },
 ];
-export const defaultSocialPosts: SocialPost[] = verifiedInstagramPosts;
+// Public YouTube oEmbed metadata checked 10 October 2026: exact Excel channel
+// name and a working video endpoint. Playback still depends on platform policy.
+export const verifiedYouTubePosts: SocialPost[] = [
+  { id: "yt-mbi-IP6GsNxExVU", platform: "youtube", title: "Proses laser cutting", caption: "Proses laser cutting melalui video resmi Mahameru Baja Indonesia.", url: "https://www.youtube.com/shorts/IP6GsNxExVU", image: "", published: true, division: "laser-cutting", handle: "@MahameruBajaIndonesia" },
+];
+// Checked 11 October 2026: the channel's Wanajaya address and 081287072023
+// contact match Garuda's supplied identity. Both videos belong to that channel.
+export const verifiedGarudaYouTubePosts: SocialPost[] = [
+  { id: "yt-gmb-0onyCem9_qI", platform: "youtube", title: "Pengiriman material Garuda", caption: "Lihat layanan pengiriman material melalui unggahan Garuda Marginal Baja Cibitung.", url: "https://www.youtube.com/shorts/0onyCem9_qI", image: "", published: true, division: "retail-cibitung", handle: "@GarudaMarginalbaja" },
+  { id: "yt-gmb-rGpjrXQM92M", platform: "youtube", title: "Pemotongan atap spandek", caption: "Proses pemotongan atap spandek pasir 2,5 meter di Garuda Marginal Baja.", url: "https://www.youtube.com/shorts/rGpjrXQM92M", image: "", published: true, division: "retail-cibitung", handle: "@GarudaMarginalbaja" },
+];
+export const defaultSocialPosts: SocialPost[] = [...verifiedInstagramPosts, ...verifiedYouTubePosts, ...verifiedGarudaYouTubePosts];
 export type SocialAccount = z.infer<typeof socialAccountSchema>;
 export type SocialPost = z.infer<typeof socialPostSchema>;
+// Excel supplies display names only for TikTok/YouTube, not URLs or video IDs.
+// Legacy account records keep their saved values; known official handles have
+// a scoped fallback until the editor explicitly selects their divisions.
+export function accountDivisionSlugs(account: SocialAccount): readonly string[] {
+  if (account.divisions) return account.divisions;
+  if (["@gmbgarudaofficial", "@GarudaMarginalbaja", "Garuda Marginal Baja", "Garuda Marginal Baja Official"].includes(account.handle)) return ["retail-cibitung"];
+  if (["@mbilasercutting", "Mahameru baja", "Mahameru Baja Indonesia"].includes(account.handle)) return socialDivisions.filter(slug => slug !== "retail-cibitung");
+  return [];
+}
 export function contentId() { return globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; }

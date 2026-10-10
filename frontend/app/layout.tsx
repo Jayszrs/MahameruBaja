@@ -7,6 +7,7 @@ import "../src/merged-pages.css";
 import "../src/article-cms.css";
 import "../src/revision.css";
 import "../src/project-gallery.css";
+import "../src/unified-home.css";
 import AppShell from "../src/components/AppShell";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 

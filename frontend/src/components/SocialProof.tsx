@@ -183,9 +183,11 @@ function Clients() {
 }
 
 function Suppliers() {
+  const marquee = useMarquee(supplierPartners.length, 38);
   return <section className="home-suppliers" id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
     <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Didukung jaringan pemasok material baja untuk kebutuhan retail, fabrikasi, dan proyek.</p></div>
-    <div className="supplier-logo-grid">{supplierPartners.map(supplier => <figure key={supplier.id}><Image src={supplier.logo} alt={supplier.name ? `Logo ${supplier.name}` : "Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="(max-width: 600px) 42vw, 200px" /><figcaption>{supplier.name || "\u00a0"}</figcaption></figure>)}</div>
+    <div className="supplier-ribbon-controls"><p>Geser untuk mengenal jaringan supplier kami.</p><button type="button" className="review-motion-toggle" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan" : "Jeda"}</button></div>
+    <div className="supplier-logo-grid supplier-logo-ribbon proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo supplier. Geser ke samping atau gunakan tombol panah.">{[0, 1, 2].flatMap(copy => supplierPartners.map(supplier => <figure key={`${copy}-${supplier.id}`} aria-hidden={copy !== 1}><Image src={supplier.logo} alt={copy !== 1 ? "" : supplier.name ? `Logo ${supplier.name}` : "Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="240px" draggable={false} /><figcaption>{supplier.name || "\u00a0"}</figcaption></figure>))}</div>
   </div></section>;
 }
 

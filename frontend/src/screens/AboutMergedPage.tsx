@@ -4,6 +4,7 @@ import { divisions } from "../data/divisionContent";
 import { divisionIdentity, groupVision, groupMotto, divisionWhatsApp } from "../data/companyIdentity";
 import type { SiteContent } from "../data/siteContent";
 import SocialProof from "../components/SocialProof";
+import DivisionCollage from "../components/DivisionCollage";
 
 export default function AboutMergedPage({ content }: { content: SiteContent }) {
   return <div className="company-about">
@@ -13,7 +14,7 @@ export default function AboutMergedPage({ content }: { content: SiteContent }) {
     </section>
     <section className="company-vision home-shell" aria-labelledby="vision-heading"><p className="industrial-eyebrow">VISI MAHAMERU GROUP</p><h2 id="vision-heading">Terpercaya.<br /><em>Terintegrasi.</em></h2><p>{groupVision}</p></section>
     <section id="divisi" className="company-divisions home-shell" aria-labelledby="division-heading"><div className="company-divisions-heading"><p className="industrial-eyebrow">LIMA DIVISI / SATU SOLUSI</p><h2 id="division-heading">Tim yang tepat untuk<br />setiap kebutuhan.</h2><p>Retail, pengadaan material, laser cutting, hingga fabrikasi dan erection. Kenali ruang lingkup dan hubungi admin masing-masing divisi.</p></div>
-      {divisions.map((division, index) => <article key={division.slug} className="company-division" data-reveal><div className="company-division-top"><span>0{index + 1} / {division.label}</span><Image src={divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={180} height={140} /></div><div className="company-division-main"><figure><div data-parallax="0.12"><Image src={division.hero} alt={division.name} fill sizes="(max-width: 800px) 100vw, 45vw" /></div><figcaption>{division.area}</figcaption></figure><div><h3>{division.name}</h3><p>{division.description}</p><div className="company-division-mission"><h4>Misi divisi</h4><p>{divisionIdentity[division.slug].mission}</p></div><div className="company-division-actions"><Link href={`/unit/${division.slug}`}>Buka website divisi ↗</Link><a href={divisionWhatsApp(division.slug)} target="_blank" rel="noopener noreferrer">Hubungi admin {divisionIdentity[division.slug].admins[0].name} ↗</a></div></div></div></article>)}
+      {divisions.map((division, index) => <article key={division.slug} className="company-division" data-reveal><div className="company-division-top"><span>0{index + 1} / {division.label}</span><Image src={divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={180} height={140} /></div><div className="company-division-main"><DivisionCollage division={division} index={index} /><div className="company-division-copy"><h3>{division.name}</h3><p>{division.description}</p><div className="company-division-mission"><h4>Misi divisi</h4><p>{divisionIdentity[division.slug].mission}</p></div><div className="company-division-actions"><Link href={`/unit/${division.slug}`}>Buka website divisi ↗</Link><a href={divisionWhatsApp(division.slug)} target="_blank" rel="noopener noreferrer">Hubungi admin {divisionIdentity[division.slug].admins[0].name} ↗</a></div></div></div></article>)}
     </section><SocialProof content={content} />
   </div>;
 }

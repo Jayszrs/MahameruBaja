@@ -6,12 +6,32 @@ import { defaultSiteContent, siteContentSchema, type SiteContent } from "../data
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 import { additionalPromotions } from "../data/promotions";
 import { mergeInventory } from "../data/inventory";
-import { verifiedInstagramPosts } from "../data/socialMedia";
+import { verifiedInstagramPosts, verifiedYouTubePosts, verifiedGarudaYouTubePosts, defaultSocialAccounts } from "../data/socialMedia";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
 function updatedIdentity(content: SiteContent): SiteContent {
+  if (content.socialSourceVersion < 1) {
+    const urls = new Set(content.socialPosts.map(post => post.url));
+    const youtube = defaultSocialAccounts.find(account => account.platform === "youtube" && account.handle === "Mahameru Baja Indonesia")!;
+    const existing = content.socialAccounts.some(account => account.platform === youtube.platform && account.handle === youtube.handle);
+    content = { ...content, socialSourceVersion: 1,
+      socialPosts: [...content.socialPosts, ...verifiedYouTubePosts.filter(post => !urls.has(post.url))].slice(0, 60),
+      socialAccounts: existing ? content.socialAccounts.map(account => account.platform === youtube.platform && account.handle === youtube.handle && !account.url ? { ...account, url: youtube.url, published: true } : account) : [...content.socialAccounts, youtube].slice(0, 20),
+    };
+  }
+  if (content.socialSourceVersion < 2) {
+    const urls = new Set(content.socialPosts.map(post => post.url));
+    const youtube = defaultSocialAccounts.find(account => account.platform === "youtube" && account.handle === "Garuda Marginal Baja Official")!;
+    const matches = (account: SiteContent["socialAccounts"][number]) => account.platform === "youtube" && (account.handle === youtube.handle || account.url === youtube.url || account.handle === "@GarudaMarginalbaja");
+    const existing = content.socialAccounts.some(matches);
+    content = { ...content, socialSourceVersion: 2,
+      socialPosts: [...content.socialPosts, ...verifiedGarudaYouTubePosts.filter(post => !urls.has(post.url))].slice(0, 60),
+      // Fill only the old empty account. Keep curated URLs, scopes and visibility.
+      socialAccounts: existing ? content.socialAccounts.map(account => matches(account) && !account.url ? { ...account, url: youtube.url, published: true, divisions: account.divisions ?? youtube.divisions } : account) : [...content.socialAccounts, youtube].slice(0, 20),
+    };
+  }
   if (content.garudaReviewVersion < 1) {
     // Populate only the old empty Garuda profile. Preserve curated reviews and
     // aggregate edits; once saved, deleted/unpublished quotes stay that way.

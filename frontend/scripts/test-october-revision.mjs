@@ -48,15 +48,26 @@ try{
   assert.equal((await call(`/api/admin/requests?id=${record.id}`,"PATCH",{revision:archiveBody.revision,archived:false},owner)).status,200);
   console.log(`PASS: ${concurrency} simultaneous submissions, no lost records, stale edits rejected, archive/restore and forbidden edits checked`);
   const base=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  const verifiedYouTubeSources = structuredClone(base.socialPosts.filter(post => post.platform === "youtube"));
   assert.equal(base.garudaReviews.rating,5); assert.equal(base.garudaReviews.reviewCount,43);
   assert.equal(base.garudaReviews.mapsUrl,"https://maps.app.goo.gl/QR3pr7p55DKFeHMG9");
   assert.deepEqual(base.garudaReviews.reviews.map(r => r.author), ["Anang Ardiantoro", "Iqbal Haryadi", "Heni Wulansari"], "Only the three public cards from the supplied Garuda HTML");
   assert.ok(base.garudaReviews.reviews.every(r => r.rating === 5 && r.url === base.garudaReviews.mapsUrl && r.authorUrl.startsWith("https://www.google.com/maps/contrib/")));
+  const sharedHomeHtml = await (await call("/")).text();
+  const homeSections = html => [...html.matchAll(/data-home-section="([^"]+)"/g)].map(match => match[1]);
+  assert.ok(sharedHomeHtml.includes('data-home-template="mahameru"'));
+  assert.ok(sharedHomeHtml.includes('aria-label="Identitas Mahameru Baja Indonesia"') && sharedHomeHtml.includes('class="company-footer-wordmark"'));
+  assert.ok(!sharedHomeHtml.includes('href="/admin/login"'), "No public link to admin login");
+  const aboutHtml = await (await call("/tentang-kami")).text();
+  assert.equal((aboutHtml.match(/aria-label="Kolase /g) || []).length,5,"Five individual about-page collages");
+  assert.ok(aboutHtml.includes("division-collage-detail-0") && aboutHtml.includes("collage-composition-1"));
   for (const slug of slugs) {
     const divisionHtml=await (await call(`/unit/${slug}`)).text();
     assert.ok(divisionHtml.includes("hero-carousel") && divisionHtml.includes("site-navbar") && divisionHtml.includes("company-footer"),slug+" uses shared site UI");
     assert.ok(divisionHtml.includes("VISI MAHAMERU GROUP") && divisionHtml.includes("MISI DIVISI"),slug+" has vision and mission");
     assert.ok(divisionHtml.includes("data-parallax"));
+    assert.deepEqual(homeSections(divisionHtml),homeSections(sharedHomeHtml),slug+" shares the complete main homepage section order");
+    assert.ok(!divisionHtml.includes('href="/admin/login"'),slug+" has no public portal link");
     const footerMarkup = divisionHtml.slice(divisionHtml.indexOf('<footer class="company-footer"'));
     assert.ok(footerMarkup.includes('class="company-footer-wordmark"'),slug+" restores large footer identity");
     const wordmark = footerMarkup.slice(footerMarkup.indexOf('class="company-footer-wordmark"'),footerMarkup.indexOf('class="company-footer-bottom"'));
@@ -82,6 +93,7 @@ try{
   assert.ok(base.promotions.filter(p => p.published).length >= 4, "Multiple real service/calendar banners");
   assert.ok(mainHtml.includes("event-countdown") && mainHtml.includes("Menuju Halloween") && mainHtml.includes("Perkiraan menuju Ramadan"));
   assert.ok(mainHtml.includes("social-permata-grid") && mainHtml.includes("instagram.com/p/DeG2uVRh2uq/embed/"));
+  assert.ok(mainHtml.includes("youtube-nocookie.com/embed/IP6GsNxExVU") && mainHtml.includes('href="https://www.youtube.com/@MahameruBajaIndonesia"'), "Verified MBI video and channel are included");
   assert.ok(!mainHtml.includes("social-profile-frame"), "No tall profile-grid embeds");
   assert.equal(base.socialPosts.filter(p => p.published && p.platform === "instagram").length, 4);
   assert.equal((await call("/admin/produk")).status, 307);
@@ -197,8 +209,9 @@ try{
   assert.ok(portfolioHtml.includes("Buka album Lantai Mezanin, 9 foto") && portfolioHtml.includes("lantai-mezanin-09.webp"));
   assert.ok(mainHtml.includes("melalui kerja sama.") && !mainHtml.includes("Logo contoh untuk preview tata letak"));
   assert.ok(mainHtml.includes('id="supplier"') && mainHtml.includes("supplier-krakatau-pipe.webp") && mainHtml.includes("supplier-supplier-logo-pdf.webp"));
-  assert.equal((mainHtml.match(/<figure><img[^>]+supplier-/g) || []).length, 17);
-  const supplierSources = [...mainHtml.matchAll(/src="([^"]*supplier-[^"]*)"/g)].map(match => new URL(match[1].replace(/&amp;/g, "&"), origin).searchParams.get("url"));
+  assert.ok(mainHtml.includes("supplier-logo-ribbon proof-marquee"));
+  assert.equal((mainHtml.match(/<figure aria-hidden="false"><img[^>]+supplier-/g) || []).length,17,"17 accessible supplier logos, other copies hidden");
+  const supplierSources = [...new Set([...mainHtml.matchAll(/src="([^"]*supplier-[^"]*)"/g)].map(match => new URL(match[1].replace(/&amp;/g, "&"), origin).searchParams.get("url")))];
   assert.equal(supplierSources.length,17); for (const source of supplierSources) assert.equal((await call(source)).status,200,source);
   assert.equal((await call("/admin/galeri")).status, 307);
   for (const session of [owner, ...sessions]) assert.equal((await call("/admin/galeri", "GET", undefined, session)).status, 200);
@@ -237,6 +250,68 @@ try{
   const galleryAfterClear = await (await call("/api/admin/content", "GET", undefined, owner)).json(); assert.deepEqual(galleryAfterClear.galleryProjects,[],"Deleted albums are never re-seeded");
   assert.equal((await call("/api/admin/content","PUT",{...galleryAfterClear,galleryProjects:galleryBase.galleryProjects},owner)).status,200);
   console.log("PASS: PDF supplier logos, 11 project albums/86 photos, 9-photo mezzanine, CMS upload/edit/order/cover/publish/delete, validation, draft privacy, division filtering and conflicts");
+  // Direct video playback is opt-in, from company-owned uploads.
+  let socialBase = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  // The earlier legacy migration fixture deliberately removed YouTube posts.
+  // Explicitly restore the verified sources before testing their scoped UI.
+  assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialPosts:[...socialBase.socialPosts.filter(post => post.platform !== "youtube"),...verifiedYouTubeSources]},owner)).status,200);
+  socialBase = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  const nativeId = socialBase.socialPosts[0].id;
+  const videoUrl = "/media/00000000-0000-0000-0000-000000000001.mp4";
+  const nativePosts = socialBase.socialPosts.map(p => p.id === nativeId ? {...p,videoUrl} : p);
+  assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialPosts:nativePosts},owner)).status,200);
+  const nativeHtml = await (await call("/")).text();
+  assert.ok(nativeHtml.includes('class="social-native-video"') && nativeHtml.includes(videoUrl) && nativeHtml.includes('controls=""') && nativeHtml.includes('playsInline=""'));
+  const onlyGarudaSocial = await (await call("/sosial-media?divisi=retail-cibitung")).text();
+  assert.ok(onlyGarudaSocial.includes("gmbgarudaofficial") && !onlyGarudaSocial.includes("Dd59WrvhJtC"));
+  assert.ok(onlyGarudaSocial.includes('href="https://www.youtube.com/@GarudaMarginalbaja"') && onlyGarudaSocial.includes("youtube-nocookie.com/embed/0onyCem9_qI") && onlyGarudaSocial.includes("youtube-nocookie.com/embed/rGpjrXQM92M"), "Garuda's verified channel and two videos are available in its directory");
+  const garudaSocialHome = await (await call("/unit/retail-cibitung")).text();
+  assert.ok(garudaSocialHome.includes("youtube-nocookie.com/embed/0onyCem9_qI"), "Garuda homepage has its own video");
+  const onlyLaserSocial = await (await call("/sosial-media?divisi=laser-cutting")).text();
+  assert.ok(onlyLaserSocial.includes("Dd59WrvhJtC") && !onlyLaserSocial.includes("Dd5a7EzDk9N"));
+  assert.ok(!onlyLaserSocial.includes("0onyCem9_qI") && !onlyLaserSocial.includes('href="https://www.youtube.com/@GarudaMarginalbaja"'), "Garuda videos/channel are not mixed into the laser division");
+  socialBase = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  for (const badVideo of ["javascript:alert(1)","https://example.com/not-trusted.mp4","/media/../private.mp4","/media/fake.html"]) {
+    const badPosts = socialBase.socialPosts.map(p => p.id === nativeId ? {...p,videoUrl:badVideo} : p);
+    assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialPosts:badPosts},owner)).status,400,badVideo);
+  }
+  const scopedAccount = {...socialBase.socialAccounts[0],divisions:["retail-cibitung"]};
+  assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialAccounts:[scopedAccount,...socialBase.socialAccounts.slice(1)]},owner)).status,200);
+  const scopedLaser = await (await call("/sosial-media?divisi=laser-cutting")).text();
+  assert.ok(!scopedLaser.includes('href="https://www.instagram.com/mbilasercutting/"'),"Explicit account scope is honored");
+  const socialRestore = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal((await call("/api/admin/content","PUT",{...socialRestore,socialAccounts:base.socialAccounts,socialPosts:base.socialPosts},owner)).status,200);
+  const legacySocial = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  delete legacySocial.socialSourceVersion;
+  legacySocial.socialPosts = legacySocial.socialPosts.filter(post => post.platform !== "youtube");
+  legacySocial.socialAccounts = legacySocial.socialAccounts.map(account => account.platform === "youtube" ? {...account,url:"",published:false} : account);
+  await writeFile(path.join(directory,"site-content.json"),JSON.stringify(legacySocial));
+  const importedSocial = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(importedSocial.socialSourceVersion,2);
+  assert.equal(importedSocial.socialPosts.filter(post => post.url.includes("IP6GsNxExVU")).length,1);
+  assert.ok(importedSocial.socialAccounts.some(account => account.published && account.url === "https://www.youtube.com/@MahameruBajaIndonesia"));
+  assert.equal(importedSocial.socialPosts.filter(post => post.platform === "youtube" && post.division === "retail-cibitung").length,2);
+  assert.ok(importedSocial.socialAccounts.some(account => account.published && account.url === "https://www.youtube.com/@GarudaMarginalbaja"));
+  assert.equal((await call("/api/admin/content","PUT",importedSocial,owner)).status,200);
+  const afterImport = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal((await call("/api/admin/content","PUT",{...afterImport,socialPosts:afterImport.socialPosts.filter(post => post.platform !== "youtube")},owner)).status,200);
+  const deletedYouTube = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.ok(!deletedYouTube.socialPosts.some(post => post.url.includes("IP6GsNxExVU")),"Deleted verified videos are not resurrected");
+  assert.ok(!deletedYouTube.socialPosts.some(post => post.handle === "@GarudaMarginalbaja"), "Deleted Garuda videos are not resurrected");
+  // Upgrade a v1 store without restoring the MBI video that its editor removed.
+  const curatedGarudaPost = {...importedSocial.socialPosts.find(post => post.id === "yt-gmb-0onyCem9_qI"),published:false,caption:"QA curated Garuda caption"};
+  const versionOneSocial = {...deletedYouTube,socialSourceVersion:1,socialPosts:[...deletedYouTube.socialPosts,curatedGarudaPost],socialAccounts:deletedYouTube.socialAccounts.map(account => account.handle === "Garuda Marginal Baja Official" ? {...account,published:false,divisions:["retail-cibitung"]} : account)};
+  await writeFile(path.join(directory,"site-content.json"),JSON.stringify(versionOneSocial));
+  const upgradedGaruda = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(upgradedGaruda.socialSourceVersion,2);
+  assert.ok(!upgradedGaruda.socialPosts.some(post => post.url.includes("IP6GsNxExVU")), "Garuda upgrade respects the earlier MBI deletion");
+  assert.equal(upgradedGaruda.socialPosts.filter(post => post.url === curatedGarudaPost.url).length,1, "Garuda migration deduplicates saved video URLs");
+  assert.equal(upgradedGaruda.socialPosts.find(post => post.id === curatedGarudaPost.id).caption,curatedGarudaPost.caption);
+  assert.equal(upgradedGaruda.socialPosts.find(post => post.id === curatedGarudaPost.id).published,false);
+  assert.equal(upgradedGaruda.socialAccounts.find(account => account.handle === "Garuda Marginal Baja Official").published,false, "Known non-empty account visibility is preserved");
+  assert.equal((await call("/api/admin/content","PUT",{...upgradedGaruda,socialPosts:upgradedGaruda.socialPosts.filter(post => post.handle !== "@GarudaMarginalbaja")},owner)).status,200);
+  assert.ok(!(await (await call("/api/admin/content","GET",undefined,owner)).json()).socialPosts.some(post => post.handle === "@GarudaMarginalbaja"));
+  console.log("PASS: all six shared homepage layouts, main footer, no public admin link, supplier ribbon, five collages, social scopes and validated MP4 player markup");
   const latest=await (await call("/api/admin/content","GET",undefined,owner)).json();latest.heroSlides[0]={...latest.heroSlides[0],type:"video",media:"/media/00000000-0000-0000-0000-000000000000.mp4",poster:asset.url};
   assert.equal((await call("/api/admin/content","PUT",latest,owner)).status,200);
   const homepage=await (await call("/")).text();assert.ok(homepage.includes("<video"));assert.ok(homepage.indexOf('id="pilih-divisi"')>homepage.indexOf('id="location-heading"'));assert.ok(!homepage.includes("footer-divisions-grid"));
