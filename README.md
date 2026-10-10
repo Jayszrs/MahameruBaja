@@ -30,6 +30,8 @@ Untuk setup lengkap, keputusan hosting, environment variables, backup, dan check
 
 Preview Next.js di Vercel sudah disiapkan. URL, cara deploy ulang, dan batasan preview tercatat di [docs/VERCEL_PREVIEW.md](docs/VERCEL_PREVIEW.md).
 
+CMS artikel tersedia di `/admin/artikel`: editor visual, draf/terbit, gambar, dan pratinjau. Konten artikel memakai private Blob pada Vercel dan JSON pada lokal, tanpa PostgreSQL. Panduan penggunaan dan penyimpanan: [docs/CMS_ARTICLES.md](docs/CMS_ARTICLES.md).
+
 ## Memperbarui salinan tim yang memakai Docker
 
 Semua gambar website disimpan dan dilacak Git di `frontend/public/images`; font PDF ada di `frontend/public/fonts`. Tidak perlu menyalin aset dari komputer pembuat desain.

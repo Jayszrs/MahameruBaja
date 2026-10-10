@@ -4,6 +4,7 @@ import { Archivo, IBM_Plex_Mono, Manrope } from "next/font/google";
 import "../src/index.css";
 import "../src/mobile-compact.css";
 import "../src/merged-pages.css";
+import "../src/article-cms.css";
 import "../src/revision.css";
 import AppShell from "../src/components/AppShell";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#BC1726" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#D92323" };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

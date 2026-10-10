@@ -70,5 +70,14 @@ try{
   const compiled=ts.transpileModule(await readFile(path.join(frontend,"src/lib/invoicePdf.ts"),"utf8"),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
   const modulePath=path.join(directory,"invoicePdf.mjs");await writeFile(modulePath,compiled);const {invoicePdf}=await import(pathToFileURL(modulePath));const originalFetch=globalThis.fetch;globalThis.fetch=(url,...rest)=>originalFetch(url==="/fonts/NotoSans-Regular.ttf"?origin+url:url,...rest);const bytes=await invoicePdf(invoiceRecord,invoice);await writeFile(path.join(directory,"qa-invoice.pdf"),bytes);globalThis.fetch=originalFetch;
   console.log("PASS: invoice persists and PDF generated");
+  const dashboard=await (await call("/admin","GET",undefined,owner)).text();
+  assert.ok(dashboard.includes('/admin/hero') && dashboard.includes('/admin/artikel'),"Merged dashboard retains both hero and article CMS");
+  for(const session of [owner,...sessions]) assert.equal((await call("/admin/artikel","GET",undefined,session)).status,200);
+  await new Promise((resolve,reject)=>{
+    const articleTests=spawn(process.execPath,[path.join(frontend,"scripts/test-articles.mjs")],{cwd:frontend,windowsHide:true,stdio:"inherit",env:{...process.env,ARTICLE_TEST_URL:origin,ARTICLE_TEST_ISOLATED:"1",ARTICLE_TEST_EMPTY:"1",ARTICLE_TEST_EMAIL:"qa.owner@example.test",ARTICLE_TEST_PASSWORD:password}});
+    articleTests.on("error",reject);
+    articleTests.on("exit",code=>code===0?resolve():reject(new Error(`Article CMS integration failed (${code})`)));
+  });
+  console.log("PASS: merged dashboard links, article access for five divisions, and isolated article CRUD/media tests");
   await writeFile(path.join(directory,"results.json"),JSON.stringify({passed:true,records:5+concurrency,invoice:"qa-invoice.pdf"}));console.log(`QA artifacts: ${directory}`);
 }catch(e){console.error(e.message);console.error(logs.slice(-3000));process.exitCode=1;}finally{server.kill();}

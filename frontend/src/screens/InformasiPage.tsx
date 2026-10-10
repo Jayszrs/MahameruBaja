@@ -1,15 +1,16 @@
 "use client";
 
 import { Link } from 'react-router';
-import { articles } from '../data/articles';
+import type { Article } from '../data/articles';
 import { useReveal } from '../hooks/useReveal';
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
 }
 
-export default function InformasiPage() {
+export default function InformasiPage({ articles }: { articles: Article[] }) {
   const { ref, visible } = useReveal();
+  const featured = articles[0];
 
   return (
     <>
@@ -45,33 +46,33 @@ export default function InformasiPage() {
 
           {/* Featured article */}
           <div ref={ref} className={`mb-10 reveal ${visible ? 'visible' : ''}`}>
-            <Link
-              to={`/informasi/${articles[0].slug}`}
+            {featured ? <Link
+              to={`/informasi/${featured.slug}`}
               className="group grid grid-cols-1 lg:grid-cols-5 gap-0 bg-white border border-light-steel/80 rounded-md overflow-hidden transition-colors duration-300 hover:border-brand/25"
             >
               <div className="lg:col-span-3 aspect-video lg:aspect-auto bg-graphite overflow-hidden">
-                <img src={articles[0].image} alt={articles[0].title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={featured.image} alt={featured.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
               <div className="lg:col-span-2 p-6 lg:p-8 flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-brand bg-brand/8 px-2.5 py-1 rounded-md">
-                    {articles[0].category}
+                    {featured.category}
                   </span>
-                  <span className="text-xs text-steel-grey">{articles[0].readTime}</span>
+                  <span className="text-xs text-steel-grey">{featured.readTime}</span>
                 </div>
                 <h3 className="text-xl lg:text-2xl font-extrabold text-graphite leading-tight mb-3 group-hover:text-brand transition-colors font-[family-name:var(--font-display)]">
-                  {articles[0].title}
+                  {featured.title}
                 </h3>
-                <p className="text-sm text-steel-grey leading-relaxed mb-5 line-clamp-3">{articles[0].excerpt}</p>
+                <p className="text-sm text-steel-grey leading-relaxed mb-5 line-clamp-3">{featured.excerpt}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-steel-grey">{formatDate(articles[0].date)}</span>
+                  <span className="text-xs text-steel-grey">{formatDate(featured.date)}</span>
                   <span className="text-sm font-bold text-brand flex items-center gap-1.5 group-hover:gap-3 transition-all">
                     Baca Selengkapnya
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                   </span>
                 </div>
               </div>
-            </Link>
+            </Link> : <div className="editor-empty"><h3>Belum ada artikel terbit.</h3><p>Panduan material akan tersedia di sini.</p></div>}
           </div>
 
           {/* Article grid */}
@@ -91,7 +92,7 @@ export default function InformasiPage() {
                   </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-[11px] text-steel-grey mb-2">{formatDate(article.date)} · {article.readTime}</p>
+                  <p className="text-[11px] text-steel-grey mb-2">{formatDate(article.date)} &middot; {article.readTime}</p>
                   <h3 className="font-bold text-graphite text-sm leading-snug mb-2.5 group-hover:text-brand transition-colors line-clamp-2 font-[family-name:var(--font-display)]">
                     {article.title}
                   </h3>

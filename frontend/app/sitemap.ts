@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 import { products } from "../src/data/products";
-import { articles } from "../src/data/articles";
+import { readPublishedArticles } from "../src/lib/articleStore";
 import { divisions } from "../src/data/divisionContent";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = "force-dynamic";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (isPreviewSite()) return [];
   const base = siteOrigin();
+  const articles = await readPublishedArticles();
   const staticPaths = ["", "/tentang-kami", "/produk", "/jasa", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media"];
   return [
     ...staticPaths.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),
