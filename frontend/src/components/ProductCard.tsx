@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { Link } from 'react-router';
 import { useState } from 'react';
+import { stockSummary, inventoryDivisionName, type InventoryItem } from '../data/inventory';
+import { divisionWhatsApp } from '../data/companyIdentity';
 import { useQuotation } from '../context/QuotationContext';
 
 export interface ProductCardData {
@@ -20,12 +22,18 @@ export interface ProductCardData {
 interface ProductCardProps {
   product: ProductCardData;
   variant?: 'default' | 'compact';
+  stockItems?: InventoryItem[];
+  division?: string;
 }
 
-export default function ProductCard({ product, variant = 'default' }: ProductCardProps) {
+export default function ProductCard({ product, variant = 'default', stockItems = [], division }: ProductCardProps) {
   const { addItem, hasItem, setOpen } = useQuotation();
   const added = hasItem(product.id);
   const [saved, setSaved] = useState(false);
+  const stock = stockItems.filter(i => i.productId === product.id && i.listed && (!division || i.division === division));
+  const confirmed = stock.find(i => i.status === 'available');
+  const detailUrl = `/produk/${product.slug}${division ? `?unit=${division}` : ''}`;
+  const adminUrl = divisionWhatsApp(stock[0]?.division || 'retail-tambun');
 
   function handleAddToQuotation(e: React.MouseEvent) {
     e.preventDefault();
@@ -43,7 +51,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
   return (
     <article className="product-card group relative bg-white rounded-xl border border-light-steel/70 overflow-hidden flex flex-col">
       {/* Image */}
-      <Link to={`/produk/${product.slug}`} className="block relative overflow-hidden bg-surface-2 aspect-[4/3]">
+      <Link to={detailUrl} className="block relative overflow-hidden bg-surface-2 aspect-[4/3]">
         <Image
           src={product.image}
           alt={product.name}
@@ -53,23 +61,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         />
         {/* Badges overlay */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1">
-          {product.badges?.map(badge => (
-            <span
-              key={badge}
-              className={`text-[10px] font-bold tracking-wide px-2 py-0.5 rounded font-[family-name:var(--font-mono)] ${
-                badge === 'READY STOCK' ? 'bg-positive text-white' :
-                badge === 'BARU' ? 'bg-brand text-white' :
-                'bg-gunmetal text-white'
-              }`}
-            >
-              {badge === 'READY STOCK' ? 'STOK: KONFIRMASI' : `CONTOH ${badge}`}
-            </span>
-          ))}
-          {!product.available && (
-            <span className="text-[10px] font-bold tracking-wide px-2 py-0.5 rounded bg-steel-grey/80 text-white font-[family-name:var(--font-mono)]">
-              HUBUNGI KAMI
-            </span>
-          )}
+          <span className={`text-[10px] font-bold px-2 py-1 rounded ${confirmed ? 'bg-positive text-white' : 'bg-gunmetal text-white'}`}>{confirmed ? 'STOK DIKONFIRMASI' : 'STOK: KONFIRMASI'}</span>
         </div>
 
         {/* Quick actions on hover */}
@@ -94,7 +86,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
 
         {/* Name */}
         <Link
-          to={`/produk/${product.slug}`}
+          to={detailUrl}
           className="block font-bold text-graphite text-sm leading-snug mb-1.5 hover:text-brand transition-colors line-clamp-2 font-[family-name:var(--font-display)]"
         >
           {product.name}
@@ -109,7 +101,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         <div className="text-[10px] text-steel-grey font-[family-name:var(--font-mono)] tracking-wide mb-3">
           SKU: {product.sku}
         </div>
-        <p className="text-[10px] text-steel-grey mb-3">Data & foto contoh. Spesifikasi, sertifikasi dan stok perlu konfirmasi.</p>
+        <p className="product-card-stock">{stock.length === 1 ? <><strong>{inventoryDivisionName(stock[0].division)}</strong>{stockSummary(stock[0])}</> : stock.length > 1 ? `Tercatat di ${stock.length} divisi · lihat detail stok` : 'Divisi penyedia dan stok belum dikonfirmasi'}</p><p className="text-[10px] text-steel-grey mb-3">Foto ilustrasi. Konfirmasikan spesifikasi dan harga.</p>
 
         {/* Spacer */}
         <div className="flex-1" />
@@ -117,7 +109,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         {/* Actions */}
         <div className="flex flex-col gap-1.5 sm:flex-row">
           <Link
-            to={`/produk/${product.slug}`}
+            to={detailUrl}
             className="flex-1 py-2 px-1 text-center text-xs font-bold whitespace-nowrap text-graphite border border-light-steel rounded-lg hover:border-graphite/40 hover:text-brand transition-colors"
           >
             Lihat Detail
@@ -138,7 +130,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
 
         {/* WhatsApp quick */}
         <a
-          href={`https://wa.me/6281218052017?text=${encodeURIComponent(`Halo Mahameru Baja, saya ingin bertanya tentang *${product.name}* (${product.sku}). Apakah stok tersedia?`)}`}
+          href={`${adminUrl}?text=${encodeURIComponent(`Halo Mahameru Baja, saya ingin bertanya tentang *${product.name}* (${product.sku}). Apakah stok tersedia?`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-1.5 flex items-center justify-center gap-1.5 py-2 text-xs font-semibold text-[#16A34A] border border-[#16A34A]/25 rounded-lg hover:bg-[#16A34A]/8 transition-colors"

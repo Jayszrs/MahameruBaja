@@ -4,10 +4,13 @@ import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import ProductInventory from '../components/ProductInventory';
+import { stockSummary, type InventoryItem } from '../data/inventory';
+import { divisionWhatsApp } from '../data/companyIdentity';
 import { useReveal } from '../hooks/useReveal';
 import { useQuotation } from '../context/QuotationContext';
 
-export default function ProductDetailPage() {
+export default function ProductDetailPage({ inventory = [], selectedDivision }: { inventory?: InventoryItem[]; selectedDivision?: string }) {
   const { slug } = useParams<{ slug: string }>();
   const product = getProductBySlug(slug ?? '');
   const [activeImage, setActiveImage] = useState(0);
@@ -18,7 +21,11 @@ export default function ProductDetailPage() {
 
   if (!product) return <Navigate to="/produk" replace />;
 
-  const related = getRelatedProducts(product);
+  const stock = inventory.filter(i => i.productId === product.id && i.listed);
+  const selectedStock = stock.find(i => i.division === selectedDivision) || stock[0];
+  const contactDivision = selectedStock?.division || "retail-tambun";
+  const waUrl = divisionWhatsApp(contactDivision);
+  const related = getRelatedProducts(product).filter(p => inventory.some(i => i.productId === p.id && i.listed && (!selectedDivision || i.division === selectedDivision)));
   const added = hasItem(product.id);
 
   const waMessage = encodeURIComponent(
@@ -61,11 +68,7 @@ export default function ProductDetailPage() {
               <img src={product.images[activeImage]} alt={product.name} className="w-full h-full object-cover transition-opacity duration-300" />
               {/* Badges */}
               <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                {product.badges?.map(badge => (
-                  <span key={badge} className={`text-[10px] font-bold tracking-wide px-2.5 py-1 rounded font-[family-name:var(--font-mono)] ${badge === 'READY STOCK' ? 'bg-positive text-white' : badge === 'BARU' ? 'bg-brand text-white' : 'bg-gunmetal text-white'}`}>
-                    {badge === 'READY STOCK' ? 'STOK: KONFIRMASI' : `CONTOH ${badge}`}
-                  </span>
-                ))}
+                <span className="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded bg-gunmetal text-white">{selectedStock?.status === 'available' ? 'STOK DIKONFIRMASI' : 'STOK: KONFIRMASI'}</span>
               </div>
             </div>
             <div className="flex gap-2.5">
@@ -85,9 +88,9 @@ export default function ProductDetailPage() {
                 className="text-xs font-semibold tracking-wide uppercase text-steel-grey hover:text-graphite transition-colors bg-surface-2 px-2.5 py-1 rounded-full">
                 {product.category}
               </Link>
-              <span className={`text-xs font-semibold flex items-center gap-1 ${product.available ? 'text-positive' : 'text-steel-grey'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${product.available ? 'bg-positive' : 'bg-steel-grey'}`} />
-                Stok belum diverifikasi
+              <span className={`text-xs font-semibold flex items-center gap-1 ${selectedStock?.status === 'available' ? 'text-positive' : 'text-steel-grey'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${selectedStock?.status === 'available' ? 'bg-positive' : 'bg-steel-grey'}`} />
+                {selectedStock ? stockSummary(selectedStock) : "Divisi dan stok belum dikonfirmasi"}
               </span>
             </div>
 
@@ -104,6 +107,8 @@ export default function ProductDetailPage() {
             </div>
 
             <p className="text-sm text-steel-grey leading-relaxed mb-5">{product.description}</p>
+
+            <ProductInventory items={stock} selectedDivision={selectedDivision} />
 
             {/* Price info */}
             <div className="bg-warm-white border border-light-steel rounded-xl p-4 mb-5">
@@ -124,7 +129,7 @@ export default function ProductDetailPage() {
                 <span className="px-4 text-sm font-bold text-graphite min-w-[3rem] text-center">{qty}</span>
                 <button onClick={() => setQty(q => q + 1)} aria-label="Tambah" className="w-9 h-9 flex items-center justify-center text-steel-grey hover:text-graphite hover:bg-warm-white transition-colors font-bold">+</button>
               </div>
-              <span className="text-sm text-steel-grey">batang</span>
+              <span className="text-sm text-steel-grey">{selectedStock?.unit || "sesuai satuan produk"}</span>
             </div>
 
             {/* CTA buttons */}
@@ -149,14 +154,14 @@ export default function ProductDetailPage() {
                 </button>
               )}
               <a
-                href={`https://wa.me/6281218052017?text=${waMessage}`}
+                href={`${waUrl}?text=${waMessage}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2.5 w-full py-3.5 bg-[#1A7A3E] hover:bg-[#155f32] text-white font-bold rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <WAIcon /> Minta Harga via WhatsApp
               </a>
-              <Link to="/minta-penawaran" className="flex items-center justify-center w-full py-3 border-2 border-graphite text-graphite hover:bg-graphite hover:text-white font-bold rounded-xl transition-all text-sm">
+              <Link to={`/minta-penawaran?unit=${contactDivision}`} className="flex items-center justify-center w-full py-3 border-2 border-graphite text-graphite hover:bg-graphite hover:text-white font-bold rounded-xl transition-all text-sm">
                 Minta Penawaran Formal
               </Link>
             </div>
@@ -272,7 +277,7 @@ export default function ProductDetailPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {related.map(p => (
-                <ProductCard key={p.id} product={{ ...p, sku: p.sku ?? 'MB-???', badges: p.badges }} />
+                <ProductCard key={p.id} stockItems={inventory} division={selectedDivision} product={{ ...p, sku: p.sku ?? 'MB-???', badges: p.badges }} />
               ))}
             </div>
           </div>
@@ -288,7 +293,7 @@ export default function ProductDetailPage() {
           {added ? '✓ Ditambahkan' : '+ Penawaran'}
         </button>
         <a
-          href={`https://wa.me/6281218052017?text=${waMessage}`}
+          href={`${waUrl}?text=${waMessage}`}
           target="_blank" rel="noopener noreferrer"
           className="flex-1 py-3 text-sm font-bold bg-[#1A7A3E] text-white rounded-xl text-center"
         >

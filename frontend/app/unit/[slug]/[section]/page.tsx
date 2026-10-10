@@ -15,8 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }) 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { slug, section } = await params;
   const division = divisions.find(d => d.slug === slug);
-  if (!division || !unitSections.includes(section as UnitSection) || (slug === "laser-cutting" && section === "produk")) notFound();
-  if (section === "kontak") await connection();
+  if (!division || !unitSections.includes(section as UnitSection)) notFound();
+  if (section === "kontak" || section === "produk") await connection();
   const contacts = section === "kontak" ? (await readSiteContent()).contacts.filter(c => c.published) : [];
-  return <DivisionSubPage division={division} section={section as UnitSection} contacts={contacts} />;
+  const inventory = section === "produk" ? (await readSiteContent()).inventory : [];
+  return <DivisionSubPage division={division} section={section as UnitSection} contacts={contacts} inventory={inventory} />;
 }

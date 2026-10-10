@@ -28,8 +28,9 @@ export function socialEmbedUrl(platform: SocialPlatform, value: string) {
 export const socialAccountSchema = z.object({ platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean() }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "URL harus sesuai platform dan menggunakan HTTPS" });
 });
-export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), published: z.boolean() }).superRefine((value, ctx) => {
+export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), published: z.boolean(), division: z.enum(["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"]).default("laser-cutting"), handle: z.string().trim().max(100).default("") }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan tautan unggahan sesuai platform" });
+  if (value.published && value.platform !== "facebook" && !socialEmbedUrl(value.platform, value.url)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan URL post/reel/video, bukan URL profil akun" });
   if (value.image && !/^\/(?:images|media)\/[\w/ .-]+$/.test(value.image)) {
     try { if (new URL(value.image).protocol !== "https:") throw new Error(); }
     catch { ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["image"], message: "Gambar harus /images/... atau URL HTTPS" }); }
@@ -44,7 +45,14 @@ export const defaultSocialAccounts: SocialAccount[] = [
   { platform: "youtube", handle: "Garuda Marginal Baja Official", url: "", published: false },
 ];
 // Tautan video terdahulu tidak tersedia pada embed; editor dapat menerbitkan ulang setelah diverifikasi.
-export const defaultSocialPosts: SocialPost[] = [{ id: "youtube-IP6GsNxExVU", platform: "youtube", title: "Proses laser cutting", caption: "Video belum diverifikasi.", url: "https://www.youtube.com/shorts/IP6GsNxExVU", image: "", published: false }];
+// Verified from the official profile embed, 10 October 2026. No profile-grid embeds.
+export const verifiedInstagramPosts: SocialPost[] = [
+  { id: "ig-DeG2uVRh2uq", platform: "instagram", title: "Mahameru Baja Indonesia", caption: "Material konstruksi dan layanan fabrikasi dari Mahameru Baja.", url: "https://www.instagram.com/reel/DeG2uVRh2uq/", image: "", published: true, division: "laser-cutting", handle: "@mbilasercutting" },
+  { id: "ig-Dd59WrvhJtC", platform: "instagram", title: "Kenali layanan laser cutting", caption: "Lihat proses laser cutting melalui unggahan resmi tim MBI.", url: "https://www.instagram.com/reel/Dd59WrvhJtC/", image: "", published: true, division: "laser-cutting", handle: "@mbilasercutting" },
+  { id: "ig-Dd5a7EzDk9N", platform: "instagram", title: "Siap membantu kebutuhan Anda", caption: "Kabar dari toko dan tim Mahameru Baja.", url: "https://www.instagram.com/p/Dd5a7EzDk9N/", image: "", published: true, division: "retail-tambun", handle: "@mbilasercutting" },
+  { id: "ig-Dd3OyLoB_7p", platform: "instagram", title: "Kebutuhan besi untuk bangunan", caption: "Kenali pilihan material bersama Mahameru Baja.", url: "https://www.instagram.com/reel/Dd3OyLoB_7p/", image: "", published: true, division: "retail-tambun", handle: "@mbilasercutting" },
+];
+export const defaultSocialPosts: SocialPost[] = verifiedInstagramPosts;
 export type SocialAccount = z.infer<typeof socialAccountSchema>;
 export type SocialPost = z.infer<typeof socialPostSchema>;
 export function contentId() { return globalThis.crypto?.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`; }

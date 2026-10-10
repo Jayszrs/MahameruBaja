@@ -4,11 +4,27 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { defaultSiteContent, siteContentSchema, type SiteContent } from "../data/siteContent";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
+import { additionalPromotions } from "../data/promotions";
+import { mergeInventory } from "../data/inventory";
+import { verifiedInstagramPosts } from "../data/socialMedia";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
 function updatedIdentity(content: SiteContent): SiteContent {
+  if (content.garudaReviewVersion < 1) {
+    // Populate only the old empty Garuda profile. Preserve curated reviews and
+    // aggregate edits; once saved, deleted/unpublished quotes stay that way.
+    content = { ...content, garudaReviewVersion: 1, garudaReviews: {
+      ...content.garudaReviews,
+      reviews: content.garudaReviews.reviews.length ? content.garudaReviews.reviews : defaultSiteContent.garudaReviews.reviews,
+    } };
+  }
+  if (content.showcaseVersion < 1) {
+    const ids = new Set(content.promotions.map(p => p.id));
+    const postIds = new Set(content.socialPosts.map(p => p.id));
+    content = { ...content, showcaseVersion: 1, promotions: [...content.promotions, ...additionalPromotions.filter(p => !ids.has(p.id))].slice(0, 20), socialPosts: [...content.socialPosts, ...verifiedInstagramPosts.filter(p => !postIds.has(p.id))].slice(0, 60) };
+  }
   if (content.identityVersion >= 1) return content;
   const known = new Set(defaultSiteContent.contacts.map(c => c.id));
   const demoIds = new Set(["tema-merdeka", "tema-ramadan", "promo-proyek", "promo-laser"]);
@@ -22,6 +38,7 @@ function mergeContent(current: SiteContent, input: SiteContent, base?: SiteConte
   const merged = { ...current };
   for (const key of Object.keys(input) as (keyof SiteContent)[]) {
     if (key === "revision" || JSON.stringify(input[key]) === JSON.stringify(base[key])) continue;
+    if (key === "inventory") { merged.inventory = mergeInventory(current.inventory, input.inventory, base.inventory); continue; }
     if (JSON.stringify(current[key]) !== JSON.stringify(base[key])) throw new Error("CMS_CONFLICT");
     Object.assign(merged, { [key]: input[key] });
   }

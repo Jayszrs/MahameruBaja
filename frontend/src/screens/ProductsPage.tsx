@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { products, type Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import { divisions } from '../data/divisionContent';
+import type { InventoryItem } from '../data/inventory';
 
 const categoryFilters = [
   { slug: 'besi-beton', label: 'Besi Beton' },
@@ -16,6 +18,10 @@ const categoryFilters = [
   { slug: 'bondek', label: 'Bondek' },
   { slug: 'spandek', label: 'Spandek' },
   { slug: 'baja-ringan', label: 'Baja Ringan' },
+  { slug: 'canal-unp', label: 'Canal UNP' },
+  { slug: 'canal-cnp', label: 'Canal CNP' },
+  { slug: 'atap-upvc', label: 'Atap UPVC' },
+  { slug: 'genteng-upvc', label: 'Genteng UPVC' },
 ];
 
 const sortOptions = [
@@ -26,12 +32,13 @@ const sortOptions = [
 
 const PAGE_SIZE = 12;
 
-export default function ProductsPage() {
+export default function ProductsPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sort, setSort] = useState('default');
   const [page, setPage] = useState(1);
 
+  const division = searchParams.get('unit') || '';
   const initialKategori = searchParams.get('kategori') ?? '';
   const initialQ = searchParams.get('q') ?? searchParams.get('search') ?? '';
 
@@ -66,11 +73,11 @@ export default function ProductsPage() {
     setSearchQ('');
     setAvailability('all');
     setPage(1);
-    setSearchParams({});
+    setSearchParams(division ? { unit: division } : {});
   }
 
   // Filter and sort
-  let filtered: Product[] = products;
+  let filtered: Product[] = products.filter(p => inventory.some(i => i.productId === p.id && i.listed && (!division || i.division === division)));
 
   if (searchQ.trim()) {
     const q = searchQ.toLowerCase();
@@ -88,7 +95,7 @@ export default function ProductsPage() {
   }
 
   if (availability === 'ready') {
-    filtered = filtered.filter(p => p.available);
+    filtered = filtered.filter(p => inventory.some(i => i.productId === p.id && i.listed && i.status === 'available' && (!division || i.division === division)));
   }
 
   if (sort === 'name-asc') filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
@@ -144,7 +151,7 @@ export default function ProductsPage() {
       <div>
         <label className="block text-xs font-bold uppercase tracking-wide text-steel-grey mb-2.5">Ketersediaan</label>
         <div className="space-y-1.5">
-          {[{ value: 'all', label: 'Semua Produk' }, { value: 'ready', label: 'Ready Stock' }].map(opt => (
+          {[{ value: 'all', label: 'Semua Produk' }, { value: 'ready', label: 'Stok dikonfirmasi' }].map(opt => (
             <label key={opt.value} className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="radio"
@@ -259,11 +266,12 @@ export default function ProductsPage() {
               </div>
             )}
 
+            <label className="catalog-division-filter">Produk dari divisi<select value={division} onChange={e => { const next = new URLSearchParams(searchParams); if (e.target.value) next.set('unit', e.target.value); else next.delete('unit'); setSearchParams(Object.fromEntries(next)); setPage(1); }}><option value="">Semua divisi penyedia</option>{divisions.map(d => <option value={d.slug} key={d.slug}>{d.name}</option>)}</select></label>
             {/* Product grid */}
             {paged.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
                 {paged.map(p => (
-                  <ProductCard key={p.id} product={{ ...p, sku: p.sku ?? 'MB-???', badges: p.badges }} />
+                  <ProductCard key={p.id} stockItems={inventory} division={division} product={{ ...p, sku: p.sku ?? 'MB-???', badges: p.badges }} />
                 ))}
               </div>
             ) : (

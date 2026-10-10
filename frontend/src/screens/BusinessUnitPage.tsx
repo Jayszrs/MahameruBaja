@@ -37,6 +37,7 @@ export default function BusinessUnitPage({ division, contacts, content }: { divi
       <div className="division-section-heading" data-reveal><p className="industrial-eyebrow">01 / LAYANAN & PRODUK</p><h2>Mulai dari kebutuhan Anda.</h2><p>Pilih jalur yang sesuai, lalu kirim spesifikasi untuk ditinjau tim.</p></div>
       <div className="division-offerings">{division.offerings.map((offering, index) => <article key={offering} data-reveal><div className="division-offering-image"><Image src={division.images[index % division.images.length].src} alt="" fill sizes="(max-width: 650px) 50vw, 25vw" /></div><span>0{index + 1}</span><h3>{offering}</h3><Link href={`${base}/kontak`}>Konsultasikan <span aria-hidden="true">↗</span></Link></article>)}</div>
     </div></section>
+    {division.slug === "retail-cibitung" && <SocialProof content={reviewContent} companyName={division.name} includeImported={false} reviewsOnly />}
 
     <section className="division-gallery-section" id="galeri-unit" aria-label={`Galeri ${division.name}`}><div className="industrial-container"><div className="division-section-heading" data-reveal><p className="industrial-eyebrow">02 / MATERIAL & PROSES</p><h2>Lihat lebih dekat.</h2><Link href={`${base}/galeri`}>Buka galeri divisi &#8599;</Link></div></div><div className="division-gallery">{division.images.map((item) => <figure key={item.src} data-reveal><div data-parallax="0.1"><Image src={item.src} alt={item.title} fill sizes="(max-width: 700px) 100vw, 33vw" /></div><figcaption>{item.title}</figcaption></figure>)}</div></section>
 
@@ -47,7 +48,7 @@ export default function BusinessUnitPage({ division, contacts, content }: { divi
 
     <ContactDirectory contacts={contacts} divisionSlug={division.slug} />
     <DivisionLocation slug={division.slug} />
-    <SocialProof content={reviewContent} companyName={division.slug === "retail-cibitung" ? division.name : "Mahameru Baja"} includeImported={division.slug !== "retail-cibitung"} reviewsOnly />
+    {division.slug !== "retail-cibitung" && <SocialProof content={reviewContent} companyName="Mahameru Baja" reviewsOnly />}
     <section className="division-end-section"><div className="industrial-container division-end-grid" data-reveal><div><p className="industrial-eyebrow">LANJUTKAN PERMINTAAN</p><h2>Siapkan daftar atau gambar. Kami bantu arahkan.</h2></div><div className="division-actions"><Link className="industrial-button" href={`${base}/kontak`}>Minta penawaran ↗</Link><a className="industrial-button outline" href={whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></div></div></section>
     <nav className="industrial-container division-next" aria-label="Divisi lainnya"><strong>Satu ekosistem Mahameru Baja</strong><Link href="/tentang-kami#divisi" className="division-switch">Jelajahi divisi lainnya &#8599;</Link></nav>
   </div>;

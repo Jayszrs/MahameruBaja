@@ -141,7 +141,7 @@ function Reviews({ content, companyName, includeImported }: { content: SiteConte
   return <section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
     <div className="home-shell">
       <div className="home-section-heading proof-heading" data-reveal>
-        <div><p className="home-eyebrow text-brand"><span />Cerita & kepercayaan</p><h2 id="reviews-heading">Setiap kebutuhan,<br /><em>punya ceritanya.</em></h2></div>
+        <div><p className="home-eyebrow text-brand"><span />{includeImported ? "Cerita & kepercayaan" : `Ulasan pelanggan ${companyName}`}</p><h2 id="reviews-heading">{includeImported ? <>Setiap kebutuhan,<br /><em>punya ceritanya.</em></> : <>Pengalaman pelanggan.<br /><em>Langsung dari Google Maps.</em></>}</h2></div>
         <a className="review-rating-seal" href={content.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${content.rating} dari 5. Buka sumber`}><span className="review-seal-label">GOOGLE MAPS</span><strong>{content.rating.toFixed(1)}<small>/5</small></strong><Stars rating={content.rating} /><span>{content.reviewCount !== null ? `${content.reviewCount} ulasan` : "Lihat penilaian"}<ReviewArrow /></span></a>
       </div>
       <div className="review-caption-row"><p>{published.length ? "Ulasan pelanggan pilihan, dikutip dari Google Maps. Baca ulasan lengkap di profil sumber." : "Lihat penilaian dan cerita pelanggan langsung pada profil Google Maps."}</p><button className="review-motion-toggle" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}><span aria-hidden="true">{marquee.userPaused ? "\u25b6" : "\u2161"}</span>{marquee.userPaused ? "Lanjutkan" : "Jeda"}</button></div>
@@ -152,7 +152,7 @@ function Reviews({ content, companyName, includeImported }: { content: SiteConte
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{String.fromCharCode(8220)}</span><small>ULASAN GOOGLE</small></div>
         <Stars rating={review.rating} />
         <blockquote>{review.text}</blockquote>
-        <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || `Pelanggan ${companyName}`}</small></div><a className="quote-source" href={review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
+        <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || `Pelanggan ${companyName}`}</small></div><a className="quote-source" href={review.authorUrl || review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
         </>; })()}
       </article> : <article className={`quote-card quote-tone-${index % 3} quote-info-card`} key={`${copy}-${slide.kind}`} aria-hidden={copy !== 1}>
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{slide.kind === "summary" ? "★" : "+"}</span><small>{slide.kind === "summary" ? "PROFIL GOOGLE MAPS" : "CERITA BERIKUTNYA"}</small></div>

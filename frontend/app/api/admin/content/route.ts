@@ -21,6 +21,8 @@ export async function PUT(request: Request) {
   const result = siteContentSchema.safeParse(json);
   if (!result.success) return Response.json({ message: result.error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ") }, { status: 400 });
   const baseResult = siteContentSchema.safeParse((json as { _base?: unknown })._base);
+  const current = await readSiteContent();
+  if (JSON.stringify(result.data.inventory) !== JSON.stringify(baseResult.success ? baseResult.data.inventory : current.inventory)) return Response.json({ message: "Ubah stok melalui ruang kerja Produk & stok divisi." }, { status: 403 });
   try { return Response.json(await writeSiteContent(result.data, baseResult.success ? baseResult.data : undefined), { headers: { "Cache-Control": "no-store" } }); }
   catch (error) {
     const code = (error as Error).message;

@@ -425,7 +425,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
 }
 
 function LogoMark({ division }: { division?: Division }) {
-  const src = !division || division.slug === "laser-cutting" ? "/images/brand/mbi-symbol-v2.png" : divisionIdentity[division.slug].logo;
+  const src = divisionIdentity[division?.slug || "laser-cutting"].logo;
   return (
     <span className="navbar-symbol relative block h-12 w-16 shrink-0 bg-white" aria-hidden="true">
       <Image src={src} alt="" fill sizes="64px" className="object-contain" />

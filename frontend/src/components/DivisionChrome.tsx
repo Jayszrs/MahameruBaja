@@ -12,7 +12,8 @@ export function divisionNavigation(division: Division) {
   const base = `/unit/${division.slug}`;
   return [
     { label: "Beranda", href: base }, { label: "Tentang", href: `${base}/tentang` },
-    { label: division.slug.startsWith("retail") ? "Produk" : "Layanan", href: `${base}/${division.slug.startsWith("retail") ? "produk" : "layanan"}` },
+    { label: "Produk", href: `${base}/produk` },
+    { label: "Layanan", href: `${base}/layanan` },
     { label: "Galeri", href: `${base}/galeri` }, { label: "Kontak", href: `${base}/kontak` },
   ];
 }

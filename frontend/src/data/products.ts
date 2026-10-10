@@ -16,6 +16,7 @@ export interface Product {
   badges?: Array<'READY STOCK' | 'BARU' | 'POPULAR'>;
   isNew?: boolean;
   isPopular?: boolean;
+  catalogDivisions?: string[];
 }
 
 const imgs = {
@@ -586,6 +587,26 @@ export const products: Product[] = [
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find(p => p.slug === slug);
 }
+
+// Product families supplied by MBI Trading. Sizes, certificates and availability
+// are confirmed by its admin; these entries do not imply a verified quantity.
+products.push(...[
+  ['tr-hbeam', 'besi-h-beam-trading', 'Besi H-Beam', 'besi-wf', 'WF Beam / H-Beam'],
+  ['tr-beton-ks', 'besi-beton-ks-trading', 'Besi Beton KS', 'besi-beton', 'Besi Beton'],
+  ['tr-unp', 'canal-unp-trading', 'Canal UNP', 'canal-unp', 'Canal UNP'],
+  ['tr-cnp', 'canal-cnp-trading', 'Canal CNP', 'canal-cnp', 'Canal CNP'],
+  ['tr-kepuh', 'baja-ringan-kepuh-trading', 'Baja Ringan Kepuh', 'baja-ringan', 'Baja Ringan'],
+  ['tr-upvc-single', 'atap-upvc-single-layer-trading', 'Atap UPVC Single Layer', 'atap-upvc', 'Atap UPVC'],
+  ['tr-upvc-double', 'atap-upvc-double-layer-trading', 'Atap UPVC Double Layer', 'atap-upvc', 'Atap UPVC'],
+  ['tr-genteng-upvc', 'genteng-upvc-trading', 'Genteng UPVC', 'genteng-upvc', 'Genteng UPVC'],
+].map(([id, slug, name, categorySlug, category]) => ({
+  id, slug, name, categorySlug, category, sku: id.toUpperCase(),
+  shortSpec: 'Ukuran dan spesifikasi sesuai konfirmasi admin MBI Trading',
+  description: `${name} termasuk pilihan produk MBI Trading. Sampaikan ukuran, jumlah, dan lokasi kebutuhan agar admin dapat mengonfirmasi spesifikasi, stok, serta penawaran. Foto merupakan ilustrasi material, bukan foto stok terverifikasi.`,
+  available: false, image: imgs.warehouse, images: [imgs.warehouse],
+  specifications: [{ label: 'Divisi', value: 'MBI Trading' }, { label: 'Ukuran / varian', value: 'Konfirmasi admin' }],
+  usages: ['Kebutuhan material sesuai spesifikasi pekerjaan'], tags: [name.toLowerCase(), 'trading'], catalogDivisions: ['trading-proyek'],
+})));
 
 export function getProductsByCategory(categorySlug: string): Product[] {
   return products.filter(p => p.categorySlug === categorySlug);

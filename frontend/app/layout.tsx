@@ -43,8 +43,8 @@ export const metadata: Metadata = {
   description: "Retail besi, supplier material proyek, laser cutting, CNC bending, dan fabrikasi di Tambun, Cibitung, dan Bekasi.",
   applicationName: "Mahameru Baja Indonesia",
   icons: {
-    icon: "/images/brand/mbi-symbol-v2.png",
-    apple: "/images/brand/mbi-symbol-v2.png",
+    icon: "/_next/image?url=%2Fimages%2Fbrand%2Fmbi-favicon-white-v3.png&w=64&q=75",
+    apple: "/_next/image?url=%2Fimages%2Fbrand%2Fmbi-favicon-white-v3.png&w=256&q=75",
   },
   openGraph: {
     type: "website",

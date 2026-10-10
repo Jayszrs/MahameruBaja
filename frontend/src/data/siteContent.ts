@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt } from "./googleReviews";
-import { promotionSchema, samplePromotions } from "./promotions";
+import { promotionSchema, samplePromotions, additionalPromotions } from "./promotions";
 import { divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
 import { defaultGarudaReviews } from "./divisionLocations";
+import { inventoryListSchema, defaultInventory } from "./inventory";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -38,13 +39,16 @@ export const reviewProfileSchema = z.object({
 export const siteContentSchema = z.object({
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),
+  showcaseVersion: z.number().int().min(0).default(0),
+  garudaReviewVersion: z.number().int().min(0).default(0),
+  inventory: inventoryListSchema.default(defaultInventory),
   heroSlides: z.array(heroSlideSchema).min(1).max(10).default(heroSlides),
   contacts: z.array(contactSchema).max(40),
   reviews: z.array(reviewSchema).max(200),
   garudaReviews: reviewProfileSchema.default(defaultGarudaReviews),
   socialAccounts: z.array(socialAccountSchema).max(20).default(defaultSocialAccounts),
   socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
-  promotions: z.array(promotionSchema).max(20).default(samplePromotions),
+  promotions: z.array(promotionSchema).max(20).default([...samplePromotions, ...additionalPromotions]),
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
   ratingDate: text(80).min(1), mapsUrl: googleUrl,
 }).superRefine((data, ctx) => {
@@ -61,11 +65,12 @@ export type TeamContact = SiteContent["contacts"][number];
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
   garudaReviews: defaultGarudaReviews,
-  identityVersion: 1, heroSlides,
+  inventory: defaultInventory,
+  identityVersion: 1, showcaseVersion: 1, garudaReviewVersion: 1, heroSlides,
   revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: googleReviewsCapturedAt,
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,
   socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
-  promotions: samplePromotions,
+  promotions: [...samplePromotions, ...additionalPromotions],
   contacts: divisionSlugs.flatMap(slug => divisionIdentity[slug].admins.map(admin => ({ id: `${slug}-${admin.name.toLowerCase()}`, name: admin.name, role: "Admin divisi", phone: admin.phone, mobile: admin.phone, whatsapp: admin.phone, email: "", photo: "", divisions: [slug], published: true }))),
 };
 
