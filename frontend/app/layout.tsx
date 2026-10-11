@@ -8,7 +8,9 @@ import "../src/article-cms.css";
 import "../src/revision.css";
 import "../src/project-gallery.css";
 import "../src/unified-home.css";
+import "../src/admin-workspace.css";
 import AppShell from "../src/components/AppShell";
+import AdminNavigationProvider from "../src/components/AdminNavigationProvider";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 
 const siteUrl = siteOrigin();
@@ -62,7 +64,7 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><AppShell>{children}</AppShell></body>
+      <body><AdminNavigationProvider><AppShell>{children}</AppShell></AdminNavigationProvider></body>
     </html>
   );
 }

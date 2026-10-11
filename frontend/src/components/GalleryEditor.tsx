@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import type { SiteContent } from "../data/siteContent";
 import type { GalleryProject } from "../data/projectGallery";
 import { divisions } from "../data/divisionContent";
+import { useAdminWorkspace } from "./AdminWorkspace";
 
 export default function GalleryEditor({ initialContent }: { initialContent: SiteContent }) {
   const [content, setContent] = useState(initialContent);
@@ -16,10 +17,6 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const project = content.galleryProjects.find(p => p.id === selected);
-  useEffect(() => {
-    const warn = (event: BeforeUnloadEvent) => { if (dirty) { event.preventDefault(); event.returnValue = ""; } };
-    window.addEventListener("beforeunload", warn); return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
   function change(update: (value: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
   function updateProject(update: Partial<GalleryProject>) { change(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === selected ? { ...p, ...update } : p) })); }
   function addProject() {
@@ -57,7 +54,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
       const response = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...content, _base: base.current }) });
       const saved = await response.json();
       if (!response.ok) throw new Error(saved.message || "Album belum tersimpan.");
-      setContent(saved); base.current = saved; setDirty(false); setMessage("Album tersimpan. Halaman Galeri mengikuti proyek yang diterbitkan.");
+      setContent(saved); base.current = saved; setDirty(false); workspace.refreshDashboard(); setMessage("Album tersimpan. Halaman Galeri mengikuti proyek yang diterbitkan.");
     } catch (error) { setFailed(true); setMessage((error as Error).message); }
     finally { setBusy(false); }
   }
@@ -82,11 +79,17 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
     const remaining = content.galleryProjects.filter(p => p.id !== selected);
     change(c => ({ ...c, galleryProjects: remaining })); setSelected(remaining[0]?.id || "");
   }
+  const workspace = useAdminWorkspace({ dirty, busy, label: "Simpan perubahan", disabled: !dirty, onSave: save });
+  async function selectProject(id: string) {
+    if (id === selected || busy || !(await workspace.confirmDiscard())) return;
+    if (dirty) { setContent(base.current); setDirty(false); }
+    setSelected(id); setMessage("");
+  }
   return <div className="content-editor"><aside className="editor-sidebar"><Link className="editor-brand" href="/admin">MAHAMERU <small>CONTENT STUDIO</small></Link><p>GALERI & PROYEK</p><span className="editor-sidebar-link active">Album pengalaman proyek</span><Link className="editor-sidebar-link" href="/admin/produk">Produk & stok divisi</Link><Link className="editor-sidebar-link" href="/admin/konten">Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/promosi">Banner & kegiatan</Link><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><Link href="/proyek" target="_blank">Lihat galeri ↗</Link></div></aside><main className="editor-main">
     <header className="editor-topbar"><span>Workspace / Galeri</span><div><span className="editor-save-state">{dirty ? "Belum disimpan" : "Tersimpan"}</span><button className="editor-save" type="button" onClick={save} disabled={busy || !dirty}>{busy ? "Memproses…" : "Simpan perubahan"}</button></div></header>
     <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">SATU PROYEK, BANYAK FOTO</p><h1>Dokumentasi yang<br /><em>terhubung.</em></h1><p>Kelola album, unggah beberapa gambar sekaligus, pilih sampul, dan susun urutan foto. Album terbit tampil di Galeri utama dan galeri divisi yang dipilih. Konten company profile dikelola bersama oleh admin.</p></div>
       {message && <div className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</div>}
-      <fieldset className="editor-fields" disabled={busy}><div className="gallery-editor-layout"><nav className="gallery-editor-albums" aria-label="Daftar album"><button type="button" className="editor-add" onClick={addProject} disabled={content.galleryProjects.length >= 80}>+ Tambah proyek</button>{content.galleryProjects.map(p => <button type="button" key={p.id} className={p.id === selected ? "is-selected" : ""} aria-pressed={p.id === selected} onClick={() => setSelected(p.id)}><strong>{p.title}</strong><small>{p.published ? "Terbit" : "Draf"} · {p.photos.length} foto</small></button>)}</nav>
+      <fieldset className="editor-fields" disabled={busy}><div className="gallery-editor-layout"><nav className="gallery-editor-albums" aria-label="Daftar album"><button type="button" className="editor-add" onClick={addProject} disabled={content.galleryProjects.length >= 80}>+ Tambah proyek</button>{content.galleryProjects.map(p => <button type="button" key={p.id} className={p.id === selected ? "is-selected" : ""} aria-pressed={p.id === selected} onClick={() => { void selectProject(p.id); }}><strong>{p.title}</strong><small>{p.published ? "Terbit" : "Draf"} · {p.photos.length} foto</small></button>)}</nav>
         {project ? <section className="editor-panel gallery-editor-project"><div className="editor-panel-title"><h2>{project.title}</h2><span>{project.photos.length} / 40 foto</span></div><div className="editor-grid">
           <label className="editor-field">Nama proyek<input maxLength={160} value={project.title} onChange={e => updateProject({ title: e.target.value })} /></label>
           <label className="editor-field">Kategori<input maxLength={80} value={project.category} onChange={e => updateProject({ category: e.target.value })} /></label>
