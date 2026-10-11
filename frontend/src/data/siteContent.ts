@@ -1,3 +1,4 @@
+import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt } from "./googleReviews";
@@ -18,15 +19,15 @@ const googleUrl = webUrl.refine(value => {
     return host === "maps.app.goo.gl" || host === "goo.gl" || host === "google.com" || host.endsWith(".google.com") || host === "google.co.id" || host.endsWith(".google.co.id");
   } catch { return false; }
 }, "Gunakan tautan sumber Google Maps");
-const photo = text(1000).refine(value => !value || /^\/(?:images|media)\/[a-zA-Z0-9/_ .-]+$/.test(value) || isHttps(value), "Gunakan /images/... atau URL HTTPS");
+const photo = text(1000).refine(value => !value || /^\/(?:images|media|api\/cms\/media)\/[a-zA-Z0-9/_ .-]+$/.test(value) || isHttps(value), "Gunakan /images/... atau URL HTTPS");
 const phone = text(30).refine(value => !value || /^\+?[\d ()-]{7,30}$/.test(value), "Nomor telepon tidak valid");
-export const contactSchema = z.object({
+export const contactSchema = z.object({ ...ownershipFields,
   id: text(80).min(1), name: text(100).min(1), role: text(100).min(1),
   phone, mobile: phone, whatsapp: phone,
   email: z.union([z.literal(""), z.string().trim().email().max(200)]),
-  photo, divisions: z.array(z.enum(divisionSlugs)).max(5), published: z.boolean(),
+  photo, divisions: z.array(divisionSlugSchema).max(100), published: z.boolean(),
 });
-export const reviewSchema = z.object({
+export const reviewSchema = z.object({ ...ownershipFields,
   id: text(80).min(1), author: text(100).min(1), rating: z.number().int().min(1).max(5),
   text: text(2000).min(1), when: text(100), url: googleUrl,
   authorPhoto: photo.optional(), authorUrl: googleUrl.optional(), published: z.boolean(),
@@ -45,10 +46,11 @@ export const siteContentSchema = z.object({
   socialSourceVersion: z.number().int().min(0).default(0),
   inventory: inventoryListSchema.default(defaultInventory),
   galleryProjects: galleryProjectsSchema.default(defaultGalleryProjects),
-  heroSlides: z.array(heroSlideSchema).min(1).max(10).default(heroSlides),
+  heroSlides: z.array(heroSlideSchema).max(100).default(heroSlides),
   contacts: z.array(contactSchema).max(40),
   reviews: z.array(reviewSchema).max(200),
   garudaReviews: reviewProfileSchema.default(defaultGarudaReviews),
+  divisionReviews: z.record(divisionSlugSchema, reviewProfileSchema).default({}),
   socialAccounts: z.array(socialAccountSchema).max(20).default(defaultSocialAccounts),
   socialPosts: z.array(socialPostSchema).max(60).default(defaultSocialPosts),
   promotions: z.array(promotionSchema).max(20).default([...samplePromotions, ...additionalPromotions]),
@@ -73,6 +75,7 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  divisionReviews: {},
   garudaReviews: defaultGarudaReviews,
   inventory: defaultInventory,
   galleryProjects: defaultGalleryProjects,

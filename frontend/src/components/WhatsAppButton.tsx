@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { divisions } from '../data/divisionContent';
-import { divisionIdentity, divisionWhatsApp } from '../data/companyIdentity';
+import { useDivisionDirectory } from "./DivisionDirectory";
+
 import { internationalPhone, type TeamContact } from '../data/siteContent';
 
-const actions = divisions.flatMap(division => divisionIdentity[division.slug].admins.map(admin => ({ label: `${division.slug === "laser-cutting" ? "MBI Laser Bending" : division.name} · ${admin.name}`, href: `${divisionWhatsApp(division.slug, admin.name)}?text=${encodeURIComponent(`Halo Admin ${admin.name}, saya ingin konsultasi kebutuhan ${division.label}.`)}` })));
+
 
 export default function WhatsAppButton() {
+  const { divisions, divisionIdentity, divisionWhatsApp } = useDivisionDirectory();
+  const actions = divisions.flatMap(division => divisionIdentity[division.slug].admins.map(admin => ({ label: `${division.slug === "laser-cutting" ? "MBI Laser Bending" : division.name} · ${admin.name}`, href: `${divisionWhatsApp(division.slug, admin.name)}?text=${encodeURIComponent(`Halo Admin ${admin.name}, saya ingin konsultasi kebutuhan ${division.label}.`)}` })));
   const [open, setOpen] = useState(false);
   const [liveActions, setLiveActions] = useState(actions);
   useEffect(() => {
@@ -15,7 +17,7 @@ export default function WhatsAppButton() {
     const controller = new AbortController();
     void fetch('/api/contacts', { signal: controller.signal }).then(r => { if (!r.ok) throw new Error(); return r.json(); }).then((contacts: Array<Pick<TeamContact, 'id' | 'name' | 'whatsapp' | 'divisions'>>) => {
       setLiveActions(contacts.flatMap(contact => {
-        const assigned = contact.divisions.length ? contact.divisions : [null];
+        const assigned = contact.divisions.length ? contact.divisions.filter(slug=>divisions.some(d=>d.slug===slug)) : [null];
         return assigned.map(slug => {
           const division = divisions.find(d => d.slug === slug);
           const label = `${slug === 'laser-cutting' ? 'MBI Laser Bending' : division?.name || 'Admin Mahameru'} · ${contact.name}`;

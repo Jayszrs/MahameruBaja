@@ -1,10 +1,12 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useEffect, useState } from "react";
-import { divisionWhatsApp } from "../data/companyIdentity";
+
 import type { CreateLeadInput } from "../lib/api";
 
 export default function RequestHandoff({ input, id, phone = "" }: { input: CreateLeadInput; id: string; phone?: string }) {
+  const { divisionWhatsApp, divisions } = useDivisionDirectory();
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
@@ -18,7 +20,7 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
     setFile(null);
     setUrl("");
     setError("");
-    import("../lib/requestPdf").then(module => module.createRequestPdf(input, id)).then(bytes => {
+    import("../lib/requestPdf").then(module => module.createRequestPdf(input, id, undefined, undefined, divisions)).then(bytes => {
       if (stopped) return;
       const document = new File([bytes.slice().buffer as ArrayBuffer], `${id}-permintaan-penawaran.pdf`, { type: "application/pdf" });
       objectUrl = URL.createObjectURL(document);
@@ -27,11 +29,11 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
       setCanShare(Boolean(navigator.canShare?.({ files: [document] })));
     }).catch(() => { if (!stopped) setError("PDF belum dapat dibuat. Coba lagi, atau hubungi tim tanpa berkas."); });
     return () => { stopped = true; if (objectUrl) URL.revokeObjectURL(objectUrl); };
-  }, [input, id, retry]);
+  }, [input, id, retry, divisions]);
 
   phone ||= divisionWhatsApp(input.businessUnitSlug || "laser-cutting").split("/").at(-1)!;
   const details = input.items?.map(item => `- ${item.productName}: ${item.quantity ?? "konfirmasi"} ${item.unit || ""}`).join("\n") || input.request || "Mohon tindak lanjut penawaran.";
-  const baseMessage = `Halo Mahameru Baja, saya ${input.name}. Nomor permintaan saya ${id}.\nDivisi: ${input.businessUnitSlug || "retail-tambun"}\n${details}`;
+  const baseMessage = `Halo Mahameru Baja, saya ${input.name}. Nomor permintaan saya ${id}.\nDivisi: ${divisions.find(d=>d.slug===input.businessUnitSlug)?.name || input.businessUnitSlug || "Mahameru Baja"}\n${details}`;
   const message = `${baseMessage}\nSaya akan melampirkan PDF ringkasan kebutuhan. Mohon review spesifikasi, harga, dan jadwal.`;
   const fallbackMessage = `${baseMessage}\nPDF ringkasan belum tersedia. Mohon tindak lanjut kebutuhan saya.`;
 

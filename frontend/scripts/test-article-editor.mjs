@@ -51,7 +51,7 @@ assert.equal(await page.getByLabel("Alamat artikel", { exact: true }).inputValue
 await page.getByLabel("Kategori", { exact: true }).fill("Pengujian lokal");
 await page.getByLabel("Ringkasan", { exact: true }).fill("Ringkasan dari editor visual pada fixture lokal.");
 await page.getByLabel("Deskripsi gambar sampul", { exact: true }).fill("Sampul pengujian");
-const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jM2sAAAAASUVORK5CYII=", "base64");
+const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC", "base64");
 await page.locator(".article-cover input[type=file]").setInputFiles({ name: "fixture.png", mimeType: "image/png", buffer: png });
 await page.waitForFunction(() => document.querySelector('.article-cover input[type="file"]')?.disabled === false);
 const doc = page.getByRole("textbox", { name: "Isi artikel", exact: true });

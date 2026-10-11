@@ -1,4 +1,5 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
@@ -10,9 +11,10 @@ import QuotationDrawer from "./QuotationDrawer";
 import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
 import RouteProgress from "./RouteProgress";
-import { divisions } from "../data/divisionContent";
+
 
 export default function AppShell({ children }: { children: ReactNode }) {
+  const { divisions } = useDivisionDirectory();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
   const division = divisions.find(unit => pathname === `/unit/${unit.slug}` || pathname.startsWith(`/unit/${unit.slug}/`));

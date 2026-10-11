@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { projectCover, type GalleryProject } from "../data/projectGallery";

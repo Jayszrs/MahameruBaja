@@ -1,12 +1,14 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import { products } from '../data/products';
-import { divisions } from '../data/divisionContent';
-import { inventoryKey, inventoryDivisionName, stockLabels, stockStatuses, type InventoryItem } from '../data/inventory';
+
+import { inventoryKey, stockLabels, stockStatuses, type InventoryItem } from "../data/inventory";
 import { useAdminWorkspace } from './AdminWorkspace';
 
 export default function InventoryEditor({ initialItems, division }: { initialItems: InventoryItem[]; division: string | null }) {
+  const { divisions, inventoryDivisionName } = useDivisionDirectory();
   const [items, setItems] = useState(initialItems);
   const base = useRef(initialItems);
   const [scope, setScope] = useState(division || 'retail-tambun');

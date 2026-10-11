@@ -90,4 +90,4 @@ export const divisions = [
   },
 ] as const;
 
-export type Division = (typeof divisions)[number];
+export type { Division } from "./divisionCms";

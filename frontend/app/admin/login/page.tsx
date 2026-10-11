@@ -8,9 +8,9 @@ export const metadata = { title: "Masuk Portal Admin", robots: { index: false, f
 
 export default async function AdminLoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const session = (await cookies()).get(ADMIN_COOKIE)?.value;
-  if (verifyAdminSession(session)) redirect("/admin");
+  if (await verifyAdminSession(session)) redirect("/admin");
   const { error } = await searchParams;
-  const ready = adminConfigured();
+  const ready = await adminConfigured();
   return (
     <main className="admin-login-page">
       <div className="admin-login-image" aria-hidden="true"><span>MAHAMERU<br />BAJA INDONESIA</span><p>Ruang kerja untuk konten dan operasional.</p></div>

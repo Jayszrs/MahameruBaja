@@ -1,4 +1,7 @@
 "use client";
+import { useAdminIdentity } from "./AdminIdentity";
+import { useDivisionDirectory } from "./DivisionDirectory";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useNavigationGuard } from "nextjs-nav-guard";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -8,7 +11,10 @@ import { AdminWorkspaceContext, emptyAdminWorkspace, type AdminWorkspaceState } 
 
 const preferenceKey = "mahameru.admin.navigation.v1";
 export default function AdminShell({ children }: { children: ReactNode }) {
+  const identity = useAdminIdentity(); const { divisions } = useDivisionDirectory(); const router = useRouter();
+  const restricted = identity.mustChangePassword;
   const pathname = usePathname(); const params = useSearchParams();
+  useEffect(()=>{if(restricted && pathname !== "/admin/akun-saya")router.replace("/admin/akun-saya");},[restricted,router,pathname]);
   const search = params.toString();
   const { group, item } = activeAdminNavigation(pathname, new URLSearchParams(search));
   const [expanded, setExpanded] = useState<Record<string, boolean>>({ sales: true });
@@ -91,17 +97,18 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <div className="admin-sidebar-brand"><Link href="/admin"><img src="/mbi-mark.svg" alt="" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><button type="button" className="admin-drawer-close" aria-label="Tutup menu" onClick={() => { setDrawer(false); menuButton.current?.focus(); }}>×</button></div>
       <nav aria-label="Menu admin"><Link className={`admin-dashboard-link${pathname === "/admin" ? " active" : ""}`} href="/admin" aria-current={pathname === "/admin" ? "page" : undefined}><span aria-hidden="true">▦</span>Dashboard</Link>
         <p className="admin-nav-caption">RUANG KERJA</p>
-        {adminNavigation.map(category => <div className={`admin-nav-group${group?.id === category.id ? " current" : ""}`} key={category.id}>
+        {!restricted && adminNavigation.map(category => <div className={`admin-nav-group${group?.id === category.id ? " current" : ""}`} key={category.id}>
           <button type="button" className="admin-group-toggle" aria-expanded={Boolean(expanded[category.id])} aria-controls={`admin-group-${category.id}`} onClick={() => setExpanded(current => ({ ...current, [category.id]: !current[category.id] }))}><span className="admin-group-number">{category.number}</span><span>{category.label}</span><svg className={expanded[category.id] ? "expanded" : ""} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></button>
           <div id={`admin-group-${category.id}`} hidden={!expanded[category.id]} className="admin-submenu">{category.items.map(child => {
             const active = group?.id === category.id && item?.href === child.href;
             return <Link key={child.href} href={child.href} aria-current={active ? "page" : undefined} className={active ? "active" : ""}><span aria-hidden="true" />{child.label}</Link>;
           })}</div>
         </div>)}
+        {identity.role === "super_admin" && !restricted && <><p className="admin-nav-caption">ADMINISTRASI</p><Link className={"admin-administration-link"+(pathname === "/admin/akun" ? " active" : "")} href="/admin/akun" aria-current={pathname === "/admin/akun" ? "page" : undefined}><span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 5a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5"/></svg></span>Pengelolaan akun</Link></>}
       </nav>
-      <div className="admin-sidebar-footer"><a href="/" target="_blank" rel="noopener noreferrer">Lihat website <span aria-hidden="true">↗</span></a><form action="/api/admin/logout" method="post" onSubmit={event => { if (allowUnload.current) return; if (workspace.busy || workspace.dirty) { event.preventDefault(); const form = event.currentTarget; void confirmDiscard().then(accepted => { if (accepted) { allowUnload.current = true; form.requestSubmit(); } }); } }}><button type="submit" disabled={workspace.busy}>Keluar <span aria-hidden="true">↗</span></button></form><small>Mahameru Baja · Portal Admin</small></div>
+      <div className="admin-sidebar-footer"><div className="admin-identity-caption"><strong>{identity.name}</strong>{identity.role === "super_admin" ? "Super Admin / Seluruh divisi" : divisions.find(d=>d.slug===identity.division)?.name || identity.division}</div><Link href="/admin/akun-saya" aria-current={pathname === "/admin/akun-saya" ? "page" : undefined}>Akun saya</Link><a href="/" target="_blank" rel="noopener noreferrer">Lihat website <span aria-hidden="true">↗</span></a><form action="/api/admin/logout" method="post" onSubmit={event => { if (allowUnload.current) return; if (workspace.busy || workspace.dirty) { event.preventDefault(); const form = event.currentTarget; void confirmDiscard().then(accepted => { if (accepted) { allowUnload.current = true; form.requestSubmit(); } }); } }}><button type="submit" disabled={workspace.busy}>Keluar <span aria-hidden="true">↗</span></button></form><small>Mahameru Baja · Portal Admin</small></div>
     </aside>
-    <div className="admin-stage"><header className="admin-topbar"><div className="admin-location"><button type="button" ref={menuButton} className="admin-menu-button" aria-label="Buka menu admin" aria-expanded={drawer} aria-controls="admin-sidebar" onClick={() => setDrawer(true)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg></button><span>{group ? <><small>{group.label}</small><b aria-hidden="true">/</b>{item?.label}</> : "Dashboard"}</span></div>
+    <div className="admin-stage"><header className="admin-topbar"><div className="admin-location"><button type="button" ref={menuButton} className="admin-menu-button" aria-label="Buka menu admin" aria-expanded={drawer} aria-controls="admin-sidebar" onClick={() => setDrawer(true)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg></button><span>{group ? <><small>{group.label}</small><b aria-hidden="true">/</b>{item?.label}</> : pathname === "/admin/akun" ? "Administrasi / Pengelolaan akun" : pathname === "/admin/akun-saya" ? "Akun saya" : "Dashboard"}</span></div>
       <div className="admin-topbar-actions">{workspace.label && <><span className={`admin-save-state${workspace.dirty ? " dirty" : ""}`} role="status">{workspace.busy ? "Sedang diproses…" : workspace.dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span>{workspace.secondaryLabel && <button type="button" className="admin-secondary" disabled={workspace.busy} onClick={workspace.onSecondary}>{workspace.secondaryLabel}</button>}<button type="button" className="admin-primary" disabled={workspace.busy || workspace.disabled} onClick={workspace.onSave}>{workspace.busy ? "Memproses…" : workspace.label}</button></>}</div>
     </header><main id="admin-main" tabIndex={-1} className="admin-page-content">{children}</main></div>
     {confirmOpen && <div className="admin-modal-backdrop"><div className="admin-discard-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="admin-discard-heading"><span className="admin-dialog-icon" aria-hidden="true">!</span><h2 id="admin-discard-heading">Perubahan belum disimpan</h2><p>Perubahan pada ruang kerja ini akan hilang jika kamu melanjutkan. Simpan terlebih dahulu atau tetap di halaman ini.</p><div><button type="button" className="admin-secondary" onClick={() => finishConfirm(false)}>Tetap di halaman</button><button type="button" className="admin-primary" onClick={() => finishConfirm(true)}>Tinggalkan perubahan</button></div></div></div>}

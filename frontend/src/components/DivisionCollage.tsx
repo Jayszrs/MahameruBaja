@@ -1,15 +1,18 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 import { useState } from "react";
 import type { Division } from "../data/divisionContent";
-import { divisionIdentity } from "../data/companyIdentity";
+
+import { visibleInDivision } from "../data/divisionCms";
 import type { GalleryProject } from "../data/projectGallery";
 import PhotoGalleryDialog, { type GalleryImage } from "./PhotoGalleryDialog";
 
 export default function DivisionCollage({ division, index = 0, projects = [] }: { division: Division; index?: number; projects?: GalleryProject[] }) {
+  const { divisionIdentity } = useDivisionDirectory();
   const [selected, setSelected] = useState<number | null>(null);
-  const documented: GalleryImage[] = projects.filter(project => project.published && project.division === division.slug).flatMap(project => project.photos.map(photo => ({ src: photo.src, alt: photo.alt, caption: photo.caption || `${project.title} — ${photo.alt}` })));
+  const documented: GalleryImage[] = projects.filter(project => project.published && visibleInDivision(project,division.slug)).flatMap(project => project.photos.map(photo => ({ src: photo.src, alt: photo.alt, caption: photo.caption || `${project.title} — ${photo.alt}` })));
   const hero = division.images.find(photo => photo.src === division.hero);
   const candidates: GalleryImage[] = [...documented,
     { src: division.hero, alt: hero?.title || division.name, caption: hero?.title || division.area },

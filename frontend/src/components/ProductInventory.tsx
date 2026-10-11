@@ -1,8 +1,11 @@
+"use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 import Link from 'next/link';
-import { stockSummary, stockLabels, inventoryDivisionName, type InventoryItem } from '../data/inventory';
-import { divisionIdentity, divisionWhatsApp } from '../data/companyIdentity';
+import { stockSummary, stockLabels, type InventoryItem } from "../data/inventory";
+
 
 export default function ProductInventory({ items, selectedDivision }: { items: InventoryItem[]; selectedDivision?: string }) {
+  const { inventoryDivisionName, divisionIdentity, divisionWhatsApp } = useDivisionDirectory();
   const shown = items.filter(i => i.listed);
   return <section className="product-inventory" aria-labelledby="product-stock-heading"><p className="industrial-eyebrow">SUMBER PRODUK & STOK</p><h2 id="product-stock-heading">Konfirmasi dari divisi yang tepat.</h2>
     {selectedDivision && !shown.some(i => i.division === selectedDivision) && <p className="inventory-scope-note">Produk ini tidak tercatat di katalog {inventoryDivisionName(selectedDivision)}. Lihat divisi penyedia di bawah.</p>}

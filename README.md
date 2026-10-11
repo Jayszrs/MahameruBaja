@@ -46,3 +46,7 @@ docker compose -f infrastructure/docker-compose.yml up -d --build web
 ```
 
 Periksa `http://localhost:3000/images/hero-steel-warehouse-v2.png`. Jika URL gambar itu belum muncul, pastikan container web yang dibuka sudah memakai image hasil build terbaru. Next.js standalone monorepo melayani aset dari `/app/frontend/public`, sesuai lokasi `frontend/server.js`.
+
+### CMS divisi dan akun admin
+
+Panduan migrasi, hak akses, password sementara, serta pencadangan dan pemulihan: [CMS Divisi dan Pengelolaan Akun](docs/cms-divisions-accounts.md).

@@ -1,14 +1,20 @@
 "use client";
+import ContentOwnership from "./ContentOwnership";
+import { useAdminIdentity } from "./AdminIdentity";
+
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Link from "next/link";
-import Image from "next/image";
+import Image from "./CmsImage";
 import { useEffect, useRef, useState } from "react";
 import type { SiteContent } from "../data/siteContent";
 import type { GalleryProject } from "../data/projectGallery";
-import { divisions } from "../data/divisionContent";
+
 import { useAdminWorkspace } from "./AdminWorkspace";
 
 export default function GalleryEditor({ initialContent }: { initialContent: SiteContent }) {
+  const actor = useAdminIdentity();
+  const { divisions } = useDivisionDirectory();
   const [content, setContent] = useState(initialContent);
   const base = useRef(initialContent);
   const [dirty, setDirty] = useState(false);
@@ -22,7 +28,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
   function addProject() {
     if (content.galleryProjects.length >= 80) return;
     const id = crypto.randomUUID();
-    change(c => ({ ...c, galleryProjects: [...c.galleryProjects, { id, title: "Proyek baru", category: "Fabrikasi & erection", division: "fabrikasi-erection", description: "", location: "", year: "", photos: [], coverId: "", published: false }] }));
+    change(c => ({ ...c, galleryProjects: [...c.galleryProjects, { id, title: "Proyek baru", category: "Fabrikasi & erection", division: actor.division || divisions[0]?.slug || "fabrikasi-erection", ownerDivision:actor.division, description: "", location: "", year: "", photos: [], coverId: "", published: false }] }));
     setSelected(id);
   }
   async function upload(files: FileList | null) {
@@ -35,7 +41,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
     let count = 0;
     try {
       for (const file of queue) {
-        const body = new FormData(); body.set("media", file);
+        const body = new FormData(); body.set("media", file); body.set("ownerDivision",project.ownerDivision || "");
         const response = await fetch("/api/admin/media", { method: "POST", body });
         const data = await response.json();
         if (!response.ok || data.type !== "image") throw new Error(data.message || "Unggah gambar gagal.");
@@ -90,7 +96,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
     <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">SATU PROYEK, BANYAK FOTO</p><h1>Dokumentasi yang<br /><em>terhubung.</em></h1><p>Kelola album, unggah beberapa gambar sekaligus, pilih sampul, dan susun urutan foto. Album terbit tampil di Galeri utama dan galeri divisi yang dipilih. Konten company profile dikelola bersama oleh admin.</p></div>
       {message && <div className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</div>}
       <fieldset className="editor-fields" disabled={busy}><div className="gallery-editor-layout"><nav className="gallery-editor-albums" aria-label="Daftar album"><button type="button" className="editor-add" onClick={addProject} disabled={content.galleryProjects.length >= 80}>+ Tambah proyek</button>{content.galleryProjects.map(p => <button type="button" key={p.id} className={p.id === selected ? "is-selected" : ""} aria-pressed={p.id === selected} onClick={() => { void selectProject(p.id); }}><strong>{p.title}</strong><small>{p.published ? "Terbit" : "Draf"} · {p.photos.length} foto</small></button>)}</nav>
-        {project ? <section className="editor-panel gallery-editor-project"><div className="editor-panel-title"><h2>{project.title}</h2><span>{project.photos.length} / 40 foto</span></div><div className="editor-grid">
+        {project ? <section className="editor-panel gallery-editor-project"><div className="editor-panel-title"><h2>{project.title}</h2><span>{project.photos.length} / 40 foto</span></div><ContentOwnership value={project} onChange={updateProject}/><div className="editor-grid">
           <label className="editor-field">Nama proyek<input maxLength={160} value={project.title} onChange={e => updateProject({ title: e.target.value })} /></label>
           <label className="editor-field">Kategori<input maxLength={80} value={project.category} onChange={e => updateProject({ category: e.target.value })} /></label>
           <label className="editor-field">Divisi<select value={project.division} onChange={e => updateProject({ division: e.target.value as GalleryProject["division"] })}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>

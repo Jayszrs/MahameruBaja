@@ -19,7 +19,7 @@ export function buildAdminDashboard(content: SiteContent, requests: RequestRecor
     bannersLive: content.promotions.filter(item => bannerIsLive(item, today)).length,
     bannersDraft: content.promotions.filter(item => !item.published).length,
     contactsPublished: content.contacts.filter(item => item.published).length,
-    reviewsPublished: [...content.reviews, ...content.garudaReviews.reviews].filter(item => item.published).length,
+    reviewsPublished: [...content.reviews, ...content.garudaReviews.reviews, ...Object.values(content.divisionReviews).flatMap(p=>p.reviews)].filter(item => item.published).length,
     accountsPublished: content.socialAccounts.filter(item => item.published).length,
     postsPublished: content.socialPosts.filter(item => item.published).length,
     inventoryListed: content.inventory.filter(item => item.listed).length,

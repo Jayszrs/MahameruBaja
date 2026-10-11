@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "../components/CmsImage";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { laserImage } from "../data/business";

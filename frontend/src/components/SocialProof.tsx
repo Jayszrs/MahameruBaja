@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { ReviewContent } from "../data/siteContent";
-import { googleReviews } from "../data/googleReviews";
+
 import { clientPartners } from "../data/clientPartners";
 import { supplierPartners } from "../data/supplierPartners";
 
@@ -127,14 +127,7 @@ function Stars({ rating }: { rating: number }) {
 }
 
 function Reviews({ content, companyName, includeImported }: { content: ReviewContent; companyName: string; includeImported: boolean }) {
-  const configuredReviews = new Map(content.reviews.map(review => [review.id, review]));
-  const imports = includeImported ? googleReviews : [];
-  const importedIds = new Set(imports.map(review => review.id));
-  const importedReviews = imports.map(review => configuredReviews.get(review.id) ?? review);
-  const published = [
-    ...importedReviews.filter(review => review.published && review.rating > 4),
-    ...content.reviews.filter(review => review.published && review.rating > 4 && !importedIds.has(review.id)),
-  ].slice(0, 8);
+  const published = content.reviews.filter(review => review.published && review.rating > 4).slice(0, 8);
   const slides: Array<{ kind: "review"; review: typeof published[number] } | { kind: "summary" } | { kind: "invite" }> = published.map(review => ({ kind: "review", review }));
   if (published.length < 3) slides.push({ kind: "summary" }, { kind: "invite" });
   const copies = [0, 1, 2];

@@ -1,7 +1,9 @@
 "use client";
 
+import ContentOwnership from "./ContentOwnership";
+import { useAdminIdentity } from "./AdminIdentity";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "./CmsImage";
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { articleReadTime, articleSlug, articleToday, type ArticleInput, type ArticleRecord } from "../data/articleCms";
@@ -12,11 +14,13 @@ import { useAdminRecordId, useAdminView, useAdminWorkspace } from "./AdminWorksp
 const RichEditor = dynamic(() => import("./ArticleRichEditor"), { ssr: false, loading: () => <div className="article-editor-loading">Menyiapkan editor…</div> });
 const blank = (): ArticleInput => ({ title: "", slug: "", category: "", date: articleToday(), excerpt: "", image: "", imageAlt: "", content: "", status: "draft" });
 function editable(record: ArticleRecord): ArticleInput {
-  const { title, slug, category, date, excerpt, image, imageAlt, content, status } = record;
-  return { title, slug, category, date, excerpt, image, imageAlt, content, status };
+  const { ownerDivision, audience, title, slug, category, date, excerpt, image, imageAlt, content, status } = record;
+  return { ownerDivision, audience, title, slug, category, date, excerpt, image, imageAlt, content, status };
 }
 
 export default function ArticleEditor({ initialArticles }: { initialArticles: ArticleRecord[] }) {
+  const actor = useAdminIdentity();
+  const newDraft = () => ({...blank(),ownerDivision:actor.division});
   const [filter, setFilter] = useAdminView("status", ["all", "draft", "published"] as const, "all");
   const requestedId = useAdminRecordId();
   const selectionKey = `${requestedId || ""}:${filter}`;
@@ -24,7 +28,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
   const initialRecord = initialArticles.find(record => record.id === requestedId && (filter === "all" || record.status === filter)) || initialArticles.find(record => filter === "all" || record.status === filter);
   const [records, setRecords] = useState(initialArticles);
   const [activeId, setActiveId] = useState<string | null>(initialRecord?.id || null);
-  const [draft, setDraft] = useState<ArticleInput>(() => initialRecord ? editable(initialRecord) : blank());
+  const [draft, setDraft] = useState<ArticleInput>(() => initialRecord ? editable(initialRecord) : newDraft());
   const [editorKey, setEditorKey] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -43,7 +47,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
   function change(update: Partial<ArticleInput>) { setDraft(value => ({ ...value, ...update })); setDirty(true); setNotice(""); }
   async function select(record?: ArticleRecord) {
     if (busy || !(await workspace.confirmDiscard())) return;
-    setActiveId(record?.id || null); setDraft(record ? editable(record) : blank()); setDirty(false); setEditorKey(key => key + 1);
+    setActiveId(record?.id || null); setDraft(record ? editable(record) : newDraft()); setDirty(false); setEditorKey(key => key + 1);
     setNotice(""); setPreview(false); setDeleteConfirm(false); setConflict(false);
   }
   async function save(status: ArticleInput["status"]) {
@@ -69,7 +73,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
       const response = await fetch("/api/admin/articles", { cache: "no-store" });
       const result = await response.json(); if (!response.ok) throw new Error(result.message);
       const all = result as ArticleRecord[]; const record = all.find(item => item.id === activeId);
-      setRecords(all); setDraft(record ? editable(record) : blank()); setActiveId(record?.id || null);
+      setRecords(all); setDraft(record ? editable(record) : newDraft()); setActiveId(record?.id || null);
       setEditorKey(key => key + 1); setDirty(false); setConflict(false); setFailed(false); setNotice("Versi terbaru dimuat.");
     } catch (error) { setFailed(true); setNotice((error as Error).message); }
     finally { setSaving(false); }
@@ -80,7 +84,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
     try {
       const response = await fetch(`/api/admin/articles/${current.id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ revision: current.revision }) });
       const result = await response.json(); if (!response.ok) { setConflict(result.code === "CONFLICT"); throw new Error(result.message); }
-      setRecords(all => all.filter(record => record.id !== current.id)); setActiveId(null); setDraft(blank()); workspace.refreshDashboard();
+      setRecords(all => all.filter(record => record.id !== current.id)); setActiveId(null); setDraft(newDraft()); workspace.refreshDashboard();
       setEditorKey(key => key + 1); setDirty(false); setDeleteConfirm(false); setFailed(false); setNotice("Artikel dihapus.");
     } catch (error) { setFailed(true); setNotice((error as Error).message); }
     finally { setSaving(false); }
@@ -90,7 +94,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
     if (file.size > 4_000_000) { setFailed(true); setNotice("Gambar maksimal 4 MB."); return null; }
     setUploading(true);
     try {
-      const form = new FormData(); form.append("image", file);
+      const form = new FormData(); form.append("image", file); form.set("ownerDivision",draft.ownerDivision || "");
       const response = await fetch("/api/admin/articles/upload", { method: "POST", body: form });
       const result = await response.json(); if (!response.ok) throw new Error(result.message || "Gambar gagal diunggah.");
       setNotice("Gambar terunggah. Simpan artikel agar perubahan tersimpan."); return result.url as string;
@@ -104,7 +108,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
     previousSelectionKey.current = selectionKey;
     const next = records.find(record => record.id === requestedId && (filter === "all" || record.status === filter)) || records.find(record => filter === "all" || record.status === filter);
     if (next?.id === activeId || (!next && !activeId)) return;
-    setActiveId(next?.id || null); setDraft(next ? editable(next) : blank()); setEditorKey(key => key + 1);
+    setActiveId(next?.id || null); setDraft(next ? editable(next) : newDraft()); setEditorKey(key => key + 1);
     setPreview(false); setDeleteConfirm(false);
   }, [selectionKey, requestedId, filter, records, dirty, busy, activeId]);
   function field(label: string, key: "title" | "slug" | "category" | "date" | "image" | "imageAlt", type = "text") {
@@ -131,7 +135,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
           </section>
           <section className="editor-panel article-form" aria-label="Form artikel"><div className="editor-panel-title"><h2>{current ? "Sunting artikel" : "Artikel baru"}</h2><button type="button" className="article-secondary-button" aria-pressed={preview} onClick={() => setPreview(value => !value)}>{preview ? "Kembali ke editor" : "Pratinjau"}</button></div>
             {preview ? <div className="article-preview"><p className="industrial-eyebrow">{draft.category || "Kategori artikel"} · {articleReadTime(draft.content)}</p><h2>{draft.title || "Judul artikel"}</h2><p className="article-preview-excerpt">{draft.excerpt}</p>{draft.image && <img className="article-preview-cover" src={draft.image} alt={draft.imageAlt || draft.title} />}<ArticleContent content={draft.content} /></div> : <>
-              <div className="editor-grid">{field("Judul artikel", "title")}{field("Kategori", "category")}</div>
+              <ContentOwnership value={draft} onChange={change}/><div className="editor-grid">{field("Judul artikel", "title")}{field("Kategori", "category")}</div>
               <div className="editor-grid">{field("Alamat artikel", "slug")}{field("Tanggal artikel (WIB)", "date", "date")}</div><p className="article-field-hint">/informasi/{draft.slug || "alamat-artikel"}{slugLocked ? " · Alamat dikunci karena artikel pernah terbit." : " · Dibuat otomatis dari judul; boleh diubah sebelum pertama terbit."}</p>
               <label className="editor-field">Ringkasan<textarea rows={3} value={draft.excerpt} maxLength={600} disabled={busy} onChange={event => change({ excerpt: event.target.value })} /></label>
               <div className="promotion-editor-media article-cover"><div>{draft.image ? <img src={draft.image} alt={draft.imageAlt || "Pratinjau sampul"} /> : <span>Belum ada gambar sampul</span>}</div><div><label className="editor-field">Unggah gambar sampul · maksimal 4 MB<input type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={async event => { const file = event.target.files?.[0]; event.target.value = ""; if (!file) return; const url = await upload(file); if (url) change({ image: url }); }} /></label>{field("Alamat gambar sampul", "image")}{field("Deskripsi gambar sampul", "imageAlt")}</div></div>

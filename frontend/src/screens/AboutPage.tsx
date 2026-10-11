@@ -1,6 +1,6 @@
 "use client";
 
-import Image from 'next/image';
+import Image from "../components/CmsImage";
 import { Link } from 'react-router';
 import { useReveal } from '../hooks/useReveal';
 import BusinessUnits from '../components/BusinessUnits';

@@ -1,7 +1,8 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
-import Image from 'next/image';
-import { divisionIdentity, divisionWhatsApp } from "../data/companyIdentity";
+import Image from "./CmsImage";
+
 import type { Division } from "../data/divisionContent";
 import { divisionNavigation } from "./DivisionChrome";
 import { useState, useEffect, useRef } from 'react';
@@ -62,6 +63,7 @@ const megaMenuCols = [
 ];
 
 export default function Navbar({ onSearchOpen, division }: NavbarProps) {
+  const { divisionWhatsApp } = useDivisionDirectory();
   const location = useLocation();
   const base = division ? `/unit/${division.slug}` : "/";
   const brandName = division && division.slug !== "laser-cutting" ? division.name.toUpperCase() : "MBI LASER CUTTING";
@@ -425,7 +427,8 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
 }
 
 function LogoMark({ division }: { division?: Division }) {
-  const src = divisionIdentity[division?.slug || "laser-cutting"].logo;
+  const { divisionIdentity } = useDivisionDirectory();
+  const src = divisionIdentity[division?.slug || "laser-cutting"]?.logo || "/mbi-mark.svg";
   return (
     <span className="navbar-symbol relative block h-12 w-16 shrink-0 bg-white" aria-hidden="true">
       <Image src={src} alt="" fill sizes="64px" className="object-contain" />

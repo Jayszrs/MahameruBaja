@@ -1,10 +1,11 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
-import Image from 'next/image';
+import Image from "./CmsImage";
 import { Link } from 'react-router';
 import { useState } from 'react';
-import { stockSummary, inventoryDivisionName, type InventoryItem } from '../data/inventory';
-import { divisionWhatsApp } from '../data/companyIdentity';
+import { stockSummary, type InventoryItem } from "../data/inventory";
+
 import { useQuotation } from '../context/QuotationContext';
 
 export interface ProductCardData {
@@ -27,6 +28,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, variant = 'default', stockItems = [], division }: ProductCardProps) {
+  const { inventoryDivisionName, divisionWhatsApp } = useDivisionDirectory();
   const { addItem, hasItem, setOpen } = useQuotation();
   const added = hasItem(product.id);
   const [saved, setSaved] = useState(false);

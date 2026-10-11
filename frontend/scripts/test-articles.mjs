@@ -54,7 +54,7 @@ async function upload(bytes, type = "image/png") {
 }
 assert.equal((await upload(Buffer.from("not an image"))).status, 400);
 assert.equal((await upload(Buffer.alloc(4_000_001))).status, 400);
-const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jM2sAAAAASUVORK5CYII=", "base64");
+const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC", "base64");
 const uploaded = await upload(png); assert.equal(uploaded.status, 200);
 const { url: media } = await uploaded.json();
 assert.equal((await request(media, { authenticated: false })).status, 404);

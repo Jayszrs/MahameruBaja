@@ -1,10 +1,11 @@
 "use client";
+import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { products, type Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
-import { divisions } from '../data/divisionContent';
+
 import type { InventoryItem } from '../data/inventory';
 
 const categoryFilters = [
@@ -33,6 +34,7 @@ const sortOptions = [
 const PAGE_SIZE = 12;
 
 export default function ProductsPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
+  const { divisions } = useDivisionDirectory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sort, setSort] = useState('default');

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 import { useEffect, useId, useRef } from "react";
 
 export type GalleryImage = { src: string; alt: string; caption?: string; kind?: "logo" };

@@ -1,4 +1,6 @@
 import "server-only";
+import { CmsError } from "./cmsError";
+import { apiError } from "./adminApi";
 import { cookies } from "next/headers";
 import { ZodError } from "zod";
 import { ArticleError } from "../data/articleCms";
@@ -7,7 +9,7 @@ import { adminRequestOrigin } from "./adminRequestOrigin";
 
 export const articleNoStore = { "Cache-Control": "private, no-store" };
 export async function articleAuthorized(request?: Request) {
-  if (!verifyAdminSession((await cookies()).get(ADMIN_COOKIE)?.value)) return Response.json({ message: "Silakan masuk kembali." }, { status: 401, headers: articleNoStore });
+  if (!await verifyAdminSession((await cookies()).get(ADMIN_COOKIE)?.value)) return Response.json({ message: "Silakan masuk kembali." }, { status: 401, headers: articleNoStore });
   if (request && !adminRequestOrigin(request)) return Response.json({ message: "Asal permintaan tidak valid." }, { status: 403, headers: articleNoStore });
   return null;
 }
@@ -40,6 +42,7 @@ export async function articleJson(request: Request): Promise<unknown> {
 }
 
 export function articleFailure(error: unknown) {
+  if (error instanceof CmsError) return apiError(error);
   if (error instanceof ZodError) return Response.json({ message: error.issues.map(issue => `${issue.path.join(".")}: ${issue.message}`).join("; ") }, { status: 400, headers: articleNoStore });
   const errors: Record<string, [number, string]> = {
     NOT_FOUND: [404, "Artikel tidak ditemukan."], CONFLICT: [409, "Artikel telah diubah di tab lain. Muat ulang sebelum menyimpan kembali."],

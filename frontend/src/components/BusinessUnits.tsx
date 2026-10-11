@@ -1,11 +1,13 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { Link } from "react-router"
-import { businessUnits } from "../data/business"
-import Image from "next/image"
-import { divisions } from "../data/divisionContent"
+
+import Image from "./CmsImage"
+
 
 export default function BusinessUnits() {
+  const { businessUnits, divisions } = useDivisionDirectory();
   return (
     <section className="business-section" aria-labelledby="business-heading">
       <div className="industrial-container">

@@ -1,8 +1,11 @@
+"use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 import Link from "next/link";
-import { divisions } from "../data/divisionContent";
+
 import type { AdminDashboardSummary } from "../data/adminDashboard";
 function date(value: string) { return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric" }).format(new Date(value)); }
 export default function AdminHome({ summary }: { summary: AdminDashboardSummary }) {
+  const { divisions } = useDivisionDirectory();
   const metrics = [
     { label: "Permintaan aktif", value: summary.requestsActive, detail: "Permintaan yang belum diarsipkan", href: "/admin/permintaan?view=active" },
     { label: "Perlu ditinjau", value: summary.requestsReview, detail: "Status Baru atau Review kebutuhan", href: "/admin/permintaan?view=active&filter=Perlu+ditinjau" },
