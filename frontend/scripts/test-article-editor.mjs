@@ -19,7 +19,7 @@ await page.waitForURL(base + "/admin");
 await page.goto(base + "/admin/artikel");
 await page.getByRole("textbox", { name: "Isi artikel", exact: true }).waitFor();
 await page.waitForTimeout(100);
-assert(await page.locator(".editor-topbar").getByRole("button", { name: /Simpan perubahan/ }).isDisabled(), "Opening an article must not mark it dirty.");
+assert(await page.locator(".admin-topbar").getByRole("button", { name: /Simpan perubahan/ }).isDisabled(), "Opening an article must not mark it dirty.");
 const records = await (await context.request.get(base + "/api/admin/articles")).json();
 const publicPage = await context.newPage();
 async function publicDocument(slug) {
@@ -37,7 +37,7 @@ for (const article of records) {
   const editor = page.getByRole("textbox", { name: "Isi artikel", exact: true });
   await editor.waitFor(); await editor.click(); await editor.press("Control+End"); await editor.press("Space"); await editor.press("Control+z");
   const saved = page.waitForResponse(response => response.url().endsWith(`/api/admin/articles/${article.id}`) && response.request().method() === "PUT");
-  await page.locator(".editor-topbar").getByRole("button", { name: /Simpan perubahan/ }).click();
+  await page.locator(".admin-topbar").getByRole("button", { name: /Simpan perubahan/ }).click();
   assert.equal((await saved).status(), 200);
   assert.deepEqual(await publicDocument(article.slug), before, `Visual editing must preserve article ${article.slug}`);
 }
@@ -62,7 +62,7 @@ await page.getByRole("button", { name: "Pratinjau", exact: true }).click();
 assert.equal(await page.locator(".article-preview h2").first().textContent(), "Pengujian editor visual");
 await page.getByRole("button", { name: "Kembali ke editor", exact: true }).click();
 let saved = page.waitForResponse(response => response.url().endsWith("/api/admin/articles") && response.request().method() === "POST");
-await page.locator(".editor-topbar").getByRole("button", { name: /Simpan draf/ }).click();
+await page.locator(".admin-topbar").getByRole("button", { name: /Simpan draf/ }).click();
 const createdResponse = await saved; assert.equal(createdResponse.status(), 201); const created = await createdResponse.json();
 assert.equal((await context.request.get(base + "/informasi/" + created.slug)).status(), 404);
 saved = page.waitForResponse(response => response.url().endsWith(`/api/admin/articles/${created.id}`) && response.request().method() === "PUT");

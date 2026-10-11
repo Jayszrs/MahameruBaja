@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useAdminRecordId, useAdminView, useAdminWorkspace } from "./AdminWorkspace";
+import AdminViewTabs from "./AdminViewTabs";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { articleReadTime, articleSlug, articleToday, type ArticleInput, type ArticleRecord } from "../data/articleCms";
@@ -14,9 +15,12 @@ function editable(record: ArticleRecord): ArticleInput {
 }
 
 export default function ArticleEditor({ initialArticles }: { initialArticles: ArticleRecord[] }) {
+  const [filter, setFilter] = useAdminView("status", ["all", "draft", "published"] as const, "all");
+  const requestedId = useAdminRecordId();
+  const first = initialArticles.find(record => record.id === requestedId && (filter === "all" || record.status === filter)) || initialArticles.find(record => filter === "all" || record.status === filter);
   const [records, setRecords] = useState(initialArticles);
-  const [activeId, setActiveId] = useState<string | null>(initialArticles[0]?.id || null);
-  const [draft, setDraft] = useState<ArticleInput>(() => initialArticles[0] ? editable(initialArticles[0]) : blank());
+  const [activeId, setActiveId] = useState<string | null>(first?.id || null);
+  const [draft, setDraft] = useState<ArticleInput>(() => first ? editable(first) : blank());
   const [editorKey, setEditorKey] = useState(0);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -24,7 +28,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
   const [preview, setPreview] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState("all");
+
   const [notice, setNotice] = useState("");
   const [failed, setFailed] = useState(false);
   const [conflict, setConflict] = useState(false);
@@ -33,22 +37,9 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
   const slugLocked = Boolean(current?.firstPublishedAt);
   const visibleRecords = records.filter(record => (filter === "all" || record.status === filter) && `${record.title} ${record.category}`.toLowerCase().includes(query.toLowerCase()));
 
-  useEffect(() => {
-    const unload = (event: BeforeUnloadEvent) => { if (dirty) { event.preventDefault(); event.returnValue = ""; } };
-    const navigation = (event: MouseEvent) => {
-      if (!dirty || event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
-      const link = (event.target as Element)?.closest("a[href]") as HTMLAnchorElement | null;
-      if (!link || link.target === "_blank" || link.hasAttribute("download")) return;
-      if (new URL(link.href).pathname === window.location.pathname) return;
-      if (!window.confirm("Perubahan artikel belum disimpan. Tinggalkan halaman?")) { event.preventDefault(); event.stopPropagation(); }
-    };
-    window.addEventListener("beforeunload", unload); document.addEventListener("click", navigation, true);
-    return () => { window.removeEventListener("beforeunload", unload); document.removeEventListener("click", navigation, true); };
-  }, [dirty]);
-
   function change(update: Partial<ArticleInput>) { setDraft(value => ({ ...value, ...update })); setDirty(true); setNotice(""); }
-  function select(record?: ArticleRecord) {
-    if (busy || (dirty && !window.confirm("Perubahan belum disimpan. Buka artikel lain?"))) return;
+  async function select(record?: ArticleRecord) {
+    if (busy || !(await workspace.confirmDiscard())) return;
     setActiveId(record?.id || null); setDraft(record ? editable(record) : blank()); setDirty(false); setEditorKey(key => key + 1);
     setNotice(""); setPreview(false); setDeleteConfirm(false); setConflict(false);
   }
@@ -63,13 +54,13 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
       if (!response.ok) { setConflict(result.code === "CONFLICT"); throw new Error(result.message || "Artikel belum tersimpan."); }
       const saved = result as ArticleRecord;
       setRecords(all => current ? all.map(record => record.id === saved.id ? saved : record) : [saved, ...all]);
-      setActiveId(saved.id); setDraft(editable(saved)); setDirty(false); setDeleteConfirm(false);
+      setActiveId(saved.id); setDraft(editable(saved)); setDirty(false); setDeleteConfirm(false); workspace.refreshDashboard();
       setNotice(saved.status === "published" ? "Tersimpan. Artikel kini tersedia di halaman publik." : "Draf tersimpan. Artikel ini belum tampil ke pengunjung.");
     } catch (error) { setFailed(true); setNotice((error as Error).message); }
     finally { setSaving(false); }
   }
   async function reload() {
-    if (dirty && !window.confirm("Muat ulang dan ganti perubahan lokal dengan versi tersimpan?")) return;
+    if (!(await workspace.confirmDiscard())) return;
     setSaving(true); setNotice("");
     try {
       const response = await fetch("/api/admin/articles", { cache: "no-store" });
@@ -87,7 +78,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
       const response = await fetch(`/api/admin/articles/${current.id}`, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ revision: current.revision }) });
       const result = await response.json(); if (!response.ok) { setConflict(result.code === "CONFLICT"); throw new Error(result.message); }
       setRecords(all => all.filter(record => record.id !== current.id)); setActiveId(null); setDraft(blank());
-      setEditorKey(key => key + 1); setDirty(false); setDeleteConfirm(false); setFailed(false); setNotice("Artikel dihapus.");
+      setEditorKey(key => key + 1); setDirty(false); setDeleteConfirm(false); setFailed(false); workspace.refreshDashboard(); setNotice("Artikel dihapus.");
     } catch (error) { setFailed(true); setNotice((error as Error).message); }
     finally { setSaving(false); }
   }
@@ -111,17 +102,20 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
     }} /></label>;
   }
 
+  const workspace = useAdminWorkspace({ dirty, busy, label: current?.status === "published" ? "Simpan perubahan" : "Simpan draf", disabled: !dirty && Boolean(current), onSave: () => save(current?.status || "draft") });
+  useEffect(() => {
+    if (dirty || busy || (current && (filter === "all" || current.status === filter))) return;
+    const next = records.find(record => record.id === requestedId && (filter === "all" || record.status === filter)) || records.find(record => filter === "all" || record.status === filter);
+    if (next?.id === activeId || (!next && !activeId)) return;
+    setActiveId(next?.id || null); setDraft(next ? editable(next) : blank()); setEditorKey(key => key + 1);
+  }, [filter]);
+  useEffect(() => { if (dirty || !requestedId) return; const next = records.find(record => record.id === requestedId && (filter === "all" || record.status === filter)); if (next && next.id !== activeId) {setActiveId(next.id);setDraft(editable(next));setEditorKey(key => key+1);} }, [requestedId]);
   return <div className="content-editor article-editor">
-    <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><img src="/mbi-mark.svg" alt="" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link>
-      <p>WEBSITE</p><Link className="editor-sidebar-link" href="/admin/konten">01 · Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/sosial">02 · Sosial media</Link><Link className="editor-sidebar-link" href="/admin/promosi">03 · Banner & promo</Link><span className="editor-sidebar-link active">04 · Artikel</span><Link className="editor-sidebar-link" href="/admin/permintaan">05 · Permintaan pelanggan ↗</Link>
-      <div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/informasi" target="_blank" rel="noopener noreferrer">Lihat artikel di website ↗</a><form action="/api/admin/logout" method="post" onSubmit={event => { if (dirty && !window.confirm("Perubahan belum disimpan. Keluar?")) event.preventDefault(); }}><button type="submit">Keluar</button></form></div>
-    </aside>
-    <main className="editor-main"><header className="editor-topbar"><span>Workspace / Artikel</span><div><span className={`editor-save-state ${dirty ? "is-dirty" : ""}`}>{uploading ? "Mengunggah gambar…" : dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span><button type="button" className="editor-save" disabled={busy || (!dirty && Boolean(current))} onClick={() => save(current?.status || "draft")}>{saving ? "Menyimpan…" : current?.status === "published" ? "Simpan perubahan ↗" : "Simpan draf ↗"}</button></div></header>
-      <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">ARTIKEL / PANDUAN MATERIAL</p><h1>Bagikan pengetahuan.<br /><em>Bantu pelanggan memilih.</em></h1><p>Tulis panduan, unggah gambar, dan periksa pratinjau sebelum menerbitkan. Draf hanya terlihat di ruang admin.</p></div>
+    <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">ARTIKEL / PANDUAN MATERIAL</p><h1>Bagikan pengetahuan.<br /><em>Bantu pelanggan memilih.</em></h1><p>Tulis panduan, unggah gambar, dan periksa pratinjau sebelum menerbitkan. Draf hanya terlihat di ruang admin.</p></div>
         {notice && <div className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{notice}{conflict && <button type="button" disabled={busy} onClick={reload}>Muat ulang artikel</button>}</div>}
         <div className="article-workspace">
           <section className="article-list" aria-label="Daftar artikel"><div className="editor-list-heading"><h2>Artikel <span>{records.length}</span></h2><button type="button" disabled={busy} onClick={() => select()}>+ Tambah</button></div>
-            <label className="editor-field">Cari artikel<input value={query} onChange={event => setQuery(event.target.value)} placeholder="Judul atau kategori" /></label><label className="editor-field">Status<select value={filter} onChange={event => setFilter(event.target.value)}><option value="all">Semua artikel</option><option value="draft">Draf</option><option value="published">Terbit</option></select></label>
+            <label className="editor-field">Cari artikel<input value={query} onChange={event => setQuery(event.target.value)} placeholder="Judul atau kategori" /></label><label className="editor-field">Status<select value={filter} onChange={event => setFilter(event.target.value as typeof filter)}><option value="all">Semua artikel</option><option value="draft">Draf</option><option value="published">Terbit</option></select></label>
             <div className="article-list-items">{visibleRecords.map(record => <button type="button" key={record.id} className={activeId === record.id ? "active" : ""} disabled={busy} onClick={() => select(record)} aria-pressed={activeId === record.id}><span className={`article-status ${record.status}`}>{record.status === "published" ? "Terbit" : "Draf"}</span><strong>{record.title || "Artikel tanpa judul"}</strong><small>{record.category || "Belum ada kategori"} · {record.date}</small></button>)}{!visibleRecords.length && <p className="article-list-empty">Tidak ada artikel yang sesuai.</p>}</div>
           </section>
           <section className="editor-panel article-form" aria-label="Form artikel"><div className="editor-panel-title"><h2>{current ? "Sunting artikel" : "Artikel baru"}</h2><button type="button" className="article-secondary-button" aria-pressed={preview} onClick={() => setPreview(value => !value)}>{preview ? "Kembali ke editor" : "Pratinjau"}</button></div>
@@ -137,6 +131,6 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
           </section>
         </div>
       </div>
-    </main>
+
   </div>;
 }
