@@ -32,13 +32,21 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
   const [deleteId, setDeleteId] = useState<string | null>(null);
   function change(update: (current: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
   function promotion(id: string, update: Partial<Promotion>) { change(current => ({ ...current, promotions: current.promotions.map(item => item.id === id ? { ...item, ...update } : item) })); }
-  function move(index: number, direction: number) { change(current => { const promotions = [...current.promotions]; [promotions[index], promotions[index + direction]] = [promotions[index + direction], promotions[index]]; return { ...current, promotions }; }); }
+  function move(id: string, direction: number) { change(current => {
+    const visible = current.promotions.filter(item => view === "all" || (view === "live" ? bannerIsLive(item) : !item.published));
+    const neighbor = visible[visible.findIndex(item => item.id === id) + direction];
+    if (!neighbor) return current;
+    const promotions = [...current.promotions];
+    const from = promotions.findIndex(item => item.id === id), to = promotions.findIndex(item => item.id === neighbor.id);
+    [promotions[from], promotions[to]] = [promotions[to], promotions[from]];
+    return { ...current, promotions };
+  }); }
   async function upload(id: string, file: File | undefined) {
     if (!file) return;
     if (file.size > 4_000_000) { setError(true); setMessage("Gambar maksimal 4 MB."); return; }
     setUploading(id); setMessage(""); setError(false);
     try {
-      const form = new FormData(); form.append("media", file); form.set("ownerDivision",content.promotions.find(p=>p.id===id)?.ownerDivision || ""); form.set("ownerDivision",content.promotions.find(p=>p.id===id)?.ownerDivision || "");
+      const form = new FormData(); form.append("media", file); form.set("ownerDivision",content.promotions.find(p=>p.id===id)?.ownerDivision || "");
       const response = await fetch("/api/admin/media", { method: "POST", body: form });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Gambar gagal diunggah.");
@@ -79,7 +87,7 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
               <div className="editor-grid"><Field label="Mulai tayang (opsional)" type="date" value={item.startDate} onChange={startDate => promotion(item.id, { startDate })} /><Field label="Selesai tayang (opsional)" type="date" value={item.endDate} onChange={endDate => promotion(item.id, { endDate })} /></div>
               <div className="editor-grid"><label className="editor-field">Countdown ke tanggal dan jam (WIB)<input type="datetime-local" value={countdownInputWib(item.countdownAt)} onChange={event => promotion(item.id, { countdownAt: event.target.value ? event.target.value + ":00+07:00" : "" })} /><small>Kosongkan untuk banner tanpa countdown. Tidak mengubah periode tayang.</small></label><Field label="Label countdown" value={item.countdownLabel} onChange={countdownLabel => promotion(item.id, { countdownLabel })} /><label className="editor-field"><span><input type="checkbox" checked={item.countdownEstimated} onChange={event => promotion(item.id, { countdownEstimated: event.target.checked })} /> Tanggal masih perkiraan / menunggu penetapan</span></label></div><div className="promotion-editor-media"><div>{item.image ? <img src={item.image} alt={item.imageAlt || "Pratinjau gambar banner"} /> : <span>Belum ada gambar</span>}</div><div><label className="editor-field">Unggah gambar JPG, PNG, atau WebP · maksimal 4 MB<input type="file" accept="image/jpeg,image/png,image/webp" onChange={event => { void upload(item.id, event.target.files?.[0]); event.target.value = ""; }} /></label><Field label="Alamat gambar (opsional jika sudah unggah)" value={item.image} onChange={image => promotion(item.id, { image })} /><Field label="Deskripsi gambar untuk pembaca layar" value={item.imageAlt} onChange={imageAlt => promotion(item.id, { imageAlt })} /></div></div>
               <div className="editor-grid"><Field label="Teks tombol" value={item.ctaLabel} onChange={ctaLabel => promotion(item.id, { ctaLabel })} /><label className="editor-field">Tujuan tombol<select value={item.ctaHref} onChange={event => promotion(item.id, { ctaHref: event.target.value })}>{destinations.map(([href, label]) => <option value={href} key={href}>{label}</option>)}</select></label></div>
-              <div className="editor-item-actions"><button type="button" disabled={index === 0} onClick={() => move(index, -1)}>↑ Naik</button><button type="button" disabled={index === content.promotions.length - 1} onClick={() => move(index, 1)}>↓ Turun</button>{deleteId === item.id ? <><span>Hapus banner ini?</span><button type="button" className="danger" onClick={() => { change(current => ({ ...current, promotions: current.promotions.filter(p => p.id !== item.id) })); setDeleteId(null); }}>Ya, hapus</button><button type="button" onClick={() => setDeleteId(null)}>Batal</button></> : <button type="button" className="danger" onClick={() => setDeleteId(item.id)}>Hapus</button>}</div>
+              <div className="editor-item-actions"><button type="button" disabled={index === 0} onClick={() => move(item.id, -1)}>↑ Naik</button><button type="button" disabled={index === visiblePromotions.length - 1} onClick={() => move(item.id, 1)}>↓ Turun</button>{deleteId === item.id ? <><span>Hapus banner ini?</span><button type="button" className="danger" onClick={() => { change(current => ({ ...current, promotions: current.promotions.filter(p => p.id !== item.id) })); setDeleteId(null); }}>Ya, hapus</button><button type="button" onClick={() => setDeleteId(null)}>Batal</button></> : <button type="button" className="danger" onClick={() => setDeleteId(item.id)}>Hapus</button>}</div>
             </section>;
           })}
         </fieldset><p className="editor-footer-note">Tanggal mengikuti waktu Indonesia Barat. Banner akan otomatis berhenti tampil setelah tanggal selesai.</p>

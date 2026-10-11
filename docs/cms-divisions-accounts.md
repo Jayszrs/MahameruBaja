@@ -136,6 +136,9 @@ terenkripsi, di luar Git, direktori `public`, dan folder yang disajikan website.
 
 ## Pengujian terisolasi
 
+Matriks CRUD lengkap, perbaikan hasil regresi, dan cara menjalankan ulang tersedia
+di [Verifikasi CRUD CMS Admin](cms-crud-verification.md).
+
 Script di `frontend/scripts/` menolak eksekusi destruktif tanpa
 `ARTICLE_TEST_ISOLATED=1`. Gunakan container/volume khusus dengan akun berakhiran
 `example.test`, bukan volume project atau URL preview. Script utama:

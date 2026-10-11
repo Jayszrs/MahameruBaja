@@ -39,9 +39,13 @@ function mergeRows(current: Owned[], input: Owned[], base: Owned[]) {
     if (!equal(a.get(id), b.get(id))) throw new CmsError("Konten telah diubah admin lain. Muat ulang sebelum menyimpan.", 409);
     if (c.has(id)) a.set(id, c.get(id)!); else a.delete(id);
   }
-  // Preserve requested order within this scope without dropping concurrent additions.
-  const order = new Map(input.map((row, index) => [row.id, index]));
-  return [...a.values()].sort((x, y) => (order.get(x.id) ?? 100000) - (order.get(y.id) ?? 100000));
+  // Reorder only the slots owned by this editor. Moving a division's rows to
+  // the front would silently reorder the public feed for every other division.
+  // Concurrent additions absent from this editor keep their existing position.
+  const ids = new Set(input.map(row => row.id));
+  const ordered = input.map(row => a.get(row.id)).filter((row): row is Owned => Boolean(row));
+  let index = 0;
+  return [...a.values()].map(row => ids.has(row.id) ? ordered[index++] : row);
 }
 export async function mergeScopedContent(current: SiteContent, input: SiteContent, base: SiteContent | undefined, actor: AdminIdentity): Promise<SiteContent> {
   if (!base || base.revision !== input.revision) throw new CmsError("Muat ulang halaman sebelum menyimpan.", 409);
