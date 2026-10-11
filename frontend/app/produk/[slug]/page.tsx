@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { readSiteContent } from "../../../src/lib/siteContentStore";
+import { readPublicSiteContent } from "../../../src/lib/siteContentStore";
 import { connection } from "next/server";
 import ProductDetailPage from "../../../src/screens/ProductDetailPage";
 import { getProductBySlug, products } from "../../../src/data/products";
@@ -12,6 +12,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function Page({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ unit?: string }> }) {
   if (!getProductBySlug((await params).slug)) notFound();
   await connection();
-  const { inventory } = await readSiteContent();
+  const { inventory } = await readPublicSiteContent();
   return <ProductDetailPage inventory={inventory.filter(i => i.listed)} selectedDivision={(await searchParams).unit} />;
 }

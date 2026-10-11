@@ -1,6 +1,7 @@
+import type { Division } from "../data/divisionCms";
 import type { Invoice, RequestRecord } from "../data/requests";
 
-export async function invoicePdf(record: RequestRecord, invoice: Invoice) {
+export async function invoicePdf(record: RequestRecord, invoice: Invoice, division?: Division) {
   const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([import("pdf-lib"), import("@pdf-lib/fontkit")]);
   const response = await fetch("/fonts/NotoSans-Regular.ttf");
   if (!response.ok) throw new Error("Font PDF belum tersedia.");
@@ -25,7 +26,7 @@ export async function invoicePdf(record: RequestRecord, invoice: Invoice) {
   }
   function header() {
     page.drawRectangle({ x:0,y:825,width:595,height:17,color:red });
-    draw("MAHAMERU BAJA INDONESIA",40,790,18);
+    right(division?.name || "MAHAMERU BAJA INDONESIA",555,790,515,18);
     draw("DRAFT INVOICE / MENUNGGU PERSETUJUAN",40,762,11,red);
     right(invoice.number,555,739,515,10);
     draw(`Tanggal: ${invoice.issuedAt} | Jatuh tempo: ${invoice.dueAt || "Belum ditentukan"}`,40,718,9,muted);

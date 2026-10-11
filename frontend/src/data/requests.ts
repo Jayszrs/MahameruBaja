@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { divisionSlugs } from "./siteContent";
+import { divisionSlugSchema } from "./divisionCms";
 
 export const requestInputSchema = z.object({
   kind: z.enum(["GENERAL", "QUOTATION", "LASER", "TRADING"]),
-  businessUnitSlug: z.enum(divisionSlugs).default("retail-tambun"),
+  businessUnitSlug: divisionSlugSchema.default("retail-tambun"),
   name: z.string().trim().min(2).max(160), company: z.string().trim().max(200).optional(),
   whatsapp: z.string().trim().min(8).max(24).regex(/^[+0-9\s()-]+$/),
   email: z.string().trim().email().max(254).optional().or(z.literal("")),

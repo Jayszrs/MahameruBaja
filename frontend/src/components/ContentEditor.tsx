@@ -1,11 +1,16 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
-import { useEffect, useRef, useState } from "react";
+import ContentOwnership from "./ContentOwnership";
+import { useAdminIdentity } from "./AdminIdentity";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "./CmsImage";
 import { mainLogo } from "../data/companyIdentity";
+import { useAdminView, useAdminWorkspace } from "./AdminWorkspace";
+import AdminViewTabs from "./AdminViewTabs";
 import { contentId } from "../data/socialMedia";
-import { divisions } from "../data/divisionContent";
+
 import { type SiteContent, type TeamContact } from "../data/siteContent";
 
 function Field({ label, value, onChange, type = "text", placeholder = "" }: { label: string; value: string; onChange: (value: string) => void; type?: string; placeholder?: string }) {
@@ -13,32 +18,29 @@ function Field({ label, value, onChange, type = "text", placeholder = "" }: { la
 }
 
 export default function ContentEditor({ initialContent }: { initialContent: SiteContent }) {
+  const actor = useAdminIdentity();
+  const { divisions } = useDivisionDirectory();
   const [content, setContent] = useState(initialContent);
   const baseContent = useRef(initialContent);
-  const [tab, setTab] = useState<"contacts" | "reviews">("contacts");
-  const [reviewScope, setReviewScope] = useState<"main" | "garuda">("main");
-  const reviewProfile = reviewScope === "main" ? content : content.garudaReviews;
+  const [tab, setTab] = useAdminView("tab", ["contacts", "reviews"] as const, "contacts");
+  const [reviewScope, setReviewScope] = useState<string>(actor.division === "retail-cibitung" ? "garuda" : actor.division || "main");
+  const reviewProfile = reviewScope === "main" ? content : reviewScope === "garuda" ? content.garudaReviews : content.divisionReviews[reviewScope] || {rating:0,reviewCount:null,ratingDate:"Belum dicatat",mapsUrl:"https://maps.google.com/",reviews:[]};
   const rows = tab === "contacts" ? content.contacts : reviewProfile.reviews;
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [failed, setFailed] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  useEffect(() => {
-    const warn = (event: BeforeUnloadEvent) => { if (dirty) { event.preventDefault(); event.returnValue = ""; } };
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [dirty]);
   function change(update: (value: SiteContent) => SiteContent) { setContent(update); setDirty(true); setStatus(""); }
   function contact(id: string, update: Partial<TeamContact>) { change(c => ({ ...c, contacts: c.contacts.map(item => item.id === id ? { ...item, ...update } : item) })); }
   function changeReviews(update: (profile: SiteContent["garudaReviews"]) => SiteContent["garudaReviews"]) {
-    change(c => reviewScope === "main" ? { ...c, ...update({rating: c.rating, reviewCount: c.reviewCount, ratingDate: c.ratingDate, mapsUrl: c.mapsUrl, reviews: c.reviews}) } : { ...c, garudaReviews: update(c.garudaReviews) });
+    change(c => reviewScope === "main" ? { ...c, ...update({rating: c.rating, reviewCount: c.reviewCount, ratingDate: c.ratingDate, mapsUrl: c.mapsUrl, reviews: c.reviews}) } : reviewScope === "garuda" ? { ...c, garudaReviews: update(c.garudaReviews) } : { ...c, divisionReviews: { ...c.divisionReviews, [reviewScope]:update(c.divisionReviews[reviewScope] || {rating:0,reviewCount:null,ratingDate:"Belum dicatat",mapsUrl:"https://maps.google.com/",reviews:[]}) } });
   }
   function review(id: string, update: Partial<SiteContent["reviews"][number]>) { changeReviews(p => ({ ...p, reviews: p.reviews.map(item => item.id === id ? { ...item, ...update } : item) })); }
   async function uploadPhoto(id: string, file: File) {
     setSaving(true); setFailed(false); setStatus("");
     try {
-      const data = new FormData(); data.set("media", file);
+      const data = new FormData(); data.set("media", file); data.set("ownerDivision", content.contacts.find(c=>c.id===id)?.ownerDivision || "");
       const response = await fetch("/api/admin/media", { method: "POST", body: data });
       const result = await response.json();
       if (!response.ok || result.type !== "image") throw new Error(result.message || "Gunakan gambar JPG, PNG, atau WebP.");
@@ -52,7 +54,7 @@ export default function ContentEditor({ initialContent }: { initialContent: Site
       const response = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...content, _base: baseContent.current }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || "Gagal menyimpan.");
-      setContent(result); baseContent.current = result; setDirty(false); setStatus("Tersimpan. Konten terbit sudah diperbarui di situs.");
+      setContent(result); baseContent.current = result; setDirty(false); workspace.refreshDashboard(); setStatus("Tersimpan. Konten terbit sudah diperbarui di situs.");
     } catch (error) { setFailed(true); setStatus((error as Error).message); }
     finally { setSaving(false); }
   }
@@ -62,19 +64,21 @@ export default function ContentEditor({ initialContent }: { initialContent: Site
   }
   function addItem() {
     if (tab === "reviews") changeReviews(p => ({ ...p, reviews: [...p.reviews, {id: contentId(), author: "", rating: 5, text: "", when: "", url: p.mapsUrl, published: false}] }));
-    else change(c => ({...c, contacts: [...c.contacts, { id: contentId(), name: "Kontak baru", role: "Tim", phone: "", mobile: "", whatsapp: "", email: "", photo: "", divisions: [], published: false }]}));
+    else change(c => ({...c, contacts: [...c.contacts, { id: contentId(), name: "Kontak baru", role: "Tim", phone: "", mobile: "", whatsapp: "", email: "", photo: "", ownerDivision:actor.division, divisions: actor.division ? [actor.division] : [], published: false }]}));
   }
+  const workspace = useAdminWorkspace({ dirty, busy: saving, label: "Simpan perubahan", disabled: !dirty, onSave: save });
   return <div className="content-editor">
     <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><Image src={mainLogo} alt="MBI Laser Cutting" width={64} height={58} sizes="64px" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><p>WEBSITE</p><button className={tab === "contacts" ? "active" : ""} onClick={() => { setTab("contacts"); setDeleteId(null); }}><span>01</span> Kontak & divisi <b>{content.contacts.length}</b></button><button className={tab === "reviews" ? "active" : ""} onClick={() => { setTab("reviews"); setDeleteId(null); }}><span>02</span> Ulasan Google <b>{content.reviews.length}</b></button><Link className="editor-sidebar-link" href="/admin/sosial">03 &middot; Sosial media &#8599;</Link><Link className="editor-sidebar-link" href="/admin/promosi">04 &middot; Banner & promo &#8599;</Link><Link className="editor-sidebar-link" href="/admin/artikel">Artikel &amp; panduan &#8599;</Link><Link className="editor-sidebar-link" href="/admin/permintaan">05 &middot; Permintaan pelanggan &#8599;</Link><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/" target="_blank" rel="noopener noreferrer">Buka website ↗</a><form action="/api/admin/logout" method="post"><button type="submit">Keluar</button></form></div></aside>
     <main className="editor-main"><header className="editor-topbar"><span>Workspace / {tab === "contacts" ? "Kontak & divisi" : "Ulasan Google"}</span><div><span className={`editor-save-state ${dirty ? "is-dirty" : ""}`}>{dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span><button type="button" className="editor-save" disabled={saving || !dirty} onClick={save}>{saving ? "Menyimpan…" : "Simpan perubahan ↗"}</button></div></header>
     <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">KONTEN / {tab === "contacts" ? "01" : "02"}</p><h1>{tab === "contacts" ? <>Lebih dekat.<br /><em>Lebih mudah dihubungi.</em></> : <>Suara pelanggan.<br /><em>Tampilkan cerita asli.</em></>}</h1><p>{tab === "contacts" ? "Kelola nama, nomor, foto, dan divisi yang dilayani. Kontak terbit tampil di halaman Kontak dan profil divisi terkait." : "Salin ulasan sesuai sumber Google: nama, bintang, komentar, dan tautan. Ulasan terbit bergerak ke kanan di beranda."}</p></div>
+    <AdminViewTabs disabled={saving} label="Pilihan konten publik" value={tab} onChange={setTab} options={[{value:"contacts",label:"Kontak & divisi"},{value:"reviews",label:"Ulasan Google"}]} />
     {status && <div className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{status}</div>}
     <fieldset disabled={saving} className="editor-fields">
-    {tab === "reviews" && <section className="editor-panel"><div className="editor-panel-title"><h2>Ringkasan Google Maps</h2><span>Catatan manual</span></div><label className="editor-field">Profil lokasi<select value={reviewScope} onChange={e => {setReviewScope(e.target.value as "main" | "garuda"); setDeleteId(null);}}><option value="main">Mahameru Baja — Tambun</option><option value="garuda">Garuda Marginal Baja — Cibitung</option></select></label><div className="editor-grid"><label className="editor-field">Rating rata-rata<input type="number" min="0" max="5" step="0.1" value={reviewProfile.rating} onChange={e => changeReviews(p => ({ ...p, rating: Number(e.target.value) }))} /></label><label className="editor-field">Jumlah ulasan<input type="number" min="0" value={reviewProfile.reviewCount ?? ""} onChange={e => changeReviews(p => ({ ...p, reviewCount: e.target.value === "" ? null : Number(e.target.value) }))} /></label><Field label="Tanggal pencatatan" value={reviewProfile.ratingDate} onChange={ratingDate => changeReviews(p => ({ ...p, ratingDate }))} /><Field label="Tautan Google Maps" type="url" value={reviewProfile.mapsUrl} onChange={mapsUrl => changeReviews(p => ({ ...p, mapsUrl }))} /></div></section>}
+    {tab === "reviews" && <section className="editor-panel"><div className="editor-panel-title"><h2>Ringkasan Google Maps</h2><span>Catatan manual</span></div><label className="editor-field">Profil lokasi<select value={reviewScope} onChange={e => {setReviewScope(e.target.value as "main" | "garuda"); setDeleteId(null);}}>{!actor.division && <option value="main">Mahameru Baja — Tambun</option>}{(!actor.division || actor.division === "retail-cibitung") && <option value="garuda">Garuda Marginal Baja — Cibitung</option>}{divisions.filter(d=>d.slug!=="retail-cibitung").map(d=><option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label><div className="editor-grid"><label className="editor-field">Rating rata-rata<input type="number" min="0" max="5" step="0.1" value={reviewProfile.rating} onChange={e => changeReviews(p => ({ ...p, rating: Number(e.target.value) }))} /></label><label className="editor-field">Jumlah ulasan<input type="number" min="0" value={reviewProfile.reviewCount ?? ""} onChange={e => changeReviews(p => ({ ...p, reviewCount: e.target.value === "" ? null : Number(e.target.value) }))} /></label><Field label="Tanggal pencatatan" value={reviewProfile.ratingDate} onChange={ratingDate => changeReviews(p => ({ ...p, ratingDate }))} /><Field label="Tautan Google Maps" type="url" value={reviewProfile.mapsUrl} onChange={mapsUrl => changeReviews(p => ({ ...p, mapsUrl }))} /></div></section>}
     <div className="editor-list-heading"><h2>{tab === "contacts" ? "Daftar kontak" : "Daftar ulasan"} <span>{rows.length}</span></h2><button type="button" onClick={addItem}>+ Tambah {tab === "contacts" ? "kontak" : "ulasan"}</button></div>
     {!rows.length && <div className="editor-empty"><span>“</span><h3>Mulai dengan satu cerita pelanggan.</h3><p>Tambahkan ulasan asli, periksa teksnya, lalu aktifkan Terbit dan simpan.</p></div>}
     {rows.map((item, index) => <section className="editor-panel" key={item.id}><div className="editor-panel-title"><h3><span>{String(index + 1).padStart(2, "0")}</span> {"name" in item ? item.name : item.author || "Ulasan baru"}</h3><label className="editor-publish"><input type="checkbox" checked={item.published} onChange={e => tab === "contacts" ? contact(item.id, { published: e.target.checked }) : review(item.id, { published: e.target.checked })} />Terbit</label></div>
-      {"name" in item ? <><div className="editor-grid"><Field label="Nama" value={item.name} onChange={name => contact(item.id, { name })} /><Field label="Jabatan" value={item.role} onChange={role => contact(item.id, { role })} /><Field label="Telepon" type="tel" value={item.phone} onChange={phone => contact(item.id, { phone })} /><Field label="Seluler" type="tel" value={item.mobile} onChange={mobile => contact(item.id, { mobile })} /><Field label="WhatsApp" type="tel" value={item.whatsapp} onChange={whatsapp => contact(item.id, { whatsapp })} /><Field label="Email" type="email" value={item.email} onChange={email => contact(item.id, { email })} /><label className="editor-field">Unggah foto<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{ if(e.target.files?.[0]) void uploadPhoto(item.id,e.target.files[0]); }} /></label><Field label="Foto: URL HTTPS atau media lokal" value={item.photo} onChange={photo => contact(item.id, { photo })} /></div><div className="editor-divisions"><strong>Divisi yang dilayani</strong><p>Kosongkan semua pilihan untuk menampilkan sebagai kontak bersama.</p>{divisions.map(d => <label key={d.slug}><input type="checkbox" checked={item.divisions.includes(d.slug)} onChange={e => contact(item.id, { divisions: e.target.checked ? [...item.divisions, d.slug] : item.divisions.filter(s => s !== d.slug) })} />{d.label}</label>)}</div></> : <><div className="editor-grid"><Field label="Nama penulis (sesuai Google)" value={item.author} onChange={author => review(item.id, { author })} /><label className="editor-field">Bintang<select value={item.rating} onChange={e => review(item.id, { rating: Number(e.target.value) })}>{[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{"★".repeat(n)} — {n}/5</option>)}</select></label><Field label="Tanggal / waktu ulasan" value={item.when} onChange={when => review(item.id, { when })} /><Field label="Tautan sumber Google" type="url" value={item.url} onChange={url => review(item.id, { url })} /></div><label className="editor-field">Komentar asli<textarea rows={4} value={item.text} onChange={e => review(item.id, { text: e.target.value })} /></label><div className="editor-review-preview"><span>{"★".repeat(item.rating)}</span><p>{item.text || "Pratinjau komentar akan muncul di sini."}</p><strong>{item.author || "Nama pelanggan"}</strong></div></>}
+      {"name" in item ? <><ContentOwnership value={item} onChange={patch=>contact(item.id,patch)}/><div className="editor-grid"><Field label="Nama" value={item.name} onChange={name => contact(item.id, { name })} /><Field label="Jabatan" value={item.role} onChange={role => contact(item.id, { role })} /><Field label="Telepon" type="tel" value={item.phone} onChange={phone => contact(item.id, { phone })} /><Field label="Seluler" type="tel" value={item.mobile} onChange={mobile => contact(item.id, { mobile })} /><Field label="WhatsApp" type="tel" value={item.whatsapp} onChange={whatsapp => contact(item.id, { whatsapp })} /><Field label="Email" type="email" value={item.email} onChange={email => contact(item.id, { email })} /><label className="editor-field">Unggah foto<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{ if(e.target.files?.[0]) void uploadPhoto(item.id,e.target.files[0]); }} /></label><Field label="Foto: URL HTTPS atau media lokal" value={item.photo} onChange={photo => contact(item.id, { photo })} /></div><div className="editor-divisions"><strong>Divisi yang dilayani</strong><p>Kosongkan semua pilihan untuk menampilkan sebagai kontak bersama.</p>{divisions.map(d => <label key={d.slug}><input type="checkbox" checked={item.divisions.includes(d.slug)} onChange={e => contact(item.id, { divisions: e.target.checked ? [...item.divisions, d.slug] : item.divisions.filter(s => s !== d.slug) })} />{d.label}</label>)}</div></> : <><div className="editor-grid"><Field label="Nama penulis (sesuai Google)" value={item.author} onChange={author => review(item.id, { author })} /><label className="editor-field">Bintang<select value={item.rating} onChange={e => review(item.id, { rating: Number(e.target.value) })}>{[5, 4, 3, 2, 1].map(n => <option key={n} value={n}>{"★".repeat(n)} — {n}/5</option>)}</select></label><Field label="Tanggal / waktu ulasan" value={item.when} onChange={when => review(item.id, { when })} /><Field label="Tautan sumber Google" type="url" value={item.url} onChange={url => review(item.id, { url })} /></div><label className="editor-field">Komentar asli<textarea rows={4} value={item.text} onChange={e => review(item.id, { text: e.target.value })} /></label><div className="editor-review-preview"><span>{"★".repeat(item.rating)}</span><p>{item.text || "Pratinjau komentar akan muncul di sini."}</p><strong>{item.author || "Nama pelanggan"}</strong></div></>}
       <div className="editor-item-actions"><button type="button" disabled={index === 0} onClick={() => move(index, -1)}>↑ Naik</button><button type="button" disabled={index === rows.length - 1} onClick={() => move(index, 1)}>↓ Turun</button>{deleteId === item.id ? <><span>Hapus item ini?</span><button type="button" className="danger" onClick={() => { if (tab === "reviews") changeReviews(p => ({ ...p, reviews: p.reviews.filter(v => v.id !== item.id) })); else change(c => ({ ...c, contacts: c.contacts.filter(v => v.id !== item.id) })); setDeleteId(null); }}>Ya, hapus</button><button type="button" onClick={() => setDeleteId(null)}>Batal</button></> : <button type="button" className="danger" onClick={() => setDeleteId(item.id)}>Hapus</button>}</div>
     </section>)}
     </fieldset><p className="editor-footer-note">Konten tersimpan di server situs. Aktifkan Terbit hanya setelah nomor atau kutipan selesai diperiksa.</p></div></main>

@@ -1,10 +1,12 @@
-import Image from "next/image";
+"use client";
+import { useDivisionDirectory } from "../components/DivisionDirectory";
+import Image from "../components/CmsImage";
 import Link from "next/link";
 import SmoothImage from "../components/SmoothImage";
 import type { SiteContent } from "../data/siteContent";
-import { divisions, type Division } from "../data/divisionContent";
+import { type Division } from "../data/divisionContent";
 import UnifiedHomeContent from "../components/UnifiedHomeContent";
-import { divisionIdentity } from "../data/companyIdentity";
+
 
 
 const businessRoutes = [
@@ -24,16 +26,17 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 }
 
 function BusinessRoutes() {
+  const { divisions, divisionIdentity } = useDivisionDirectory();
   return (
     <section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading" data-reveal>
-          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">Lima divisi.<br />Satu Mahameru, satu solusi.</h2></div>
+          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">{divisions.length} divisi.<br />Satu Mahameru, satu solusi.</h2></div>
           <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
         </div>
         <div className="home-route-list">
           {divisions.map((division, index) => {
-            const route = businessRoutes[index] || { index: "05", tag: division.label, title: division.name, text: division.intro, href: `/unit/${division.slug}`, image: division.hero, imageAlt: division.name };
+            const route = { index: String(index+1).padStart(2,"0"), tag:division.label, title:division.name, text:division.intro, href:`/unit/${division.slug}`, image:division.hero, imageAlt:division.name };
             return (
             <Link href={route.href} prefetch={false} className="home-route-card" key={route.index} data-reveal>
               <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
@@ -48,11 +51,11 @@ function BusinessRoutes() {
         <div className="home-needs" aria-label="Pilih berdasarkan kebutuhan">
           <p>Mulai dari kebutuhan Anda</p>
           <div>
-            <Link href="/unit/retail-tambun">Saya mau beli besi satuan di Tambun <Arrow diagonal /></Link>
-            <Link href="/unit/retail-cibitung">Saya cari hollow, pipa, atau plat di Cibitung <Arrow diagonal /></Link>
-            <Link href="/unit/trading-proyek">Saya butuh material untuk proyek <Arrow diagonal /></Link>
-            <Link href="/unit/laser-cutting">Saya mau potong atau tekuk plat sesuai gambar <Arrow diagonal /></Link>
-            <Link href="/unit/fabrikasi-erection/kontak">Saya ingin konsultasi fabrikasi dan erection <Arrow diagonal /></Link>
+            {divisions.some(d=>d.slug==="retail-tambun") && <Link href="/unit/retail-tambun">Saya mau beli besi satuan di Tambun <Arrow diagonal /></Link>}
+            {divisions.some(d=>d.slug==="retail-cibitung") && <Link href="/unit/retail-cibitung">Saya cari hollow, pipa, atau plat di Cibitung <Arrow diagonal /></Link>}
+{divisions.some(d=>d.slug === "trading-proyek") && <Link href="/unit/trading-proyek">Saya butuh material untuk proyek <Arrow diagonal /></Link>}
+{divisions.some(d=>d.slug === "laser-cutting") && <Link href="/unit/laser-cutting">Saya mau potong atau tekuk plat sesuai gambar <Arrow diagonal /></Link>}
+{divisions.some(d=>d.slug === "fabrikasi-erection") && <Link href="/unit/fabrikasi-erection/kontak">Saya ingin konsultasi fabrikasi dan erection <Arrow diagonal /></Link>}
           </div>
         </div>
       </div>

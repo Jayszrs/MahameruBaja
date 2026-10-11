@@ -1,9 +1,10 @@
 "use client";
+import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
-import { businessUnits } from '../data/business';
+
 import { createLead, type CreateLeadInput } from '../lib/api';
 import RequestHandoff from '../components/RequestHandoff';
 
@@ -22,9 +23,10 @@ function generateId() {
 }
 
 export default function QuotationPage() {
+  const { businessUnits } = useDivisionDirectory();
   const { items } = useQuotation();
   const [params] = useSearchParams();
-  const [unit, setUnit] = useState(businessUnits.some(item => item.slug === params.get('unit')) ? params.get('unit')! : 'retail-tambun');
+  const [unit, setUnit] = useState(businessUnits.some(item => item.slug === params.get('unit')) ? params.get('unit')! : businessUnits[0]?.slug || '');
   const [formData, setFormData] = useState({
     nama: '', perusahaan: '', whatsapp: '', email: '', lokasi: '', catatan: '',
   });

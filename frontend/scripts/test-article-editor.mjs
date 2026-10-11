@@ -19,7 +19,7 @@ await page.waitForURL(base + "/admin");
 await page.goto(base + "/admin/artikel");
 await page.getByRole("textbox", { name: "Isi artikel", exact: true }).waitFor();
 await page.waitForTimeout(100);
-assert(await page.locator(".editor-topbar").getByRole("button", { name: /Simpan perubahan/ }).isDisabled(), "Opening an article must not mark it dirty.");
+assert(await page.locator(".admin-topbar").getByRole("button", { name: /Simpan perubahan/ }).isDisabled(), "Opening an article must not mark it dirty.");
 const records = await (await context.request.get(base + "/api/admin/articles")).json();
 const publicPage = await context.newPage();
 async function publicDocument(slug) {
@@ -34,12 +34,16 @@ async function publicDocument(slug) {
 for (const article of records) {
   const before = await publicDocument(article.slug);
   await page.locator(".article-list-items>button").filter({ hasText: article.title }).click();
-  const editor = page.getByRole("textbox", { name: "Isi artikel", exact: true });
-  await editor.waitFor(); await editor.click(); await editor.press("Control+End"); await editor.press("Space"); await editor.press("Control+z");
+  await page.waitForFunction(title => document.querySelector(".article-form .editor-grid input")?.value === title, article.title);
+  const excerpt = page.locator(".article-form textarea").first();
+  await excerpt.fill(article.excerpt + " "); await excerpt.fill(article.excerpt);
+  const headerSave = page.locator(".admin-topbar .admin-primary");
+  await page.waitForFunction(() => document.querySelector(".admin-topbar .admin-primary")?.disabled === false);
   const saved = page.waitForResponse(response => response.url().endsWith(`/api/admin/articles/${article.id}`) && response.request().method() === "PUT");
-  await page.locator(".editor-topbar").getByRole("button", { name: /Simpan perubahan/ }).click();
+  await headerSave.click();
   assert.equal((await saved).status(), 200);
   assert.deepEqual(await publicDocument(article.slug), before, `Visual editing must preserve article ${article.slug}`);
+  await page.reload(); await page.getByRole("textbox", { name: "Isi artikel", exact: true }).waitFor();
 }
 await page.getByRole("button", { name: "+ Tambah", exact: true }).click();
 await page.getByLabel("Judul artikel", { exact: true }).fill("Pengujian editor visual");
@@ -47,7 +51,7 @@ assert.equal(await page.getByLabel("Alamat artikel", { exact: true }).inputValue
 await page.getByLabel("Kategori", { exact: true }).fill("Pengujian lokal");
 await page.getByLabel("Ringkasan", { exact: true }).fill("Ringkasan dari editor visual pada fixture lokal.");
 await page.getByLabel("Deskripsi gambar sampul", { exact: true }).fill("Sampul pengujian");
-const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jM2sAAAAASUVORK5CYII=", "base64");
+const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC", "base64");
 await page.locator(".article-cover input[type=file]").setInputFiles({ name: "fixture.png", mimeType: "image/png", buffer: png });
 await page.waitForFunction(() => document.querySelector('.article-cover input[type="file"]')?.disabled === false);
 const doc = page.getByRole("textbox", { name: "Isi artikel", exact: true });
@@ -62,7 +66,7 @@ await page.getByRole("button", { name: "Pratinjau", exact: true }).click();
 assert.equal(await page.locator(".article-preview h2").first().textContent(), "Pengujian editor visual");
 await page.getByRole("button", { name: "Kembali ke editor", exact: true }).click();
 let saved = page.waitForResponse(response => response.url().endsWith("/api/admin/articles") && response.request().method() === "POST");
-await page.locator(".editor-topbar").getByRole("button", { name: /Simpan draf/ }).click();
+await page.locator(".admin-topbar").getByRole("button", { name: /Simpan draf/ }).click();
 const createdResponse = await saved; assert.equal(createdResponse.status(), 201); const created = await createdResponse.json();
 assert.equal((await context.request.get(base + "/informasi/" + created.slug)).status(), 404);
 saved = page.waitForResponse(response => response.url().endsWith(`/api/admin/articles/${created.id}`) && response.request().method() === "PUT");

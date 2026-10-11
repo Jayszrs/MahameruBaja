@@ -1,14 +1,16 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Link from "next/link";
 import { useState } from "react";
-import { divisions } from "../data/divisionContent";
+
 import { socialPlatforms, platformLabels, socialEmbedUrl, type SocialPlatform, type SocialAccount, type SocialPost } from "../data/socialMedia";
 
 export function SocialIcon({ platform }: { platform: SocialPlatform }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">{platform === "instagram" ? <><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".7" fill="currentColor" /></> : platform === "youtube" ? <><rect x="2" y="5" width="20" height="14" rx="4" /><path d="m10 9 6 3-6 3z" fill="currentColor" stroke="none" /></> : platform === "facebook" ? <path d="M14 21v-8h3l.5-4H14V7c0-1 .4-2 2-2h2V2h-3c-3 0-5 2-5 5v2H7v4h3v8" /> : <path d="M14 3h3c0 3 2 5 5 5v3c-2 0-4-1-5-2v8a5 5 0 1 1-5-5v3a2 2 0 1 0 2 2z" />}</svg>;
 }
 function Post({ post }: { post: SocialPost }) {
+  const { divisions } = useDivisionDirectory();
   const [playerKey, setPlayerKey] = useState(0);
   const [videoError, setVideoError] = useState(false);
   const embed = socialEmbedUrl(post.platform, post.url);

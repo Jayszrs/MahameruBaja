@@ -1,7 +1,7 @@
 import type { CreateLeadInput } from "./api";
-import { divisions } from "../data/divisionContent";
+import type { Division } from "../data/divisionCms";
 
-export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString()) {
+export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString(), divisions: Division[] = []) {
   const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([import("pdf-lib"), import("@pdf-lib/fontkit")]);
   const pdf = await PDFDocument.create(); pdf.registerFontkit(fontkit);
   let bytes = fontBytes;

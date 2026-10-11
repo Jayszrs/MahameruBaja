@@ -1,13 +1,14 @@
 "use client";
+import { useDivisionDirectory } from "../components/DivisionDirectory";
 
-import Image from "next/image"
+import Image from "../components/CmsImage"
 import { useState } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead, type CreateLeadInput } from "../lib/api"
 import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
-import { divisions } from "../data/divisionContent"
+
 
 const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
   { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
@@ -35,6 +36,7 @@ const servicePaths: { title: string; detail: string; href: string; action: strin
 ]
 
 export default function LaserCuttingPage() {
+  const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
   const [file, setFile] = useState<File | null>(null)
   const [fileError, setFileError] = useState("")
@@ -42,7 +44,7 @@ export default function LaserCuttingPage() {
   const [submitError, setSubmitError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [leadId, setLeadId] = useState("")
-  const [divisionSlug, setDivisionSlug] = useState("laser-cutting")
+  const [divisionSlug, setDivisionSlug] = useState(divisions.find(d=>d.slug === "laser-cutting")?.slug || divisions[0]?.slug || "")
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()

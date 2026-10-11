@@ -1,15 +1,5 @@
-import { ArticleError } from "../../../../../src/data/articleCms";
-import { articleAuthorized, articleBodyBytes, articleFailure, articleNoStore } from "../../../../../src/lib/articleApi";
-import { saveArticleImage } from "../../../../../src/lib/articleMedia";
-
+import { adminActor, apiError, noStore } from "../../../../../src/lib/adminApi";
+import { saveCmsMedia } from "../../../../../src/lib/cmsMedia";
+import { articleBodyBytes } from "../../../../../src/lib/articleApi";
 export const runtime = "nodejs";
-export async function POST(request: Request) {
-  const denied = await articleAuthorized(request); if (denied) return denied;
-  try {
-    const bytes = await articleBodyBytes(request, 4_300_000);
-    let form: FormData;
-    try { form = await new Response(bytes.buffer as ArrayBuffer, { headers: { "Content-Type": request.headers.get("content-type") || "" } }).formData(); }
-    catch { throw new ArticleError("INVALID_IMAGE"); }
-    return Response.json(await saveArticleImage(form.get("image")), { headers: articleNoStore });
-  } catch (error) { return articleFailure(error); }
-}
+export async function POST(request:Request) { try { const actor=await adminActor(request); const bytes=await articleBodyBytes(request,4300000); const form=await new Response(bytes.buffer as ArrayBuffer,{headers:{"Content-Type":request.headers.get("content-type")||""}}).formData(); const owner=form.get("ownerDivision"); if(owner !== null && typeof owner !== "string") return Response.json({message:"Divisi tidak valid."},{status:400}); return Response.json(await saveCmsMedia(form.get("image"),actor,true,owner === null ? undefined : owner || null),{headers:noStore}); } catch(error) { return apiError(error); } }

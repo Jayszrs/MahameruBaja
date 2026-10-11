@@ -1,4 +1,8 @@
 import "server-only";
+import { readDivisions, assertDivisionScope } from "./divisionStore";
+import { contentOwner } from "../data/divisionCms";
+import type { AdminIdentity } from "../data/adminAccount";
+import { CmsError } from "./cmsError";
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -20,10 +24,10 @@ export async function readArticles(): Promise<ArticleRecord[]> {
 }
 
 // Request-scoped memoization keeps the metadata, page, and related links consistent.
-export const readPublishedArticles = cache(async () => (await readArticles())
-  .filter(article => article.status === "published")
+export const readPublishedArticles = cache(async () => { const active = new Set((await readDivisions()).filter(d=>d.status === "active").map(d=>d.slug)); return (await readArticles())
+  .filter(article => article.status === "published" && (!contentOwner(article) || active.has(contentOwner(article)!)))
   .sort((left, right) => right.date.localeCompare(left.date) || left.id.localeCompare(right.id))
-  .map(publicArticle));
+  .map(publicArticle); });
 
 async function mutate<T>(update: (records: ArticleRecord[]) => { records: ArticleRecord[]; result: T }): Promise<T> {
   if (usingPreviewBlob()) {
@@ -57,8 +61,11 @@ function ensureSlug(records: ArticleRecord[], slug: string, id?: string) {
   if (records.some(record => record.slug === slug && record.id !== id)) throw new ArticleError("SLUG_EXISTS");
 }
 
-export async function createArticle(input: ArticleInput) {
+export async function createArticle(input: ArticleInput, actor: AdminIdentity) {
   const parsed = articleInputSchema.parse(input);
+  await (await import("./cmsMedia")).validateMediaOwnership(parsed,actor);
+  if(actor.division) { if((parsed.ownerDivision !== undefined && parsed.ownerDivision !== actor.division) || parsed.audience?.some(d=>d!==actor.division)) throw new CmsError("Tidak dapat mengubah kepemilikan artikel.",403); parsed.ownerDivision = actor.division; }
+  const known = new Set((await readDivisions()).map(d=>d.slug)); if([parsed.ownerDivision,...(parsed.audience||[])].some(d=>d && !known.has(d))) throw new CmsError("Divisi tidak dikenal.");
   const id = randomUUID();
   return mutate(records => {
     let slug = parsed.slug || articleSlug(parsed.title) || `artikel-${id.slice(0, 8)}`;
@@ -75,26 +82,32 @@ export async function createArticle(input: ArticleInput) {
   });
 }
 
-export async function updateArticle(id: string, revision: number, input: ArticleInput) {
+export async function updateArticle(id: string, revision: number, input: ArticleInput, actor: AdminIdentity) {
   const parsed = articleInputSchema.parse(input);
+  await (await import("./cmsMedia")).validateMediaOwnership(parsed,actor);
+  if(actor.division) { if((parsed.ownerDivision !== undefined && parsed.ownerDivision !== actor.division)) throw new CmsError("Tidak dapat mengubah kepemilikan artikel.",403); parsed.ownerDivision = actor.division; }
+  const known = new Set((await readDivisions()).map(d=>d.slug)); if([parsed.ownerDivision,...(parsed.audience||[])].some(d=>d && !known.has(d))) throw new CmsError("Divisi tidak dikenal.");
   return mutate(records => {
     const current = records.find(record => record.id === id);
     if (!current) throw new ArticleError("NOT_FOUND");
+    assertDivisionScope(actor,contentOwner(current));
+    if(actor.division && JSON.stringify(parsed.audience) !== JSON.stringify(current.audience)) throw new CmsError("Hanya Super Admin dapat mengatur penayangan artikel.",403);
     if (current.revision !== revision) throw new ArticleError("CONFLICT");
     const slug = parsed.slug || articleSlug(parsed.title) || current.slug;
     if (current.firstPublishedAt && slug !== current.slug) throw new ArticleError("SLUG_LOCKED");
     ensureSlug(records, slug, id);
     const now = new Date().toISOString();
-    const saved = articleRecordSchema.parse({ ...current, ...parsed, slug, revision: revision + 1,
+    const saved = articleRecordSchema.parse({ ...current, ...parsed, audience:parsed.audience, slug, revision: revision + 1,
       readTime: articleReadTime(parsed.content), firstPublishedAt: current.firstPublishedAt || (parsed.status === "published" ? now : null), updatedAt: now });
     return { records: records.map(record => record.id === id ? saved : record), result: saved };
   });
 }
 
-export async function deleteArticle(id: string, revision: number) {
+export async function deleteArticle(id: string, revision: number, actor: AdminIdentity) {
   return mutate(records => {
     const current = records.find(record => record.id === id);
     if (!current) throw new ArticleError("NOT_FOUND");
+    assertDivisionScope(actor,contentOwner(current));
     if (current.revision !== revision) throw new ArticleError("CONFLICT");
     return { records: records.filter(record => record.id !== id), result: { deleted: id } };
   });

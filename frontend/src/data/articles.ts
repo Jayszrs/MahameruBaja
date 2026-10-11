@@ -1,4 +1,5 @@
 export interface Article {
+  ownerDivision?: string | null; audience?: string[];
   id: string;
   slug: string;
   title: string;

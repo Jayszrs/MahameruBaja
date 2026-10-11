@@ -1,4 +1,5 @@
 "use client";
+import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router';
@@ -6,11 +7,12 @@ import { getProductBySlug, getRelatedProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import ProductInventory from '../components/ProductInventory';
 import { stockSummary, type InventoryItem } from '../data/inventory';
-import { divisionWhatsApp } from '../data/companyIdentity';
+
 import { useReveal } from '../hooks/useReveal';
 import { useQuotation } from '../context/QuotationContext';
 
 export default function ProductDetailPage({ inventory = [], selectedDivision }: { inventory?: InventoryItem[]; selectedDivision?: string }) {
+  const { divisionWhatsApp } = useDivisionDirectory();
   const { slug } = useParams<{ slug: string }>();
   const product = getProductBySlug(slug ?? '');
   const [activeImage, setActiveImage] = useState(0);

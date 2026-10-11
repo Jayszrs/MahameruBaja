@@ -5,7 +5,7 @@ import { readRequests, createRequest, updateRequest } from "../../../../src/lib/
 import { requestInputSchema, requestPatchSchema } from "../../../../src/data/requests";
 
 export const runtime = "nodejs";
-async function authorized() { return readAdminIdentity((await cookies()).get(ADMIN_COOKIE)?.value); }
+async function authorized() { const actor = await readAdminIdentity((await cookies()).get(ADMIN_COOKIE)?.value); return actor?.mustChangePassword ? null : actor; }
 export async function GET() {
   const identity = await authorized();
   if (!identity) return Response.json({ message: "Silakan login." }, { status: 401 });

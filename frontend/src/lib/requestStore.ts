@@ -1,4 +1,5 @@
 import "server-only";
+import { ensureDivision } from "./divisionStore";
 import { readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -34,6 +35,7 @@ async function mutate<T>(update: (records: RequestRecord[]) => { records: Reques
   });
 }
 export async function createRequest(input: RequestInput, idempotencyKey?: string) {
+  await ensureDivision(input.businessUnitSlug,true);
   return mutate(records => {
     const existing = idempotencyKey && records.find(r => r.idempotencyKey === idempotencyKey);
     if (existing) return { records, result: existing };
@@ -43,6 +45,7 @@ export async function createRequest(input: RequestInput, idempotencyKey?: string
   });
 }
 export async function updateRequest(id: string, revision: number, update: Partial<RequestInput> & { status?: RequestRecord["status"]; notes?: string; archived?: boolean; invoice?: RequestRecord["invoice"] }, allowedDivision?: string | null) {
+  if(update.businessUnitSlug) await ensureDivision(update.businessUnitSlug);
   return mutate(records => {
     const current = records.find(r => r.id === id);
     if (!current) throw new Error("NOT_FOUND");

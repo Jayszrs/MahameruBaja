@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "./CmsImage";
 import Link from "next/link";
 
 type Props = { variant?: "workshop" | "company" | "services"; href?: string };

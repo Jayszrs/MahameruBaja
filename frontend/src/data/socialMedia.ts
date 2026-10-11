@@ -1,3 +1,4 @@
+import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 export const socialPlatforms = ["instagram", "tiktok", "youtube", "facebook"] as const;
 export type SocialPlatform = typeof socialPlatforms[number];
@@ -26,18 +27,18 @@ export function socialEmbedUrl(platform: SocialPlatform, value: string) {
   return null;
 }
 export const socialDivisions = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
-export const socialAccountSchema = z.object({ platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean(), divisions: z.array(z.enum(socialDivisions)).max(5).optional() }).superRefine((value, ctx) => {
+export const socialAccountSchema = z.object({ ...ownershipFields, id: z.string().max(80).optional(), platform: z.enum(socialPlatforms), handle: z.string().trim().max(100), url: z.string().trim().max(1000), published: z.boolean(), divisions: z.array(divisionSlugSchema).max(100).optional() }).superRefine((value, ctx) => {
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "URL harus sesuai platform dan menggunakan HTTPS" });
 });
 export function isSocialVideoUrl(value: string) {
-  if (/^\/(?:media|videos)\/[\w/ .-]+\.mp4$/i.test(value) && value.split("/").slice(1).every(part => part && part !== "." && part !== "..")) return true;
+  if (/^\/(?:media|videos|api\/cms\/media)\/[\w/ .-]+\.mp4$/i.test(value) && value.split("/").slice(1).every(part => part && part !== "." && part !== "..")) return true;
   try { const url = new URL(value); return url.protocol === "https:" && url.hostname.endsWith(".public.blob.vercel-storage.com") && /\.mp4$/i.test(url.pathname); } catch { return false; }
 }
-export const socialPostSchema = z.object({ id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), videoUrl: z.string().trim().max(1000).optional(), published: z.boolean(), division: z.enum(socialDivisions).default("laser-cutting"), handle: z.string().trim().max(100).default("") }).superRefine((value, ctx) => {
+export const socialPostSchema = z.object({ ...ownershipFields, id: z.string().min(1).max(80), platform: z.enum(socialPlatforms), title: z.string().trim().min(1).max(180), caption: z.string().trim().max(1500), url: z.string().trim().max(1000), image: z.string().trim().max(1000), videoUrl: z.string().trim().max(1000).optional(), published: z.boolean(), division: divisionSlugSchema.default("laser-cutting"), handle: z.string().trim().max(100).default("") }).superRefine((value, ctx) => {
   if (value.videoUrl && !isSocialVideoUrl(value.videoUrl)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["videoUrl"], message: "Gunakan video MP4 dari unggahan media lokal atau Vercel Blob" });
   if ((value.url || value.published) && !isPlatformUrl(value.url, value.platform)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan tautan unggahan sesuai platform" });
   if (value.published && value.platform !== "facebook" && !socialEmbedUrl(value.platform, value.url)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["url"], message: "Gunakan URL post/reel/video, bukan URL profil akun" });
-  if (value.image && !/^\/(?:images|media)\/[\w/ .-]+$/.test(value.image)) {
+  if (value.image && !/^\/(?:images|media|api\/cms\/media)\/[\w/ .-]+$/.test(value.image)) {
     try { if (new URL(value.image).protocol !== "https:") throw new Error(); }
     catch { ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["image"], message: "Gambar harus /images/... atau URL HTTPS" }); }
   }

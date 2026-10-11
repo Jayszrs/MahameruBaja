@@ -1,4 +1,7 @@
 import "server-only";
+import type { AdminIdentity } from "../data/adminAccount";
+import { normalizeOwnership, mergeScopedContent, scopeContent, collectionKeys, publicOwned } from "./contentScope";
+import { readDivisions } from "./divisionStore";
 import { readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -11,7 +14,7 @@ import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
-function updatedIdentity(content: SiteContent): SiteContent {
+function legacyIdentity(content: SiteContent): SiteContent {
   if (content.socialSourceVersion < 1) {
     const urls = new Set(content.socialPosts.map(post => post.url));
     const youtube = defaultSocialAccounts.find(account => account.platform === "youtube" && account.handle === "Mahameru Baja Indonesia")!;
@@ -64,33 +67,38 @@ function mergeContent(current: SiteContent, input: SiteContent, base?: SiteConte
   }
   return { ...merged, revision: current.revision + 1 };
 }
+function updatedIdentity(content: SiteContent) { return siteContentSchema.parse(normalizeOwnership(legacyIdentity(content))); }
 export async function readSiteContent(): Promise<SiteContent> {
   if (usingPreviewBlob()) return updatedIdentity((await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent)).value);
   try { return updatedIdentity(siteContentSchema.parse(JSON.parse(await readFile(file, "utf8")))); }
   catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return structuredClone(defaultSiteContent);
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return updatedIdentity(structuredClone(defaultSiteContent));
     throw error;
   }
 }
 export async function readPublicSiteContent(): Promise<SiteContent> {
   const content = await readSiteContent();
-  return { ...content, galleryProjects: content.galleryProjects.filter(p => p.published && p.photos.length) };
+  const active = new Set((await readDivisions()).filter(d => d.status === "active").map(d => d.slug));
+  const next = { ...content, inventory: content.inventory.filter(i => i.listed && active.has(i.division)), divisionReviews: Object.fromEntries(Object.entries(content.divisionReviews).filter(([slug]) => active.has(slug)).map(([slug, profile]) => [slug, { ...profile, reviews: profile.reviews.filter(r => r.published) }])), garudaReviews: { ...content.garudaReviews, reviews: active.has("retail-cibitung") ? content.garudaReviews.reviews.filter(r => r.published) : [] } };
+  for (const key of collectionKeys) Object.assign(next, { [key]: content[key].filter(row => (row.published ?? true) && publicOwned(row, active)) });
+  return next;
 }
-export async function writeSiteContent(input: SiteContent, base?: SiteContent) {
+export async function writeSiteContent(input: SiteContent, base?: SiteContent, actor?: AdminIdentity) {
   if (usingPreviewBlob()) {
     const current = await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent);
-    const saved = siteContentSchema.parse(mergeContent(updatedIdentity(current.value), input, base));
+    const existing = updatedIdentity(current.value);
+    const saved = siteContentSchema.parse(actor ? { ...await mergeScopedContent(existing, input, base, actor), revision: existing.revision + 1 } : mergeContent(existing, input, base));
     if (!await writePreviewBlob("site-content", current.revision, saved)) throw new Error("CMS_CONFLICT");
-    return saved;
+    return actor ? scopeContent(saved, actor) : saved;
   }
   return withCmsFileLock(file, async () => {
     const temp = `${file}.${randomUUID()}.tmp`;
     try {
       const current = await readSiteContent();
-      const saved = siteContentSchema.parse(mergeContent(current, input, base));
+      const saved = siteContentSchema.parse(actor ? { ...await mergeScopedContent(current, input, base, actor), revision: current.revision + 1 } : mergeContent(current, input, base));
       await writeFile(temp, JSON.stringify(saved, null, 2), "utf8");
       await replaceCmsFile(temp, file);
-      return saved;
+      return actor ? scopeContent(saved, actor) : saved;
     } finally { await unlink(temp).catch(() => {}); }
   });
 }

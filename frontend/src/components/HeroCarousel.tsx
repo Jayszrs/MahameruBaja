@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "../data/heroSlides";
@@ -15,7 +15,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   const [failed, setFailed] = useState<Set<number>>(() => new Set());
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-  const activeSlide = heroSlides[activeIndex];
+  const activeSlide = heroSlides[activeIndex] || {id:"empty",type:"image",eyebrow:companyName,title:"Mari bicarakan kebutuhan Anda.",accent:"",description:"Hubungi tim untuk informasi material dan layanan.",primaryAction:{label:"Hubungi kami",href:"/kontak"},secondaryAction:{label:"Lihat website",href:"/"},visualNote:""};
   function nextSlide(completed = playedVideos) {
     for (let offset = 1; offset < heroSlides.length; offset++) {
       const index = (activeIndex + offset) % heroSlides.length;

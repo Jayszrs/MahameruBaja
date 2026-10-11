@@ -32,6 +32,8 @@ Preview Next.js di Vercel sudah disiapkan. URL, cara deploy ulang, dan batasan p
 
 CMS artikel tersedia di `/admin/artikel`: editor visual, draf/terbit, gambar, dan pratinjau. Konten artikel memakai private Blob pada Vercel dan JSON pada lokal, tanpa PostgreSQL. Panduan penggunaan dan penyimpanan: [docs/CMS_ARTICLES.md](docs/CMS_ARTICLES.md).
 
+Portal `/admin` memakai dashboard dan sidebar bersama dengan lima kategori yang dapat dibuka/ditutup. Navigasi, filter, serta perlindungan perubahan belum disimpan dijelaskan di [docs/ADMIN_WORKSPACE.md](docs/ADMIN_WORKSPACE.md).
+
 ## Memperbarui salinan tim yang memakai Docker
 
 Semua gambar website disimpan dan dilacak Git di `frontend/public/images`; font PDF ada di `frontend/public/fonts`. Tidak perlu menyalin aset dari komputer pembuat desain.
@@ -44,3 +46,7 @@ docker compose -f infrastructure/docker-compose.yml up -d --build web
 ```
 
 Periksa `http://localhost:3000/images/hero-steel-warehouse-v2.png`. Jika URL gambar itu belum muncul, pastikan container web yang dibuka sudah memakai image hasil build terbaru. Next.js standalone monorepo melayani aset dari `/app/frontend/public`, sesuai lokasi `frontend/server.js`.
+
+### CMS divisi dan akun admin
+
+Panduan migrasi, hak akses, password sementara, serta pencadangan dan pemulihan: [CMS Divisi dan Pengelolaan Akun](docs/cms-divisions-accounts.md).

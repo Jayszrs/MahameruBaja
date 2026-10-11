@@ -1,12 +1,13 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Link from "next/link";
-import Image from "next/image";
+import Image from "./CmsImage";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import type { Division } from "../data/divisionContent";
-import { divisionIdentity, divisionWhatsApp } from "../data/companyIdentity";
-import { divisions } from "../data/divisionContent";
+
+
 
 export function divisionNavigation(division: Division) {
   const base = `/unit/${division.slug}`;
@@ -19,6 +20,7 @@ export function divisionNavigation(division: Division) {
 }
 
 export function DivisionHeader({ division }: { division: Division }) {
+  const { divisionIdentity } = useDivisionDirectory();
   const pathname = usePathname();
   const menu = useRef<HTMLDetailsElement>(null);
   useEffect(() => { menu.current?.removeAttribute("open"); }, [pathname]);
@@ -31,6 +33,7 @@ export function DivisionHeader({ division }: { division: Division }) {
 }
 
 export function DivisionFooter({ division }: { division: Division }) {
+  const { divisionIdentity, divisionWhatsApp, divisions } = useDivisionDirectory();
   const base = `/unit/${division.slug}`;
   return <footer className={`unit-footer unit-footer-v2 unit-theme-${division.slug}`}>
     <div className="industrial-container">
@@ -38,7 +41,7 @@ export function DivisionFooter({ division }: { division: Division }) {
         <div className="unit-footer-about">
           <Link className="unit-footer-brand" href={base} aria-label={`Beranda ${division.name}`}><Image src={divisionIdentity[division.slug].logo} alt="" width={65} height={55} sizes="65px" /><span><strong>{division.name}<i>.</i></strong><small>{division.label.toUpperCase()}</small></span></Link>
           <p>{division.intro}</p>
-          <span className="unit-footer-phone-label">KONTAK UTAMA</span><a className="unit-footer-phone" href={divisionWhatsApp(division.slug)}>{divisionIdentity[division.slug].admins[0].phone}</a>
+          <span className="unit-footer-phone-label">KONTAK UTAMA</span><a className="unit-footer-phone" href={divisionWhatsApp(division.slug)}>{divisionIdentity[division.slug].admins[0]?.phone || "Hubungi tim"}</a>
           <div className="unit-footer-actions"><Link className="unit-footer-contact" href={`${base}/kontak`}>Hubungi kami <span aria-hidden="true">↗</span></Link><button type="button" className="unit-footer-up" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Kembali ke atas">↑</button></div>
         </div>
         <nav aria-label={`Navigasi footer ${division.name}`}><strong>Jelajahi divisi</strong>{divisionNavigation(division).map(link => <Link href={link.href} key={link.href}>{link.label}</Link>)}</nav>

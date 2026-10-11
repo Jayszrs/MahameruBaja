@@ -2,6 +2,8 @@ import { requestInputSchema } from "../../../src/data/requests";
 import { createRequest } from "../../../src/lib/requestStore";
 import { adminRequestOrigin } from "../../../src/lib/adminRequestOrigin";
 
+import { CmsError } from "../../../src/lib/cmsError";
+import { apiError } from "../../../src/lib/adminApi";
 export const runtime = "nodejs";
 const attempts = new Map<string, { count: number; until: number }>();
 export async function POST(request: Request) {
@@ -25,6 +27,7 @@ export async function POST(request: Request) {
     const saved = await createRequest(result.data, idempotencyKey);
     return Response.json({ data: { id: saved.id, status: saved.status } }, { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
+    if(error instanceof CmsError) return apiError(error);
     console.error("Request storage failure", { code: (error as NodeJS.ErrnoException).code || ((error as Error).message === "BUSY" ? "BUSY" : "UNKNOWN") });
     return Response.json({ message: (error as Error).message === "BUSY" ? "Penyimpanan sedang sibuk. Silakan coba kembali." : "Permintaan belum tersimpan. Coba kembali." }, { status: 503 });
   }

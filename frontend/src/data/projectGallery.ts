@@ -1,14 +1,15 @@
+import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 
 const asset = z.string().trim().max(1000).refine(value => {
-  if (/^\/(?:images|media)\/[a-zA-Z0-9/_ .-]+\.(?:jpg|jpeg|png|webp)$/i.test(value) && !value.split("/").some(part => part === ".." || part === ".")) return true;
+  if (/^\/(?:images|media|api\/cms\/media)\/[a-zA-Z0-9/_ .-]+\.(?:jpg|jpeg|png|webp)$/i.test(value) && !value.split("/").some(part => part === ".." || part === ".")) return true;
   try { const url = new URL(value); return url.protocol === "https:" && url.hostname.endsWith(".public.blob.vercel-storage.com") && /\.(?:jpg|jpeg|png|webp)$/i.test(url.pathname); } catch { return false; }
 }, "Gunakan gambar JPG, PNG, atau WebP yang diunggah melalui CMS.");
 const photoSchema = z.object({ id: z.string().trim().min(1).max(100), src: asset, alt: z.string().trim().min(1).max(200), caption: z.string().trim().max(400) });
-export const galleryProjectSchema = z.object({
+export const galleryProjectSchema = z.object({ ...ownershipFields,
   id: z.string().trim().min(1).max(100), title: z.string().trim().min(1).max(160),
   category: z.string().trim().min(1).max(80),
-  division: z.enum(["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"]),
+  division: divisionSlugSchema,
   description: z.string().trim().max(2000), location: z.string().trim().max(160), year: z.string().trim().max(30),
   photos: z.array(photoSchema).max(40), coverId: z.string().trim().max(100), published: z.boolean(),
 }).superRefine((project, ctx) => {

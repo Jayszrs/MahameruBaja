@@ -1,11 +1,15 @@
 "use client";
+import { useDivisionDirectory } from "./DivisionDirectory";
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { products } from '../data/products';
-import { divisions } from '../data/divisionContent';
-import { inventoryKey, inventoryDivisionName, stockLabels, stockStatuses, type InventoryItem } from '../data/inventory';
+
+import { inventoryKey, stockLabels, stockStatuses, type InventoryItem } from "../data/inventory";
+import { useAdminWorkspace } from './AdminWorkspace';
+import AdminDialog from './AdminDialog';
 
 export default function InventoryEditor({ initialItems, division }: { initialItems: InventoryItem[]; division: string | null }) {
+  const { divisions, inventoryDivisionName } = useDivisionDirectory();
   const [items, setItems] = useState(initialItems);
   const base = useRef(initialItems);
   const [scope, setScope] = useState(division || 'retail-tambun');
@@ -15,7 +19,7 @@ export default function InventoryEditor({ initialItems, division }: { initialIte
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [failed, setFailed] = useState(false);
-  useEffect(() => { const warn = (e: BeforeUnloadEvent) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } }; window.addEventListener('beforeunload', warn); return () => window.removeEventListener('beforeunload', warn); }, [dirty]);
+  const [deleteKey, setDeleteKey] = useState<string | null>(null);
   function change(key: string, patch: Partial<InventoryItem>) { setItems(rows => rows.map(i => inventoryKey(i) === key ? { ...i, ...patch } : i)); setDirty(true); setMessage(''); }
   function add() {
     if (!newProduct || items.some(i => i.productId === newProduct && i.division === scope)) return;
@@ -28,10 +32,11 @@ export default function InventoryEditor({ initialItems, division }: { initialIte
       const r = await fetch('/api/admin/inventory', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items, base: base.current }) });
       const body = await r.json();
       if (!r.ok) throw new Error(body.message || 'Stok gagal disimpan.');
-      setItems(body.items); base.current = body.items; setDirty(false); setMessage('Tersimpan. Katalog dan stok tiap divisi telah diperbarui.');
+      setItems(body.items); base.current = body.items; setDirty(false); workspace.refreshDashboard(); setMessage('Tersimpan. Katalog dan stok tiap divisi telah diperbarui.');
     } catch (error) { setFailed(true); setMessage((error as Error).message); }
     finally { setSaving(false); }
   }
+  const workspace = useAdminWorkspace({ dirty, busy: saving, label: 'Simpan perubahan', disabled: !dirty, onSave: save });
   const shown = items.filter(i => i.division === scope && (products.find(p => p.id === i.productId)?.name.toLowerCase().includes(query.toLowerCase()) || !query));
   return <div className="content-editor inventory-editor"><aside className="editor-sidebar"><Link className="editor-brand" href="/admin">MBI <span>PRODUK & STOK</span></Link><p>WEBSITE</p><Link className="editor-sidebar-link" href="/admin/konten">Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/sosial">Sosial media</Link><Link className="editor-sidebar-link" href="/admin/promosi">Banner & promo</Link><span className="editor-sidebar-link active">Produk & stok divisi</span><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><form action="/api/admin/logout" method="post"><button>Keluar</button></form></div></aside>
     <main className="editor-main"><header className="editor-topbar"><span>Workspace / Produk & stok</span><div><span>{dirty ? 'Perubahan belum disimpan' : 'Tersimpan'}</span><button className="editor-save" disabled={!dirty || saving} onClick={save}>{saving ? 'Menyimpan…' : 'Simpan perubahan ↗'}</button></div></header>
@@ -45,12 +50,13 @@ export default function InventoryEditor({ initialItems, division }: { initialIte
               <div className="editor-grid inventory-row-fields"><label className="editor-field">Status<select value={item.status} onChange={e => { const status = e.target.value as InventoryItem['status']; change(key, { status, quantity: status === 'empty' ? 0 : status === 'available' ? item.quantity : null, verifiedAt: '' }); }}>{stockStatuses.map(s => <option value={s} key={s}>{stockLabels[s]}</option>)}</select></label><label className="editor-field">Sisa stok<input type="number" min="0" max="1000000000" step="1" value={item.quantity ?? ''} disabled={item.status === 'unconfirmed' || item.status === 'empty' || item.status === 'preorder'} onChange={e => change(key, { quantity: e.target.value === '' ? null : Number(e.target.value), verifiedAt: '' })} placeholder="Belum diketahui" /></label><label className="editor-field">Satuan<select value={item.unit} onChange={e => change(key, { unit: e.target.value as InventoryItem['unit'], verifiedAt: '' })}>{['batang', 'lembar', 'kg', 'set', 'buah', 'meter'].map(unit => <option key={unit}>{unit}</option>)}</select></label></div>
               <label className="editor-field">Catatan pelanggan<textarea maxLength={300} rows={2} value={item.note} onChange={e => change(key, { note: e.target.value })} placeholder="Contoh: konfirmasikan jadwal pengiriman dengan admin" /></label>
               <div className="inventory-confirm"><button type="button" className="editor-save" disabled={item.status === 'unconfirmed' || (item.status === 'available' && (!Number.isInteger(item.quantity) || !item.quantity || item.quantity < 1))} onClick={() => change(key, { verifiedAt: new Date().toISOString() })}>Konfirmasi stok sekarang</button><span>{item.verifiedAt ? `Dikonfirmasi ${new Date(item.verifiedAt).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })} WIB` : item.status === 'unconfirmed' ? 'Jumlah belum dikonfirmasi' : 'Perlu konfirmasi sebelum disimpan'}</span></div>
-              <Link href={`/produk/${product.slug}?unit=${item.division}`} target="_blank">Preview produk ↗</Link>
+              <div className="editor-item-actions"><Link href={`/produk/${product.slug}?unit=${item.division}`} target="_blank">Preview produk ↗</Link><button type="button" className="editor-delete" onClick={() => setDeleteKey(key)}>Hapus dari divisi</button></div>
             </section>;
           })}
           {!shown.length && <div className="editor-empty"><h3>Belum ada produk untuk divisi ini.</h3><p>Tambahkan produk yang memang dilayani divisi. Divisi jasa tidak otomatis mendapatkan stok material divisi retail.</p></div>}
         </fieldset>
       </div>
     </main>
+    {deleteKey && <AdminDialog title="Hapus produk dari divisi?" onClose={() => setDeleteKey(null)}><p>Produk dan catatan stoknya akan dihapus dari katalog divisi ini setelah Anda menyimpan perubahan. Master produk tetap tersedia untuk ditambahkan kembali.</p><div className="admin-dialog-actions"><button type="button" onClick={() => setDeleteKey(null)}>Batal</button><button type="button" className="admin-danger" onClick={() => { setItems(rows => rows.filter(row => inventoryKey(row) !== deleteKey)); setDirty(true); setMessage(''); setDeleteKey(null); }}>Hapus dari divisi</button></div></AdminDialog>}
   </div>;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "./CmsImage";
 
 type SmoothImageProps = {
   src: string;

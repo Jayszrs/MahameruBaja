@@ -8,7 +8,13 @@ import "../src/article-cms.css";
 import "../src/revision.css";
 import "../src/project-gallery.css";
 import "../src/unified-home.css";
+import "../src/admin-workspace.css";
+import "../src/admin-management.css";
+import { DivisionDirectory } from "../src/components/DivisionDirectory";
+import { readPublicDivisions } from "../src/lib/divisionStore";
+import { connection } from "next/server";
 import AppShell from "../src/components/AppShell";
+import AdminNavigationProvider from "../src/components/AdminNavigationProvider";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
 
 const siteUrl = siteOrigin();
@@ -59,10 +65,12 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#D92323" };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  await connection();
+  const divisions = await readPublicDivisions();
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><AppShell>{children}</AppShell></body>
+      <body><DivisionDirectory divisions={divisions}><AdminNavigationProvider><AppShell>{children}</AppShell></AdminNavigationProvider></DivisionDirectory></body>
     </html>
   );
 }

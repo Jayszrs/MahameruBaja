@@ -1,3 +1,4 @@
+import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 import { products } from "./products";
 import { divisions } from "./divisionContent";
@@ -7,7 +8,7 @@ export const stockStatuses = ['unconfirmed', 'available', 'empty', 'preorder'] a
 export const stockLabels = { unconfirmed: 'Belum dikonfirmasi', available: 'Tersedia', empty: 'Stok habis', preorder: 'Pre-order' };
 export const inventorySchema = z.object({
   productId: z.string().refine(id => products.some(p => p.id === id), 'Produk tidak dikenal'),
-  division: z.enum(inventoryDivisions),
+  division: divisionSlugSchema,
   listed: z.boolean(),
   status: z.enum(stockStatuses),
   quantity: z.number().int().min(0).max(1000000000).nullable(),

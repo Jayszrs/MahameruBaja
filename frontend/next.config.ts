@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
   images: {
+    // Private CMS proxies must never enter the optimizer's shared cache.
+    localPatterns: [{ pathname: "/images/**" }, { pathname: "/mbi-mark.svg" }],
     remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com" }],
   },
   // The team also opens the local dev server from its Windows link-local address.

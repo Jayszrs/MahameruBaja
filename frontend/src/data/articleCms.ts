@@ -1,3 +1,4 @@
+import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 import type { Article } from "./articles";
 
@@ -12,7 +13,7 @@ export function articleToday() {
 
 export function safeArticleImage(value: string) {
   if (/^\/images\/[a-zA-Z0-9_./-]+$/.test(value) && !value.includes("..")) return true;
-  if (/^\/api\/articles\/media\/[a-f0-9-]+\.(jpg|png|webp)$/.test(value)) return true;
+  if (/^\/api\/(?:articles|cms)\/media\/[a-f0-9-]+\.(jpg|png|webp)$/.test(value)) return true;
   try { const url = new URL(value); return url.protocol === "https:" && !url.username && !url.password; }
   catch { return false; }
 }
@@ -29,7 +30,7 @@ const dateSchema = z.string().refine(value => {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }, "Tanggal tidak valid.");
 
-export const articleInputSchema = z.object({
+export const articleInputSchema = z.object({ ...ownershipFields,
   title: z.string().trim().max(180),
   slug: z.string().trim().max(140).refine(value => !value || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value), "Alamat hanya boleh memakai huruf kecil, angka, dan tanda hubung."),
   category: z.string().trim().max(100),
@@ -67,7 +68,7 @@ export function articleReadTime(content: string) {
 }
 
 export function publicArticle(record: ArticleRecord): Article {
-  return { id: record.id, slug: record.slug, title: record.title, category: record.category, date: record.date,
+  return { ownerDivision: record.ownerDivision, audience: record.audience, id: record.id, slug: record.slug, title: record.title, category: record.category, date: record.date,
     excerpt: record.excerpt, image: record.image, imageAlt: record.imageAlt, content: record.content, readTime: record.readTime };
 }
 
