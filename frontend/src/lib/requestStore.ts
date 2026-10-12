@@ -20,7 +20,7 @@ async function mutate<T>(update: (records: RequestRecord[]) => { records: Reques
     for (let attempt = 0; attempt < 6; attempt++) {
       const current = await readPreviewBlob("requests", z.array(requestRecordSchema), [] as RequestRecord[]);
       const { records, result } = update(current.value);
-      if (await writePreviewBlob("requests", current.revision, records)) return result;
+      if (await writePreviewBlob("requests", current, records)) return result;
     }
     throw new Error("BUSY");
   }

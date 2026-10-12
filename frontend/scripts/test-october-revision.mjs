@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import postcss from "postcss";
+import { cmsVideo } from "./fixtures/cms-video.mjs";
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const root = path.dirname(frontend);
 // CSS structure checks, not a substitute for viewport/browser rendering.
@@ -114,7 +115,10 @@ try{
   assert.ok(garudaHtml.includes("43 ulasan") && garudaHtml.includes("5.0"));
   assert.ok(garudaHtml.includes("107.1194034") && garudaHtml.includes("Wanajaya"));
   assert.ok(garudaHtml.includes("<blockquote") && garudaHtml.includes("Anang Ardiantoro") && garudaHtml.includes("Iqbal Haryadi") && garudaHtml.includes("Heni Wulansari"));
-  assert.ok(!garudaHtml.includes("Mas Tikno") && !garudaHtml.includes("Erlangga Fabiyan"), "Garuda must not inherit Mahameru quotations");
+  // The shared client template receives public central content in its RSC
+  // payload; verify the actual quotation cards, not serialized public data.
+  const garudaQuotes = (garudaHtml.match(/<blockquote\b[^>]*>[\s\S]*?<\/blockquote>/g) || []).join("");
+  assert.ok(!garudaQuotes.includes("Mas Tikno") && !garudaQuotes.includes("Erlangga Fabiyan"), "Garuda must not render Mahameru quotations");
   assert.ok(garudaHtml.indexOf('id="layanan-unit"') < garudaHtml.indexOf('id="ulasan"') && garudaHtml.indexOf('id="ulasan"') < garudaHtml.indexOf('id="galeri-unit"'), "Garuda rating is directly below the product/service cards");
   assert.ok(!garudaHtml.includes("Alamat lengkap unit belum dipublikasikan"));
   const garudaContact=await (await call("/unit/retail-cibitung/kontak")).text();
@@ -233,9 +237,11 @@ try{
   assert.equal((hiddenContactHome.match(/class="directory-card"/g) || []).length,9,"Unpublished contacts stay hidden on the homepage");
   assert.ok(!hiddenContactHome.includes(hiddenId),"Private contact records are not sent in main-home client props");
   const media=new FormData();media.append("media",new Blob([await readFile(path.join(frontend,"public/images/brand/mbi-laser.png"))],{type:"image/png"}),"qa-logo.png");
+  media.append("ownerDivision","fabrikasi-erection");
   const uploaded=await fetch(origin+"/api/admin/media",{method:"POST",headers:{Origin:origin,Cookie:owner},body:media});assert.equal(uploaded.status,200);const asset=await uploaded.json();
-  const full=await call(asset.url);assert.equal(full.status,200);assert.equal(full.headers.get("content-type"),"image/png");
-  const ranged=await fetch(origin+asset.url,{headers:{Range:"bytes=0-7"}});assert.equal(ranged.status,206);assert.equal((await ranged.arrayBuffer()).byteLength,8);
+  assert.equal((await call(asset.url)).status,404,"An unpublished upload is not public");
+  const full=await call(asset.url,"GET",undefined,owner);assert.equal(full.status,200);assert.equal(full.headers.get("content-type"),"image/png");
+  const ranged=await fetch(origin+asset.url,{headers:{Range:"bytes=0-7",Cookie:owner}});assert.equal(ranged.status,206);assert.equal((await ranged.arrayBuffer()).byteLength,8);
   const invalid=new FormData();invalid.append("media",new Blob(["<script>bad</script>"],{type:"image/png"}),"bad.png");assert.equal((await fetch(origin+"/api/admin/media",{method:"POST",headers:{Origin:origin,Cookie:owner},body:invalid})).status,400);
   console.log("PASS: persistent media, range responses, invalid upload rejection");
   const galleryBase = await (await call("/api/admin/content", "GET", undefined, owner)).json();
@@ -274,7 +280,10 @@ try{
   }
   const expanded = structuredClone(gallerySaved); const changedAlbum = expanded.galleryProjects.at(-1);
   changedAlbum.title = "QA published project title"; changedAlbum.published = true; changedAlbum.photos.reverse();
-  const galleryPut = await call("/api/admin/content", "PUT", {...expanded,_base:gallerySaved}, sessions[4]); assert.equal(galleryPut.status,200);
+  assert.equal((await call("/api/admin/content", "PUT", {...expanded,_base:gallerySaved}, sessions[4])).status,403,"Division editor cannot submit the entire super-admin snapshot");
+  const scopedGalleryBase = await (await call("/api/admin/content","GET",undefined,sessions[4])).json();
+  const scopedGallery = {...scopedGalleryBase,galleryProjects:scopedGalleryBase.galleryProjects.map(p=>p.id===changedAlbum.id?changedAlbum:p)};
+  const galleryPut = await call("/api/admin/content", "PUT", {...scopedGallery,_base:scopedGalleryBase}, sessions[4]); assert.equal(galleryPut.status,200);
   const publishedGallery = await galleryPut.json();
   assert.deepEqual(publishedGallery.galleryProjects.at(-1).photos.map(p=>p.id),changedAlbum.photos.map(p=>p.id));
   assert.equal(publishedGallery.galleryProjects.at(-1).coverId,"qa-photo-1");
@@ -285,12 +294,14 @@ try{
   const publishedUnitHome = await (await call("/unit/fabrikasi-erection")).text();
   assert.ok(publishedUnitHome.includes(`Buka album ${changedAlbum.title}, ${changedAlbum.photos.length} foto`),"Assigned project appears in the division-home ribbon");
   assert.ok((await (await call("/unit/fabrikasi-erection/tentang")).text()).includes("QA caption 1"),"CMS photos and captions are included in the assigned about collage");
-  assert.ok(!(await (await call("/unit/retail-cibitung")).text()).includes("QA published project title"),"Other division homes do not borrow the project");
+  const otherDivisionMarkup = (await (await call("/unit/retail-cibitung")).text()).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g,"");
+  assert.ok(!otherDivisionMarkup.includes("QA published project title"),"Other division homes do not render the project; shared public client props are not gallery cards");
 
   assert.ok((await (await call("/unit/fabrikasi-erection/galeri")).text()).includes("QA published project title"));
   assert.ok(!(await (await call("/unit/retail-cibitung/galeri")).text()).includes("QA published project title"),"Project album only appears under assigned division");
-  assert.equal((await call("/api/admin/content", "PUT", {...gallerySaved,galleryProjects:gallerySaved.galleryProjects.slice(1),_base:gallerySaved},owner)).status,409,"Concurrent gallery edits cannot silently overwrite");
-  const removedAlbum = {...publishedGallery,galleryProjects:publishedGallery.galleryProjects.filter(p=>p.id!==album.id)};
+  assert.equal((await call("/api/admin/content", "PUT", {...gallerySaved,galleryProjects:gallerySaved.galleryProjects.filter(p=>p.id!==album.id),_base:gallerySaved},owner)).status,409,"Deleting the concurrently edited album cannot silently overwrite");
+  const galleryOwnerCurrent = await (await call("/api/admin/content","GET",undefined,owner)).json();
+  const removedAlbum = {...galleryOwnerCurrent,galleryProjects:galleryOwnerCurrent.galleryProjects.filter(p=>p.id!==album.id)};
   assert.equal((await call("/api/admin/content", "PUT", removedAlbum,owner)).status,200);
   assert.ok(!(await (await call("/proyek")).text()).includes("QA published project title"));
   const legacyGallery = await (await call("/api/admin/content", "GET", undefined, owner)).json(); delete legacyGallery.galleryProjects;
@@ -307,10 +318,14 @@ try{
   assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialPosts:[...socialBase.socialPosts.filter(post => post.platform !== "youtube"),...verifiedYouTubeSources]},owner)).status,200);
   socialBase = await (await call("/api/admin/content","GET",undefined,owner)).json();
   const nativeId = socialBase.socialPosts[0].id;
-  const videoUrl = "/media/00000000-0000-0000-0000-000000000001.mp4";
+  const videoForm = new FormData(); videoForm.append("media",new Blob([cmsVideo],{type:"video/mp4"}),"qa-video.mp4"); videoForm.append("ownerDivision","laser-cutting");
+  const videoUpload = await fetch(origin+"/api/admin/media",{method:"POST",headers:{Origin:origin,Cookie:owner},body:videoForm}); assert.equal(videoUpload.status,200);
+  const {url:videoUrl} = await videoUpload.json();
+  assert.equal((await call(videoUrl)).status,404,"Video is private before publication");
   const nativePosts = socialBase.socialPosts.map(p => p.id === nativeId ? {...p,videoUrl} : p);
   assert.equal((await call("/api/admin/content","PUT",{...socialBase,socialPosts:nativePosts},owner)).status,200);
   const nativeHtml = await (await call("/")).text();
+  assert.equal((await call(videoUrl)).status,200,"Published native video is immediately available");
   assert.ok(nativeHtml.includes('class="social-native-video"') && nativeHtml.includes(videoUrl) && nativeHtml.includes('controls=""') && nativeHtml.includes('playsInline=""'));
   const onlyGarudaSocial = await (await call("/sosial-media?divisi=retail-cibitung")).text();
   assert.ok(onlyGarudaSocial.includes("gmbgarudaofficial") && !onlyGarudaSocial.includes("Dd59WrvhJtC"));
@@ -382,4 +397,4 @@ try{
   });
   console.log("PASS: merged dashboard links, article access for five divisions, and isolated article CRUD/media tests");
   await writeFile(path.join(directory,"results.json"),JSON.stringify({passed:true,records:5+concurrency,invoice:"qa-invoice.pdf"}));console.log(`QA artifacts: ${directory}`);
-}catch(e){console.error(e.message);console.error(logs.slice(-3000));process.exitCode=1;}finally{server.kill();}
+}catch(e){console.error(e.stack || e.message);console.error(logs.slice(-3000));process.exitCode=1;}finally{server.kill();}

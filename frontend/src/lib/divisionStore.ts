@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { cache } from "react";
+import { cachedPublicCms } from "./publicCmsCache";
 import { z } from "zod";
 import { divisions as seeds } from "../data/divisionContent";
 import { divisionIdentity } from "../data/companyIdentity";
@@ -23,13 +24,13 @@ const initial = () => seeds.map(seed => divisionSchema.parse({ ...seed, ...divis
 }));
 const collection = cmsCollection("divisions", z.array(divisionSchema), initial);
 export const readDivisions = collection.read;
-export const readPublicDivisions = cache(async () => {
+export const readPublicDivisions = cache(() => cachedPublicCms("public-divisions", async () => {
   const [records, { readSiteContent }] = await Promise.all([readDivisions(), import("./siteContentStore")]);
   const content = await readSiteContent();
   const active = new Set(records.filter(d => d.status === "active").map(d => d.slug));
   const contacts = content.contacts.filter(c => c.published && (!contentOwner(c) || active.has(contentOwner(c)!)));
   return records.filter(d => d.status === "active").map(d => ({ ...d, admins: contacts.filter(c => contactVisibleInDivision(c,d.slug)).map(c => ({ name: c.name, phone: c.whatsapp || c.mobile || c.phone })).filter(c => c.phone) }));
-});
+}));
 export async function editableDivisions(actor: AdminIdentity) { return (await readDivisions()).filter(d => !actor.division || d.slug === actor.division); }
 export async function ensureDivision(slug: string, active = false) {
   const division = (await readDivisions()).find(d => d.slug === slug);
