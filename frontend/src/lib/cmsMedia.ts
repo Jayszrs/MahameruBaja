@@ -7,6 +7,7 @@ import { z } from "zod";
 import { cmsCollection } from "./cmsCollection";
 import { usingPreviewBlob } from "./previewBlobStore";
 import { cmsBlobPrefix } from "./cmsStorageConfig";
+import { cachedPublicCms } from "./publicCmsCache";
 import { CmsError } from "./cmsError";
 import type { AdminIdentity } from "../data/adminAccount";
 import { readPublicSiteContent, readSiteContent } from "./siteContentStore";
@@ -82,7 +83,8 @@ export async function validateMediaOwnership(value: unknown, actor: AdminIdentit
 
 export async function cmsMediaResponse(filename: string, actor: AdminIdentity | null, request = new Request("http://localhost/")) {
   if (!mediaFilename.test(filename)) return missingMedia();
-  const record = (await index.read()).find(item => item.filename === filename);
+  const records = actor && !actor.mustChangePassword ? await index.read() : await cachedPublicCms("public-media-index", () => index.read());
+  const record = records.find(item => item.filename === filename);
   if (!record) return missingMedia();
   const source = usingPreviewBlob() ? await blobMediaSource(`${prefix()}${filename}`) : await localMediaSource(path.join(directory, filename));
   if (!source || !await mediaAllowed(`/api/cms/media/${filename}`, actor)) return missingMedia();

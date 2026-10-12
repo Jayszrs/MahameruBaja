@@ -19,7 +19,7 @@ export function cmsCollection<S extends z.ZodTypeAny>(key: string, schema: S, fa
       for (let attempt = 0; attempt < 6; attempt++) {
         const current = await readPreviewBlob(key, schema, fallback());
         const next = await update(current.value);
-        if (await writePreviewBlob(key, current.revision, schema.parse(next.value))) return next.result;
+        if (await writePreviewBlob(key, current, schema.parse(next.value))) return next.result;
       }
       throw new Error("BUSY");
     }

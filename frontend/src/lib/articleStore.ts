@@ -7,6 +7,7 @@ import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { cache } from "react";
+import { cachedPublicCms } from "./publicCmsCache";
 import { articles } from "../data/articles";
 import { ArticleError, articleCollectionSchema, articleInputSchema, articleReadTime, articleRecordSchema, articleSlug, publicArticle, type ArticleInput, type ArticleRecord } from "../data/articleCms";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
@@ -24,17 +25,17 @@ export async function readArticles(): Promise<ArticleRecord[]> {
 }
 
 // Request-scoped memoization keeps the metadata, page, and related links consistent.
-export const readPublishedArticles = cache(async () => { const active = new Set((await readDivisions()).filter(d=>d.status === "active").map(d=>d.slug)); return (await readArticles())
+export const readPublishedArticles = cache(() => cachedPublicCms("published-articles", async () => { const active = new Set((await readDivisions()).filter(d=>d.status === "active").map(d=>d.slug)); return (await readArticles())
   .filter(article => article.status === "published" && (!contentOwner(article) || active.has(contentOwner(article)!)))
   .sort((left, right) => right.date.localeCompare(left.date) || left.id.localeCompare(right.id))
-  .map(publicArticle); });
+  .map(publicArticle); }));
 
 async function mutate<T>(update: (records: ArticleRecord[]) => { records: ArticleRecord[]; result: T }): Promise<T> {
   if (usingPreviewBlob()) {
     for (let attempt = 0; attempt < 6; attempt++) {
       const current = await readPreviewBlob("articles", articleCollectionSchema, seed);
       const next = update(current.value);
-      if (await writePreviewBlob("articles", current.revision, articleCollectionSchema.parse(next.records))) return next.result;
+      if (await writePreviewBlob("articles", current, articleCollectionSchema.parse(next.records))) return next.result;
     }
     throw new ArticleError("BUSY");
   }

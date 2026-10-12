@@ -11,6 +11,8 @@ import { additionalPromotions } from "../data/promotions";
 import { mergeInventory } from "../data/inventory";
 import { verifiedInstagramPosts, verifiedYouTubePosts, verifiedGarudaYouTubePosts, defaultSocialAccounts } from "../data/socialMedia";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
+import { cache } from "react";
+import { cachedPublicCms } from "./publicCmsCache";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
@@ -76,19 +78,19 @@ export async function readSiteContent(): Promise<SiteContent> {
     throw error;
   }
 }
-export async function readPublicSiteContent(): Promise<SiteContent> {
+export const readPublicSiteContent = cache(() => cachedPublicCms("public-site-content", async (): Promise<SiteContent> => {
   const content = await readSiteContent();
   const active = new Set((await readDivisions()).filter(d => d.status === "active").map(d => d.slug));
   const next = { ...content, inventory: content.inventory.filter(i => i.listed && active.has(i.division)), divisionReviews: Object.fromEntries(Object.entries(content.divisionReviews).filter(([slug]) => active.has(slug)).map(([slug, profile]) => [slug, { ...profile, reviews: profile.reviews.filter(r => r.published) }])), garudaReviews: { ...content.garudaReviews, reviews: active.has("retail-cibitung") ? content.garudaReviews.reviews.filter(r => r.published) : [] } };
   for (const key of collectionKeys) Object.assign(next, { [key]: content[key].filter(row => (row.published ?? true) && publicOwned(row, active)) });
   return next;
-}
+}));
 export async function writeSiteContent(input: SiteContent, base?: SiteContent, actor?: AdminIdentity) {
   if (usingPreviewBlob()) {
     const current = await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent);
     const existing = updatedIdentity(current.value);
     const saved = siteContentSchema.parse(actor ? { ...await mergeScopedContent(existing, input, base, actor), revision: existing.revision + 1 } : mergeContent(existing, input, base));
-    if (!await writePreviewBlob("site-content", current.revision, saved)) throw new Error("CMS_CONFLICT");
+    if (!await writePreviewBlob("site-content", current, saved)) throw new Error("CMS_CONFLICT");
     return actor ? scopeContent(saved, actor) : saved;
   }
   return withCmsFileLock(file, async () => {
