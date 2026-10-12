@@ -1,4 +1,5 @@
 import { divisionSlugSchema, ownershipFields } from "./divisionCms";
+import { safeHttpsUrl, safeInternalLink, safeLocalAsset } from "./safeUrls";
 import { z } from "zod";
 import type { Article } from "./articles";
 
@@ -12,14 +13,14 @@ export function articleToday() {
 }
 
 export function safeArticleImage(value: string) {
-  if (/^\/images\/[a-zA-Z0-9_./-]+$/.test(value) && !value.includes("..")) return true;
+  if (safeLocalAsset(value, ["images"])) return true;
   if (/^\/api\/(?:articles|cms)\/media\/[a-f0-9-]+\.(jpg|png|webp)$/.test(value)) return true;
-  try { const url = new URL(value); return url.protocol === "https:" && !url.username && !url.password; }
-  catch { return false; }
+  return safeHttpsUrl(value);
 }
 
 export function safeArticleLink(value: string) {
-  if (value.startsWith("#") || (value.startsWith("/") && !value.startsWith("//"))) return true;
+  if (safeInternalLink(value)) return true;
+  if (/[\\\u0000-\u0020\u007f]/.test(value)) return false;
   try { const url = new URL(value); return ["https:", "http:", "mailto:"].includes(url.protocol) && !url.username && !url.password; }
   catch { return false; }
 }

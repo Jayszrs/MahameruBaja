@@ -1,9 +1,10 @@
 import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
+import { isPublicBlobUrl, safeLocalAsset } from "./safeUrls";
 
 const asset = z.string().trim().max(1000).refine(value => {
-  if (/^\/(?:images|media|api\/cms\/media)\/[a-zA-Z0-9/_ .-]+\.(?:jpg|jpeg|png|webp)$/i.test(value) && !value.split("/").some(part => part === ".." || part === ".")) return true;
-  try { const url = new URL(value); return url.protocol === "https:" && url.hostname.endsWith(".public.blob.vercel-storage.com") && /\.(?:jpg|jpeg|png|webp)$/i.test(url.pathname); } catch { return false; }
+  if (safeLocalAsset(value, ["images", "media", "api/cms/media"]) && /\.(?:jpg|jpeg|png|webp)$/i.test(value)) return true;
+  return isPublicBlobUrl(value) && /\.(?:jpg|jpeg|png|webp)$/i.test(new URL(value).pathname);
 }, "Gunakan gambar JPG, PNG, atau WebP yang diunggah melalui CMS.");
 const photoSchema = z.object({ id: z.string().trim().min(1).max(100), src: asset, alt: z.string().trim().min(1).max(200), caption: z.string().trim().max(400) });
 export const galleryProjectSchema = z.object({ ...ownershipFields,

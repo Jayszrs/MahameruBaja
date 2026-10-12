@@ -4,13 +4,12 @@ import { useDivisionDirectory } from "./DivisionDirectory";
 import { useState } from "react";
 import Link from "next/link";
 
-import { contentOwner } from "../data/divisionCms";
-import { internationalPhone, type TeamContact } from "../data/siteContent";
+import { contactVisibleInDivision, internationalPhone, type TeamContact } from "../data/siteContent";
 
 export default function ContactDirectory({ contacts, divisionSlug }: { contacts: TeamContact[]; divisionSlug?: string }) {
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState(divisionSlug || "all");
-  const visible = contacts.filter(c => c.published && (selected === "all" || (c.audience ? c.audience.includes(selected) : c.divisions.length ? c.divisions.includes(selected) : !contentOwner(c) || contentOwner(c) === selected)));
+  const visible = contacts.filter(c => c.published && (selected === "all" ? c.audience === undefined || c.audience.length > 0 : contactVisibleInDivision(c,selected)));
   const unit = divisions.find(d => d.slug === selected);
   return <section className="contact-directory" id="tim-kontak">
     <div className="industrial-container">

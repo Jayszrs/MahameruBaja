@@ -3,6 +3,9 @@ import { ADMIN_COOKIE, readAdminIdentity } from "../../../../src/lib/adminAuth";
 import { adminRequestOrigin } from "../../../../src/lib/adminRequestOrigin";
 import { readRequests, createRequest, updateRequest } from "../../../../src/lib/requestStore";
 import { requestInputSchema, requestPatchSchema } from "../../../../src/data/requests";
+import { readJsonBody } from "../../../../src/lib/requestBody";
+import { apiError, noStore } from "../../../../src/lib/adminApi";
+import { CmsError } from "../../../../src/lib/cmsError";
 
 export const runtime = "nodejs";
 async function authorized() { const actor = await readAdminIdentity((await cookies()).get(ADMIN_COOKIE)?.value); return actor?.mustChangePassword ? null : actor; }
@@ -15,21 +18,19 @@ async function change(request: Request) {
   const identity = await authorized();
   if (!identity) return Response.json({ message: "Silakan login." }, { status: 401 });
   if (!adminRequestOrigin(request)) return Response.json({ message: "Asal permintaan tidak valid." }, { status: 403 });
-  if (Number(request.headers.get("content-length") || 0) > 100000) return Response.json({ message: "Data terlalu besar." }, { status: 413 });
-  const raw = await request.text();
-  if (raw.length > 100000) return Response.json({ message: "Data terlalu besar." }, { status: 413 });
   try {
-    const body = JSON.parse(raw);
+    const body = await readJsonBody(request, 100000);
     if (request.method === "POST") {
       const input = requestInputSchema.parse(body);
       if (identity.division && input.businessUnitSlug !== identity.division) return Response.json({ message: "Permintaan hanya untuk divisi akun Anda." }, { status: 403 });
-      return Response.json(await createRequest(input), { status: 201 });
+      return Response.json(await createRequest(input), { status: 201, headers: noStore });
     }
     const patch = requestPatchSchema.parse(body);
     const id = new URL(request.url).searchParams.get("id") || "";
     if (!/^MBI-\d{8}-[A-F0-9]{8}$/.test(id)) return Response.json({ message: "ID tidak valid." }, { status: 400 });
-    return Response.json(await updateRequest(id, patch.revision, request.method === "DELETE" ? { archived: true } : { ...patch.input, ...(patch.status ? { status: patch.status } : {}), ...(patch.notes !== undefined ? { notes: patch.notes } : {}), ...(patch.archived !== undefined ? { archived: patch.archived } : {}), ...(patch.invoice ? { invoice: patch.invoice } : {}) }, identity.division));
+    return Response.json(await updateRequest(id, patch.revision, request.method === "DELETE" ? { archived: true } : { ...patch.input, ...(patch.status ? { status: patch.status } : {}), ...(patch.notes !== undefined ? { notes: patch.notes } : {}), ...(patch.archived !== undefined ? { archived: patch.archived } : {}), ...(patch.invoice ? { invoice: patch.invoice } : {}) }, identity.division), { headers: noStore });
   } catch (error) {
+    if (error instanceof CmsError) return apiError(error);
     const code = (error as Error).message;
     if (code === "FORBIDDEN") return Response.json({ message: "Permintaan ini milik divisi lain." }, { status: 403 });
     const status = code === "NOT_FOUND" ? 404 : ["CONFLICT", "BUSY"].includes(code) ? 409 : 400;

@@ -62,12 +62,22 @@ await page.getByRole("button", { name: "Tabel", exact: true }).click();
 assert.equal(await doc.locator("table").count(), 1);
 await page.getByRole("button", { name: "Undo", exact: true }).click(); assert.equal(await doc.locator("table").count(), 0);
 await page.getByRole("button", { name: "Redo", exact: true }).click(); assert.equal(await doc.locator("table").count(), 1);
+await doc.click(); await doc.press("Control+End"); await doc.press("ArrowDown");
+await page.getByRole("button", { name: "Gambar", exact: true }).click();
+await page.getByLabel("Deskripsi gambar isi", { exact: true }).fill("Gambar isi fixture");
+const [inlineUpload] = await Promise.all([
+  page.waitForResponse(response => response.url().endsWith("/api/admin/articles/upload") && response.request().method() === "POST"),
+  page.locator(".article-toolbar-panel input[type=file]").setInputFiles({ name: "inline.png", mimeType: "image/png", buffer: png }),
+]);
+assert.equal(inlineUpload.status(), 200);
+await doc.locator('img[alt="Gambar isi fixture"]').waitFor();
 await page.getByRole("button", { name: "Pratinjau", exact: true }).click();
 assert.equal(await page.locator(".article-preview h2").first().textContent(), "Pengujian editor visual");
 await page.getByRole("button", { name: "Kembali ke editor", exact: true }).click();
 let saved = page.waitForResponse(response => response.url().endsWith("/api/admin/articles") && response.request().method() === "POST");
 await page.locator(".admin-topbar").getByRole("button", { name: /Simpan draf/ }).click();
 const createdResponse = await saved; assert.equal(createdResponse.status(), 201); const created = await createdResponse.json();
+assert.match(created.content, /!\[Gambar isi fixture\]\(\/api\/(?:cms|articles)\/media\//);
 assert.equal((await context.request.get(base + "/informasi/" + created.slug)).status(), 404);
 saved = page.waitForResponse(response => response.url().endsWith(`/api/admin/articles/${created.id}`) && response.request().method() === "PUT");
 await page.getByRole("button", { name: "Terbitkan artikel", exact: true }).click(); assert.equal((await saved).status(), 200);

@@ -7,6 +7,7 @@ import { ADMIN_COOKIE, readAdminIdentity } from '../../../../src/lib/adminAuth';
 import { adminRequestOrigin } from '../../../../src/lib/adminRequestOrigin';
 import { inventoryListSchema, mergeInventory } from '../../../../src/data/inventory';
 import { readSiteContent, writeSiteContent } from '../../../../src/lib/siteContentStore';
+import { readJsonBody } from '../../../../src/lib/requestBody';
 
 export const runtime = 'nodejs';
 const schema = z.object({ items: inventoryListSchema, base: inventoryListSchema });
@@ -22,10 +23,8 @@ export async function PUT(request: Request) {
   const identity = candidate?.mustChangePassword ? null : candidate;
   if (!identity) return Response.json({ message: 'Silakan masuk kembali.' }, { status: 401 });
   if (!adminRequestOrigin(request)) return Response.json({ message: 'Asal permintaan tidak valid.' }, { status: 403 });
-  const raw = await request.text();
-  if (raw.length > 300000) return Response.json({ message: 'Data terlalu besar.' }, { status: 413 });
   let json: unknown;
-  try { json = JSON.parse(raw); } catch { return Response.json({ message: 'Format tidak valid.' }, { status: 400 }); }
+  try { json = await readJsonBody(request, 300000); } catch (error) { return apiError(error); }
   const parsed = schema.safeParse(json);
   if (!parsed.success) return Response.json({ message: parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') }, { status: 400 });
   const { items, base } = parsed.data;
@@ -41,7 +40,7 @@ export async function PUT(request: Request) {
   } catch (error) {
     if(error instanceof CmsError) return apiError(error);
     if (['CMS_CONFLICT', 'CMS_BUSY', 'BUSY'].includes((error as Error).message)) return Response.json({ message: 'Baris stok telah diubah admin lain. Muat ulang sebelum menyimpan.' }, { status: 409 });
-    console.error('Inventory save failed', error);
+    console.error('Inventory save failed');
     return Response.json({ message: 'Stok belum tersimpan. Coba lagi.' }, { status: 500 });
   }
 }

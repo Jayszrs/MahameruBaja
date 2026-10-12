@@ -1,4 +1,5 @@
 "use client";
+import { imageUploadHelp, uploadCmsFile, validateUploadFile } from "../lib/cmsUpload";
 import ContentOwnership from "./ContentOwnership";
 import { useAdminIdentity } from "./AdminIdentity";
 
@@ -36,22 +37,24 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
     const uploadedTo = project.id;
     const queue = Array.from(files);
     if (project.photos.length + queue.length > 40) { setFailed(true); setMessage("Maksimal 40 foto per proyek. Pilih lebih sedikit berkas."); return; }
-    if (queue.some(file => !["image/jpeg", "image/png", "image/webp"].includes(file.type))) { setFailed(true); setMessage("Gunakan JPG, PNG, atau WebP untuk album proyek."); return; }
+    try { for (const file of queue) validateUploadFile(file, "image"); }
+    catch (error) { setFailed(true); setMessage(`${(error as Error).message} Belum ada foto dari pilihan ini yang diunggah.`); return; }
     setBusy(true); setFailed(false); setMessage("");
     let count = 0;
     try {
       for (const file of queue) {
-        const body = new FormData(); body.set("media", file); body.set("ownerDivision",project.ownerDivision || "");
-        const response = await fetch("/api/admin/media", { method: "POST", body });
-        const data = await response.json();
-        if (!response.ok || data.type !== "image") throw new Error(data.message || "Unggah gambar gagal.");
+        const url = await uploadCmsFile(file, "image", project.ownerDivision || null);
         const id = crypto.randomUUID();
-        const photo = { id, src: data.url as string, alt: `${project.title} — ${file.name.replace(/\.[^.]+$/, "").slice(0, 30)}`.slice(0, 200), caption: "" };
+        const photo = { id, src: url, alt: `${project.title} — ${file.name.replace(/\.[^.]+$/, "").slice(0, 30)}`.slice(0, 200), caption: "" };
         setContent(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === uploadedTo ? { ...p, photos: [...p.photos, photo], coverId: p.coverId || id } : p) }));
         setDirty(true); count++;
       }
       setMessage(`${count} foto diunggah. Simpan perubahan untuk menerbitkan album.`);
-    } catch (error) { setFailed(true); setMessage(`${count ? `${count} foto sudah masuk ke editor. ` : ""}${(error as Error).message} Perubahan belum disimpan.`); }
+    } catch (error) {
+      const remaining = queue.slice(count + 1).map(file => file.name);
+      setFailed(true);
+      setMessage(`${count} dari ${queue.length} foto berhasil masuk ke editor. ${queue[count]?.name || "Foto"} gagal: ${(error as Error).message}${remaining.length ? ` ${remaining.length} foto belum dicoba: ${remaining.join(", ")}.` : ""} Foto yang berhasil belum disimpan ke CMS; simpan perubahan, lalu unggah ulang hanya foto yang gagal atau belum dicoba.`);
+    }
     finally { setBusy(false); }
   }
   async function save() {
@@ -105,7 +108,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
           <label className="editor-checkbox"><input type="checkbox" checked={project.published} disabled={!project.photos.length} onChange={e => updateProject({ published: e.target.checked })} />Terbitkan album</label>
         </div><label className="editor-field">Deskripsi proyek<textarea maxLength={2000} rows={4} value={project.description} onChange={e => updateProject({ description: e.target.value })} /></label>
         <div className="gallery-editor-order"><button type="button" onClick={() => moveProject(-1)} disabled={content.galleryProjects[0]?.id === selected}>↑ Urutan album</button><button type="button" onClick={() => moveProject(1)} disabled={content.galleryProjects.at(-1)?.id === selected}>↓ Urutan album</button><button type="button" className="editor-delete" onClick={removeProject}>Hapus album</button></div>
-        <label className="editor-field gallery-upload">Tambah beberapa foto<input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={event => { void upload(event.currentTarget.files); event.currentTarget.value = ""; }} /><small>JPG, PNG, WebP. Maksimal 4 MB per foto di Vercel, 30 MB lokal. Sampul dan urutan dapat diganti setelah unggah.</small></label>
+        <label className="editor-field gallery-upload">Tambah beberapa foto<input type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={event => { void upload(event.currentTarget.files); event.currentTarget.value = ""; }} /><small>{imageUploadHelp} Sampul dan urutan dapat diganti setelah unggah.</small></label>
         <div className="gallery-editor-photos">{project.photos.map((photo, number) => <article key={photo.id}><div className="gallery-editor-photo"><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 700px) 90vw, 300px" /><span>{number + 1}</span></div>
           <label className="editor-field">Deskripsi gambar (alt)<input maxLength={200} value={photo.alt} onChange={e => updateProject({ photos: project.photos.map(p => p.id === photo.id ? { ...p, alt: e.target.value } : p) })} /></label>
           <label className="editor-field">Keterangan foto<textarea maxLength={400} rows={2} value={photo.caption} onChange={e => updateProject({ photos: project.photos.map(p => p.id === photo.id ? { ...p, caption: e.target.value } : p) })} /></label>

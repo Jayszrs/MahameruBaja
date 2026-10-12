@@ -4,6 +4,7 @@ import { adminRequestOrigin } from "../../../src/lib/adminRequestOrigin";
 
 import { CmsError } from "../../../src/lib/cmsError";
 import { apiError } from "../../../src/lib/adminApi";
+import { readJsonBody } from "../../../src/lib/requestBody";
 export const runtime = "nodejs";
 const attempts = new Map<string, { count: number; until: number }>();
 export async function POST(request: Request) {
@@ -14,11 +15,8 @@ export async function POST(request: Request) {
   const rate = attempts.get(key) || { count: 0, until: now + 600000 };
   if (++rate.count > 30) return Response.json({ message: "Terlalu banyak permintaan. Coba beberapa menit lagi." }, { status: 429 });
   attempts.set(key, rate);
-  if (Number(request.headers.get("content-length") || 0) > 100000) return Response.json({ message: "Permintaan terlalu besar." }, { status: 413 });
-  const raw = await request.text();
-  if (raw.length > 100000) return Response.json({ message: "Permintaan terlalu besar." }, { status: 413 });
   let input: unknown;
-  try { input = JSON.parse(raw); } catch { return Response.json({ message: "Format permintaan tidak valid." }, { status: 400 }); }
+  try { input = await readJsonBody(request, 100000); } catch (error) { return apiError(error); }
   const result = requestInputSchema.safeParse(input);
   if (!result.success) return Response.json({ message: "Periksa nama, nomor WhatsApp, email, dan jumlah material.", details: result.error.flatten().fieldErrors }, { status: 422 });
   const idempotencyKey = request.headers.get("idempotency-key") || undefined;

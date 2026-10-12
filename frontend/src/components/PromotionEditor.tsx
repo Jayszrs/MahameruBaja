@@ -1,4 +1,5 @@
 "use client";
+import { uploadCmsFile } from "../lib/cmsUpload";
 
 import { useDivisionDirectory } from "./DivisionDirectory";
 import Link from "next/link";
@@ -46,11 +47,8 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
     if (file.size > 4_000_000) { setError(true); setMessage("Gambar maksimal 4 MB."); return; }
     setUploading(id); setMessage(""); setError(false);
     try {
-      const form = new FormData(); form.append("media", file); form.set("ownerDivision",content.promotions.find(p=>p.id===id)?.ownerDivision || "");
-      const response = await fetch("/api/admin/media", { method: "POST", body: form });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Gambar gagal diunggah.");
-      promotion(id, { image: result.url });
+      const url = await uploadCmsFile(file, "image", content.promotions.find(p=>p.id===id)?.ownerDivision || null);
+      promotion(id, { image: url });
       setMessage("Gambar terunggah. Simpan perubahan agar banner menggunakannya.");
     } catch (caught) { setError(true); setMessage((caught as Error).message); }
     finally { setUploading(null); }

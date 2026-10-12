@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { ArticleError } from "../data/articleCms";
 import { ADMIN_COOKIE, verifyAdminSession } from "./adminAuth";
 import { adminRequestOrigin } from "./adminRequestOrigin";
+import { readBodyBytes } from "./requestBody";
 
 export const articleNoStore = { "Cache-Control": "private, no-store" };
 export async function articleAuthorized(request?: Request) {
@@ -15,27 +16,11 @@ export async function articleAuthorized(request?: Request) {
 }
 
 export async function articleBodyBytes(request: Request, limit: number) {
-  if (Number(request.headers.get("content-length") || 0) > limit) throw new ArticleError("TOO_LARGE");
-  const reader = request.body?.getReader();
-  if (!reader) return new Uint8Array();
-  const chunks: Uint8Array[] = [];
-  let length = 0;
-  try {
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      length += value.length;
-      if (length > limit) { await reader.cancel(); throw new ArticleError("TOO_LARGE"); }
-      chunks.push(value);
-    }
-  } finally { reader.releaseLock(); }
-  const bytes = new Uint8Array(length);
-  let offset = 0;
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
-  return bytes;
+  return readBodyBytes(request, limit);
 }
 
 export async function articleJson(request: Request): Promise<unknown> {
+  if (request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase() !== "application/json") throw new ArticleError("INVALID_JSON");
   const bytes = await articleBodyBytes(request, 400_000);
   try { return JSON.parse(new TextDecoder().decode(bytes)); }
   catch { throw new ArticleError("INVALID_JSON"); }
@@ -54,6 +39,6 @@ export function articleFailure(error: unknown) {
   const code = error instanceof Error ? error.message : "";
   const result = errors[code];
   if (result) return Response.json({ message: result[1], code }, { status: result[0], headers: articleNoStore });
-  console.error("Article CMS request failed", error);
+  console.error("Article CMS request failed");
   return Response.json({ message: "Perubahan belum tersimpan. Coba kembali." }, { status: 500, headers: articleNoStore });
 }

@@ -25,7 +25,7 @@ export function cmsCollection<S extends z.ZodTypeAny>(key: string, schema: S, fa
     }
     return withCmsFileLock(file, async () => {
       const next = await update(await read()); const temp = `${file}.${randomUUID()}.tmp`;
-      try { await writeFile(temp, JSON.stringify(schema.parse(next.value)), "utf8"); await replaceCmsFile(temp, file); }
+      try { await writeFile(temp, JSON.stringify(schema.parse(next.value)), { encoding: "utf8", mode: 0o600 }); await replaceCmsFile(temp, file); }
       finally { await unlink(temp).catch(() => {}); }
       return next.result;
     });

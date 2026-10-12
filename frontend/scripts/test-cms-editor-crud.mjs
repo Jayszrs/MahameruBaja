@@ -22,8 +22,7 @@ async function save(label = "Simpan perubahan", path = "/api/admin/content", met
   return response.json();
 }
 async function upload(input, payload = file) {
-  const wait = page.waitForResponse(r => r.url().endsWith("/api/admin/media") && r.request().method() === "POST");
-  await input.setInputFiles(payload); const response = await wait; assert.equal(response.status(), 200, await response.text());
+  const [response] = await Promise.all([page.waitForResponse(r => r.url().endsWith("/api/admin/media") && r.request().method() === "POST"), input.setInputFiles(payload)]); assert.equal(response.status(), 200, await response.text());
   await page.locator(".admin-topbar .admin-primary:not(:disabled)").waitFor(); return (await response.json()).url;
 }
 async function removeInline(panel) { await panel.getByRole("button", { name: "Hapus", exact: true }).click(); await panel.getByRole("button", { name: "Batal", exact: true }).click(); await panel.getByRole("button", { name: "Hapus", exact: true }).click(); await panel.getByRole("button", { name: "Ya, hapus", exact: true }).click(); }
@@ -32,7 +31,7 @@ try {
   await page.goto(base + "/admin/konten?tab=contacts"); await page.getByRole("button", { name: "+ Tambah kontak", exact: true }).click();
   let panel = page.locator(".editor-panel").last();
   await panel.getByLabel("Nama", { exact: true }).fill(prefix + " Kontak"); await panel.getByLabel("WhatsApp", { exact: true }).fill("081234567890");
-  await upload(panel.getByLabel("Unggah foto", { exact: true })); await panel.getByLabel("Terbit", { exact: true }).check();
+  await upload(panel.getByLabel(/^Unggah foto/)); await panel.getByLabel("Terbit", { exact: true }).check();
   let saved = await save(); const contact = saved.contacts.find(r => r.name === prefix + " Kontak"); assert(contact && contact.published);
   await page.reload(); panel = page.locator(".editor-panel").filter({ hasText: prefix + " Kontak" });
   await panel.getByLabel("Jabatan", { exact: true }).fill("Tim UI disunting");
@@ -59,7 +58,7 @@ try {
   console.log("Social accounts: create, publish, edit and confirmed delete passed.");
 
   await page.goto(base + "/admin/sosial?tab=posts"); await page.getByRole("button", { name: "+ Tambah unggahan", exact: true }).click(); panel = page.locator(".editor-panel").last();
-  await panel.getByLabel("Judul", { exact: true }).fill(prefix + " Unggahan"); await panel.getByLabel("Tautan unggahan asli", { exact: true }).fill("https://www.instagram.com/p/CMSUiFixture/"); await upload(panel.getByLabel("Unggah sampul", { exact: true })); await upload(panel.getByLabel("Video asli MP4 (opsional)", { exact: true }), { name: "fixture.mp4", mimeType: "video/mp4", buffer: cmsVideo }); await panel.getByLabel("Terbit", { exact: true }).check();
+  await panel.getByLabel("Judul", { exact: true }).fill(prefix + " Unggahan"); await panel.getByLabel("Tautan unggahan asli", { exact: true }).fill("https://www.instagram.com/p/CMSUiFixture/"); await upload(panel.getByLabel(/^Unggah sampul/)); await upload(panel.getByLabel("Video asli MP4 (opsional)", { exact: true }), { name: "fixture.mp4", mimeType: "video/mp4", buffer: cmsVideo }); await panel.getByLabel("Terbit", { exact: true }).check();
   saved = await save(); const post = saved.socialPosts.find(r => r.title === prefix + " Unggahan"); assert(post);
   await page.reload(); panel = page.locator(".editor-panel").filter({ hasText: prefix + " Unggahan" }); await panel.getByLabel(/^Keterangan/).fill("Caption disunting"); await save(); await removeInline(panel); saved = await save(); assert(!saved.socialPosts.some(r => r.id === post.id)); console.log("Social posts: create, upload, publish, edit and delete passed.");
 
@@ -69,7 +68,7 @@ try {
   await page.reload(); panel = page.locator(".promotion-editor-panel").filter({ hasText: prefix + " Banner" }); await panel.getByLabel(/^Penjelasan singkat/).fill("Banner disunting"); await save(); await removeInline(panel); saved = await save(); assert(!saved.promotions.some(r => r.id === banner.id)); console.log("Banners: create, upload, publish, edit and delete passed.");
 
   await page.goto(base + "/admin/hero"); await page.getByRole("button", { name: "+ Tambah slide", exact: true }).click(); panel = page.locator(".editor-panel").last();
-  await panel.getByLabel("Judul", { exact: true }).fill(prefix + " Hero"); await panel.getByLabel("Label layanan", { exact: true }).fill(prefix + " Hero"); await upload(panel.getByLabel("Unggah gambar / video", { exact: true }), { name: "fixture.mp4", mimeType: "video/mp4", buffer: cmsVideo }); await upload(panel.getByLabel("Unggah poster", { exact: true })); await panel.getByLabel("Terbit", { exact: true }).check();
+  await panel.getByLabel("Judul", { exact: true }).fill(prefix + " Hero"); await panel.getByLabel("Label layanan", { exact: true }).fill(prefix + " Hero"); await panel.getByLabel(/^Jenis/).selectOption("video"); await upload(panel.getByLabel(/^Unggah video MP4/), { name: "fixture.mp4", mimeType: "video/mp4", buffer: cmsVideo }); await upload(panel.getByLabel(/^Unggah poster/)); await panel.getByLabel("Terbit", { exact: true }).check();
   saved = await save("Simpan hero"); const hero = saved.heroSlides.find(r => r.title === prefix + " Hero"); assert(hero);
   await page.reload(); panel = page.locator(".editor-panel").filter({ hasText: prefix + " Hero" }); await panel.getByLabel("Deskripsi", { exact: true }).fill("Hero disunting"); await save("Simpan hero"); await panel.getByRole("button", { name: "Hapus", exact: true }).click(); await page.keyboard.press("Escape");
   await panel.getByRole("button", { name: "Hapus", exact: true }).click(); await page.getByRole("dialog", { name: "Hapus slide Hero?" }).getByRole("button", { name: "Hapus slide", exact: true }).click(); saved = await save("Simpan hero"); assert(!saved.heroSlides.some(r => r.id === hero.id)); console.log("Hero: create, upload, publish, edit, Escape/cancel and delete passed.");

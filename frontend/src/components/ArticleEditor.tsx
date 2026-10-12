@@ -1,4 +1,5 @@
 "use client";
+import { uploadCmsFile } from "../lib/cmsUpload";
 
 import ContentOwnership from "./ContentOwnership";
 import { useAdminIdentity } from "./AdminIdentity";
@@ -94,10 +95,8 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
     if (file.size > 4_000_000) { setFailed(true); setNotice("Gambar maksimal 4 MB."); return null; }
     setUploading(true);
     try {
-      const form = new FormData(); form.append("image", file); form.set("ownerDivision",draft.ownerDivision || "");
-      const response = await fetch("/api/admin/articles/upload", { method: "POST", body: form });
-      const result = await response.json(); if (!response.ok) throw new Error(result.message || "Gambar gagal diunggah.");
-      setNotice("Gambar terunggah. Simpan artikel agar perubahan tersimpan."); return result.url as string;
+      const url = await uploadCmsFile(file, "image", draft.ownerDivision || null, "/api/admin/articles/upload");
+      setNotice("Gambar terunggah. Simpan artikel agar perubahan tersimpan."); return url;
     } catch (error) { setFailed(true); setNotice((error as Error).message); return null; }
     finally { setUploading(false); }
   }

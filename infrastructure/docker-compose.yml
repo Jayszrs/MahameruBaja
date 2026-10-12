@@ -8,7 +8,7 @@ services:
       POSTGRES_DB: mahameru_baja
       POSTGRES_USER: mahameru
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mahameru_dev}
-    ports: ["5432:5432"]
+    ports: ["127.0.0.1:5432:5432"]
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ../database/migrations/0000_initial.sql:/docker-entrypoint-initdb.d/0000_initial.sql:ro
@@ -25,7 +25,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
-    ports: ["9000:9000", "9001:9001"]
+    ports: ["127.0.0.1:9000:9000", "127.0.0.1:9001:9001"]
     volumes: ["minio_data:/data"]
 
   api:
@@ -37,6 +37,7 @@ services:
       NODE_ENV: production
       API_PORT: 4000
       WEB_ORIGIN: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      TRUSTED_PROXY_CIDRS: ${TRUSTED_PROXY_CIDRS:-}
       DATABASE_URL: postgresql://mahameru:${POSTGRES_PASSWORD:-mahameru_dev}@postgres:5432/mahameru_baja
       S3_ENDPOINT: http://minio:9000
       S3_REGION: ap-southeast-1
@@ -44,7 +45,7 @@ services:
       S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
       S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
       S3_FORCE_PATH_STYLE: "true"
-    ports: ["4000:4000"]
+    ports: ["127.0.0.1:4000:4000"]
     depends_on:
       postgres: { condition: service_healthy }
       minio: { condition: service_started }

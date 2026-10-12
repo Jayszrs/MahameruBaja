@@ -2,14 +2,14 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { closeDatabase } from "@mahameru/database";
-import { allowedOrigins, config } from "./config";
+import { allowedOrigins, config, trustedProxies } from "./config";
 import { healthRoutes } from "./routes/health";
 import { leadRoutes } from "./routes/leads";
 
 const app = Fastify({
   logger: { level: config.LOG_LEVEL },
   bodyLimit: 1_000_000,
-  trustProxy: true,
+  trustProxy: trustedProxies.length ? trustedProxies : false,
 });
 
 await app.register(cors, {

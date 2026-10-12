@@ -1,8 +1,9 @@
 import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
+import { safeHttpsUrl, safeInternalLink, safeLocalAsset } from "./safeUrls";
 
 const short = (max: number) => z.string().trim().max(max);
-const image = short(1000).refine(value => !value || /^\/(?:images|media|uploads\/promotions|api\/cms\/media)\/[a-zA-Z0-9/_ .-]+$/.test(value) || (() => { try { return new URL(value).protocol === "https:"; } catch { return false; } })(), "Gunakan gambar hasil unggahan, /images/..., atau URL HTTPS");
+const image = short(1000).refine(value => !value || safeLocalAsset(value, ["images", "media", "uploads/promotions", "api/cms/media"]) || safeHttpsUrl(value), "Gunakan gambar hasil unggahan, /images/..., atau URL HTTPS");
 const date = z.union([z.literal(""), z.string().regex(/^\d{4}-\d{2}-\d{2}$/)]);
 
 export const promotionDestinations = [
@@ -28,7 +29,7 @@ export const promotionSchema = z.object({ ...ownershipFields,
   startDate: date,
   endDate: date,
   ctaLabel: short(70).min(1),
-  ctaHref: short(250).regex(/^(?:\/(?!\/)|#)/,"Gunakan tujuan di dalam website."),
+  ctaHref: short(250).refine(safeInternalLink,"Gunakan tujuan di dalam website."),
   published: z.boolean(),
   countdownAt: z.string().datetime({ offset: true }).or(z.literal("")).default(""),
   countdownLabel: short(80).default("Menuju acara"),

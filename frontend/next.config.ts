@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,
+  // Public limits mirror the server target; no secrets are exposed here.
+  env: { NEXT_PUBLIC_CMS_VIDEO_MAX_BYTES: process.env.VERCEL === "1" ? "4000000" : "30000000" },
   images: {
     // Private CMS proxies must never enter the optimizer's shared cache.
     localPatterns: [{ pathname: "/images/**" }, { pathname: "/mbi-mark.svg" }],

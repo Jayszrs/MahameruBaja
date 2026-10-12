@@ -1,7 +1,8 @@
 import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
-const mediaUrl = z.string().max(1000).refine(v => /^\/(?:images|videos|uploads|media|api\/cms\/media)\/[\w/ .-]+$/.test(v) || (() => { try { return new URL(v).protocol === "https:"; } catch { return false; } })(), "Gunakan media lokal atau URL HTTPS");
-const action = z.object({ label: z.string().trim().min(1).max(70), href: z.string().max(200).regex(/^(?:\/(?!\/)|#)/) });
+import { safeHttpsUrl, safeInternalLink, safeLocalAsset } from "./safeUrls";
+const mediaUrl = z.string().max(1000).refine(v => safeLocalAsset(v, ["images", "videos", "uploads", "media", "api/cms/media"]) || safeHttpsUrl(v), "Gunakan media lokal atau URL HTTPS");
+const action = z.object({ label: z.string().trim().min(1).max(70), href: z.string().max(200).refine(safeInternalLink, "Gunakan tujuan di dalam website.") });
 export const heroSlideSchema = z.object({ ...ownershipFields, published: z.boolean().optional(), id: z.string().min(1).max(80), type: z.enum(["image", "video"]), media: mediaUrl, poster: mediaUrl.optional(), alt: z.string().trim().min(1).max(160), eyebrow: z.string().trim().min(1).max(80), title: z.string().trim().min(1).max(100), accent: z.string().trim().max(100), description: z.string().trim().min(1).max(500), primaryAction: action, secondaryAction: action, objectPosition: z.string().max(40).optional(), visualNote: z.string().max(100).optional() });
 export type HeroSlide = { ownerDivision?: string | null; audience?: string[]; published?: boolean;
   id: string;

@@ -1,33 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE, adminConfigured, adminCookieOptions, checkAdminCredentials, createAdminSession, readAdminIdentity } from "../../../../src/lib/adminAuth";
 import { adminRequestOrigin } from "../../../../src/lib/adminRequestOrigin";
-
-const attempts = new Map<string, { count: number; resetAt: number }>();
-const windowMs = 15 * 60 * 1000;
+import { apiError, noStore } from "../../../../src/lib/adminApi";
+import { readFormBody } from "../../../../src/lib/requestBody";
+import { consumeLoginLimit, securityEvent, SecurityRateError } from "../../../../src/lib/securityState";
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   const origin = adminRequestOrigin(request);
   if (!origin) return new NextResponse("Forbidden", { status: 403 });
-  if (!await adminConfigured()) return NextResponse.redirect(new URL("/admin/login?error=unavailable", origin), 303);
-  if (Number(request.headers.get("content-length") || 0) > 4096) return new NextResponse("Request too large", { status: 413 });
-  const ip = (request.headers.get("x-vercel-forwarded-for") || request.headers.get("x-forwarded-for") || "local").split(",")[0].slice(0, 128);
-  const now = Date.now();
-  for (const [key, entry] of attempts) if (entry.resetAt <= now) attempts.delete(key);
-  const rate = attempts.get(ip) || { count: 0, resetAt: now + windowMs };
-  if (rate.count >= 10) return NextResponse.redirect(new URL("/admin/login?error=rate", origin), 303);
-  const data = await request.formData();
-  const email = data.get("email");
-  const password = data.get("password");
-  if (typeof email !== "string" || typeof password !== "string" || email.length > 254 || password.length > 1024 || !await checkAdminCredentials(email, password)) {
-    rate.count += 1;
-    attempts.set(ip, rate);
-    return NextResponse.redirect(new URL("/admin/login?error=credentials", origin), 303);
+  try {
+    if (!await adminConfigured()) return NextResponse.redirect(new URL("/admin/login?error=unavailable", origin), 303);
+    const data = await readFormBody(request, 4096);
+    const email = data.get("email");
+    const password = data.get("password");
+    await consumeLoginLimit(request, typeof email === "string" && email.length <= 254 ? email : "invalid-form");
+    const authenticated = typeof email === "string" && typeof password === "string" && email.length <= 254 && password.length <= 1024 ? await checkAdminCredentials(email, password) : null;
+    if (!authenticated) {
+      securityEvent("login_failed");
+      return NextResponse.redirect(new URL("/admin/login?error=credentials", origin), 303);
+    }
+    const token = await createAdminSession(authenticated);
+    const identity = await readAdminIdentity(token);
+    const response = NextResponse.redirect(new URL(identity?.mustChangePassword ? "/admin/akun-saya" : "/admin", origin), 303);
+    response.cookies.set(ADMIN_COOKIE, token, adminCookieOptions);
+    response.headers.set("Cache-Control", "no-store");
+    securityEvent("login_success", authenticated.id);
+    return response;
+  } catch (error) {
+    if (error instanceof SecurityRateError) {
+      securityEvent("login_limited");
+      return new NextResponse("Terlalu banyak percobaan masuk. Tunggu 15 menit, lalu kembali ke halaman login dan coba lagi.", { status: 429, headers: { ...noStore, "Retry-After": String(error.retryAfter), "Content-Type": "text/plain; charset=utf-8" } });
+    }
+    return apiError(error);
   }
-  attempts.delete(ip);
-  const token = await createAdminSession(email);
-  const identity = await readAdminIdentity(token);
-  const response = NextResponse.redirect(new URL(identity?.mustChangePassword ? "/admin/akun-saya" : "/admin", origin), 303);
-  response.cookies.set(ADMIN_COOKIE, token, adminCookieOptions);
-  response.headers.set("Cache-Control", "no-store");
-  return response;
 }

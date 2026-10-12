@@ -37,7 +37,11 @@ let divisionResponse=page.waitForResponse(r=>r.url().endsWith("/api/admin/divisi
 await page.locator(".admin-topbar").getByRole("button",{name:"Simpan draf",exact:true}).click();let newDivision=await (await divisionResponse).json();assert(newDivision.id);
 await page.getByRole("button",{name:"Profil & layanan",exact:true}).click();
 await page.getByLabel("Judul utama",{exact:true}).fill("Profil fixture UI");await page.getByLabel(/^Pengantar singkat/).fill("Pengantar divisi fixture");await page.getByLabel(/^Deskripsi divisi/).fill("Deskripsi divisi fixture");await page.getByLabel(/^Misi divisi/).fill("Misi fixture");
-await page.getByRole("button",{name:"Media",exact:true}).click();await page.getByLabel("Alamat gambar",{exact:true}).nth(0).fill("/images/steel-indonesia/hollow.jpg");await page.getByLabel("Alamat gambar",{exact:true}).nth(1).fill("/images/hero-steel-warehouse-v2.png");
+await page.getByRole("button",{name:"Media",exact:true}).click();
+const png=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC","base64");
+async function uploadImage(input){const [response]=await Promise.all([page.waitForResponse(r=>r.url().endsWith("/api/admin/media")&&r.request().method()==="POST"),input.setInputFiles({name:"profile.png",mimeType:"image/png",buffer:png})]);assert.equal(response.status(),200);await page.getByRole("status").filter({hasText:"Gambar diunggah"}).waitFor();assert.equal(await input.inputValue(),"");return(await response.json()).url;}
+await uploadImage(page.getByLabel(/^Logo · Unggah/));await uploadImage(page.getByLabel(/^Gambar utama · Unggah/));
+await page.getByRole("button",{name:"+ Gambar",exact:true}).click();await uploadImage(page.getByLabel(/^Unggah gambar 1$/));await page.getByLabel("Deskripsi gambar",{exact:true}).fill("Foto profil fixture");
 await page.getByRole("button",{name:"Kontak & lokasi",exact:true}).click();await page.getByLabel(/^Alamat lengkap/).fill("Alamat fixture UI");
 divisionResponse=page.waitForResponse(r=>r.url().endsWith("/api/admin/divisions/"+newDivision.id)&&r.request().method()==="PUT");
 await page.getByRole("button",{name:"Aktifkan divisi",exact:true}).click();assert.equal((await divisionResponse).status(),200);await page.getByRole("status").filter({hasText:"Profil tersimpan dan langsung tersedia"}).waitFor();

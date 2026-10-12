@@ -53,7 +53,7 @@ async function upload(bytes, type = "image/png") {
   checks++; return fetch(`${base}/api/admin/articles/upload`, { method: "POST", headers: { Origin: base, Cookie: cookie }, body: form });
 }
 assert.equal((await upload(Buffer.from("not an image"))).status, 400);
-assert.equal((await upload(Buffer.alloc(4_000_001))).status, 400);
+assert.equal((await upload(Buffer.alloc(4_000_001))).status, 413);
 const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAADElEQVQImWP4//8/AAX+Av5Y8msOAAAAAElFTkSuQmCC", "base64");
 const uploaded = await upload(png); assert.equal(uploaded.status, 200);
 const { url: media } = await uploaded.json();
@@ -67,7 +67,10 @@ assert(publicHtml.includes(input.title)); assert(publicHtml.includes("<table>"))
 assert(!publicHtml.includes("<script>window.__articleXss")); assert(!publicHtml.includes('href="javascript:'));
 const mediaResponse = await request(media, { authenticated: false }); assert.equal(mediaResponse.status, 200);
 assert(mediaResponse.headers.get("cache-control").includes("no-store"));
-assert.deepEqual(Buffer.from(await mediaResponse.arrayBuffer()), png);
+const normalizedImage = Buffer.from(await mediaResponse.arrayBuffer());
+assert(normalizedImage.length > 0);
+assert.equal(mediaResponse.headers.get("content-type"), "image/png");
+assert.deepEqual(Buffer.from(await (await request(media)).arrayBuffer()), normalizedImage);
 assert((await (await request("/sitemap.xml", { authenticated: false })).text()).includes(draft.slug));
 await json(`/api/admin/articles/${draft.id}`, { method: "PUT", body: { ...draft, revision: 0 } }, 409);
 await json(`/api/admin/articles/${draft.id}`, { method: "PUT", body: { ...draft, slug: "new-locked-slug" } }, 400);

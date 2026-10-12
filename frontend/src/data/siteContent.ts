@@ -1,5 +1,6 @@
-import { divisionSlugSchema, ownershipFields } from "./divisionCms";
+import { contentOwner, divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
+import { safeHttpsUrl, safeLocalAsset } from "./safeUrls";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt } from "./googleReviews";
 import { promotionSchema, samplePromotions, additionalPromotions } from "./promotions";
@@ -11,7 +12,7 @@ import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery"
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
 const text = (max: number) => z.string().trim().max(max);
-function isHttps(value: string) { try { return new URL(value).protocol === "https:"; } catch { return false; } }
+const isHttps = safeHttpsUrl;
 const webUrl = text(1000).refine(value => !value || isHttps(value), "Gunakan URL HTTPS");
 const googleUrl = webUrl.refine(value => {
   try {
@@ -19,7 +20,7 @@ const googleUrl = webUrl.refine(value => {
     return host === "maps.app.goo.gl" || host === "goo.gl" || host === "google.com" || host.endsWith(".google.com") || host === "google.co.id" || host.endsWith(".google.co.id");
   } catch { return false; }
 }, "Gunakan tautan sumber Google Maps");
-const photo = text(1000).refine(value => !value || /^\/(?:images|media|api\/cms\/media)\/[a-zA-Z0-9/_ .-]+$/.test(value) || isHttps(value), "Gunakan /images/... atau URL HTTPS");
+const photo = text(1000).refine(value => !value || safeLocalAsset(value, ["images", "media", "api/cms/media"]) || isHttps(value), "Gunakan /images/... atau URL HTTPS");
 const phone = text(30).refine(value => !value || /^\+?[\d ()-]{7,30}$/.test(value), "Nomor telepon tidak valid");
 export const contactSchema = z.object({ ...ownershipFields,
   id: text(80).min(1), name: text(100).min(1), role: text(100).min(1),
@@ -65,6 +66,9 @@ export const siteContentSchema = z.object({
 });
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
+export function contactVisibleInDivision(contact: TeamContact, slug: string) {
+  return contact.audience ? contact.audience.includes(slug) : contact.divisions.length ? contact.divisions.includes(slug) : !contentOwner(contact) || contentOwner(contact) === slug;
+}
 export type ReviewContent = Pick<SiteContent, "rating" | "reviewCount" | "ratingDate" | "mapsUrl" | "reviews">;
 // Only review fields cross the reviews widget's client boundary. Do not ship
 // unrelated division projects, contacts or other CMS content in its props.

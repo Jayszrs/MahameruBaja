@@ -1,2 +1,6 @@
 import Image, { type ImageProps } from "next/image";
-export default function CmsImage(props: ImageProps) { return <Image {...props} unoptimized={props.unoptimized || typeof props.src === "string" && (props.src.startsWith("/api/") || props.src.startsWith("/media/") || props.src.startsWith("https://") && !props.src.includes(".public.blob.vercel-storage.com/"))} />; }
+import { isPublicBlobUrl } from "../data/safeUrls";
+export default function CmsImage(props: ImageProps) {
+  const privateOrExternal = typeof props.src === "string" && (props.src.startsWith("/") && !props.src.startsWith("/images/") && props.src !== "/mbi-mark.svg" || props.src.startsWith("https://") && !isPublicBlobUrl(props.src));
+  return <Image {...props} unoptimized={props.unoptimized || privateOrExternal} />;
+}

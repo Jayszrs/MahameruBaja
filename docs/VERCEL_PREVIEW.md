@@ -10,6 +10,8 @@ Frontend Next.js sudah terhubung ke proyek Vercel `mahamerubaja` pada tim `jaela
 
 Preview memakai Vercel Blob **private** untuk snapshot konten CMS dan permintaan pelanggan. Variabel `BLOB_READ_WRITE_TOKEN`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, dan `ADMIN_SESSION_SECRET` sudah dipasang pada lingkungan Preview dan Production Vercel. Keduanya memakai store preview yang sama. Sesi admin memakai secret berbeda per lingkungan. Jangan menghapus store Blob selama data preview masih dibutuhkan.
 
+Pembaruan keamanan mensyaratkan secret acak minimal 32 byte dan login ulang untuk sesi lama. Upload gambar maksimal 4 MB; MP4 H.264/AAC maksimal 4 MB pada Vercel. Media tetap private dan ditayangkan melalui route yang memeriksa publikasi/kepemilikan. CMS_BLOB_PREFIX kosong mempertahankan namespace lama; namespace pengujian harus berbeda. Hasil audit dan backup: [Keamanan CMS](cms-security-verification.md).
+
 Preview tidak memakai database PostgreSQL/Fastify dari monorepo. Permintaan dan edit CMS diuji melalui route Next.js. File PDF permintaan dibuat di browser setelah permintaan berhasil disimpan. Tombol WhatsApp mengunduh PDF lalu membuka chat; pada browser biasa pelanggan tetap memilih lampiran Dokumen sendiri. Pada perangkat yang mendukung Web Share, tombol berbagi dapat menyerahkan file ke WhatsApp.
 
 Preview mengirim `X-Robots-Tag: noindex, nofollow` dan `robots.txt` yang melarang crawler. Target Production Vercel juga memakai `SITE_PREVIEW_MODE=1`, karena URL tetap saat ini masih untuk review website. Saat go-live, hapus flag itu, atur `NEXT_PUBLIC_SITE_URL` ke domain resmi, lalu deploy ulang. Google Search Console dikonfigurasi setelah domain resmi aktif.

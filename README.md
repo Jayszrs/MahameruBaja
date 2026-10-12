@@ -50,3 +50,5 @@ Periksa `http://localhost:3000/images/hero-steel-warehouse-v2.png`. Jika URL gam
 ### CMS divisi dan akun admin
 
 Panduan migrasi, hak akses, password sementara, serta pencadangan dan pemulihan: [CMS Divisi dan Pengelolaan Akun](docs/cms-divisions-accounts.md).
+
+Pemeriksaan upload, sesi, batas akses, hasil regresi, serta konfigurasi keamanan: [Keamanan CMS](docs/cms-security-verification.md).

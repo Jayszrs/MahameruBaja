@@ -65,7 +65,7 @@ Awali **satu instance web**. CMS JSON memakai lock file dan bukan database bersa
 
 Simpan sebagai secret/env, bukan Git. Lima akun development harus dirotasi sebelum produksi.
 
-- `frontend/.env.local` atau secret service web: `ADMIN_ACCOUNTS_JSON` berisi email, slug divisi, hash scrypt; `ADMIN_SESSION_SECRET` acak kuat. Opsional owner pusat memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD_HASH`.
+- `frontend/.env.local` atau secret service web: `ADMIN_ACCOUNTS_JSON` berisi email, slug divisi, hash scrypt; `ADMIN_SESSION_SECRET` acak minimal 32 byte. Hash lama ditingkatkan otomatis setelah login. Opsional owner pusat memakai `ADMIN_EMAIL` dan `ADMIN_PASSWORD_HASH`.
 - `CMS_DATA_DIR=/app/cms-data` sudah diatur Compose; volume persisten wajib.
 - Root `.env`: `NEXT_PUBLIC_SITE_URL=https://domain-resmi.example`, `NEXT_PUBLIC_API_URL=https://api.domain-resmi.example`. Compose memakai kedua nilai saat **build** dan runtime; domain belum ditentukan, jangan memakai literal contoh sebagai domain final.
 - Root `.env`: `POSTGRES_PASSWORD`, `MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`. Pakai secret kuat; password PostgreSQL sebaiknya karakter URL-safe karena dipakai pada connection string. Jangan gunakan default development.
@@ -77,7 +77,7 @@ Root env dan frontend env berbeda. `NEXT_PUBLIC_*` bukan tempat untuk password a
 ## Langkah go-live
 
 1. Konfirmasi domain, pemilik akun hosting, kontak, pin Google Maps GMB, stok/foto produk, URL sosial dan template resmi.
-2. Siapkan VPS dan reverse proxy (Nginx/Caddy) dengan sertifikat TLS. Batasi firewall ke SSH dari IP admin dan 80/443. Compose saat ini adalah local baseline: **tutup/remove mapping publik 5432, 9000, 9001 dan 4000**; web/API diakses reverse proxy/internal network.
+2. Siapkan VPS dan reverse proxy (Nginx/Caddy) dengan sertifikat TLS. Batasi firewall ke SSH dari IP admin dan 80/443. Compose mengikat 5432, 9000, 9001 dan 4000 ke loopback; web/API diakses reverse proxy/internal network. TRUSTED_PROXY_CIDRS Fastify hanya diisi CIDR proxy yang benar-benar dipercaya.
 3. Pasang secret production, volume dan kepemilikan file agar user `nextjs` dapat menulis CMS.
 4. Backup data existing. Bila pindah dari local, pindahkan isi `frontend/.cms-data` (atau `CMS_DATA_DIR` lama) ke volume `cms_data`, termasuk subfolder `media`; jangan hanya menyalin kode. Lindungi data pelanggan selama transfer.
 5. Build dengan origin final, jalankan container, uji API `/health`, login HTTPS, lima scope akun, form, upload, invoice draf, share preview dan route media setelah restart.
@@ -88,17 +88,19 @@ Root env dan frontend env berbeda. `NEXT_PUBLIC_*` bukan tempat untuk password a
 
 ## Media dan CMS
 
-- JPG, PNG, WebP, MP4; magic bytes/MIME diperiksa, filename dihasilkan server.
-- Batas upload lokal/VPS 30 MB; preview Vercel 4 MB melalui endpoint. Video lebih besar memakai URL HTTPS/CDN dan poster; rekomendasi format kompatibel MP4 H.264. Codec tidak ditranscode atau dijamin hanya dari ekstensi.
-- `/media/{uuid}.ext` melayani upload setelah build, dengan cache immutable dan HTTP Range untuk video. Pada implementasi sekarang setiap respons membaca file ke memori; volume/CDN streaming perlu ditingkatkan bila trafik video besar.
+- JPG, PNG dan WebP didekode penuh, orientasi dinormalisasi dan metadata dibuang. Gambar animasi ditolak. MP4 diperiksa menggunakan parser, dengan video H.264 dan audio AAC bila ada; filename dihasilkan server.
+- Batas gambar selalu 4 MB; video lokal/VPS 30 MB, Vercel 4 MB. Video lebih besar memakai URL HTTPS/CDN dan poster. Ekspor MP4 biasa, bukan fragmented MP4; codec tidak ditranscode.
+- Upload baru memakai private storage dan route media dengan HEAD, HTTP Range, 206/416, no-store serta pemeriksaan kepemilikan/publikasi. File lokal di-stream. URL `/media/{uuid}.ext` lama tetap berlaku dengan pemeriksaan akses yang sama.
 - Hero dapat diurutkan. Letakkan video company profile di slide pertama; video diputar sekali per sesi halaman, kemudian gambar berulang 4 detik.
 - Upload tidak langsung menayangkan: simpan konten/aktifkan Terbit. Hapus item CMS tidak otomatis menghapus file media, agar tautan lain tidak rusak.
-- Unggahan publik CMS **bukan tempat menyimpan gambar kerja rahasia customer**. Dokumen private, signed URL, malware scanning dan retention belum tersedia.
+- Media draf bersifat private; konten yang diterbitkan dapat menayangkan media secara publik. Upload CMS bukan layanan lampiran dokumen pelanggan; malware scanning dan retention otomatis belum tersedia.
 - Editor lama mendapat 409 jika bagian sama telah berubah. Simpan/salin perubahan lokal sebelum refresh. Perubahan bagian berbeda dapat digabung memakai snapshot revisi.
 
 ## Backup dan pemulihan
 
 Backup terjadwal untuk PostgreSQL, MinIO (jika dipakai), seluruh volume CMS/media dan konfigurasi secret dengan akses terbatas. Uji restore pada staging, bukan langsung menimpa produksi.
+
+State sesi dan limiter tersimpan terpisah. Prosedur rotasi secret, pemulihan dan hasil uji tersedia di [Keamanan CMS](cms-security-verification.md). Sesi lama meminta login ulang setelah pembaruan ini.
 
 Lock file sisa crash dapat menghentikan penulisan. Hentikan semua penulis, verifikasi target tepat `site-content.json.lock` atau `requests.json.lock` di `CMS_DATA_DIR`, lalu tangani hanya lock yang tertinggal; jangan menghapus file data atau volume. Catat kejadian sebelum restart.
 
