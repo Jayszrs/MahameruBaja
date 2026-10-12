@@ -40,18 +40,31 @@ async function currentDocument(key: string) {
   return { ...envelope, etag: result.blob.etag };
 }
 
+function isBlobUnavailable(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /Vercel Blob|403 Forbidden|STORAGE_READ_FAILED/.test(message);
+}
+
 export async function readPreviewBlob<S extends z.ZodTypeAny>(key: string, schema: S, fallback: z.output<S>): Promise<{ value: z.output<S> } & Snapshot> {
-  const current = await currentDocument(key);
-  if (current) return { value: schema.parse(current.value), revision: current.revision, etag: current.etag };
-  // Backward-compatible read only: existing revision files are never deleted
-  // or silently replaced by defaults. The first successful CMS save migrates
-  // this collection to its single CAS-protected current document.
-  const latest = await latestPath(key);
-  if (!latest) return { value: structuredClone(fallback), revision: 0 };
-  const result = await get(latest.pathname, { access: "private", useCache: false });
-  if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
-  const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
-  return { value, revision: latest.revision };
+  try {
+    const current = await currentDocument(key);
+    if (current) return { value: schema.parse(current.value), revision: current.revision, etag: current.etag };
+    // Backward-compatible read only: existing revision files are never deleted
+    // or silently replaced by defaults. The first successful CMS save migrates
+    // this collection to its single CAS-protected current document.
+    const latest = await latestPath(key);
+    if (!latest) return { value: structuredClone(fallback), revision: 0 };
+    const result = await get(latest.pathname, { access: "private", useCache: false });
+    if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
+    const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
+    return { value, revision: latest.revision };
+  } catch (error) {
+    if (isBlobUnavailable(error)) {
+      console.error(`Preview Blob unavailable for ${key}; serving fallback data`, error);
+      return { value: structuredClone(fallback), revision: 0 };
+    }
+    throw error;
+  }
 }
 
 export async function writePreviewBlob<T>(key: string, snapshot: Snapshot, value: T) {
