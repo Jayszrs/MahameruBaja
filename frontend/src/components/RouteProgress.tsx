@@ -15,16 +15,26 @@ export default function RouteProgress() {
   const pathname = usePathname();
   const [active, setActive] = useState(false);
   const timers = useRef<{ show?: number; hide?: number }>({});
+  const pendingTargetRef = useRef<string | null>(null);
+  const lastClickTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const clear = () => {
       window.clearTimeout(timers.current.show);
       window.clearTimeout(timers.current.hide);
+      document.documentElement.removeAttribute("data-navigating");
+      pendingTargetRef.current = null;
     };
-    const start = () => {
-      clear();
+    const start = (target: string) => {
+      pendingTargetRef.current = target;
+      document.documentElement.setAttribute("data-navigating", "true");
+      window.clearTimeout(timers.current.show);
+      window.clearTimeout(timers.current.hide);
       timers.current.show = window.setTimeout(() => setActive(true), SHOW_DELAY_MS);
-      timers.current.hide = window.setTimeout(() => setActive(false), FORCE_HIDE_MS);
+      timers.current.hide = window.setTimeout(() => {
+        clear();
+        setActive(false);
+      }, FORCE_HIDE_MS);
     };
     const onClick = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -37,9 +47,25 @@ export default function RouteProgress() {
       try { url = new URL(href, window.location.href); } catch { return; }
       if (url.origin !== window.location.origin) return;
       if (url.pathname === window.location.pathname && url.search === window.location.search) return;
-      start();
+
+      const target = url.pathname + url.search;
+      const now = performance.now();
+
+      // Anti-brute: Jika request ke rute ini sedang berjalan atau baru saja di-klik dalam 300ms,
+      // tahan dan abaikan klik lanjutan agar tidak membanjiri server dengan request bertubi-tubi.
+      if (pendingTargetRef.current === target || (pendingTargetRef.current && now - lastClickTimeRef.current < 300)) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        return;
+      }
+
+      lastClickTimeRef.current = now;
+      start(target);
     };
-    const onPopState = () => start();
+    const onPopState = () => {
+      start(window.location.pathname + window.location.search);
+    };
     document.addEventListener("click", onClick, true);
     window.addEventListener("popstate", onPopState);
     return () => {
@@ -52,6 +78,8 @@ export default function RouteProgress() {
   useEffect(() => {
     window.clearTimeout(timers.current.show);
     window.clearTimeout(timers.current.hide);
+    pendingTargetRef.current = null;
+    document.documentElement.removeAttribute("data-navigating");
     setActive(false);
   }, [pathname]);
 

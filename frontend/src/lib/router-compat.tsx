@@ -17,9 +17,26 @@ export function useLocation() {
   return { pathname: usePathname() };
 }
 
+let pendingNav: string | null = null;
+let lastNavTime = 0;
+
 export function useNavigate() {
   const router = useRouter();
-  return (href: string) => router.push(href);
+  const pathname = usePathname();
+  useEffect(() => {
+    pendingNav = null;
+  }, [pathname]);
+
+  return (href: string) => {
+    const now = Date.now();
+    if (pendingNav === href || (pendingNav && now - lastNavTime < 300)) return;
+    pendingNav = href;
+    lastNavTime = now;
+    setTimeout(() => {
+      if (pendingNav === href) pendingNav = null;
+    }, 8000);
+    router.push(href);
+  };
 }
 
 export function useParams<T extends Record<string, string | undefined>>() {

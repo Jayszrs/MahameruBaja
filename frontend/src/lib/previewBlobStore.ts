@@ -32,12 +32,26 @@ async function latestPath(key: string) {
   return latest;
 }
 
+const inFlightDocuments = new Map<string, Promise<{ format: 1; revision: number; value?: unknown; etag: string } | null>>();
+
 async function currentDocument(key: string) {
-  const result = await get(currentPath(key), { access: "private", useCache: false });
-  if (!result) return null;
-  if (!result.stream || !result.blob.etag) throw new Error("STORAGE_READ_FAILED");
-  const envelope = envelopeSchema.parse(JSON.parse(await new Response(result.stream).text()));
-  return { ...envelope, etag: result.blob.etag };
+  const pending = inFlightDocuments.get(key);
+  if (pending) return pending;
+
+  const readPromise = (async () => {
+    const result = await get(currentPath(key), { access: "private", useCache: false });
+    if (!result) return null;
+    if (!result.stream || !result.blob.etag) throw new Error("STORAGE_READ_FAILED");
+    const envelope = envelopeSchema.parse(JSON.parse(await new Response(result.stream).text()));
+    return { ...envelope, etag: result.blob.etag };
+  })();
+
+  inFlightDocuments.set(key, readPromise);
+  try {
+    return await readPromise;
+  } finally {
+    inFlightDocuments.delete(key);
+  }
 }
 
 function isBlobUnavailable(error: unknown) {
@@ -68,6 +82,7 @@ export async function readPreviewBlob<S extends z.ZodTypeAny>(key: string, schem
 }
 
 export async function writePreviewBlob<T>(key: string, snapshot: Snapshot, value: T) {
+  inFlightDocuments.delete(key);
   const revision = snapshot.revision + 1;
   if (!Number.isSafeInteger(revision) || revision < 1) throw new Error("STORAGE_REVISION_INVALID");
   try {
