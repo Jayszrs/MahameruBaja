@@ -29,12 +29,21 @@ async function latestPath(key: string) {
 }
 
 export async function readPreviewBlob<S extends z.ZodTypeAny>(key: string, schema: S, fallback: z.output<S>): Promise<{ value: z.output<S>; revision: number }> {
-  const latest = await latestPath(key);
-  if (!latest) return { value: structuredClone(fallback), revision: 0 };
-  const result = await get(latest.pathname, { access: "private", useCache: false });
-  if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
-  const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
-  return { value, revision: latest.revision };
+  try {
+    const latest = await latestPath(key);
+    if (!latest) return { value: structuredClone(fallback), revision: 0 };
+    const result = await get(latest.pathname, { access: "private", useCache: false });
+    if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
+    const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
+    return { value, revision: latest.revision };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/Vercel Blob|403 Forbidden|STORAGE_READ_FAILED/.test(message)) {
+      console.error(`Preview Blob unavailable for ${key}; serving fallback data`, error);
+      return { value: structuredClone(fallback), revision: 0 };
+    }
+    throw error;
+  }
 }
 
 export async function writePreviewBlob<T>(key: string, revision: number, value: T) {

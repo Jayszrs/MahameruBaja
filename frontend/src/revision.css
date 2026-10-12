@@ -168,12 +168,12 @@
   .promos-restored{padding:28px 0}
   .promos-restored .home-promos-header{margin-bottom:16px}
   .promos-restored .home-promos-header>p{margin-top:9px;font-size:12px;line-height:1.55}
-  .promos-restored .home-promos-track{align-items:flex-start;gap:12px;padding-bottom:8px}
+  .promos-restored .home-promos-track{align-items:stretch;gap:12px;padding-bottom:8px}
   .promos-restored .home-promo-card,.promos-restored .is-single .home-promo-card{flex-basis:min(300px,82vw);min-height:0}
   .promos-restored .home-promo-card:hover{flex-basis:min(300px,82vw)}
   .promos-restored .home-promo-media{height:150px}
   .promos-restored .home-promo-media>span{right:10px;bottom:10px;padding:8px 10px}
-  .promos-restored .home-promo-content{flex:0 0 auto;min-height:0;padding:16px}
+  .promos-restored .home-promo-content{flex:1 1 auto;min-height:0;padding:16px}
   .promos-restored .home-promo-content h3{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:8px;font-size:21px;line-height:1.12}
   .promos-restored .home-promo-content>p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:8px 0 10px;font-size:12px;line-height:1.45}
   .promos-restored .event-countdown{padding:8px 0;margin:0 0 8px}
@@ -183,7 +183,7 @@
   .promos-restored .event-countdown-values strong{font-size:17px}
   .promos-restored .event-countdown-values small{margin-top:2px;font-size:8px}
   .promos-restored .event-countdown>small{margin-top:6px;font-size:9px;line-height:1.35}
-  .promos-restored .home-promo-actions{align-items:stretch;margin-top:10px;padding-top:0}
+  .promos-restored .home-promo-actions{align-items:stretch;margin-top:auto;padding-top:16px}
   .promos-restored .home-promo-actions :is(a,button){height:100%;min-height:44px;padding:8px 6px;font-size:9px;line-height:1;white-space:nowrap;text-align:center;align-items:center;justify-content:center}
   .promo-motion-toggle{margin-top:8px}
   .social-permata-grid{gap:16px}

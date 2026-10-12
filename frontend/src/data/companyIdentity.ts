@@ -1,5 +1,5 @@
 // Sumber: Sheet1 H10:J28, B30:B50, L10:Q18 — pembaruan klien 10 Oktober 2026.
-export const groupVision = "Menjadi perusahaan baja dan konstruksi yang terpercaya, terintegrasi, profesional, dan terus berkembang dengan memberikan solusi terbaik dari penyediaan material hingga fabrikasi dan erection.";
+export const groupVision = "Menjadi perusahaan baja dan konstruksi yang terpercaya, profesional, dan terus berkembang dalam penyediaan material serta pengerjaan konstruksi.";
 export const groupMotto = "Dari Material, Cutting, Trading, Fabrikasi sampai Erection — Satu Mahameru, Satu Solusi.";
 export const divisionIdentity: Record<string, { logo: string; mission: string; admins: { name: string; phone: string }[] }> = {
   "retail-tambun": { logo: "/images/brand/mahameru-retail.png", mission: "Menyediakan kebutuhan besi dan material konstruksi berkualitas dengan harga kompetitif serta pelayanan cepat dan terpercaya kepada konsumen.", admins: [{ name: "Tikno", phone: "0812 1805 2017" }, { name: "Nuri", phone: "081 3333 1042" }] },

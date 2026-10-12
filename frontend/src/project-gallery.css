@@ -1,5 +1,5 @@
 /* PDF-backed company partnerships and multi-photo project albums. */
-.partnership-intro{max-width:700px;font-size:14px;line-height:1.8;color:var(--color-steel-grey);margin:20px 0 34px}
+.partnership-intro{max-width:700px;font-size:14px;line-height:1.8;color:var(--color-steel-grey);margin:20px 0 0;text-align:left}
 .home-suppliers{padding-block:clamp(54px,7vw,100px);background:var(--color-warm-white)}
 .home-suppliers h2 em,.project-albums h2 em{color:var(--color-brand);font-style:normal}
 .supplier-logo-grid{display:flex;gap:18px;overflow-x:auto}
