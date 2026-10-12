@@ -16,10 +16,10 @@ function Post({ post }: { post: SocialPost }) {
   const embed = socialEmbedUrl(post.platform, post.url);
   const division = divisions.find(d => d.slug === post.division);
   return <article className={`social-feed social-single-post social-post-${post.platform}`}>
-    <header><div><strong>{division?.name || post.title}</strong><small>{post.handle || platformLabels[post.platform]}</small></div><span>{platformLabels[post.platform]} resmi</span></header>
+    <header className="social-post-source"><div><strong>{division?.name || post.title}</strong><small>{post.handle || platformLabels[post.platform]}</small></div><span className="social-post-platform" aria-label={`Konten ${platformLabels[post.platform]}`} title={platformLabels[post.platform]}><SocialIcon platform={post.platform} /></span></header>
     {post.videoUrl ? <video key={playerKey} className="social-native-video" src={post.videoUrl} poster={post.image || undefined} controls playsInline preload="metadata" onError={() => setVideoError(true)} aria-label={post.title}><a href={post.url}>Buka unggahan asli</a></video> : embed ? <iframe key={playerKey} className="social-single-frame" src={embed} title={post.title} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" /> : <a className="social-external-post" href={post.url} target="_blank" rel="noopener noreferrer">{post.image && <img src={post.image} alt="" loading="lazy" />}<SocialIcon platform={post.platform} />Buka unggahan ↗</a>}
-    {(embed || post.videoUrl) && <div className="social-player-help"><p>{videoError ? "Video belum dapat dimuat. Coba lagi atau buka unggahan asli." : post.videoUrl ? "Video dapat diputar langsung di sini." : post.platform === "instagram" ? "Jika Instagram menampilkan “Watch on Instagram”, putar melalui unggahan aslinya." : "Jika video tidak dimuat, coba ulang atau buka unggahan aslinya."}</p><button type="button" onClick={() => { setPlayerKey(key => key + 1); setVideoError(false); }}>Muat ulang pemutar</button></div>}
-    <footer><h3>{post.title}</h3>{post.caption && <p>{post.caption}</p>}<a href={post.url} target="_blank" rel="noopener noreferrer">Buka di {platformLabels[post.platform]} →</a></footer>
+    {videoError && <div className="social-player-error" role="status"><span>Video belum berhasil dimuat.</span><button type="button" onClick={() => { setPlayerKey(key => key + 1); setVideoError(false); }}>Coba lagi</button></div>}
+    <footer><h3>{post.title}</h3>{post.caption && <p>{post.caption}</p>}<a href={post.url} target="_blank" rel="noopener noreferrer">Lihat di {platformLabels[post.platform]} →</a></footer>
   </article>;
 }
 
@@ -32,6 +32,5 @@ export default function SocialHub({ accounts, posts, full = false, companyName =
     {full && posts.some(post => post.published) && <div className="social-filters" aria-label="Filter platform">{(["all", ...socialPlatforms] as const).map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value === "all" ? "Semua" : platformLabels[value]}</button>)}</div>}
     {shown.length ? <div className="social-post-grid social-permata-grid">{shown.map(post => <Post key={post.id} post={post} />)}</div> : <p className="social-empty">Belum ada unggahan untuk pilihan ini. Kunjungi akun resmi kami di bawah.</p>}
     <nav className="social-account-directory" aria-label="Akun resmi">{accounts.filter(a=>a.published&&a.url).map(a=><a key={`${a.platform}:${a.handle}`} href={a.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={a.platform}/><span>{platformLabels[a.platform]}<strong>{a.handle}</strong></span>↗</a>)}</nav>
-    <p className="social-embed-note">Jika video tidak bisa diputar di sini, klik “Buka di” untuk menontonnya di akun resmi kami.</p>
   </div></section>;
 }
