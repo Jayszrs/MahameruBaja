@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Archivo, IBM_Plex_Mono, Manrope } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "../src/index.css";
 import "../src/mobile-compact.css";
 import "../src/merged-pages.css";
@@ -70,7 +71,14 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const divisions = await readPublicDivisions();
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><AdminNavigationProvider><AppShell>{children}</AppShell></AdminNavigationProvider></DivisionDirectory></body>
+      <body>
+        <DivisionDirectory divisions={divisions}>
+          <AdminNavigationProvider>
+            <AppShell>{children}</AppShell>
+          </AdminNavigationProvider>
+        </DivisionDirectory>
+        <Analytics />
+      </body>
     </html>
   );
 }
