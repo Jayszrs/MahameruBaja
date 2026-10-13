@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: process.env.VERCEL === "1" ? undefined : "standalone",
+  output: process.env.NODE_ENV === "production" && process.env.VERCEL !== "1" ? "standalone" : undefined,
   poweredByHeader: false,
   reactStrictMode: true,
   devIndicators: false,

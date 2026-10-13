@@ -32,29 +32,57 @@ async function latestPath(key: string) {
   return latest;
 }
 
+const inFlightDocuments = new Map<string, Promise<{ format: 1; revision: number; value?: unknown; etag: string } | null>>();
+
 async function currentDocument(key: string) {
-  const result = await get(currentPath(key), { access: "private", useCache: false });
-  if (!result) return null;
-  if (!result.stream || !result.blob.etag) throw new Error("STORAGE_READ_FAILED");
-  const envelope = envelopeSchema.parse(JSON.parse(await new Response(result.stream).text()));
-  return { ...envelope, etag: result.blob.etag };
+  const pending = inFlightDocuments.get(key);
+  if (pending) return pending;
+
+  const readPromise = (async () => {
+    const result = await get(currentPath(key), { access: "private", useCache: false });
+    if (!result) return null;
+    if (!result.stream || !result.blob.etag) throw new Error("STORAGE_READ_FAILED");
+    const envelope = envelopeSchema.parse(JSON.parse(await new Response(result.stream).text()));
+    return { ...envelope, etag: result.blob.etag };
+  })();
+
+  inFlightDocuments.set(key, readPromise);
+  try {
+    return await readPromise;
+  } finally {
+    inFlightDocuments.delete(key);
+  }
+}
+
+function isBlobUnavailable(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  return /Vercel Blob|403 Forbidden|STORAGE_READ_FAILED/.test(message);
 }
 
 export async function readPreviewBlob<S extends z.ZodTypeAny>(key: string, schema: S, fallback: z.output<S>): Promise<{ value: z.output<S> } & Snapshot> {
-  const current = await currentDocument(key);
-  if (current) return { value: schema.parse(current.value), revision: current.revision, etag: current.etag };
-  // Backward-compatible read only: existing revision files are never deleted
-  // or silently replaced by defaults. The first successful CMS save migrates
-  // this collection to its single CAS-protected current document.
-  const latest = await latestPath(key);
-  if (!latest) return { value: structuredClone(fallback), revision: 0 };
-  const result = await get(latest.pathname, { access: "private", useCache: false });
-  if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
-  const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
-  return { value, revision: latest.revision };
+  try {
+    const current = await currentDocument(key);
+    if (current) return { value: schema.parse(current.value), revision: current.revision, etag: current.etag };
+    // Backward-compatible read only: existing revision files are never deleted
+    // or silently replaced by defaults. The first successful CMS save migrates
+    // this collection to its single CAS-protected current document.
+    const latest = await latestPath(key);
+    if (!latest) return { value: structuredClone(fallback), revision: 0 };
+    const result = await get(latest.pathname, { access: "private", useCache: false });
+    if (!result?.stream) throw new Error("STORAGE_READ_FAILED");
+    const value = schema.parse(JSON.parse(await new Response(result.stream).text()));
+    return { value, revision: latest.revision };
+  } catch (error) {
+    if (isBlobUnavailable(error)) {
+      console.error(`Preview Blob unavailable for ${key}; serving fallback data`, error);
+      return { value: structuredClone(fallback), revision: 0 };
+    }
+    throw error;
+  }
 }
 
 export async function writePreviewBlob<T>(key: string, snapshot: Snapshot, value: T) {
+  inFlightDocuments.delete(key);
   const revision = snapshot.revision + 1;
   if (!Number.isSafeInteger(revision) || revision < 1) throw new Error("STORAGE_REVISION_INVALID");
   try {

@@ -28,4 +28,23 @@
 .project-album-ribbon::-webkit-scrollbar-track{background:#eee;border-radius:6px}.project-album-ribbon::-webkit-scrollbar-thumb{background:#a4a8ac;border-radius:6px}
 .directory-card .directory-whatsapp{min-height:44px}.directory-links a{overflow-wrap:anywhere}
 @media(max-width:800px){.home-intro .company-division-main,.unit-about.company-division-main{grid-template-columns:minmax(0,1fr)}.home-intro .home-vision p,.company-division-mission p,.company-vision p:not(.industrial-eyebrow),.division-vision article>p:last-child{font-size:17px;line-height:1.8}.home-intro .home-vision{padding-left:16px}.home-project-experience .home-section-heading{gap:20px}.project-album-ribbon article{flex-basis:80%;min-width:260px;max-width:350px}.project-album-ribbon .project-album-cover{height:235px}.project-album-ribbon .project-album-copy{padding:20px}.project-album-ribbon .project-album-copy h3{font-size:22px}.home-project-experience .home-shell,.division-collage,.home-intro-copy{min-width:0}}
-@media(max-width:480px){.project-album-ribbon article{flex-basis:86%;min-width:235px}.home-intro-copy h2{font-size:32px}.home-intro .home-vision h3{font-size:13px}.company-division-mission h4{font-size:14px}.directory-toolbar label{width:100%}.directory-cards{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){
+  .directory-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .directory-card,.directory-card:nth-child(2){margin-top:0;border-radius:56px 56px 14px 14px}
+  .directory-portrait{height:132px}
+  .directory-portrait>img{width:82px;height:82px}
+  .directory-number{left:12px;top:12px;font-size:7px}
+  .directory-role{left:12px;right:12px;bottom:10px;font-size:7px;line-height:1.25}
+  .directory-monogram{font-size:118px}
+  .directory-monogram svg{width:94px;height:94px}
+  .directory-card-body{padding:14px 12px}
+  .directory-card h3{font-size:clamp(17px,5vw,22px);line-height:1.05}
+  .directory-card-body>p{min-height:0;font-size:9px;line-height:1.45}
+  .directory-links{margin-top:12px}
+  .directory-links a{position:relative;display:block;padding-block:10px;padding-right:14px}
+  .directory-links a>span:first-child{display:block;min-width:0;margin-bottom:3px;font-size:8px}
+  .directory-links strong{display:block;font-size:9px;line-height:1.35}
+  .directory-links a>span:last-child{position:absolute;right:0;top:10px;font-size:9px}
+  .directory-whatsapp{align-items:center;min-height:44px;margin-top:12px;padding:10px 11px;font-size:9px;line-height:1.3}
+}
+@media(max-width:480px){.project-album-ribbon article{flex-basis:86%;min-width:235px}.home-intro-copy h2{font-size:32px}.home-intro .home-vision h3{font-size:13px}.company-division-mission h4{font-size:14px}.directory-toolbar label{width:100%}}
