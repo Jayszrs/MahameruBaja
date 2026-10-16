@@ -6,6 +6,7 @@ import SmoothImage from "../components/SmoothImage";
 import type { SiteContent } from "../data/siteContent";
 import { type Division } from "../data/divisionContent";
 import UnifiedHomeContent from "../components/UnifiedHomeContent";
+import { mainLogo } from "../data/companyIdentity";
 
 
 
@@ -42,7 +43,7 @@ function BusinessRoutes() {
               <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
-              <Image className="route-division-logo" src={divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} />
+              <Image className={`route-division-logo${division.slug === "laser-cutting" ? " main-company-logo" : ""}`} src={division.slug === "laser-cutting" ? mainLogo : divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} />
               <div><small>{route.tag}</small><h3>{division.name}</h3><p>{route.text}</p></div>
               <strong>Buka website divisi <Arrow diagonal /></strong>
             </Link>

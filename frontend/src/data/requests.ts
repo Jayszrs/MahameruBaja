@@ -20,11 +20,19 @@ export const invoiceSchema = z.object({
   notes: z.string().max(2000),
 });
 export type Invoice = z.infer<typeof invoiceSchema>;
+export const requestPhotoSchema = z.object({
+  filename: z.string().regex(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.webp$/),
+  name: z.string().min(1).max(160),
+  mime: z.literal("image/webp"),
+  size: z.number().int().positive().max(1_000_000),
+});
+export type RequestPhoto = z.infer<typeof requestPhotoSchema>;
 export const requestRecordSchema = requestInputSchema.extend({
   id: z.string(), revision: z.number().int().nonnegative(), createdAt: z.string(), updatedAt: z.string(),
   status: z.enum(requestStatuses), notes: z.string().max(5000), archived: z.boolean(),
   idempotencyKey: z.string().max(100).optional(),
   invoice: invoiceSchema.optional(),
+  photos: z.array(requestPhotoSchema).max(3).default([]),
 });
 export const requestPatchSchema = z.object({ revision: z.number().int().nonnegative(), input: requestInputSchema.optional(), status: z.enum(requestStatuses).optional(), notes: z.string().max(5000).optional(), archived: z.boolean().optional(), invoice: invoiceSchema.optional() });
 export type RequestInput = z.infer<typeof requestInputSchema>;

@@ -19,21 +19,27 @@ export interface CreateLeadInput {
 }
 
 const pendingKeys = new Map<string, string>();
-export async function createLead(input: CreateLeadInput) {
-  const bodyKey = JSON.stringify(input);
+export async function createLead(input: CreateLeadInput, photos: File[] = []) {
+  const bodyKey = JSON.stringify([input, photos.map(file => [file.name, file.size, file.lastModified])]);
   if (!pendingKeys.has(bodyKey)) {
     if (pendingKeys.size > 30) pendingKeys.clear();
     pendingKeys.set(bodyKey, globalThis.crypto?.randomUUID?.() || `request-${Date.now()}-${Math.random().toString(36).slice(2)}`);
   }
+  let body: string | FormData = JSON.stringify(input);
+  if (photos.length) {
+    body = new FormData();
+    body.set("input", JSON.stringify(input));
+    for (const photo of photos) body.append("photos", photo);
+  }
   const response = await fetch("/api/requests", {
     method: "POST",
-    headers: { "content-type": "application/json", "idempotency-key": pendingKeys.get(bodyKey)! },
-    body: JSON.stringify(input),
-    signal: AbortSignal.timeout(10000),
+    headers: { ...(photos.length ? {} : { "content-type": "application/json" }), "idempotency-key": pendingKeys.get(bodyKey)! },
+    body,
+    signal: AbortSignal.timeout(30000),
   });
-  const body = await response.json().catch(() => null);
+  const result = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Error(body?.message ?? "Permintaan belum dapat disimpan. Silakan coba kembali.");
+    throw new Error(result?.message ?? "Permintaan belum dapat disimpan. Silakan coba kembali.");
   }
-  return body.data as { id: string; status: string };
+  return result.data as { id: string; status: string; photoCount?: number };
 }

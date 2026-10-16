@@ -7,6 +7,7 @@ import { useQuotation } from '../context/QuotationContext';
 
 import { createLead, type CreateLeadInput } from '../lib/api';
 import RequestHandoff from '../components/RequestHandoff';
+import RequestPhotoInput from '../components/RequestPhotoInput';
 
 interface ProductRow {
   id: string;
@@ -40,6 +41,8 @@ export default function QuotationPage() {
   const [submitError, setSubmitError] = useState('');
   const [leadId, setLeadId] = useState('');
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [savedPhotoCount, setSavedPhotoCount] = useState(0);
 
   function addRow() {
     if (rows.length >= 50) return;
@@ -111,7 +114,8 @@ export default function QuotationPage() {
           unit: row.satuan,
         })),
       };
-      const result = await createLead(input);
+      const result = await createLead(input, photos);
+      setSavedPhotoCount(result.photoCount || 0);
       setRequestInput(input);
       setLeadId(result.id);
       setSubmitted(true);
@@ -128,7 +132,7 @@ export default function QuotationPage() {
     }`;
 
   if (submitted && requestInput) {
-    return <div className="quote-success industrial-container"><p className="industrial-eyebrow">PERMINTAAN TERSIMPAN / {leadId}</p><h1>Satu langkah lagi.<br /><em>Kirim ke tim kami.</em></h1><RequestHandoff input={requestInput} id={leadId} /><div className="industrial-actions"><button type="button" className="industrial-button" onClick={() => setSubmitted(false)}>Ubah rincian / buat permintaan baru</button><Link to="/produk" className="editorial-link">Kembali ke katalog</Link></div></div>;
+    return <div className="quote-success industrial-container"><p className="industrial-eyebrow">PERMINTAAN TERSIMPAN / {leadId}</p><h1>Satu langkah lagi.<br /><em>Kirim ke tim kami.</em></h1>{savedPhotoCount > 0 && <p role="status">{savedPhotoCount} foto sudah tersimpan dan dapat dilihat admin divisi tujuan.</p>}<RequestHandoff input={requestInput} id={leadId} /><div className="industrial-actions"><button type="button" className="industrial-button" onClick={() => setSubmitted(false)}>Ubah rincian / buat permintaan baru</button><Link to="/produk" className="editorial-link">Kembali ke katalog</Link></div></div>;
   }
 
   return (
@@ -159,7 +163,7 @@ export default function QuotationPage() {
 
       <section className="py-12 bg-surface" aria-label="Form Penawaran">
         <div className="max-w-[860px] mx-auto px-6 lg:px-8">
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} noValidate className="quotation-form" aria-busy={submitting}>
             <div className="bg-white border border-rule p-6 mb-5 rounded-xl"><label htmlFor="unit-tujuan" className="block text-sm font-semibold mb-2">Divisi tujuan</label><select id="unit-tujuan" value={unit} onChange={event => setUnit(event.target.value)} className="w-full border border-rule p-3 text-sm">{businessUnits.map(item => <option key={item.slug} value={item.slug}>{item.name} — {item.label}</option>)}</select><p className="text-xs text-muted mt-3">Ringkasan kebutuhan dikirim langsung ke admin divisi yang Anda pilih.</p>{unit === 'laser-cutting' && <Link to="/jasa#request" className="block text-sm text-brand font-semibold mt-3">Gunakan form khusus laser cutting & bending →</Link>}</div>
 
             {/* Personal info */}
@@ -279,7 +283,9 @@ export default function QuotationPage() {
 
             {/* Notes */}
             <div className="bg-white rounded-2xl border border-rule p-6 mb-6">
-              <h2 className="text-lg font-extrabold text-graphite mb-4">Catatan Tambahan</h2>
+              <h2 className="text-lg font-extrabold text-graphite mb-4">Foto & Catatan Tambahan</h2>
+              <RequestPhotoInput photos={photos} onChange={setPhotos} disabled={submitting} />
+              <label htmlFor="catatan" className="block text-sm font-semibold text-graphite mb-2">Catatan tambahan (opsional)</label>
               <textarea
                 id="catatan" rows={4} value={formData.catatan}
                 onChange={e => setFormData(f => ({ ...f, catatan: e.target.value }))}

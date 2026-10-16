@@ -82,7 +82,7 @@ try{
   assert.ok(!sharedHomeHtml.includes("home-gallery-strip") && sharedHomeHtml.includes("project-album-grid project-album-ribbon"),"Replace illustrative gallery preview with actual project albums");
   assert.equal((sharedHomeHtml.match(/aria-label="Buka album /g) || []).length,11,"Eleven published project albums are clickable from the homepage");
   assert.ok(sharedHomeHtml.includes("Buka album Lantai Mezanin, 9 foto"));
-  assert.ok(sharedHomeHtml.includes('data-collage-images="4"') && sharedHomeHtml.includes('aria-label="Buka logo MBI Laser Cutting &amp; Bending"'),"Main collage has three images plus its white-backed logo");
+  assert.ok(sharedHomeHtml.includes('data-collage-images="4"') && !sharedHomeHtml.includes('class="division-collage-brand"'),"Main collage retains its three photos and gallery logo without a logo overlay");
   const homeSections = html => [...html.matchAll(/data-home-section="([^"]+)"/g)].map(match => match[1]);
   assert.ok(!homeSections(sharedHomeHtml).includes("faq") && !sharedHomeHtml.includes("Yang sering ditanyakan."),"Remove the requested FAQ block from the main homepage");
   assert.ok(sharedHomeHtml.includes('data-home-template="mahameru"'));
@@ -127,7 +127,7 @@ try{
   assert.ok(jasaHtml.includes("Kami menyediakan jasa") && jasaHtml.includes("company-about-background"));
   assert.ok(!jasaHtml.includes('class="laser-page-grid"'));
   const mainHtml=await (await call("/")).text();
-  assert.ok(mainHtml.includes("MBI LASER CUTTING") && mainHtml.includes("mbi-laser.png") && mainHtml.includes("mbi-favicon-white-v3.png"));
+  assert.ok(mainHtml.includes("MAHAMERU BAJA") && mainHtml.includes("company-logo.jpeg") && mainHtml.includes("mbi-favicon-white-v3.png"), "Main site uses ordinary MBI identity while retaining its white-background favicon");
   assert.ok(mainHtml.includes("promos-restored") && mainHtml.includes("promo-preview-dialog"));
   assert.equal((await call("/images/brand/mbi-favicon-white-v3.png")).status,200);
   assert.ok(base.promotions.filter(p => p.published).length >= 4, "Multiple real service/calendar banners");
@@ -175,7 +175,7 @@ try{
   assert.equal((await call("/api/admin/content", "PUT", { ...maliciousContent, _base: contentInventory }, sessions[0])).status, 403, "Shared content endpoint cannot bypass division stock authorization");
   const stockHtml = await (await call("/produk/besi-beton-polos-10mm?unit=retail-tambun")).text();
   assert.ok(stockHtml.includes("Sisa 21 batang") && stockHtml.includes("Dikonfirmasi admin:") && stockHtml.includes("Mahameru Baja"));
-  assert.ok(stockHtml.includes("Konfirmasi ke admin divisi") && !stockHtml.includes("CONTOH POPULAR"));
+  assert.ok(stockHtml.includes("Tanya admin") && stockHtml.includes("Mahameru Baja Retail Tambun") && !stockHtml.includes("CONTOH POPULAR"));
   const garudaCatalog = await (await call("/unit/retail-cibitung/produk")).text();
   assert.ok(garudaCatalog.includes("0 batang") && !garudaCatalog.includes("besi-beton-polos-10mm?unit=retail-cibitung"));
   const tradingCatalog = await (await call("/unit/trading-proyek/produk")).text();

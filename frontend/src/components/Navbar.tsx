@@ -8,6 +8,7 @@ import { divisionNavigation } from "./DivisionChrome";
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { useQuotation } from '../context/QuotationContext';
+import { mainLogo } from '../data/companyIdentity';
 
 interface NavbarProps {
   division?: Division;
@@ -66,8 +67,8 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   const { divisionWhatsApp } = useDivisionDirectory();
   const location = useLocation();
   const base = division ? `/unit/${division.slug}` : "/";
-  const brandName = division && division.slug !== "laser-cutting" ? division.name.toUpperCase() : "MBI LASER CUTTING";
-  const brandLabel = division?.label || "MAHAMERU BAJA INDONESIA";
+  const brandName = division ? division.name.toUpperCase() : "MAHAMERU BAJA";
+  const brandLabel = division?.label || "INDONESIA";
   const bottomLinks = division ? [...divisionNavigation(division).map(link => ({ ...link, hasMega: false })), { label: "Website utama", href: "/", hasMega: false }] : mainBottomLinks;
   const navigate = useNavigate();
   const { count, setOpen: setQuotationOpen } = useQuotation();
@@ -428,7 +429,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
 
 function LogoMark({ division }: { division?: Division }) {
   const { divisionIdentity } = useDivisionDirectory();
-  const src = divisionIdentity[division?.slug || "laser-cutting"]?.logo || "/mbi-mark.svg";
+  const src = division ? divisionIdentity[division.slug]?.logo || mainLogo : mainLogo;
   return (
     <span className="navbar-symbol relative block h-12 w-16 shrink-0 bg-white" aria-hidden="true">
       <Image src={src} alt="" fill sizes="64px" className="object-contain" />

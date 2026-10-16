@@ -4,7 +4,7 @@ import { readFile, writeFile, unlink } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { requestRecordSchema, type RequestInput, type RequestRecord } from "../data/requests";
+import { requestRecordSchema, type RequestInput, type RequestRecord, type RequestPhoto } from "../data/requests";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 
@@ -34,13 +34,13 @@ async function mutate<T>(update: (records: RequestRecord[]) => { records: Reques
     } finally { await unlink(temp).catch(() => {}); }
   });
 }
-export async function createRequest(input: RequestInput, idempotencyKey?: string) {
+export async function createRequest(input: RequestInput, idempotencyKey?: string, photos: RequestPhoto[] = []) {
   await ensureDivision(input.businessUnitSlug,true);
   return mutate(records => {
     const existing = idempotencyKey && records.find(r => r.idempotencyKey === idempotencyKey);
     if (existing) return { records, result: existing };
     const now = new Date().toISOString();
-    const record = requestRecordSchema.parse({ ...input, id: `MBI-${now.slice(0, 10).replaceAll("-", "")}-${randomUUID().slice(0, 8).toUpperCase()}`, revision: 0, createdAt: now, updatedAt: now, status: "Baru", notes: "", archived: false, idempotencyKey });
+    const record = requestRecordSchema.parse({ ...input, photos, id: `MBI-${now.slice(0, 10).replaceAll("-", "")}-${randomUUID().slice(0, 8).toUpperCase()}`, revision: 0, createdAt: now, updatedAt: now, status: "Baru", notes: "", archived: false, idempotencyKey });
     return { records: [record, ...records], result: record };
   });
 }

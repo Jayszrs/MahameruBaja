@@ -8,7 +8,7 @@ export const divisionIdentity: Record<string, { logo: string; mission: string; a
   "trading-proyek": { logo: "/images/brand/mbi-trading.png", mission: "Menjadi pusat perdagangan dan pengadaan material proyek yang mampu menyediakan kebutuhan proyek secara tepat jenis, jumlah, kualitas, harga, dan waktu pengiriman.", admins: [{ name: "Putri", phone: "0822 9880 7341" }, { name: "Andra", phone: "081 3333 1041" }] },
   "fabrikasi-erection": { logo: "/images/brand/mbi-proyek.png", mission: "Menyediakan pekerjaan fabrikasi dan erection yang profesional, presisi, aman, dan sesuai standar proyek, mulai dari proses produksi hingga pemasangan di lapangan.", admins: [{ name: "Andi", phone: "0812 8255 1985" }, { name: "Andra", phone: "081 3333 1041" }] },
 };
-export const mainLogo = divisionIdentity["laser-cutting"].logo;
+export const mainLogo = "/images/steel-indonesia/company-logo.jpeg";
 export const tradingProducts = ["Besi WF", "Besi H-Beam", "Plat", "Siku Besi", "Besi Beton KS", "Canal UNP", "Canal CNP", "Baja Ringan Kepuh", "Atap UPVC Single Layer", "Atap UPVC Double Layer", "Genteng UPVC"];
 export function divisionWhatsApp(slug: string, name?: string) {
   const admins = divisionIdentity[slug]?.admins || divisionIdentity["laser-cutting"].admins;
