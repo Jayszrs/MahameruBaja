@@ -21,6 +21,20 @@ export function translatePublicTree(node: ReactNode, replace: (text: string) => 
     return cloneElement(element, props);
   });
 }
+// Presentation-only hints: preserve labels/actions and real carousel controls.
+export function responsiveArrowHints(node: ReactNode, decorate = false): ReactNode {
+  const glyphs = /([↗↘↙↖→←↑↓]\uFE0F?)/gu;
+  function label(value: ReactNode): string { return Children.toArray(value).map(child => typeof child === "string" ? child : isValidElement(child) ? label((child.props as { children?: ReactNode }).children) : "").join(""); }
+  return Children.map(node, child => {
+    if (typeof child === "string") return decorate ? child.split(glyphs).map((part, index) => /^[↗↘↙↖→←↑↓]\uFE0F?$/u.test(part) ? <span className="public-cta-arrow" aria-hidden="true" key={index}>{part}</span> : part) : child;
+    if (!isValidElement(child)) return child;
+    const element = child as ReactElement<{ children?: ReactNode; href?: string; to?: string; className?: string }>;
+    if (typeof element.type === "string" && ["svg", "script", "style", "code", "pre", "textarea"].includes(element.type) || element.props.className === "public-cta-arrow") return element;
+    const action = element.type === "a" || element.type === "button" || typeof element.props.href === "string" || typeof element.props.to === "string";
+    const hint = action ? Boolean(label(element.props.children).replace(glyphs, "").trim()) : decorate;
+    return element.props.children === undefined ? element : cloneElement(element, { children: responsiveArrowHints(element.props.children, hint) });
+  });
+}
 export default function PublicText({ children }: { children: ReactNode }) {
   const texts = useContext(Texts); const path = usePathname();
   const replacements = useMemo(() => {
@@ -30,6 +44,6 @@ export default function PublicText({ children }: { children: ReactNode }) {
     for (const row of [...applicable.filter(row => row.page === "all"), ...applicable.filter(row => row.page !== "all")]) result.set(normalizeWebsiteText(row.source), row.replacement);
     return result;
   }, [texts, path]);
-  if (path.startsWith("/admin") || !replacements.size) return <>{children}</>;
-  return <>{translatePublicTree(children, value => replacements.get(normalizeWebsiteText(value)) || value)}</>;
+  if (path.startsWith("/admin")) return <>{children}</>;
+  return <>{responsiveArrowHints(replacements.size ? translatePublicTree(children, value => replacements.get(normalizeWebsiteText(value)) || value) : children)}</>;
 }

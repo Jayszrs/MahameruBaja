@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { internationalPhone, type TeamContact } from '../data/siteContent';
@@ -8,6 +9,8 @@ import { internationalPhone, type TeamContact } from '../data/siteContent';
 
 
 export default function WhatsAppButton() {
+  const pathname = usePathname();
+  const productDetail = /\/produk\/[^/]+/.test(pathname);
   const { divisions, divisionIdentity, divisionWhatsApp } = useDivisionDirectory();
   const actions = divisions.flatMap(division => divisionIdentity[division.slug].admins.map(admin => ({ label: `${division.slug === "laser-cutting" ? "MBI Laser Bending" : division.name} · ${admin.name}`, href: `${divisionWhatsApp(division.slug, admin.name)}?text=${encodeURIComponent(`Halo Admin ${admin.name}, saya ingin konsultasi kebutuhan ${division.label}.`)}` })));
   const [open, setOpen] = useState(false);
@@ -29,7 +32,7 @@ export default function WhatsAppButton() {
   }, [open]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+    <div className={`whatsapp-floating fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2${productDetail ? " above-product-actions" : ""}`}>
       {/* Action menu */}
       {open && (
         <div className="wa-admin-menu flex flex-col gap-1.5 mb-1 items-end">

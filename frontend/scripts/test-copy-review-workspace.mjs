@@ -61,9 +61,9 @@ try {
     'nextjs-nav-guard':{useNavigationGuard(){}},'../data/adminNavigation':nav,
     './AdminWorkspace':{AdminWorkspaceContext:{Provider:'context-provider'},emptyAdminWorkspace:{dirty:false,busy:false}},
   }});
-  const toggle=()=>shell.find(node=>node.props?.className==='admin-secondary admin-wide-toggle');
-  assert.equal(toggle().props['aria-pressed'],false);toggle().props.onClick();
-  assert.equal(toggle().props['aria-pressed'],true);assert.equal(shell.find(node=>node.type==='aside').props.inert,true);assert.equal(shell.find(node=>node.type==='aside').props['aria-hidden'],true);
+  const toggle=()=>shell.find(node=>node.props?.className==='admin-menu-button');
+  assert.equal(toggle().props['aria-expanded'],true);toggle().props.onClick();
+  assert.equal(toggle().props['aria-expanded'],false);assert.equal(shell.find(node=>node.type==='aside').props.inert,true);assert.equal(shell.find(node=>node.type==='aside').props['aria-hidden'],true);
   assert.equal(storage.get('mahameru.admin.wide.v1'),'true');toggle().props.onClick();assert.equal(shell.find(node=>node.type==='aside').props.inert,false);shell.dispose();
 }finally{globalThis.localStorage=previousStorage;globalThis.matchMedia=previousMedia;}
 console.log('PASS: wider-workspace toggle hides/restores the menu, removes hidden navigation from keyboard access and saves the layout preference (adapters)');

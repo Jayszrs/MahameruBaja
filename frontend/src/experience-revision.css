@@ -277,3 +277,91 @@
   .hero-media-fields { padding:18px; }
   .hero-editor-heading { flex-direction:column; gap:16px; }
 }
+/* Mobile follow-up: one scroll surface per popup, compact hero, and real menu control. */
+.company-footer .public-cta-arrow { display:none; }
+.home-final { isolation:isolate; }
+.home-final-photo { position:absolute; inset:0; opacity:.14; pointer-events:none; }
+.home-final-photo img { object-fit:cover; object-position:center 35%; }
+.home-final .home-shell .callout-company-logo { background:transparent; padding:0; border-radius:0; filter:drop-shadow(0 0 1px rgb(255 255 255 / .55)); }
+.poster-welcome { background:#181d20; border-radius:12px; scrollbar-width:none; }
+.poster-welcome::-webkit-scrollbar { display:none; }
+.poster-welcome-toolbar { position:sticky; top:0; z-index:3; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:10px 14px; background:#181d20; border-bottom:1px solid #465054; }
+.poster-welcome-toolbar>span { font-size:14px; font-weight:700; }
+.poster-welcome .poster-welcome-close { position:static; margin:0; width:44px; height:44px; }
+.poster-welcome-provider :is(img,svg) { background:transparent; padding:0; border-radius:0; }
+.poster-welcome-contact { border-top:0; }
+.poster-welcome-more { border-top:1px solid #465054; margin-top:20px; }
+.poster-welcome-more>summary { min-height:48px; display:list-item; align-content:center; font-size:14px; font-weight:700; cursor:pointer; padding:12px 0; }
+.poster-welcome-navigation { gap:12px; border-top:1px solid #465054; padding:10px 14px; }
+.poster-welcome-navigation button { width:auto; min-width:104px; height:44px; padding:10px 12px; border-radius:6px; font-size:14px; font-weight:650; }
+.admin-shell .admin-menu-button { display:grid; place-items:center; width:44px; min-width:44px; height:44px; border:1px solid var(--admin-line); border-radius:6px; background:#fff; color:#23272a; }
+.admin-shell .admin-location { min-width:0; }
+.admin-shell .admin-location>span { min-width:0; overflow-wrap:anywhere; }
+.product-inventory .inventory-suppliers { display:grid; gap:12px; list-style:none; padding:0; margin:18px 0; }
+.product-inventory .inventory-suppliers>li { border:0; padding:0; min-width:0; }
+.product-inventory .inventory-suppliers article { border:1px solid #d8dce0; padding:20px; border-radius:10px; background:#fff; }
+.product-inventory .inventory-suppliers article.is-selected { border:2px solid #b51f2d; padding:19px; box-shadow:none; }
+.product-inventory .inventory-suppliers article>div { display:flex; align-items:start; flex-wrap:wrap; gap:8px 16px; justify-content:space-between; }
+.product-inventory .inventory-suppliers article h3 { flex:1 1 240px; margin:0; }
+.product-inventory .inventory-suppliers article>div>span { flex:0 1 auto; font-size:12px; color:#555f65; line-height:1.6; }
+.product-inventory .inventory-suppliers article>strong { display:block; margin:12px 0; font-size:14px; line-height:1.6; }
+.product-inventory .inventory-suppliers article nav { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:14px; }
+.product-inventory .inventory-suppliers article nav a { border:1px solid #d8dce0; border-radius:6px; padding:10px 14px; min-height:44px; color:#a01c29; font-weight:700; }
+.product-inventory .inventory-suppliers article nav a:first-child { background:#b51f2d; color:#fff; border-color:#b51f2d; }
+@media(max-width:760px) {
+  .public-site .public-cta-arrow { display:none; }
+  .public-site .hero-carousel .hero-carousel-layout { min-height:0; padding-top:calc(104px + env(safe-area-inset-top,0px)); padding-bottom:30px; display:flex; flex-direction:column; justify-content:start; align-items:stretch; gap:0; }
+  .public-site .hero-carousel .hero-carousel-copy-wrap { transform:none!important; }
+  .public-site .hero-carousel .hero-carousel-copy { display:block; }
+  .public-site .hero-carousel .hero-carousel-copy h1 { font-size:clamp(31px,8.5vw,40px); line-height:1.12; letter-spacing:-.04em; margin:18px 0 20px; text-wrap:balance; overflow-wrap:break-word; }
+  .public-site .hero-carousel .hero-carousel-copy>p:not(.hero-carousel-eyebrow) { font-size:16px; line-height:1.7; max-width:100%; margin:0 0 24px; }
+  .public-site .hero-carousel .hero-carousel-eyebrow { font-size:11px; line-height:1.55; letter-spacing:.045em; margin:0; }
+  .public-site .hero-carousel .home-actions { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; width:100%; }
+  .public-site .hero-carousel .home-button { width:100%; min-height:48px; padding:13px 18px; border-radius:8px; font-size:14px; line-height:1.5; }
+  .public-site .hero-carousel .hero-rating-link { margin-top:20px; gap:8px 12px; padding:0; }
+  .public-site .hero-carousel .hero-rating-stars { font-size:24px; }
+  .public-site .hero-carousel .hero-rating-link strong { font-size:18px; }
+  .public-site .hero-carousel .hero-rating-link small { font-size:12px; line-height:1.6; }
+  .public-site .hero-carousel .hero-carousel-meta { margin-top:22px; padding-left:12px; }
+  .public-site .hero-carousel .hero-carousel-meta :is(span,small) { font-size:12px; }
+  .public-site .hero-carousel .hero-carousel-meta strong { font-size:14px; }
+  .public-site .home-shell { width:calc(100% - 36px); }
+  .public-site .home-section-heading h2,.public-site .home-intro-copy h2 { font-size:clamp(29px,8vw,37px); line-height:1.15; letter-spacing:-.035em; }
+  .public-site .home-intro-copy>p:not(.home-eyebrow),.public-site .home-vision p { font-size:16px; line-height:1.75; }
+  .public-site .home-vision h3 { font-size:12px; line-height:1.5; }
+  .public-site .home-final { padding:48px 0; }
+  .public-site .home-final .home-shell .callout-company-logo { width:120px; height:110px; margin-bottom:22px; }
+  .public-site .home-final h2 { font-size:clamp(29px,8vw,38px); line-height:1.16; letter-spacing:-.035em; margin-bottom:18px; }
+  .public-site .home-final p { font-size:16px; line-height:1.7; }
+  .public-site .home-final .home-actions { display:grid; grid-template-columns:minmax(0,1fr); width:100%; max-width:400px; gap:12px; }
+  .public-site .home-final .home-button { width:100%; min-height:48px; border-radius:8px; }
+  .poster-welcome { width:calc(100vw - 20px); max-height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)); border-radius:10px; }
+  .poster-welcome-layout { display:block; }
+  .poster-welcome-toolbar { padding:8px 12px; }
+  .poster-welcome-image { height:clamp(180px,38dvh,340px); background:#111517; }
+  .poster-welcome-details { padding:18px 18px 8px; max-height:none; overflow:visible; }
+  .poster-welcome-details h2 { font-size:22px; line-height:1.25; margin:6px 0 12px; }
+  .poster-welcome-description { font-size:14px; line-height:1.65; margin-bottom:16px; }
+  .poster-welcome-provider { padding:12px 0; gap:10px; }
+  .poster-welcome-provider :is(img,svg) { width:42px; height:42px; }
+  .poster-welcome-provider strong,.poster-welcome-contact>strong { font-size:15px; }
+  .poster-welcome-provider small,.poster-welcome-contact>small { font-size:12px; line-height:1.5; }
+  .poster-welcome-contact { padding-top:14px; }
+  .poster-welcome .poster-contact-button { font-size:14px; margin-top:12px; }
+  .poster-welcome-navigation { padding:10px 12px; gap:8px; }
+  .poster-welcome-navigation button { flex:1; min-width:0; font-size:13px; }
+  .poster-welcome-facts dd { font-size:14px; }
+  .product-inventory .inventory-suppliers article { padding:16px; }
+  .product-inventory .inventory-suppliers article.is-selected { padding:15px; }
+  .product-inventory .inventory-suppliers article nav { display:grid; grid-template-columns:minmax(0,1fr); }
+  .product-inventory .inventory-suppliers article nav a { justify-content:center; text-align:center; }
+}
+.public-site .home-routes .home-route-card .route-division-logo { background:transparent; padding:0; border-radius:0; box-shadow:none; filter:drop-shadow(0 0 1px rgb(255 255 255 / .55)); }
+@media(max-width:760px) {
+  .whatsapp-floating { right:14px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
+  .whatsapp-floating>button { width:48px; height:48px; }
+  .whatsapp-floating.above-product-actions { bottom:calc(88px + env(safe-area-inset-bottom,0px)); }
+  .whatsapp-floating .wa-admin-menu { max-height:65dvh; max-width:calc(100vw - 28px); overflow-y:auto; }
+  .product-detail-mobile-actions { padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)); }
+  .product-detail-content { padding-bottom:110px; }
+}

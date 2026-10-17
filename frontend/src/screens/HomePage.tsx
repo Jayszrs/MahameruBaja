@@ -21,7 +21,7 @@ const businessRoutes = [
 
 function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <svg className="public-cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       {diagonal ? <path d="M7 17 17 7M8 7h9v9" /> : <path d="M5 12h14m-6-6 6 6-6 6" />}
     </svg>
   );
@@ -44,7 +44,7 @@ function BusinessRoutes() {
               <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
-              <Image className={`route-division-logo${division.slug === "laser-cutting" ? " main-company-logo" : ""}`} src={division.slug === "laser-cutting" ? mainLogo : divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} />
+              <Image className="route-division-logo" src={division.slug === "laser-cutting" ? mainLogo : divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} transparentLogo />
               <div><small>{route.tag}</small><h3>{division.name}</h3><p>{route.text}</p></div>
               <strong>Buka website divisi <Arrow diagonal /></strong>
             </Link>

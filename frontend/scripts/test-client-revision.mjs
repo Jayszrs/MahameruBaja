@@ -92,6 +92,12 @@ try {
   assert.ok((await sharp(Buffer.from(await optimizedSheet.arrayBuffer())).metadata()).width > 1000);
   assert.ok(!home.includes('class="division-collage-brand"'));
   assert.ok(home.indexOf('class="company-footer-motto"') < home.indexOf('class="company-footer-wordmark"'));
+  const assertCallout=html=>{
+    const callout=html.match(/<section class="home-final"[^>]*>[\s\S]*?<\/section>/)?.[0]||'';
+    assert.ok(callout.includes('class="home-final-photo" aria-hidden="true"')&&callout.includes('toko-mahameru.jpg'),'Callout retains an actual decorative shop photo');
+    assert.ok(callout.includes('callout-company-logo')&&callout.includes('feColorMatrix')&&!callout.includes('main-company-logo'),'Callout uses opt-in transparent original logo, no white plate');
+  };
+  assertCallout(home);
   const articleIndex=await (await fetch(`${origin}/informasi`)).text();
   const articleHref=articleIndex.match(/href="(\/informasi\/[^"?#]+)"/)?.[1];assert.ok(articleHref);
   for(const route of ['/informasi',articleHref,...['retail-tambun','retail-cibitung','trading-proyek','laser-cutting','fabrikasi-erection'].map(slug=>`/unit/${slug}`)]){
@@ -100,6 +106,7 @@ try {
     assert.ok(footer.includes('class="company-footer-photo" aria-hidden="true"')&&footer.includes('toko-mahameru.jpg'),'Shared shop photo renders on article and division footers');
     assert.ok(footer.includes('footer-company-logo')&&footer.includes('feColorMatrix')&&!footer.includes('main-company-logo'),'Footer has no white logo plate');
     assert.ok(footer.includes('aria-label="Navigasi perusahaan"')&&footer.includes('href="/kebijakan-privasi"'),'Existing navigation remains present');
+    if(route.startsWith('/unit/'))assertCallout(html);
   }
   console.log('PASS: shared photo and transparent logo SSR on article listing/detail and all five division footers, existing footer links retained');
   const form = await (await fetch(`${origin}/minta-penawaran`)).text();

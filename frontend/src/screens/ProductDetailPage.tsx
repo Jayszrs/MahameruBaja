@@ -63,7 +63,7 @@ export default function ProductDetailPage({ inventory = [], selectedDivision }: 
         </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-10">
+      <div className="product-detail-content max-w-[1280px] mx-auto px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-16">
           {/* Images */}
           <div>
@@ -288,7 +288,7 @@ export default function ProductDetailPage({ inventory = [], selectedDivision }: 
       </div>
 
       {/* Mobile sticky bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-white border-t border-light-steel p-3 flex gap-2 shadow-lg">
+      <div className="product-detail-mobile-actions fixed bottom-0 left-0 right-0 z-30 lg:hidden bg-white border-t border-light-steel p-3 flex gap-2 shadow-lg">
         <button
           onClick={handleAddToQuotation}
           className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${added ? 'bg-positive/10 text-positive border border-positive/30' : 'bg-brand text-white'}`}

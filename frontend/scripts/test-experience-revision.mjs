@@ -60,7 +60,8 @@ assert.equal(posterDetails(clientPosters[0],divisions,contacts.map(c=>({...c,aud
 assert.equal(posterDetails(clientPosters[0],divisions.filter(d=>d.slug!=='retail-tambun'),contacts).contact,undefined);
 assert.ok(posterDetails(clientPosters[0],divisions,contacts).whatsappHref.startsWith('https://wa.me/6281234567890?text='));
 assert.ok(posterPeriod(clientPosters[2]).includes('31 Oktober 2026'));
-const popupOptions={storage,imports:{'next/navigation':{usePathname:()=> '/'},'../data/popupPosters':{livePopupPosters,posterDetails,posterPeriod}}};
+let publicPath='/';
+const popupOptions={storage,imports:{'next/navigation':{usePathname:()=>publicPath},'../data/popupPosters':{livePopupPosters,posterDetails,posterPeriod}}};
 const popup=await harness('src/components/WelcomePosters.tsx',{promotions:clientPosters,divisions,contacts},false,popupOptions);
 let opened=0,closed=0;
 popup.find(node=>node.type==='dialog').props.ref.current={showModal(){opened++;},close(){closed++;}};
@@ -81,9 +82,10 @@ assert.ok(popup.find(node=>node.props?.className==='poster-contact-button').prop
 assert.ok(popup.find(node=>node.type==='h2').props.children===clientPosters[0].title);
 assert.match(popupCss,/\.poster-welcome-layout \{ grid-template-columns:minmax\(0,1fr\);/,'Mobile stacks artwork and readable details');
 popup.find(node=>node.props?.['aria-label']==='Poster berikutnya').props.onClick(); popup.render(); assert.equal(currentPoster(),clientPosters[1].image);
-popup.find(node=>node.type==='dialog').props.onCancel(); popup.render(); assert.equal(closed,1); assert.equal(popup.document.body.style.overflow,''); popup.dispose();
-const repeat=await harness('src/components/WelcomePosters.tsx',{promotions:clientPosters},false,popupOptions); repeat.find(node=>node.type==='dialog').props.ref.current={showModal(){opened++;},close(){}}; repeat.advance(1000); assert.equal(opened,1,'Dismissed posters do not reopen on same-site navigation in this session'); repeat.dispose();
-console.log('PASS: popup opens after delay, moves between posters, closes on cancel, restores scrolling and remembers the session (hook/dialog adapters)');
+popup.find(node=>node.type==='dialog').props.onCancel(); popup.render(); assert.equal(closed,1); assert.equal(popup.document.body.style.overflow,'');
+publicPath='/tentang-kami';popup.render();popup.advance(1000);assert.equal(opened,1,'Same-document route navigation does not immediately reopen dismissed posters');popup.dispose();
+const repeat=await harness('src/components/WelcomePosters.tsx',{promotions:clientPosters},false,popupOptions); repeat.find(node=>node.type==='dialog').props.ref.current={showModal(){opened++;},close(){}}; repeat.advance(1000); assert.equal(opened,2,'Reloading the document opens posters again without session-storage suppression'); repeat.dispose();publicPath='/';
+console.log('PASS: popup delay, navigation, cancel, scroll restoration, same-document suppression and repeat on refresh (hook/dialog adapters)');
 const beforePreview=savedSession.size;let previewClosed=0;
 const preview=await harness('src/components/WelcomePosters.tsx',{promotions:[],preview:{...clientPosters[0],published:false},divisions,contacts,onPreviewClose:()=>previewClosed++},false,{...popupOptions,imports:{...popupOptions.imports,'next/navigation':{usePathname:()=>'/admin/promosi'}}});
 assert.ok(preview.find(node=>node.props?.className==='poster-preview-label'));

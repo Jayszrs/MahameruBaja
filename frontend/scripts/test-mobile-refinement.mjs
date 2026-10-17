@@ -1,0 +1,49 @@
+// Source/component/CSS verification only, not browser screenshots or mobile viewport measurement.
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import postcss from 'postcss';
+import {load} from './test-experience-revision.mjs';
+import {harness} from './test-readability-revision.mjs';
+const source=relative=>new URL('../src/'+relative,import.meta.url);
+const {responsiveArrowHints}=load(fileURLToPath(source('components/PublicText.tsx')));
+const click=()=>{},element=React.createElement('a',{href:'/kontak',onClick:click},'Hubungi kami ↗️');
+const result=responsiveArrowHints(element)[0];
+assert.equal(result.props.href,'/kontak');assert.equal(result.props.onClick,click);
+const html=renderToStaticMarkup(result);assert.ok(html.includes('Hubungi kami ')&&html.includes('class="public-cta-arrow" aria-hidden="true"'));
+assert.equal(renderToStaticMarkup(responsiveArrowHints(React.createElement('button',{'aria-label':'Berikutnya'},'→'))),'<button aria-label="Berikutnya">→</button>','Arrow-only functional controls remain available');
+assert.ok(!renderToStaticMarkup(responsiveArrowHints(React.createElement('p',null,'Data → hasil'))).includes('public-cta-arrow'),'Do not alter ordinary document text');
+assert.equal(renderToStaticMarkup(responsiveArrowHints(result)),html,'Nested public wrappers do not wrap hints twice');
+assert.ok(renderToStaticMarkup(responsiveArrowHints(React.createElement('a',{href:'/kontak'},'<script> ↗'))).includes('&lt;script&gt;'),'No HTML injection');
+const css=postcss.parse(await readFile(source('experience-revision.css'),'utf8'));
+function declarations(selector,property){const matches=[];css.walkRules(rule=>{if(rule.selector===selector)rule.walkDecls(property,decl=>matches.push({value:decl.value,media:rule.parent?.type==='atrule'?rule.parent.params:null}));});return matches;}
+assert.ok(declarations('.public-site .public-cta-arrow','display').some(d=>d.value==='none'&&d.media==='(max-width:760px)'));
+assert.ok(declarations('.company-footer .public-cta-arrow','display').some(d=>d.value==='none'&&!d.media));
+assert.ok(declarations('.poster-welcome','max-height').some(d=>d.value.includes('100dvh')&&d.value.includes('safe-area-inset-bottom')));
+assert.ok(declarations('.poster-welcome-layout','display').some(d=>d.value==='block'&&d.media));
+assert.ok(declarations('.poster-welcome-toolbar','position').some(d=>d.value==='sticky'));
+assert.ok(declarations('.poster-welcome-navigation button','min-width').some(d=>d.value==='0'&&d.media),'Buttons fit narrow mobile dialog');
+assert.ok(declarations('.public-site .hero-carousel .hero-carousel-copy-wrap','transform').some(d=>d.value==='none'),'Phone hero copy does not drift under header');
+assert.ok(declarations('.public-site .hero-carousel .hero-carousel-layout','min-height').some(d=>d.value==='0'),'Hero grows with real text instead of clipping a fixed viewport');
+assert.ok(declarations('.home-final-photo','opacity').some(d=>d.value==='.14'));
+assert.ok(declarations('.home-final .home-shell .callout-company-logo','background').some(d=>d.value==='transparent'));
+assert.ok(declarations('.product-inventory .inventory-suppliers article nav','grid-template-columns').some(d=>d.value==='minmax(0,1fr)'&&d.media));
+assert.ok(declarations('.whatsapp-floating.above-product-actions','bottom').some(d=>d.value.includes('88px')));
+const callout=await readFile(source('components/UnifiedHomeContent.tsx'),'utf8');assert.ok(callout.includes('className="callout-company-logo" transparentLogo')&&callout.includes('className="home-final-photo" aria-hidden="true"'));
+const adminSource=await readFile(source('components/AdminShell.tsx'),'utf8');assert.ok(!adminSource.includes('Lebarkan area kerja'));
+const previousStorage=globalThis.localStorage,previousMedia=globalThis.matchMedia;
+let desktop=false;
+try{
+  globalThis.localStorage={getItem:()=>null,setItem(){}};
+  globalThis.matchMedia=()=>({matches:desktop,addEventListener(){},removeEventListener(){}});
+  const nav=load(fileURLToPath(source('data/adminNavigation.ts')));
+  const options={imports:{'./AdminIdentity':{useAdminIdentity:()=>({name:'Admin fixture',role:'super_admin',mustChangePassword:false})},'./DivisionDirectory':{useDivisionDirectory:()=>({divisions:[]})},'next/navigation':{usePathname:()=>'/admin/divisi',useSearchParams:()=>new URLSearchParams(),useRouter:()=>({replace(){}})},'nextjs-nav-guard':{useNavigationGuard(){}},'../data/adminNavigation':nav,'./AdminWorkspace':{AdminWorkspaceContext:{Provider:'context-provider'},emptyAdminWorkspace:{dirty:false,busy:false}}}};
+  const shell=await harness('src/components/AdminShell.tsx',{children:'Editor'},false,options);
+  const button=()=>shell.find(node=>node.props?.className==='admin-menu-button');
+  assert.equal(button().props['aria-expanded'],false);assert.equal(shell.find(node=>node.type==='aside').props.inert,true);
+  button().props.onClick();assert.equal(button().props['aria-expanded'],true);assert.equal(shell.find(node=>node.type==='aside').props.inert,false);assert.equal(shell.document.body.style.overflow,'hidden');
+  shell.find(node=>node.props?.className==='admin-drawer-close').props.onClick();assert.equal(button().props['aria-expanded'],false);assert.equal(shell.document.body.style.overflow,'');shell.dispose();
+}finally{globalThis.localStorage=previousStorage;globalThis.matchMedia=previousMedia;}
+console.log('PASS: decorative arrow isolation/escaping/actions, mobile dialog/hero/safe-area CSS, transparent callout/photo, supplier cards, WhatsApp offset and mobile hamburger open/close/scroll restore (adapters, not visual QA)');
