@@ -29,7 +29,7 @@ for (const slug of [undefined,'retail-tambun','retail-cibitung','trading-proyek'
 assert.equal(livePopupPosters(clientPosters,'2026-11-01').length,3,'October promotion expires');
 assert.equal(livePopupPosters(clientPosters.map(row=>({...row,published:false})),'2026-10-17').length,0);
 assert.equal(livePopupPosters(clientPosters.map(row=>({...row,audience:['retail-tambun']})),'2026-10-17','retail-cibitung').length,0,'Audience isolation');
-assert.ok(clientPosters.every(row=>row.showInBanner === false),'Popup posters do not clutter the banner ribbon');
+assert.ok(clientPosters.every(row=>row.showInBanner === true),'The same popup posters also appear in the homepage banner ribbon');
 const React = require('react'); const {renderToStaticMarkup} = require('react-dom/server');
 const {translatePublicTree} = load(path.join(frontend,'src/components/PublicText.tsx'));
 let called=false; const click=()=>{called=true;};

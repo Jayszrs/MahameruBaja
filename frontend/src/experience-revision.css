@@ -249,3 +249,5 @@
   .review-source-stats>div { display:flex; justify-content:space-between; align-items:center; gap:16px; }
   .review-source-stats strong { margin:0; font-size:21px; }
 }
+.home-promo-media.is-poster { background: #171a1b; }
+.home-promo-media.is-poster img { object-fit: contain; }

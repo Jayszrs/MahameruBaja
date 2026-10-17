@@ -38,7 +38,7 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
   const [site, setSite] = useState(actor.division || "all");
   function addPoster() {
     const owner = actor.division || (site === "all" || site === "main" ? null : site);
-    change(current => ({ ...current, promotions:[...current.promotions, { id:contentId(), ownerDivision:owner, ...(owner?{audience:[owner]}:{}), providerDivision:owner || "", contactId:"", label:"Informasi & promo", title:"Poster baru", summary:"Tuliskan informasi penawaran untuk pelanggan.", benefit:"", appliesTo:"", terms:"", image:"", imageAlt:"", startDate:"", endDate:"", ctaLabel:"Hubungi tim kami", ctaHref:owner?`/unit/${owner}/kontak`:"/kontak", published:false, showInPopup:true, showInBanner:false, countdownAt:"", countdownLabel:"", countdownEstimated:false }] }));
+    change(current => ({ ...current, promotions:[...current.promotions, { id:contentId(), ownerDivision:owner, ...(owner?{audience:[owner]}:{}), providerDivision:owner || "", contactId:"", label:"Informasi & promo", title:"Poster baru", summary:"Tuliskan informasi penawaran untuk pelanggan.", benefit:"", appliesTo:"", terms:"", image:"", imageAlt:"", startDate:"", endDate:"", ctaLabel:"Hubungi tim kami", ctaHref:owner?`/unit/${owner}/kontak`:"/kontak", published:false, showInPopup:true, showInBanner:true, countdownAt:"", countdownLabel:"", countdownEstimated:false }] }));
     setView("popup");
   }
   function change(update: (current: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
