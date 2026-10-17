@@ -10,6 +10,7 @@ import postcss from "postcss";
 import { cmsVideo } from "./fixtures/cms-video.mjs";
 import { verifyPartnerLogos } from "./test-partner-logos-http.mjs";
 import { verifyRouteMedia } from "./test-route-media-http.mjs";
+import { verifyFooterCms } from "./test-footer-cms-http.mjs";
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const root = path.dirname(frontend);
 // CSS structure checks, not a substitute for viewport/browser rendering.
@@ -49,6 +50,7 @@ try{
   const sessions=await Promise.all(accounts.map(a=>login(a.email)));
   await verifyPartnerLogos({call,origin,owner,sessions,slugs,picture:await readFile(path.join(frontend,'public/images/brand/mbi-laser.png'))});
   await verifyRouteMedia({call,origin,owner,sessions,slugs,picture:await readFile(path.join(frontend,'public/images/brand/mbi-laser.png'))});
+  await verifyFooterCms({call,owner,slugs});
   const posterTemplate=(await (await call("/api/admin/content","GET",undefined,owner)).json()).promotions.find(p=>p.id==="client-poster-ring-20261017");
   for (const [i,slug] of slugs.entries()) {
     const before=await (await call("/api/admin/content","GET",undefined,sessions[i])).json();

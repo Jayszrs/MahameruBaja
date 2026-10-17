@@ -585,3 +585,33 @@
   .poster-welcome-more>summary:focus-visible { outline:2px solid #fff; outline-offset:2px; }
   .poster-welcome .poster-zoom-label { padding:5px 8px; font-size:11px; }
 }
+
+.company-footer .footer-group-motto { max-width:1000px; margin:40px 0 28px; }
+.footer-divisions { padding-block:0 36px; border-bottom:1px solid #ffffff29; scroll-margin-top:150px; }
+.footer-divisions>h2 { font-size:18px; font-weight:700; margin-bottom:28px; }
+.footer-division-list { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:28px; }
+.footer-division { min-width:0; background:transparent; border:0; box-shadow:none; }
+.footer-division-logo { display:flex; align-items:center; justify-content:flex-start; min-height:150px; width:100%; margin-bottom:16px; }
+.footer-division-logo :is(img,svg.corporate-logo) { width:160px; height:140px; object-fit:contain; background:transparent; padding:0; border:0; border-radius:0; box-shadow:none; }
+.footer-division>h3 { min-height:3em; font-size:18px; font-weight:700; line-height:1.5; margin-bottom:8px; overflow-wrap:anywhere; }
+.company-footer .footer-division-website { display:inline-flex; align-items:center; min-height:44px; font-size:14px; font-weight:700; text-decoration:underline; text-underline-offset:4px; }
+.footer-division address { min-height:7em; margin:12px 0 20px; color:#d6dadc; font-size:14px; line-height:1.75; font-style:normal; overflow-wrap:anywhere; }
+.footer-division address a { display:block; padding-block:4px; }
+.footer-division-admins>h4 { color:#d6dadc; font-size:13px; font-weight:700; margin-bottom:8px; }
+.footer-division-admins>a { display:flex; flex-direction:column; justify-content:center; align-items:start; gap:3px; min-height:56px; padding-block:8px; overflow-wrap:anywhere; font-size:14px; }
+.footer-division-admins strong { font-size:15px; font-variant-numeric:tabular-nums; }
+.company-footer .company-footer-group-links { grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px 80px; padding-block:36px; max-width:800px; }
+.company-footer :is(.footer-division a,.footer-contact-link):focus-visible { outline:2px solid #fff; outline-offset:4px; }
+.public-site .partner-logo-strip :is(img,svg.corporate-logo) { mix-blend-mode:normal; }
+@media(max-width:1100px) { .footer-division-list { grid-template-columns:repeat(3,minmax(0,1fr)); gap:36px 28px; } }
+@media(max-width:760px) { .footer-division-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:36px 24px; } .footer-division address { min-height:0; } }
+@media(max-width:560px) {
+  .footer-division-list { grid-template-columns:minmax(0,1fr); gap:32px; }
+  .footer-division { padding-bottom:24px; border-bottom:1px solid #ffffff29; }
+  .footer-division:last-child { padding-bottom:0; border-bottom:0; }
+  .footer-division-logo { min-height:130px; margin-bottom:12px; }
+  .footer-division-logo :is(img,svg.corporate-logo) { height:124px; width:160px; }
+  .footer-division>h3 { min-height:0; font-size:20px; }
+  .footer-division address { font-size:15px; }
+  .footer-division-admins strong { font-size:16px; }
+}

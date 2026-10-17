@@ -19,5 +19,11 @@ export default function CmsImage({ transparentLogo = false, ...props }: ImagePro
     <image href={logoSheetSrc} x="0" y="0" width="1437" height="1095" style={{ clipPath: logo.clip }} filter={transparentLogo ? `url(#${filterId})` : undefined} />
   </svg>;
   const privateOrExternal = typeof props.src === "string" && (props.src.startsWith("/") && !props.src.startsWith("/images/") && props.src !== "/mbi-mark.svg" || props.src.startsWith("https://") && !isPublicBlobUrl(props.src));
+  if (transparentLogo) return <>
+    <svg aria-hidden="true" focusable="false" style={{position:"absolute",width:0,height:0,overflow:"hidden"}}>
+      <defs><filter id={filterId} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 17" result="paperless"/><feComposite in="paperless" in2="SourceGraphic" operator="in"/></filter></defs>
+    </svg>
+    <Image {...props} unoptimized={props.unoptimized || privateOrExternal} style={{...props.style,filter:[props.style?.filter,`url(#${filterId})`].filter(Boolean).join(" "),background:"transparent"}}/>
+  </>;
   return <Image {...props} unoptimized={props.unoptimized || privateOrExternal} />;
 }

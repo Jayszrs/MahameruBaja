@@ -91,7 +91,7 @@ try {
   assert.equal(optimizedSheet.status, 200, "Logo optimizer delivers the original supplied artwork");
   assert.ok((await sharp(Buffer.from(await optimizedSheet.arrayBuffer())).metadata()).width > 1000);
   assert.ok(!home.includes('class="division-collage-brand"'));
-  assert.ok(home.indexOf('class="company-footer-motto"') < home.indexOf('class="company-footer-wordmark"'));
+  assert.ok(home.indexOf('class="company-footer-motto') >= 0 && home.indexOf('class="company-footer-motto') < home.indexOf('class="company-footer-wordmark"'));
   const assertCallout=html=>{
     const callout=html.match(/<section class="home-final"[^>]*>[\s\S]*?<\/section>/)?.[0]||'';
     assert.ok(callout.includes('class="home-final-photo" aria-hidden="true"')&&callout.includes('toko-mahameru.jpg'),'Callout retains an actual decorative shop photo');
@@ -104,9 +104,9 @@ try {
     const response=await fetch(origin+route);assert.equal(response.status,200);
     const html=await response.text(),footer=html.match(/<footer class="company-footer">[\s\S]*?<\/footer>/)?.[0]||'';
     assert.ok(footer.includes('class="company-footer-photo" aria-hidden="true"')&&footer.includes('toko-mahameru.jpg'),'Shared shop photo renders on article and division footers');
-    assert.ok(footer.includes('footer-company-logo')&&footer.includes('feColorMatrix')&&!footer.includes('main-company-logo'),'Footer has no white logo plate');
+    assert.ok(footer.includes(route.startsWith('/unit/')?'footer-company-logo':'footer-division-logo')&&footer.includes('feColorMatrix')&&!footer.includes('main-company-logo'),'Main footer shows each division without white plates; own-division footer preserves its identity');
     assert.ok(footer.includes('aria-label="Navigasi perusahaan"')&&footer.includes('href="/kebijakan-privasi"'),'Existing navigation remains present');
-    assert.ok(footer.includes('MATERIAL &amp; JASA CUTTING')&&footer.includes('Dari trading material, cutting, bending, fabrikasi sampai erection.'),'Shared footer uses the requested cutting wording and motto');
+    assert.ok(footer.includes('MATERIAL, CUTTING &amp; PROYEK')&&footer.includes('Dari trading material, cutting, bending, fabrikasi sampai erection.'),'Shared footer represents material, cutting and projects with the group motto');
     if(route===articleHref){
       assert.ok(html.includes('class="article-editorial-visual"')&&html.includes('class="article-editorial-shade"'),'Article detail renders a full-width static photo hero with readable heading');
       const heading=html.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0]||'';
