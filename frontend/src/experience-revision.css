@@ -357,6 +357,69 @@
   .product-inventory .inventory-suppliers article nav a { justify-content:center; text-align:center; }
 }
 .public-site .home-routes .home-route-card .route-division-logo { background:transparent; padding:0; border-radius:0; box-shadow:none; filter:drop-shadow(0 0 1px rgb(255 255 255 / .55)); }
+
+/* Posters retain every printed detail; the frame follows their portrait format. */
+.home-promos-track .home-promo-card.has-poster { flex-basis:300px; min-width:0; background:transparent; border:0; box-shadow:none; }
+.home-promo-card.has-poster .home-promo-media.is-poster { height:auto; aspect-ratio:2 / 3; background:transparent; border-radius:8px; }
+.home-promo-card.has-poster .home-promo-content { padding:20px 0; background:transparent; min-height:0; }
+.home-promo-card.has-poster .home-promo-media img { object-fit:contain; }
+.home-promo-card.has-poster .home-promo-media>span { background:#111c; backdrop-filter:none; }
+.promo-preview-tools { position:sticky; top:0; z-index:4; display:flex; justify-content:space-between; gap:12px; padding:12px; background:#181d20; color:#fff; }
+.promo-preview-tools button { min-height:44px; padding:10px 14px; border:1px solid #667075; border-radius:6px; cursor:pointer; }
+.promo-preview-tools button:focus-visible { outline:3px solid #fff; outline-offset:2px; }
+.promo-preview-dialog.is-full-poster { width:min(1200px,96vw); max-height:94dvh; background:#111517; }
+.promo-preview-dialog.is-full-poster .promo-preview-layout { display:block; }
+.promo-preview-dialog.is-full-poster .promo-preview-image { position:relative; width:100%; height:calc(90dvh - 76px); min-height:0; }
+.promo-preview-dialog.is-full-poster .promo-preview-image img { object-fit:contain; transform:none; }
+.promo-preview-copy[hidden], .poster-welcome-details[hidden] { display:none; }
+.poster-welcome button.poster-welcome-image { padding:0; border:0; border-radius:0; color:#fff; }
+.poster-zoom-label { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); padding:8px 12px; border-radius:5px; background:#111d; font-size:12px; white-space:nowrap; }
+.poster-welcome-layout.is-expanded { display:block; }
+.poster-welcome-layout.is-expanded .poster-welcome-image { height:calc(84dvh - 130px); }
+.poster-welcome .poster-autoplay { display:block; margin:8px auto; width:auto; min-height:44px; padding:8px 16px; border-radius:6px; font-size:12px; }
+.public-site .company-footer-brand .footer-company-logo,
+.public-site .home-final .home-shell .callout-company-logo,
+.public-site .home-routes .home-route-card .route-division-logo { filter:none; box-shadow:none; }
+.jasa-paths :is(a,strong), .jasa-paths :is(a,strong):hover { text-decoration:none; border-bottom:0; }
+.jasa-paths a:focus-visible { outline:3px solid var(--color-brand,#c41f2b); outline-offset:-4px; }
+.directory-portrait .directory-cartoon { position:relative; width:100%; height:100%; display:flex; justify-content:center; background:#e5e8e7; overflow:hidden; }
+.directory-portrait .directory-cartoon>img { display:block; height:100%; width:auto; max-width:100%; object-fit:contain; object-position:center bottom; }
+.directory-portrait .directory-cartoon>.directory-cap-logo { position:absolute; top:9%; left:50%; transform:translateX(-50%); height:20%; width:17%; max-width:64px; object-fit:contain; }
+.directory-illustration-note { position:absolute; bottom:12px; right:12px; color:#39474a; background:#f4f6f4e6; padding:4px 8px; border-radius:4px; font-size:11px; }
+.directory-portrait .directory-number { z-index:1; }
+.directory-role { z-index:1; }
+.directory-links a strong { overflow-wrap:anywhere; }
+.account-avatar-editor { margin:0 0 24px; padding-bottom:20px; border-bottom:1px solid #ddd; }
+.account-avatar-editor>img { width:88px; height:88px; object-fit:contain; margin:12px 0; border-radius:8px; }
+.admin-identity-caption>img { width:40px; height:40px; object-fit:contain; float:left; margin-right:10px; border-radius:6px; }
+.article-reading-page .article-detail-hero { padding-top:40px; padding-bottom:0; }
+.article-reading-page .article-detail-hero h1 { font-size:clamp(30px,4vw,46px); line-height:1.16; letter-spacing:-.025em; }
+.article-reading-page .article-detail-hero :is(.text-white\/40,.text-white\/70) { color:#c7cdd0; }
+.article-reading-page .article-cover { padding:4px 0 32px; }
+.article-reading-page .article-cover .aspect-video { margin-bottom:0; border-radius:8px; }
+.article-reading-body { font-size:17px; line-height:1.85; }
+.article-reading-body :is(h2,h3) { scroll-margin-top:140px; line-height:1.3; margin-top:1.8em; }
+.article-reading-body p { margin-bottom:1.2em; }
+.article-index-page .simple-hero-media { opacity:.2; }
+.article-index-page .simple-hero-media img { object-fit:cover; }
+.article-index-page :is(h3,p) { overflow-wrap:break-word; }
+[data-static-motion] [data-parallax], [data-static-motion] .auto-parallax { transform:none!important; will-change:auto!important; }
+@media(max-width:760px) {
+  .home-promos-track .home-promo-card.has-poster { flex:0 0 min(78vw,300px); }
+  .home-promo-card.has-poster .home-promo-content h3 { font-size:22px; }
+  .home-promo-card.has-poster .home-promo-content p { font-size:14px; line-height:1.65; }
+  .promo-preview-dialog { width:calc(100vw - 20px); max-height:calc(100dvh - 24px); }
+  .promo-preview-tools { gap:8px; padding:8px; }
+  .promo-preview-tools button { font-size:13px; }
+  .poster-welcome-layout.is-expanded .poster-welcome-image { height:calc(82dvh - 130px); }
+  .directory-cards .directory-card { margin-top:0; }
+  .directory-links a { min-height:48px; }
+  .article-reading-page .article-detail-hero { padding-top:28px; }
+  .article-reading-page .article-detail-breadcrumb { max-width:100%; font-size:11px; }
+  .article-reading-page .article-detail-hero h1 { font-size:30px; }
+  .article-reading-page .article-reading-body { padding:22px 18px; border:0; font-size:16px; line-height:1.8; }
+  .article-reading-page .article-cover { padding-bottom:0; }
+}
 @media(max-width:760px) {
   .whatsapp-floating { right:14px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
   .whatsapp-floating>button { width:48px; height:48px; }

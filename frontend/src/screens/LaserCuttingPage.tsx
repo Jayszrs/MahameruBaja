@@ -112,7 +112,7 @@ export default function LaserCuttingPage() {
         </div>
       </section>
       <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
-            const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action} ↗</strong></div></>;
+            const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action}</strong></div></>;
             if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;
             if (path.href.startsWith("#")) return <a href={path.href} key={path.title}>{inner}</a>;
             return <Link to={path.href} key={path.title}>{inner}</Link>;

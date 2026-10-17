@@ -1,6 +1,6 @@
 "use client";
 import PublicText from "../components/PublicText";
-import RotatingHeroMedia from "../components/RotatingHeroMedia";
+import Image from "../components/CmsImage";
 
 import { Link } from 'react-router';
 import type { Article } from '../data/articles';
@@ -15,10 +15,10 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
   const featured = articles[0];
 
   return (
-    <PublicText>
+    <PublicText><div className="article-index-page" data-static-motion>
       {/* Hero */}
       <section className="bg-graphite relative overflow-hidden" aria-labelledby="informasi-hero-heading">
-        <RotatingHeroMedia className="simple-hero-media" images={["/images/hero-steel-warehouse-v2.png","/images/steel-indonesia/besi-beton.jpg","/images/laser-cutting-illustration.jpg"]} />
+        <div className="simple-hero-media"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="" fill sizes="100vw" loading="eager" className="object-cover"/></div>
         <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 pt-8 pb-12">
@@ -53,7 +53,7 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
               className="group grid grid-cols-1 lg:grid-cols-5 gap-0 bg-white border border-light-steel/80 rounded-md overflow-hidden transition-colors duration-300 hover:border-brand/25"
             >
               <div className="lg:col-span-3 aspect-video lg:aspect-auto bg-graphite overflow-hidden">
-                <img src={featured.image} alt={featured.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <Image src={featured.image} alt={featured.title} width={1000} height={563} sizes="(max-width:1024px) 100vw, 60vw" className="w-full h-full object-cover" />
               </div>
               <div className="lg:col-span-2 p-6 lg:p-8 flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-3">
@@ -86,7 +86,7 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
                 className={`group bg-white border border-light-steel/80 rounded-md overflow-hidden transition-colors duration-300 hover:border-brand/25 reveal reveal-delay-${(i % 3) + 1} ${visible ? 'visible' : ''}`}
               >
                 <div className="aspect-video overflow-hidden bg-surface-2 relative">
-                  <img src={article.image} alt={article.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={article.image} alt={article.title} width={600} height={338} sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw" className="w-full h-full object-cover" loading="lazy" />
                   <div className="absolute top-3 left-3">
                     <span className="text-[10px] font-bold tracking-wide uppercase bg-white/92 text-brand px-2 py-1 rounded-md">
                       {article.category}
@@ -127,6 +127,6 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
           </Link>
         </div>
       </section>
-    </PublicText>
+    </div></PublicText>
   );
 }

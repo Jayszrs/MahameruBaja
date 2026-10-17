@@ -54,7 +54,7 @@ export async function readAdminAuthentication(value?: string): Promise<{ identit
   if (!registered || registered.accountId !== session.id || registered.version !== session.version || registered.expiresAt !== session.exp * 1000) return null;
   const account = (await readAccounts()).find(a => a.id === session.id && a.active && a.sessionVersion === session.version);
   if (!account || (account.division && !(await readDivisions()).some(d => d.slug === account.division && d.status === "active"))) return null;
-  return { identity: { id: account.id, email: account.email, name: account.name, role: account.role, division: account.division, mustChangePassword: account.mustChangePassword }, sessionVersion: session.version };
+  return { identity: { id: account.id, email: account.email, name: account.name, role: account.role, division: account.division, mustChangePassword: account.mustChangePassword, avatar: account.avatar }, sessionVersion: session.version };
 }
 export async function readAdminIdentity(value?: string): Promise<AdminIdentity | null> {
   return (await readAdminAuthentication(value))?.identity ?? null;

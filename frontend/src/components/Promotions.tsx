@@ -3,16 +3,28 @@ import PublicText from "./PublicText";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import type { Promotion } from "../data/promotions";
+import { prioritizePromotions } from "../data/promotionOrder";
 import EventCountdown from "./EventCountdown";
 import PromotionImage from "./PromotionImage";
 import { jakartaDate } from "../lib/jakartaDate";
 
 function PromoCard({ item, now }: { item: Promotion; now: number | null }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  return <PublicText><article className="home-promo-card">
-    <button type="button" className={`home-promo-media${item.showInPopup ? " is-poster" : ""}`} onClick={() => dialog.current?.showModal()} aria-label={`Buka banner ${item.title}`}><PromotionImage src={item.image} alt={item.imageAlt} /><span>Lihat banner ↗</span></button>
-    <div className="home-promo-content"><span className="home-promo-kicker">{item.label}</span><h3>{item.title}</h3><p>{item.summary}</p><EventCountdown item={item} now={now} /><div className="home-promo-actions"><Link className="home-promo-cta" href={item.ctaHref}>{item.ctaLabel} ↗</Link><button className="home-promo-preview" type="button" onClick={() => dialog.current?.showModal()} aria-label={`Preview ${item.title}`}>Lihat banner ↗</button></div></div>
-    <dialog ref={dialog} className="promo-preview-dialog" aria-labelledby={`promo-title-${item.id}`} onClick={e => { if (e.target === e.currentTarget) dialog.current?.close(); }}><div className="promo-preview-layout"><button className="promo-preview-close" onClick={() => dialog.current?.close()} aria-label="Tutup preview promo">✕</button><div className="promo-preview-image"><PromotionImage src={item.image} alt={item.imageAlt} featured /></div><div className="promo-preview-copy"><span>{item.label}</span><h2 id={`promo-title-${item.id}`}>{item.title}</h2><p>{item.summary}</p><EventCountdown item={item} now={now} />{item.benefit && <p><strong>Informasi</strong>{item.benefit}</p>}{item.appliesTo && <p><strong>Berlaku untuk</strong>{item.appliesTo}</p>}{(item.startDate || item.endDate) && <p><strong>Periode</strong>{item.startDate || "Mulai sekarang"} — {item.endDate || "Sampai pemberitahuan berikutnya"}</p>}{item.terms && <p><strong>Ketentuan</strong>{item.terms}</p>}<Link href={item.ctaHref} onClick={() => dialog.current?.close()}>{item.ctaLabel} ↗</Link></div></div></dialog>
+  const [full, setFull] = useState(false);
+  const [opened, setOpened] = useState(false);
+  useEffect(() => {
+    if (!opened) return;
+    const node = dialog.current; const overflow = document.body.style.overflow;
+    node?.showModal(); document.body.style.overflow = "hidden";
+    return () => { node?.close(); document.body.style.overflow = overflow; };
+  }, [opened]);
+  return <PublicText><article className={`home-promo-card${item.showInPopup ? " has-poster" : ""}`}>
+    <button type="button" className={`home-promo-media${item.showInPopup ? " is-poster" : ""}`} onClick={() => setOpened(true)} aria-label={`Buka banner ${item.title}`}><PromotionImage src={item.image} alt={item.imageAlt} /><span>Lihat banner ↗</span></button>
+    <div className="home-promo-content"><span className="home-promo-kicker">{item.label}</span><h3>{item.title}</h3><p>{item.summary}</p><EventCountdown item={item} now={now} /><div className="home-promo-actions"><Link className="home-promo-cta" href={item.ctaHref}>{item.ctaLabel} ↗</Link><button className="home-promo-preview" type="button" onClick={() => setOpened(true)} aria-label={`Preview ${item.title}`}>Lihat banner ↗</button></div></div>
+    <dialog ref={dialog} className={`promo-preview-dialog${full ? " is-full-poster" : ""}`} aria-labelledby={`promo-title-${item.id}`} onClose={() => { setFull(false); setOpened(false); }} onClick={e => { if (e.target === e.currentTarget) dialog.current?.close(); }}>
+      <div className="promo-preview-tools"><button type="button" onClick={() => setFull(value => !value)} aria-pressed={full}>{full ? "Lihat detail penawaran" : "Perbesar poster"}</button><button type="button" onClick={() => dialog.current?.close()} aria-label="Tutup preview promo">Tutup</button></div>
+      <div className="promo-preview-layout"><div className="promo-preview-image"><PromotionImage src={item.image} alt={item.imageAlt} featured /></div><div className="promo-preview-copy" hidden={full}><span>{item.label}</span><h2 id={`promo-title-${item.id}`}>{item.title}</h2><p>{item.summary}</p><EventCountdown item={item} now={now} />{item.benefit && <p><strong>Informasi</strong>{item.benefit}</p>}{item.appliesTo && <p><strong>Berlaku untuk</strong>{item.appliesTo}</p>}{(item.startDate || item.endDate) && <p><strong>Periode</strong>{item.startDate || "Mulai sekarang"} — {item.endDate || "Sampai pemberitahuan berikutnya"}</p>}{item.terms && <p><strong>Ketentuan</strong>{item.terms}</p>}<Link href={item.ctaHref} onClick={() => dialog.current?.close()}>{item.ctaLabel}</Link></div></div>
+    </dialog>
   </article></PublicText>;
 }
 export default function Promotions({ promotions }: { promotions: Promotion[] }) {
@@ -22,10 +34,16 @@ export default function Promotions({ promotions }: { promotions: Promotion[] }) 
   const drag = useRef<{ pointer: number; x: number; scroll: number } | null>(null);
   const suppressClick = useRef(false);
   const [now, setNow] = useState<number | null>(null);
-  useEffect(() => { const tick = () => { if (!document.hidden) setNow(Date.now()); }; tick(); const timer = window.setInterval(tick, 1000); return () => window.clearInterval(timer); }, []);
   const [userPaused, setUserPaused] = useState(false);
   const today = jakartaDate();
-  const live = promotions.filter(p => p.published && p.showInBanner !== false && (!p.startDate || p.startDate <= today) && (!p.endDate || p.endDate >= today));
+  const live = prioritizePromotions(promotions.filter(p => p.published && p.showInBanner !== false && (!p.startDate || p.startDate <= today) && (!p.endDate || p.endDate >= today)));
+  const hasCountdown = live.some(item => Boolean(item.countdownAt));
+  useEffect(() => {
+    if (!hasCountdown) return;
+    const tick = () => { if (!document.hidden) setNow(Date.now()); };
+    tick(); const timer = window.setInterval(tick, 1000);
+    return () => window.clearInterval(timer);
+  }, [hasCountdown]);
   useEffect(() => {
     if (live.length < 2 || paused || userPaused || dragging) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");

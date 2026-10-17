@@ -11,7 +11,7 @@ export default function CmsImage({ transparentLogo = false, ...props }: ImagePro
     width={props.fill ? undefined : props.width} height={props.fill ? undefined : props.height}
     className={`corporate-logo ${props.className || ""}`} role={props.alt ? "img" : undefined} aria-label={props.alt || undefined} aria-hidden={props.alt ? undefined : true}
     data-corporate-logo={logo.name} data-logo-source={String(props.src)} focusable="false"
-    style={{ ...(props.fill ? { position: "absolute", inset: 0, width: "100%", height: "100%" } as const : {}), ...props.style, overflow: "hidden" }}>
+    style={{ ...(props.fill ? { position: "absolute", inset: 0, width: "100%", height: "100%" } as const : {}), ...props.style, ...(transparentLogo ? { background:"transparent", borderRadius:0, boxShadow:"none" } : {}), overflow: "hidden" }}>
     {transparentLogo && <defs><filter id={filterId} colorInterpolationFilters="sRGB">
       {/* Remove near-white paper, retaining the original dark and colored artwork. */}
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 17" />

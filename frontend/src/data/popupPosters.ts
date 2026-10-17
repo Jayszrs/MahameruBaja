@@ -1,9 +1,10 @@
 import type { Promotion } from "./promotions";
+import { prioritizePromotions } from "./promotionOrder";
 import { contentOwner, visibleInDivision } from "./divisionCms";
 import type { Division } from "./divisionCms";
 import type { TeamContact } from "./siteContent";
 export function livePopupPosters(promotions: Promotion[], today: string, slug?: string) {
-  return promotions.filter(item => item.published && item.showInPopup && item.image && (!item.startDate || item.startDate <= today) && (!item.endDate || item.endDate >= today) && (slug ? visibleInDivision(item, slug) : !contentOwner(item)));
+  return prioritizePromotions(promotions.filter(item => item.published && item.showInPopup && item.image && (!item.startDate || item.startDate <= today) && (!item.endDate || item.endDate >= today) && (slug ? visibleInDivision(item, slug) : !contentOwner(item))));
 }
 
 // The displaying website is not necessarily the issuer of a shared poster.

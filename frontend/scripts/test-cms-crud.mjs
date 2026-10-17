@@ -71,13 +71,19 @@ for (const actor of actors) {
     if (key === "socialAccounts") Object.assign(row, { platform: "instagram", handle: "@" + id, url: "https://www.instagram.com/mahamerubajaindonesia/" });
     if (key === "socialPosts") Object.assign(row, { title: id, image, url: "https://www.instagram.com/p/CMSCrudFixture/", videoUrl: "" });
     if (key === "heroSlides") Object.assign(row, { title: id, type: "image", media: image });
-    if (key === "promotions") Object.assign(row, { title: id, image, imageAlt: id, benefit: "Konsultasi", appliesTo: "Material", terms: "Konfirmasi admin", startDate: "", endDate: "" });
+    if (key === "promotions") Object.assign(row, { title: id, image, imageAlt: id, benefit: "Konsultasi", appliesTo: "Material", terms: "Konfirmasi admin", startDate: "", endDate: "", priority:100 });
     if (key === "galleryProjects") Object.assign(row, { title: id, photos: [{ id: id + "-photo", src: image, alt: id, caption: "Foto fixture" }], coverId: id + "-photo" });
     if (key === "heroAnnouncements") Object.assign(row,{messages:[id]});
     if (key === "websiteTexts") Object.assign(row,{page:'home',source:id,replacement:'Fixture text',published:false});
     let saved = await change(actor, key, rows => [...rows, row]);
     assert(saved[key].some(r => r.id === id));
     assert((await json(actor.cookie, "/api/admin/content"))[key].some(r => r.id === id));
+    if (key === "promotions") {
+      assert.equal(saved.promotions.find(r=>r.id===id).priority,100);
+      for (const priority of [-1,1.5,1000]) await json(actor.cookie,"/api/admin/content","PUT",{...saved,promotions:saved.promotions.map(r=>r.id===id?{...r,priority}:r),_base:saved},400);
+      saved=await change(actor,key,rows=>rows.map(r=>r.id===id?{...r,priority:999}:r));
+      assert.equal(saved.promotions.find(r=>r.id===id).priority,999);
+    }
     if (actor.division) assert(!(await json(actors.find(a => a.division && a.division !== actor.division).cookie, "/api/admin/content"))[key].some(r => r.id === id));
     if (image) assert.equal((await request(null, image)).status, 404, `${key} draft media must be private`);
     saved = await change(actor, key, rows => rows.map(r => r.id === id ? { ...r, published: true } : r));
@@ -191,5 +197,6 @@ for (const actor of actors) {
 // Save a real published upload and all stores for the restart phase.
 const media = await upload(root);
 await change(actors[0], "contacts", rows => [...rows.filter(row => row.id !== "crud-persistence"), { ...initial.contacts[0], id: "crud-persistence", ownerDivision: null, name: "CRUD persistence fixture", photo: media, published: true }]);
+await change(actors[0], "promotions", rows => rows.map((row,index)=>index===0?{...row,priority:777}:row));
 await writeFile(persistenceFile, JSON.stringify({ content: await content(), requests: await json(root, "/api/admin/requests"), inventory: await json(root, "/api/admin/inventory"), media }));
 console.log(`Full CMS CRUD: ${checks} HTTP checks passed for ${actors.length} admin roles, publishing, private media, conflicts, invoice and archive/restore.`);

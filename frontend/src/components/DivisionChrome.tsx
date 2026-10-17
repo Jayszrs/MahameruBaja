@@ -39,7 +39,7 @@ export function DivisionFooter({ division }: { division: Division }) {
     <div className="industrial-container">
       <div className="unit-footer-main">
         <div className="unit-footer-about">
-          <Link className="unit-footer-brand" href={base} aria-label={`Beranda ${division.name}`}><Image src={divisionIdentity[division.slug].logo} alt="" width={65} height={55} sizes="65px" /><span><strong>{division.name}<i>.</i></strong><small>{division.label.toUpperCase()}</small></span></Link>
+          <Link className="unit-footer-brand" href={base} aria-label={`Beranda ${division.name}`}><Image src={divisionIdentity[division.slug].logo} alt="" width={65} height={55} sizes="65px" transparentLogo /><span><strong>{division.name}<i>.</i></strong><small>{division.label.toUpperCase()}</small></span></Link>
           <p>{division.intro}</p>
           <span className="unit-footer-phone-label">KONTAK UTAMA</span><a className="unit-footer-phone" href={divisionWhatsApp(division.slug)}>{divisionIdentity[division.slug].admins[0]?.phone || "Hubungi tim"}</a>
           <div className="unit-footer-actions"><Link className="unit-footer-contact" href={`${base}/kontak`}>Hubungi kami <span aria-hidden="true">↗</span></Link><button type="button" className="unit-footer-up" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Kembali ke atas">↑</button></div>

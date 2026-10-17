@@ -1,5 +1,6 @@
 "use client";
 import PublicText from "../components/PublicText";
+import Image from "../components/CmsImage";
 
 import type { Article } from '../data/articles';
 import ArticleContent from '../components/ArticleContent';
@@ -16,7 +17,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
   const { ref, visible } = useReveal();
 
   return (
-    <PublicText>
+    <PublicText><div className="article-reading-page" data-static-motion>
       {/* Hero */}
       <section className="article-detail-hero bg-graphite" aria-labelledby="article-heading">
         <div className="max-w-[800px] mx-auto px-6 pb-10">
@@ -45,10 +46,10 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
       </section>
 
       {/* Hero image */}
-      <div className="relative bg-graphite">
+      <div className="article-cover relative bg-graphite">
         <div className="max-w-[800px] mx-auto px-6">
           <div className="rounded-md overflow-hidden aspect-video bg-graphite -mb-8">
-            <img src={article.image} alt={article.imageAlt || article.title} className="auto-parallax w-full h-full object-cover opacity-90" data-parallax="0.08" />
+            <Image src={article.image} alt={article.imageAlt || article.title} width={1200} height={675} sizes="(max-width:800px) 100vw, 800px" className="w-full h-full object-cover" loading="eager" fetchPriority="high"/>
           </div>
         </div>
       </div>
@@ -56,7 +57,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
       {/* Content */}
       <div className="bg-surface py-16">
         <div className="max-w-[800px] mx-auto px-6">
-          <article className="bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
+          <article className="article-reading-body bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
             <p className="text-base text-muted leading-relaxed mb-6 font-medium">{article.excerpt}</p>
             <hr className="border-rule mb-6" />
             <ArticleContent content={article.content} />
@@ -100,7 +101,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
                 <Link key={a.id} to={`/informasi/${a.slug}`}
                   className="group bg-surface border border-rule rounded-md overflow-hidden transition-colors hover:border-graphite/40">
                   <div className="aspect-video overflow-hidden bg-graphite">
-                    <img src={a.image} alt={a.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={a.image} alt={a.title} width={600} height={338} sizes="(max-width:640px) 100vw, 33vw" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                   <div className="p-4">
                     <div className="text-[10px] font-bold uppercase tracking-wide text-accent mb-1.5">{a.category}</div>
@@ -113,6 +114,6 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
           </div>
         </section>
       )}
-    </PublicText>
+    </div></PublicText>
   );
 }

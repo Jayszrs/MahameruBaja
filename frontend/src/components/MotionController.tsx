@@ -9,7 +9,7 @@ export default function MotionController() {
     const main = document.querySelector("main");
     if (!main) return;
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-    const allowParallax = !connection?.saveData && !/^(slow-2g|2g)$/.test(connection?.effectiveType ?? "");
+    const allowParallax = window.matchMedia("(min-width: 761px) and (pointer: fine)").matches && !connection?.saveData && !/^(slow-2g|2g)$/.test(connection?.effectiveType ?? "");
 
     const revealed = new Set<HTMLElement>();
     const parallax = new Set<HTMLElement>();
@@ -87,7 +87,7 @@ export default function MotionController() {
         if (!element.isConnected) { revealObserver.unobserve(element); revealed.delete(element); }
       }
       main.querySelectorAll<HTMLElement>("section h1, section h2, section figure, section .business-card, section .unit-visual, article h2").forEach((element) => {
-        if (element.closest("[data-reveal], .reveal, .proof-marquee, .projects-lightbox, form, [aria-hidden='true']")) return;
+        if (element.closest("[data-static-motion], [data-reveal], .reveal, .proof-marquee, .projects-lightbox, form, [aria-hidden='true']")) return;
         element.dataset.reveal = "auto";
       });
       // Parallax hanya untuk elemen yang eksplisit punya data-parallax.
@@ -101,7 +101,7 @@ export default function MotionController() {
         if (rect.top < window.innerHeight && rect.bottom > 0) element.classList.add("is-visible");
         revealObserver.observe(element);
       });
-      if (allowParallax) main.querySelectorAll<HTMLElement>("[data-parallax]").forEach((element) => parallax.add(element));
+      if (allowParallax) main.querySelectorAll<HTMLElement>("[data-parallax]").forEach((element) => { if (!element.closest("[data-static-motion]")) parallax.add(element); });
       requestUpdate();
     };
 

@@ -31,6 +31,7 @@ export const promotionSchema = z.object({ ...ownershipFields,
   ctaLabel: short(70).min(1),
   ctaHref: short(250).refine(safeInternalLink,"Gunakan tujuan di dalam website."),
   published: z.boolean(),
+  priority: z.number().int().min(0).max(999).optional(),
   showInPopup: z.boolean().optional(),
   showInBanner: z.boolean().optional(),
   providerDivision: z.union([z.literal(""), divisionSlugSchema]).optional(),
@@ -49,6 +50,8 @@ export const promotionSchema = z.object({ ...ownershipFields,
 });
 
 export type Promotion = z.infer<typeof promotionSchema>;
+
+export { prioritizePromotions } from "./promotionOrder";
 
 export function countdownInputWib(value: string) {
   if (!value) return "";

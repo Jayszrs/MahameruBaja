@@ -79,7 +79,7 @@ assert.equal(activePhoto(),"/images/a.jpg"); subhero.advance(1999); assert.equal
 subhero.find(node=>node.type === "button").props.onClick(); subhero.render(); subhero.advance(2000); assert.equal(activePhoto(),"/images/b.jpg"); subhero.dispose();
 console.log("PASS: subpage hero images rotate at 2 seconds and can be paused with the keyboard control");
 
-const promos = await harness("src/components/Promotions.tsx", { promotions: [1, 2, 3].map(id => ({ id, title: `Promo ${id}`, published: true })) });
+const promos = await harness("src/components/Promotions.tsx", { promotions: [1, 2, 3].map(id => ({ id, title: `Promo ${id}`, published: true })) }, false, {imports: {"../data/promotionOrder": {prioritizePromotions: items => [...items].sort((a,b)=>(b.priority||0)-(a.priority||0))}}});
 const track = () => promos.find(node => node.props?.className?.startsWith("home-promos-track"));
 const node = { offsetLeft: 0, scrollLeft: 0, clientWidth: 400, scrollWidth: 1200, children: [{ offsetLeft: 0 }, { offsetLeft: 400 }, { offsetLeft: 800 }], getBoundingClientRect: () => ({ top: 0, bottom: 300 }), scrollTo({ left }) { this.scrollLeft = left; }, setPointerCapture() {}, contains: () => false, matches: () => false };
 track().props.ref.current = node;

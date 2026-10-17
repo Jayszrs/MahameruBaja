@@ -38,7 +38,7 @@ export function mediaReferences(value: unknown): MediaReference[] {
     if (!node || typeof node !== "object") return;
     const record = node as Record<string, unknown>;
     for (const [key, item] of Object.entries(record)) {
-      if (["image", "photo", "authorPhoto", "logo", "hero", "poster", "src"].includes(key)) add(item, "image");
+      if (["image", "photo", "authorPhoto", "logo", "hero", "poster", "src", "avatar"].includes(key)) add(item, "image");
       else if (key === "videoUrl") add(item, "video");
       else if (key === "media") add(item, record.type === "video" ? "video" : "image");
       else if (key === "content" && typeof item === "string") markdown(item);

@@ -5,6 +5,7 @@ import { accountInputSchema, accountSchema, publicAccount, type AdminAccount, ty
 import { cmsCollection } from "./cmsCollection";
 import { ensureDivision } from "./divisionStore";
 import { CmsError } from "./cmsError";
+import { validateMediaOwnership } from "./cmsMedia";
 
 const store = cmsCollection("accounts", z.object({ initialized: z.boolean(), accounts: z.array(accountSchema) }), () => ({ initialized: false, accounts: [] }));
 export async function readAccounts() { return (await store.read()).accounts; }
@@ -71,9 +72,19 @@ export async function upgradeAccountPassword(accountId: string, password: string
   });
 }
 export function assertSuper(actor: AdminIdentity) { if (actor.role !== "super_admin") throw new CmsError("Hanya Super Admin dapat mengelola akun.", 403); }
+export async function saveOwnAvatar(actor: AdminIdentity, avatar: string, revision: number, sessionVersion: number) {
+  await validateMediaOwnership({ avatar }, actor);
+  return store.mutate(current => {
+    const account = current.accounts.find(row => row.id === actor.id && row.active);
+    if (!account || account.sessionVersion !== sessionVersion || account.revision !== revision) throw new CmsError("Akun telah diubah. Muat ulang sebelum menyimpan foto.", 409);
+    const saved = accountSchema.parse({ ...account, avatar, revision: account.revision + 1, updatedAt: new Date().toISOString() });
+    return { value: { ...current, accounts: current.accounts.map(row => row.id === account.id ? saved : row) }, result: publicAccount(saved) };
+  });
+}
 export async function saveAccount(actor: AdminIdentity, input: unknown, id?: string, revision?: number) {
   assertSuper(actor); const parsed = accountInputSchema.parse(input);
   if (parsed.division) await ensureDivision(parsed.division);
+  await validateMediaOwnership(parsed, { ...actor, division: parsed.division });
   const temporaryPassword = randomBytes(18).toString("base64url");
   const initialHash = id ? undefined : await hashPassword(temporaryPassword);
   return store.mutate(current => {
@@ -84,12 +95,15 @@ export async function saveAccount(actor: AdminIdentity, input: unknown, id?: str
     if (previous?.role === "super_admin" && (parsed.division || !parsed.active)) throw new CmsError("Super Admin harus tetap aktif dan tidak ditugaskan ke satu divisi.");
     if (current.accounts.some(a => a.email === parsed.email && a.id !== id)) throw new CmsError("Email sudah digunakan.", 409);
     const now = new Date().toISOString();
-    const saved = accountSchema.parse({ ...previous, ...parsed, id: id || randomUUID(), role: previous?.role || "division_admin", passwordHash: previous?.passwordHash || initialHash, mustChangePassword: previous?.mustChangePassword ?? true, sessionVersion: (previous?.sessionVersion || 0) + (previous && (previous.division !== parsed.division || previous.active !== parsed.active || previous.email !== parsed.email) ? 1 : 0), revision: previous ? previous.revision + 1 : 0, createdAt: previous?.createdAt || now, updatedAt: now });
+    const avatar = previous && previous.division !== parsed.division ? parsed.avatar || "" : parsed.avatar ?? previous?.avatar;
+    const saved = accountSchema.parse({ ...previous, ...parsed, avatar, id: id || randomUUID(), role: previous?.role || "division_admin", passwordHash: previous?.passwordHash || initialHash, mustChangePassword: previous?.mustChangePassword ?? true, sessionVersion: (previous?.sessionVersion || 0) + (previous && (previous.division !== parsed.division || previous.active !== parsed.active || previous.email !== parsed.email) ? 1 : 0), revision: previous ? previous.revision + 1 : 0, createdAt: previous?.createdAt || now, updatedAt: now });
     return { value: { ...current, accounts: previous ? current.accounts.map(a => a.id === id ? saved : a) : [...current.accounts, saved] }, result: { account: publicAccount(saved), ...(!previous ? { temporaryPassword } : {}) } };
   });
 }
-export async function resetAccount(actor: AdminIdentity, id: string, revision: number) {
-  assertSuper(actor); const temporaryPassword = randomBytes(18).toString("base64url");
+export async function resetAccount(actor: AdminIdentity, id: string, revision: number, chosenPassword?: string) {
+  assertSuper(actor);
+  const manualPassword = chosenPassword === undefined ? undefined : z.string().min(12, "Password minimal 12 karakter.").max(128).parse(chosenPassword);
+  const temporaryPassword = manualPassword ?? randomBytes(18).toString("base64url");
   const passwordHash = await hashPassword(temporaryPassword);
   return store.mutate(current => {
     const account = current.accounts.find(a => a.id === id);
@@ -97,7 +111,7 @@ export async function resetAccount(actor: AdminIdentity, id: string, revision: n
     if (account.revision !== revision) throw new CmsError("Akun telah diubah. Muat ulang.", 409);
     if (account.id === actor.id || account.role === "super_admin") throw new CmsError("Gunakan Akun saya untuk mengganti password Super Admin.");
     const saved = { ...account, passwordHash, mustChangePassword: true, sessionVersion: account.sessionVersion + 1, revision: account.revision + 1, updatedAt: new Date().toISOString() };
-    return { value: { ...current, accounts: current.accounts.map(a => a.id === id ? saved : a) }, result: { account: publicAccount(saved), temporaryPassword } };
+    return { value: { ...current, accounts: current.accounts.map(a => a.id === id ? saved : a) }, result: { account: publicAccount(saved), ...(manualPassword === undefined ? { temporaryPassword } : {}) } };
   });
 }
 export const passwordChangeSchema = z.object({ currentPassword: z.string().min(1).max(1024), newPassword: z.string().min(12, "Password minimal 12 karakter.").max(128) }).refine(v => v.currentPassword !== v.newPassword, "Gunakan password baru yang berbeda.");

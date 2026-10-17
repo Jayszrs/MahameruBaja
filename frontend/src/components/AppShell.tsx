@@ -20,6 +20,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const division = divisions.find(unit => pathname === `/unit/${unit.slug}` || pathname.startsWith(`/unit/${unit.slug}/`));
   const productPage = pathname.split("/").includes("produk");
+  const articlePage = pathname.split("/").includes("informasi");
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -34,10 +35,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <HorizontalRibbons />
         <Navbar division={division} onSearchOpen={() => setSearchOpen(true)} />
         <main className={`flex-1 page-enter ${pathname === "/" || pathname === `/unit/${division?.slug}` ? "pt-0" : "site-main"}`}>
-          {!productPage && <MotionController key={pathname} />}
+          {!productPage && !articlePage && <MotionController key={pathname} />}
           {children}
         </main>
-        {!productPage && <div className="page-scroll-progress" aria-hidden="true" />}
+        {!productPage && !articlePage && <div className="page-scroll-progress" aria-hidden="true" />}
         <Footer division={division} />
         <WhatsAppButton />
         <QuotationDrawer />

@@ -13,11 +13,21 @@ import PublicText from "./PublicText";
 export default function WelcomePosters({ promotions, divisions = [], contacts = [], preview, onPreviewClose }: { promotions: Promotion[]; divisions?: Division[]; contacts?: TeamContact[]; preview?: Promotion | null; onPreviewClose?: () => void }) {
   const path = usePathname(); const dialog = useRef<HTMLDialogElement>(null);
   const [index, setIndex] = useState(0); const [open, setOpen] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const seen = useRef(new Set<string>());
   const slug = /^\/unit\/([^/]+)/.exec(path)?.[1];
   const today = jakartaDate();
   const live = preview ? [preview] : livePopupPosters(promotions, today, slug);
   const signature = live.map(item => item.id).join(":");
+  useEffect(() => {
+    if (!open || preview || paused || expanded || live.length < 2) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const timer = window.setInterval(() => {
+      if (!document.hidden && !reduced.matches) setIndex(current => (current + 1) % live.length);
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, [open, preview, paused, expanded, signature, live.length]);
   const sessionKey = `mahameru.poster.v1:${slug || "main"}:${signature}`;
   useEffect(() => {
     if (preview || path.startsWith("/admin") || !signature) return;
@@ -37,13 +47,13 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
   const close = () => { setOpen(false); onPreviewClose?.(); };
-  const step = (by: number) => setIndex(current => (current + by + live.length) % live.length);
+  const step = (by: number) => { setPaused(true); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
   return <PublicText><dialog className="poster-welcome" ref={dialog} aria-labelledby="welcome-poster-heading" onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }} onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
     <div className="poster-welcome-toolbar"><span>{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}>×</button></div>
-    <div className="poster-welcome-layout">
-      <Link className="poster-welcome-image" href={item.ctaHref} onClick={close} aria-label={`${item.ctaLabel}: ${item.title}`}><Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 90vw, 500px" /></Link>
-      <section className="poster-welcome-details">
+    <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
+      <button type="button" className="poster-welcome-image" onClick={() => { setExpanded(value => !value); setPaused(true); }} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}><Image src={item.image} alt={item.imageAlt} fill sizes={expanded ? "90vw" : "(max-width:760px) 90vw, 500px"} /><span className="poster-zoom-label">{expanded ? "Kembali ke detail" : "Perbesar poster"}</span></button>
+      <section className="poster-welcome-details" hidden={expanded} onPointerDown={() => setPaused(true)} onFocusCapture={() => setPaused(true)}>
         {preview&&<p className="poster-preview-label">Pratinjau admin, belum diterbitkan</p>}
         <p className="poster-welcome-category">{item.label}</p>
         <h2 id="welcome-poster-heading">{item.title}</h2><p className="poster-welcome-description">{item.summary}</p>
@@ -55,6 +65,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
         <details className="poster-welcome-more" key={item.id}><summary>Detail penawaran & ketentuan</summary><dl className="poster-welcome-facts">{item.benefit&&<div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo&&<div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>{item.terms&&<p className="poster-welcome-terms">{item.terms}</p>}</details>
       </section>
     </div>
-    {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">Sebelumnya</button><p aria-live="polite">{index + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">Berikutnya</button></nav>}
+    {!preview && live.length > 1 && <button type="button" className="poster-autoplay" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan otomatis · 2 detik" : "Jeda pergantian otomatis"}</button>}
+    {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">Sebelumnya</button><p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">Berikutnya</button></nav>}
   </dialog></PublicText>;
 }
