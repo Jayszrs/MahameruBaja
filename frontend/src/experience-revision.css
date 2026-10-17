@@ -17,7 +17,7 @@
 .home-route-card .route-division-logo image { mix-blend-mode:multiply; }
 .poster-welcome { position:fixed; inset:0; margin:auto; border:0; padding:0; border-radius:0; width:min(1040px,calc(100vw - 32px)); max-width:none; max-height:calc(100dvh - 32px); overflow:auto; background:transparent; color:#fff; overscroll-behavior:contain; scrollbar-width:thin; }
 .poster-welcome::backdrop { background:#000b; }
-.poster-welcome button { display:grid; place-items:center; width:44px; height:44px; flex-shrink:0; border:1px solid #ffffff70; background:#151718; color:#fff; border-radius:50%; font:inherit; font-size:24px; line-height:1; cursor:pointer; }
+.poster-welcome button { display:grid; place-items:center; flex-shrink:0; border:1px solid #ffffff70; background:#151718; color:#fff; border-radius:50%; font:inherit; font-size:24px; line-height:1; cursor:pointer; }
 .poster-welcome button:hover { background:#34383a; }
 .poster-welcome :is(button,a):focus-visible { outline:3px solid #fff; outline-offset:4px; }
 .poster-welcome .poster-welcome-close { position:sticky; top:0; z-index:3; margin:0 0 8px auto; }

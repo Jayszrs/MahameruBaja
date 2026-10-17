@@ -25,7 +25,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const timer = window.setInterval(() => {
       if (!document.hidden && !reduced.matches) setIndex(current => (current + 1) % live.length);
-    }, 2000);
+    }, 10000);
     return () => window.clearInterval(timer);
   }, [open, preview, paused, expanded, signature, live.length]);
   const sessionKey = `mahameru.poster.v1:${slug || "main"}:${signature}`;
@@ -65,7 +65,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
         <details className="poster-welcome-more" key={item.id}><summary>Detail penawaran & ketentuan</summary><dl className="poster-welcome-facts">{item.benefit&&<div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo&&<div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>{item.terms&&<p className="poster-welcome-terms">{item.terms}</p>}</details>
       </section>
     </div>
-    {!preview && live.length > 1 && <button type="button" className="poster-autoplay" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan otomatis · 2 detik" : "Jeda pergantian otomatis"}</button>}
+    {!preview && live.length > 1 && <button type="button" className="poster-autoplay" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan otomatis · 10 detik" : "Jeda pergantian otomatis · 10 detik"}</button>}
     {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">Sebelumnya</button><p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">Berikutnya</button></nav>}
   </dialog></PublicText>;
 }

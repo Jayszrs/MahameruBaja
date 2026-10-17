@@ -19,6 +19,11 @@ assert.equal(renderToStaticMarkup(responsiveArrowHints(result)),html,'Nested pub
 assert.ok(renderToStaticMarkup(responsiveArrowHints(React.createElement('a',{href:'/kontak'},'<script> ↗'))).includes('&lt;script&gt;'),'No HTML injection');
 const css=postcss.parse(await readFile(source('experience-revision.css'),'utf8'));
 function declarations(selector,property){const matches=[];css.walkRules(rule=>{if(rule.selector===selector)rule.walkDecls(property,decl=>matches.push({value:decl.value,media:rule.parent?.type==='atrule'?rule.parent.params:null}));});return matches;}
+for(const property of ['width','height','max-width','max-height'])assert.equal(declarations('.poster-welcome button',property).length,0,`Generic popup buttons must not force the poster image to a small ${property}`);
+assert.ok(declarations('.poster-welcome-image','width').some(d=>d.value==='100%'));
+assert.ok(declarations('.poster-welcome-image','height').some(d=>d.value==='min(72dvh,720px)'&&!d.media),'Desktop poster has a viewport-sized canvas');
+assert.ok(declarations('.poster-welcome-image','height').some(d=>d.value==='clamp(180px,38dvh,340px)'&&d.media),'Mobile poster has a nonzero responsive canvas');
+assert.ok(declarations('.poster-welcome .poster-welcome-close','width').some(d=>d.value==='44px'),'Only the close control retains the 44px square size');
 assert.ok(declarations('.public-site .public-cta-arrow','display').some(d=>d.value==='none'&&d.media==='(max-width:760px)'));
 assert.ok(declarations('.company-footer .public-cta-arrow','display').some(d=>d.value==='none'&&!d.media));
 assert.ok(declarations('.poster-welcome','max-height').some(d=>d.value.includes('100dvh')&&d.value.includes('safe-area-inset-bottom')));
