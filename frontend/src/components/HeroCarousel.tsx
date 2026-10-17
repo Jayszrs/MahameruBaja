@@ -5,6 +5,7 @@ import Image from "./CmsImage";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "../data/heroSlides";
+import HeroAnnouncementTicker from "./HeroAnnouncementTicker";
 
 const ROTATION_INTERVAL = 2000;
 
@@ -141,9 +142,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
 
       </div>
 
-      <div className="home-hero-rail" aria-label="Layanan utama">
-        <div className="home-shell">{serviceItems.map((service, index) => <span key={service}>{index > 0 && <i aria-hidden="true" />}{service}</span>)}</div>
-      </div>
+      <HeroAnnouncementTicker messages={serviceItems}/>
       <button type="button" className="carousel-keyboard-control" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan pergantian hero" : "Hentikan pergantian hero"}</button>
     </section></PublicText>
   );

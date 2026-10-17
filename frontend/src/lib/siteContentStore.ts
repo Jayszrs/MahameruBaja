@@ -89,6 +89,14 @@ export const readPublicSiteContent = cache(() => cachedPublicCms("public-site-co
   const active = new Set((await readDivisions()).filter(d => d.status === "active").map(d => d.slug));
   const next = { ...content, inventory: content.inventory.filter(i => i.listed && active.has(i.division)), divisionReviews: Object.fromEntries(Object.entries(content.divisionReviews).filter(([slug]) => active.has(slug)).map(([slug, profile]) => [slug, { ...profile, reviews: profile.reviews.filter(r => r.published) }])), garudaReviews: { ...content.garudaReviews, reviews: active.has("retail-cibitung") ? content.garudaReviews.reviews.filter(r => r.published) : [] } };
   for (const key of collectionKeys) Object.assign(next, { [key]: content[key].filter(row => (row.published ?? true) && publicOwned(row, active)) });
+  const contactIds = new Set(next.contacts.map(contact => contact.id));
+  // Hide even references to unpublished contacts. Do not silently switch a
+  // specifically chosen contact to someone else; the popup links to the directory.
+  next.promotions = next.promotions.map(item => {
+    if (!item.contactId || contactIds.has(item.contactId)) return item;
+    const { contactId:_contactId, ...publicItem } = item;
+    return { ...publicItem, contactUnavailable:true };
+  });
   return next;
 }));
 export async function writeSiteContent(input: SiteContent, base?: SiteContent, actor?: AdminIdentity) {

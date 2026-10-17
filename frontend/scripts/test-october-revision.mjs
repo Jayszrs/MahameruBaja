@@ -45,6 +45,27 @@ try{
   const owner=await login("qa.owner@example.test");
   const publicContacts=await (await call("/api/contacts")).json(); assert.equal(publicContacts.length,10); assert.ok(publicContacts.every(c=>!Object.hasOwn(c,"email")));
   const sessions=await Promise.all(accounts.map(a=>login(a.email)));
+  const posterTemplate=(await (await call("/api/admin/content","GET",undefined,owner)).json()).promotions.find(p=>p.id==="client-poster-ring-20261017");
+  for (const [i,slug] of slugs.entries()) {
+    const before=await (await call("/api/admin/content","GET",undefined,sessions[i])).json();
+    const contact=before.contacts.find(c=>c.published && c.divisions.includes(slug));assert.ok(contact);
+    const promo={...posterTemplate,id:`qa-popup-${slug}`,ownerDivision:slug,audience:[slug],providerDivision:slug,contactId:contact.id,title:`Info penawaran ${slug}`,ctaHref:`/unit/${slug}/kontak`,published:true};
+    const announcement={id:`qa-announcement-${slug}`,ownerDivision:slug,messages:[`Info material khusus ${slug}`],published:true};
+    const put=await call("/api/admin/content","PUT",{...before,promotions:[...before.promotions,promo],heroAnnouncements:[announcement],_base:before},sessions[i]);assert.equal(put.status,200,await put.text());
+    const after=await (await call("/api/admin/content","GET",undefined,sessions[i])).json();
+    assert.equal(after.promotions.find(p=>p.id===promo.id).contactId,contact.id);
+    assert.deepEqual(after.heroAnnouncements[0].messages,announcement.messages);
+    const ownHtml=await (await call(`/unit/${slug}`)).text();assert.ok(ownHtml.includes(`Info material khusus ${slug}</span>`),'Ticker message appears as actual rendered text');
+    const otherHtml=await (await call(`/unit/${slugs[(i+1)%slugs.length]}`)).text();assert.ok(!otherHtml.includes(`Info material khusus ${slug}</span>`),'Ticker text does not cross division boundaries');
+    assert.equal((await call("/admin/hero","GET",undefined,sessions[i])).status,200);
+    assert.equal((await call("/admin/promosi?view=popup","GET",undefined,sessions[i])).status,200);
+    const foreign=slugs[(i+1)%slugs.length];
+    assert.equal((await call("/api/admin/content","PUT",{...after,promotions:after.promotions.map(p=>p.id===promo.id?{...p,providerDivision:foreign}:p),_base:after},sessions[i])).status,403);
+    assert.equal((await call("/api/admin/content","PUT",{...after,promotions:after.promotions.map(p=>p.id===promo.id?{...p,contactId:'unavailable-contact'}:p),_base:after},sessions[i])).status,400);
+    assert.equal((await call("/api/admin/content","PUT",{...after,heroAnnouncements:[{...announcement,ownerDivision:foreign}],_base:after},sessions[i])).status,403);
+  }
+  const mainTicker=await (await call("/")).text();assert.ok(!mainTicker.includes('Info material khusus retail-tambun</span>'));
+  console.log("PASS: all five division popup/issuer/contact saves, hero ticker SSR text, CMS pages and forbidden cross-division assignments over real HTTP");
   const copyBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
   assert.equal(copyBase.promotions.filter(item=>item.id.startsWith("client-poster-")&&item.showInPopup).length,4);
   const centralCopy={id:"qa-copy-main",ownerDivision:null,page:"all",source:"Bantuan",replacement:"Bantuan pelanggan QA",published:true};

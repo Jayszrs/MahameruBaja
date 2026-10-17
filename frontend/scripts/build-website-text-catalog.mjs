@@ -12,9 +12,10 @@ function add(source, area) {
   if (source.length < 3 || source.length > 5000 || !/[a-zA-Z]/.test(source) || /^(?:https?:|\/|#[\w-]|[a-z]+:)/.test(source)) return;
   if (!rows.has(source)) rows.set(source, { source, area });
 }
-for (const directory of ['screens','components']) {
+const dataFiles=new Set(['heroSlides.ts','divisionContent.ts','divisionAbout.ts','companyIdentity.ts','serviceDescriptions.ts']);
+for (const directory of ['screens','components','data']) {
   for (const file of await fs.readdir(path.join(frontend, 'src', directory))) {
-    if (!file.endsWith('.tsx') || directory === 'components' && !publicComponents.has(file.slice(0,-4)) || ['OperationsDemoPage.tsx','AboutPage.tsx','ServicesPage.tsx'].includes(file)) continue;
+    if (directory==='data' ? !dataFiles.has(file) : !file.endsWith('.tsx') || directory === 'components' && !publicComponents.has(file.slice(0,-4)) || ['OperationsDemoPage.tsx','AboutPage.tsx','ServicesPage.tsx'].includes(file)) continue;
     const source = ts.createSourceFile(file, await fs.readFile(path.join(frontend,'src',directory,file),'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     function visit(node) {
       if (ts.isJsxText(node)) add(node.text, file.slice(0,-4));
@@ -22,7 +23,8 @@ for (const directory of ['screens','components']) {
         let parent = node.parent;
         const attribute = ts.isJsxAttribute(parent) ? parent.name.getText(source) : '';
         if (['placeholder','title'].includes(attribute)) add(node.text, file.slice(0,-4));
-        if (ts.isPropertyAssignment(parent) && /^(title|description|desc|detail|text|action|label|name|question|answer)$/.test(parent.name.getText(source)) && (node.text.includes(' ') || /^[A-Z]/.test(node.text))) add(node.text,file.slice(0,-4));
+        if (ts.isPropertyAssignment(parent) && /^(title|accent|eyebrow|intro|description|mission|headline|aboutHeadline|desc|detail|text|action|label|name|question|answer)$/.test(parent.name.getText(source)) && (node.text.includes(' ') || /^[A-Z]/.test(node.text))) add(node.text,file.replace(/\.tsx?$/,''));
+        if(directory==='data' && ts.isReturnStatement(parent) && node.text.includes(' '))add(node.text,file.replace(/\.tsx?$/,''));
         while (parent && !ts.isJsxAttribute(parent) && !ts.isStatement(parent) && !ts.isVariableDeclaration(parent)) {
           if (ts.isJsxExpression(parent) && !ts.isJsxAttribute(parent.parent)) { if (!/^(?:[a-z0-9_-]+|\s*)$/.test(node.text)) add(node.text,file.slice(0,-4)); break; }
           parent = parent.parent;

@@ -10,12 +10,15 @@ export function livePopupPosters(promotions: Promotion[], today: string, slug?: 
 export function promotionProviderSlug(item: Promotion) {
   return item.providerDivision || contentOwner(item) || /^\/unit\/([^/?#]+)/.exec(item.ctaHref)?.[1] || "";
 }
+export function posterContactMatches(contact:TeamContact,provider:string) {
+  return Boolean(provider) && contact.published && (contact.audience ? contact.audience.includes(provider) : contact.divisions.includes(provider) || contentOwner(contact)===provider);
+}
 
-export function posterDetails(item: Promotion, divisions: Division[], contacts: TeamContact[]) {
+export function posterDetails(item: Promotion & { contactUnavailable?:boolean }, divisions: Division[], contacts: TeamContact[]) {
   const provider = promotionProviderSlug(item);
   const division = divisions.find(row => row.slug === provider && row.status === "active");
-  const available = division ? contacts.filter(row => row.published && (row.divisions.includes(provider) || contentOwner(row) === provider)) : [];
-  const contact = item.contactId ? available.find(row => row.id === item.contactId) : available.find(row => row.whatsapp) || available.find(row => row.phone || row.mobile) || available[0];
+  const available = division ? contacts.filter(row => posterContactMatches(row,provider)) : [];
+  const contact = item.contactUnavailable ? undefined : item.contactId ? available.find(row => row.id === item.contactId) : available.find(row => row.whatsapp) || available.find(row => row.phone || row.mobile) || available[0];
   const digits = contact?.whatsapp.replace(/\D/g, "") || "";
   const number = digits.startsWith("0") ? `62${digits.slice(1)}` : digits;
   const whatsappHref = number ? `https://wa.me/${number}?text=${encodeURIComponent(`Halo ${contact?.name}, saya ingin tanya tentang ${item.title} dari ${division?.name}.`)}` : "";

@@ -15,7 +15,7 @@ import { useAdminView, useAdminWorkspace } from "./AdminWorkspace";
 import AdminViewTabs from "./AdminViewTabs";
 import { bannerIsLive } from "../data/adminDashboard";
 import { contentOwner } from "../data/divisionCms";
-import { promotionProviderSlug } from "../data/popupPosters";
+import { promotionProviderSlug, posterContactMatches } from "../data/popupPosters";
 import WelcomePosters from "./WelcomePosters";
 
 function Field({ label, value, onChange, type = "text", hint }: { label: string; value: string; onChange: (value: string) => void; type?: string; hint?: string }) {
@@ -89,7 +89,7 @@ export default function PromotionEditor({ initialContent }: { initialContent: Si
           {visiblePromotions.map((item, index) => {
             const ready = Boolean(item.image && item.imageAlt && (item.showInPopup && item.showInBanner === false || item.benefit && item.appliesTo && item.terms));
             const provider = promotionProviderSlug(item);
-            const contacts = content.contacts.filter(c=>c.published && (c.divisions.includes(provider) || contentOwner(c)===provider));
+            const contacts = content.contacts.filter(c=>posterContactMatches(c,provider));
             return <details className="editor-panel promotion-editor-panel" key={item.id} open={visiblePromotions.length === 1}><summary className="promotion-editor-summary">{item.image && <img src={item.image} alt="" />}<span><strong>{item.title}</strong><small>{item.published ? "Terbit" : "Draf"}{item.showInPopup ? " · Poster masuk" : ""}{item.showInBanner !== false ? " · Banner beranda" : ""}</small></span></summary><div className="editor-panel-title"><h3>{item.title}</h3><label className="editor-publish"><input type="checkbox" checked={item.published} disabled={!ready} onChange={event => promotion(item.id, { published: event.target.checked })} />Terbit</label></div>
               <ContentOwnership value={item} onChange={patch=>promotion(item.id,patch)}/>{!ready && <p className="promotion-editor-hint">Isi manfaat, spesifikasi/cakupan, ketentuan, gambar, dan teks gambar sebelum mengaktifkan Terbit.</p>}
               <div className="promotion-contact-settings"><h3>Divisi penyedia & kontak</h3><p>Divisi yang menyediakan penawaran ini, bukan sekadar website tempat poster tampil.</p><div className="editor-grid"><label className="editor-field">Divisi penyedia<select name={`provider-${item.id}`} value={provider} disabled={Boolean(actor.division)} onChange={event=>{const slug=event.target.value; promotion(item.id,{providerDivision:slug,contactId:"",ctaHref:slug?`/unit/${slug}/kontak`:"/kontak"});}}><option value="">Informasi perusahaan / pusat</option>{divisions.map(d=><option value={d.slug} key={d.slug}>{d.name}</option>)}</select></label><label className="editor-field">Kontak yang dihubungi<select name={`contact-${item.id}`} value={item.contactId || ""} onChange={event=>promotion(item.id,{contactId:event.target.value})}><option value="">Otomatis: kontak aktif divisi penyedia</option>{contacts.map(c=><option value={c.id} key={c.id}>{c.name} · {c.role}</option>)}</select></label></div>{!contacts.length&&<p className="admin-field-help">Belum ada kontak aktif pada divisi ini. Pengunjung akan diarahkan ke halaman kontak. <Link href="/admin/konten?tab=contacts">Kelola kontak</Link></p>}<button type="button" className="admin-secondary" disabled={!item.image} onClick={()=>setPreview(item)}>Lihat pratinjau popup</button></div>

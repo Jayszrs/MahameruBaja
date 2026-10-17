@@ -7,10 +7,10 @@ import type { AdminIdentity } from "../data/adminAccount";
 import type { SiteContent } from "../data/siteContent";
 import { CmsError } from "./cmsError";
 import { readDivisions } from "./divisionStore";
-import { promotionProviderSlug } from "../data/popupPosters";
+import { promotionProviderSlug, posterContactMatches } from "../data/popupPosters";
 
 export const emptyReviews = () => ({ rating: 0, reviewCount: null, ratingDate: "Belum dicatat", mapsUrl: "https://maps.google.com/", reviews: [] });
-export const collectionKeys = ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts"] as const;
+export const collectionKeys = ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts", "heroAnnouncements"] as const;
 type Owned = ContentOwnership & { id?: string; division?: string; divisions?: string[]; platform?: string; handle?: string };
 export function normalizeOwnership(content: SiteContent): SiteContent {
   const next = structuredClone(content);
@@ -71,7 +71,7 @@ export async function mergeScopedContent(current: SiteContent, input: SiteConten
         if (provider && !known.has(provider)) throw new CmsError("Divisi penyedia penawaran tidak dikenal.");
         if (slug && provider && provider !== slug) throw new CmsError("Pilih divisi Anda sebagai penyedia penawaran.", 403);
         if (promo.contactId) {
-          const contact = input.contacts.find(c => c.id === promo.contactId && c.published && (c.divisions.includes(provider) || contentOwner(c) === provider));
+          const contact = input.contacts.find(c => c.id === promo.contactId && posterContactMatches(c,provider));
           if (!provider || !contact) throw new CmsError("Pilih kontak aktif dari divisi penyedia penawaran.", 400);
         }
       }

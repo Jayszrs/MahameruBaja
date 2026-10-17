@@ -21,6 +21,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [drawer, setDrawer] = useState(false);
   const [desktop, setDesktop] = useState(true);
+  const [wide,setWide]=useState(false);
   const [workspace, setWorkspace] = useState<AdminWorkspaceState>(emptyAdminWorkspace);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const resolver = useRef<((value: boolean) => void) | null>(null);
@@ -30,6 +31,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const sidebar = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
   const register = useCallback((value: AdminWorkspaceState) => setWorkspace(value), []);
+  useEffect(()=>{try{setWide(localStorage.getItem("mahameru.admin.wide.v1")==="true");}catch{/* Layout preferences are optional. */}},[]);
+  function toggleWide() {setWide(value=>{const next=!value;try{localStorage.setItem("mahameru.admin.wide.v1",String(next));}catch{/* Layout preferences are optional. */}return next;});}
 
   useEffect(() => {
     let saved: Record<string, boolean> = { sales: true };
@@ -90,10 +93,11 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       return confirmRef.current();
     }, []),
   });
-  return <AdminWorkspaceContext.Provider value={context}><div className="admin-shell">
+  const sidebarHidden=desktop?wide:!drawer;
+  return <AdminWorkspaceContext.Provider value={context}><div className={`admin-shell${wide?" is-wide":""}`}>
     <a href="#admin-main" className="admin-skip-link">Langsung ke konten</a>
     {drawer && <button className="admin-drawer-backdrop" tabIndex={-1} aria-label="Tutup menu admin" onClick={() => { setDrawer(false); menuButton.current?.focus(); }} />}
-    <aside id="admin-sidebar" ref={sidebar} inert={!desktop && !drawer} aria-hidden={!desktop && !drawer ? true : undefined} className={`admin-sidebar${drawer ? " is-open" : ""}`} role={drawer ? "dialog" : undefined} aria-modal={drawer ? true : undefined} aria-label="Navigasi admin">
+    <aside id="admin-sidebar" ref={sidebar} inert={sidebarHidden} aria-hidden={sidebarHidden ? true : undefined} className={`admin-sidebar${drawer ? " is-open" : ""}`} role={drawer ? "dialog" : undefined} aria-modal={drawer ? true : undefined} aria-label="Navigasi admin">
       <div className="admin-sidebar-brand"><Link href="/admin"><img src="/mbi-mark.svg" alt="" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><button type="button" className="admin-drawer-close" aria-label="Tutup menu" onClick={() => { setDrawer(false); menuButton.current?.focus(); }}>×</button></div>
       <nav aria-label="Menu admin"><Link className={`admin-dashboard-link${pathname === "/admin" ? " active" : ""}`} href="/admin" aria-current={pathname === "/admin" ? "page" : undefined}><span aria-hidden="true">▦</span>Dashboard</Link>
         <p className="admin-nav-caption">RUANG KERJA</p>
@@ -109,7 +113,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <div className="admin-sidebar-footer"><div className="admin-identity-caption"><strong>{identity.name}</strong>{identity.role === "super_admin" ? "Super Admin / Seluruh divisi" : divisions.find(d=>d.slug===identity.division)?.name || identity.division}</div><Link href="/admin/akun-saya" aria-current={pathname === "/admin/akun-saya" ? "page" : undefined}>Akun saya</Link><a href="/" target="_blank" rel="noopener noreferrer">Lihat website <span aria-hidden="true">↗</span></a><form action="/api/admin/logout" method="post" onSubmit={event => { if (allowUnload.current) return; if (workspace.busy || workspace.dirty) { event.preventDefault(); const form = event.currentTarget; void confirmDiscard().then(accepted => { if (accepted) { allowUnload.current = true; form.requestSubmit(); } }); } }}><button type="submit" disabled={workspace.busy}>Keluar <span aria-hidden="true">↗</span></button></form><small>Mahameru Baja · Portal Admin</small></div>
     </aside>
     <div className="admin-stage"><header className="admin-topbar"><div className="admin-location"><button type="button" ref={menuButton} className="admin-menu-button" aria-label="Buka menu admin" aria-expanded={drawer} aria-controls="admin-sidebar" onClick={() => setDrawer(true)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg></button><span>{group ? <><small>{group.label}</small><b aria-hidden="true">/</b>{item?.label}</> : pathname === "/admin/akun" ? "Administrasi / Pengelolaan akun" : pathname === "/admin/akun-saya" ? "Akun saya" : "Dashboard"}</span></div>
-      <div className="admin-topbar-actions">{workspace.label && <><span className={`admin-save-state${workspace.dirty ? " dirty" : ""}`} role="status">{workspace.busy ? "Sedang diproses…" : workspace.dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span>{workspace.secondaryLabel && <button type="button" className="admin-secondary" disabled={workspace.busy} onClick={workspace.onSecondary}>{workspace.secondaryLabel}</button>}<button type="button" className="admin-primary" disabled={workspace.busy || workspace.disabled} onClick={workspace.onSave}>{workspace.busy ? "Memproses…" : workspace.label}</button></>}</div>
+      <div className="admin-topbar-actions"><button type="button" className="admin-secondary admin-wide-toggle" aria-pressed={wide} aria-controls="admin-sidebar" onClick={toggleWide}>{wide?"Tampilkan menu":"Lebarkan area kerja"}</button>{workspace.label && <><span className={`admin-save-state${workspace.dirty ? " dirty" : ""}`} role="status">{workspace.busy ? "Sedang diproses…" : workspace.dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span>{workspace.secondaryLabel && <button type="button" className="admin-secondary" disabled={workspace.busy} onClick={workspace.onSecondary}>{workspace.secondaryLabel}</button>}<button type="button" className="admin-primary" disabled={workspace.busy || workspace.disabled} onClick={workspace.onSave}>{workspace.busy ? "Memproses…" : workspace.label}</button></>}</div>
     </header><main id="admin-main" tabIndex={-1} className="admin-page-content">{children}</main></div>
     {confirmOpen && <div className="admin-modal-backdrop"><div className="admin-discard-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="admin-discard-heading"><span className="admin-dialog-icon" aria-hidden="true">!</span><h2 id="admin-discard-heading">Perubahan belum disimpan</h2><p>Perubahan pada ruang kerja ini akan hilang jika kamu melanjutkan. Simpan terlebih dahulu atau tetap di halaman ini.</p><div><button type="button" className="admin-secondary" onClick={() => finishConfirm(false)}>Tetap di halaman</button><button type="button" className="admin-primary" onClick={() => finishConfirm(true)}>Tinggalkan perubahan</button></div></div></div>}
   </div></AdminWorkspaceContext.Provider>;

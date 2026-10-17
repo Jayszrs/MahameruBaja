@@ -8,6 +8,7 @@ import { divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
 import { websiteTextSchema } from "./websiteTexts";
 import { clientPosters } from "./clientPosters";
+import { heroAnnouncementSchema } from "./heroAnnouncements";
 import { defaultGarudaReviews } from "./divisionLocations";
 import { inventoryListSchema, defaultInventory } from "./inventory";
 import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery";
@@ -42,6 +43,7 @@ export const reviewProfileSchema = z.object({
   if (new Set(profile.reviews.map(r => r.id)).size !== profile.reviews.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reviews"], message: "ID ulasan harus unik" });
 });
 export const siteContentSchema = z.object({
+  heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
   websiteTexts: z.array(websiteTextSchema).max(500).default([]),
   clientPosterVersion: z.number().int().nonnegative().default(0),
   revision: z.number().int().min(0),
@@ -67,6 +69,7 @@ export const siteContentSchema = z.object({
   }
   if (new Set(data.socialAccounts.map(a => `${a.platform}:${a.handle}`)).size !== data.socialAccounts.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["socialAccounts"], message: "Akun sosial tidak boleh duplikat" });
   if (new Set(data.promotions.map(p => p.id)).size !== data.promotions.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["promotions"], message: "ID banner harus unik" });
+  if (new Set(data.heroAnnouncements.map(row => contentOwner(row))).size !== data.heroAnnouncements.length) ctx.addIssue({ code:z.ZodIssueCode.custom, path:["heroAnnouncements"], message:"Setiap website hanya memiliki satu pengaturan teks berjalan." });
 });
 export type SiteContent = z.infer<typeof siteContentSchema>;
 export type TeamContact = SiteContent["contacts"][number];
@@ -83,6 +86,7 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  heroAnnouncements:[],
   websiteTexts: [],
   clientPosterVersion: 1,
   divisionReviews: {},
