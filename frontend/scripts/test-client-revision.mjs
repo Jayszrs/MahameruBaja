@@ -92,6 +92,16 @@ try {
   assert.ok((await sharp(Buffer.from(await optimizedSheet.arrayBuffer())).metadata()).width > 1000);
   assert.ok(!home.includes('class="division-collage-brand"'));
   assert.ok(home.indexOf('class="company-footer-motto"') < home.indexOf('class="company-footer-wordmark"'));
+  const articleIndex=await (await fetch(`${origin}/informasi`)).text();
+  const articleHref=articleIndex.match(/href="(\/informasi\/[^"?#]+)"/)?.[1];assert.ok(articleHref);
+  for(const route of ['/informasi',articleHref,...['retail-tambun','retail-cibitung','trading-proyek','laser-cutting','fabrikasi-erection'].map(slug=>`/unit/${slug}`)]){
+    const response=await fetch(origin+route);assert.equal(response.status,200);
+    const html=await response.text(),footer=html.match(/<footer class="company-footer">[\s\S]*?<\/footer>/)?.[0]||'';
+    assert.ok(footer.includes('class="company-footer-photo" aria-hidden="true"')&&footer.includes('toko-mahameru.jpg'),'Shared shop photo renders on article and division footers');
+    assert.ok(footer.includes('footer-company-logo')&&footer.includes('feColorMatrix')&&!footer.includes('main-company-logo'),'Footer has no white logo plate');
+    assert.ok(footer.includes('aria-label="Navigasi perusahaan"')&&footer.includes('href="/kebijakan-privasi"'),'Existing navigation remains present');
+  }
+  console.log('PASS: shared photo and transparent logo SSR on article listing/detail and all five division footers, existing footer links retained');
   const form = await (await fetch(`${origin}/minta-penawaran`)).text();
   assert.ok(form.includes('id="request-photos"') && form.includes('id="catatan"'));
   const about = await (await fetch(`${origin}/tentang-kami`)).text(); assert.ok(!about.includes('class="division-collage-brand"'));

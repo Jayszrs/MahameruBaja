@@ -251,3 +251,8 @@
 }
 .home-promo-media.is-poster { background: #171a1b; }
 .home-promo-media.is-poster img { object-fit: contain; }
+.home-promo-card:hover .home-promo-media.is-poster img { transform: none; }
+.company-footer { position:relative; isolation:isolate; }
+.company-footer-photo { position:absolute; inset:0; overflow:hidden; pointer-events:none; opacity:.16; z-index:-1; }
+.company-footer-photo img { object-fit:cover; object-position:center 35%; }
+.company-footer-brand .footer-company-logo { background:transparent; padding:0; border-radius:0; filter:drop-shadow(0 0 1px rgb(255 255 255 / .55)); }

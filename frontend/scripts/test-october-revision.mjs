@@ -68,6 +68,13 @@ try{
   console.log("PASS: all five division popup/issuer/contact saves, hero ticker SSR text, CMS pages and forbidden cross-division assignments over real HTTP");
   const copyBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
   assert.equal(copyBase.promotions.filter(item=>item.id.startsWith("client-poster-")&&item.showInPopup).length,4);
+  const sharedPosters=copyBase.promotions.filter(item=>item.id.startsWith('client-poster-'));
+  assert.ok(sharedPosters.every(item=>item.showInPopup&&item.showInBanner),'Original poster records serve both placements');
+  for(const route of ['/',...slugs.map(slug=>`/unit/${slug}`)]) {
+    const html=await (await call(route)).text();
+    for(const poster of sharedPosters)assert.equal(html.split(`aria-label="Buka banner ${poster.title}"`).length-1,1,`One banner card per poster on ${route}`);
+  }
+  console.log('PASS: all four popup posters render exactly once in each of the six homepage banner ribbons, without duplicate CMS records');
   const centralCopy={id:"qa-copy-main",ownerDivision:null,page:"all",source:"Bantuan",replacement:"Bantuan pelanggan QA",published:true};
   assert.equal((await call("/api/admin/content","PUT",{...copyBase,websiteTexts:[centralCopy],_base:copyBase},owner)).status,200);
   const copiedMain=await (await call("/")).text(); assert.ok(copiedMain.includes("<h3>Bantuan pelanggan QA</h3>"),"CMS text reaches rendered website, not just stored JSON");
@@ -80,6 +87,21 @@ try{
   const scopedCopy=await (await call("/api/admin/content","GET",undefined,sessions[0])).json();
   assert.equal((await call("/api/admin/content","PUT",{...scopedCopy,websiteTexts:[{...tambunCopy,ownerDivision:slugs[1]}],_base:scopedCopy},sessions[0])).status,403);
   assert.equal((await call("/admin/teks","GET",undefined,owner)).status,200);
+  const heroBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  const sourceHero=heroBase.heroSlides.find(slide=>slide.id==="fabrikasi");assert.ok(sourceHero);
+  for(const [index,slug] of [null,...slugs].entries()) {
+    const session=slug?sessions[index-1]:owner;
+    const fresh=await (await call("/api/admin/content","GET",undefined,session)).json();
+    const hero={...sourceHero,id:`qa-hero-copy-${slug||'main'}`,ownerDivision:slug,audience:slug?[slug]:[],published:true};
+    const textRows=['title','accent','description'].map(field=>({id:`qa-${field}-${slug||'main'}`,ownerDivision:slug,page:'home',source:hero[field],replacement:`Teks ${field} ${slug||'main'} QA`,published:true}));
+    assert.equal((await call("/api/admin/content","PUT",{...fresh,heroSlides:[hero],websiteTexts:[...fresh.websiteTexts,...textRows],_base:fresh},session)).status,200);
+    const html=await (await call(slug?`/unit/${slug}`:'/')).text();
+    const heading=html.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0]||'';
+    assert.ok(heading.includes(`Teks title ${slug||'main'} QA`)&&heading.includes(`Teks accent ${slug||'main'} QA`),'Published hero title and accent reach actual H1');
+    assert.ok(html.includes(`>Teks description ${slug||'main'} QA</p>`),'Published hero description reaches actual paragraph');
+    assert.equal((await call('/admin/teks','GET',undefined,session)).status,200);
+  }
+  console.log('PASS: supplied hero title, red accent and description edited and rendered for main and all five division administrators over HTTP');
   const serviceDivision=await (await call(`/api/admin/divisions/${slugs[0]}`,"GET",undefined,sessions[0])).json();
   const serviceTitle=serviceDivision.offerings[0];
   assert.equal((await call(`/api/admin/divisions/${serviceDivision.id}`,"PUT",{...serviceDivision,offeringDescriptions:{...serviceDivision.offeringDescriptions,[serviceTitle]:"Penjelasan layanan khusus Tambun QA."}},sessions[0])).status,200);

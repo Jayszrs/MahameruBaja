@@ -45,7 +45,7 @@ const catalog=JSON.parse(fs.readFileSync(path.join(frontend,'src/data/websiteTex
 const originalDirectory='C:/Users/jaela/Downloads/WhatsApp Unknown 2026-10-17 at 11.29.35';
 const files=[['WhatsApp Image 2026-10-17 at 11.29.21 (1).jpeg','ring-cakar-sloof.jpeg'],['WhatsApp Image 2026-10-17 at 11.29.21 (2).jpeg','selamat-pagi.jpeg'],['WhatsApp Image 2026-10-17 at 11.29.21.jpeg','promo-hollow-oktober.jpeg'],['WhatsApp Image 2026-10-17 at 11.29.22.jpeg','jasa-laser-cutting.jpeg']];
 for (const [original,copy] of files) if(fs.existsSync(path.join(originalDirectory,original))) assert.equal(createHash('sha256').update(fs.readFileSync(path.join(originalDirectory,original))).digest('hex'),createHash('sha256').update(fs.readFileSync(path.join(frontend,'public/images/posters',copy))).digest('hex'));
-console.log('PASS: four unedited client posters, date/publish/audience filters, popup-only defaults');
+console.log('PASS: four unedited client posters shared by popup and banner, date/publish/audience filters');
 console.log('PASS: render-time text replacement escapes HTML and preserves links, handlers and form values; text catalog unique');
 const {harness}=await import('./test-readability-revision.mjs');
 const savedSession=new Map(); const storage={getItem:key=>savedSession.get(key)||null,setItem:(key,value)=>savedSession.set(key,value)};

@@ -1,0 +1,31 @@
+// Component/CSS checks, not a rendered browser or viewport audit.
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import postcss from 'postcss';
+import {load} from './test-experience-revision.mjs';
+const CmsImage=load(fileURLToPath(new URL('../src/components/CmsImage.tsx',import.meta.url))).default;
+const logo='/images/steel-indonesia/company-logo.jpeg';
+const render=props=>renderToStaticMarkup(React.createElement(CmsImage,{src:logo,alt:'Mahameru Baja',width:170,height:140,...props}));
+const transparent=render({transparentLogo:true});
+assert.ok(transparent.includes('<feColorMatrix')&&transparent.includes('filter="url(#logo-paper-'));
+assert.ok(!render({}).includes('<filter'),'Header and other existing logo presentations are unchanged');
+const custom=render({src:'/uploads/custom-logo.png',transparentLogo:true});
+assert.ok(custom.includes('<img')&&!custom.includes('feColorMatrix')&&!custom.includes('transparentLogo'),'Custom CMS uploads retain their original artwork');
+const pair=renderToStaticMarkup(React.createElement(React.Fragment,null,...[1,2].map(key=>React.createElement(CmsImage,{key,src:logo,alt:'Logo',width:170,height:140,transparentLogo:true}))));
+const ids=[...pair.matchAll(/<filter id="([^"]+)"/g)].map(match=>match[1]);assert.equal(new Set(ids).size,2);
+const alpha=rgb=>Math.max(0,Math.min(1,17-6*rgb.reduce((sum,v)=>sum+v/255,0)));
+assert.equal(alpha([255,255,255]),0);assert.equal(alpha([245,245,245]),0);
+assert.equal(alpha([0,0,0]),1);assert.equal(alpha([230,0,0]),1);
+const css=postcss.parse(await readFile(new URL('../src/experience-revision.css',import.meta.url),'utf8'));
+function declaration(selector,property){let result;css.walkRules(rule=>{if(rule.selector===selector)rule.walkDecls(property,decl=>result=decl.value);});return result;}
+assert.equal(declaration('.company-footer-photo','opacity'),'.16');
+assert.equal(declaration('.company-footer-photo','pointer-events'),'none');
+assert.equal(declaration('.company-footer','isolation'),'isolate');
+assert.equal(declaration('.company-footer-brand .footer-company-logo','background'),'transparent');
+const luminance=rgb=>rgb.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+const worstBackground=[16,17,18].map(v=>v*.84+255*.16);
+for(const text of [[255,255,255],[191,197,202],[174,182,188],[214,218,220]])assert.ok((luminance(text)+.05)/(luminance(worstBackground)+.05)>=4.5,'Footer text meets AA even over a fully white photo region at 16% opacity');
+console.log('PASS: footer-only transparent SVG treatment, unique filter IDs, original custom uploads, isolated non-interactive photo and worst-case text contrast (component/CSS/numeric checks)');
