@@ -63,6 +63,6 @@ fields.find(node=>node.type==='button'&&text(node)==='Lepas media dari slide').p
 assert.ok(fields.absent(node=>node.type==='video'));fields.dispose();
 console.log('PASS: all six role editors upload/type-detect image/video, poster, invalid file retention, HTTPS link, validation, save/conflict, cancel/delete final slide and re-create; media chooser/error/reset handlers (adapters)');
 const videoHero=await harness('src/components/HeroCarousel.tsx',{slides:[{...heroSlides[0],type:'video'},heroSlides[1]],rating:0,ratingDate:'',mapsUrl:''});
-videoHero.advance(2000);assert.equal(videoHero.find(node=>node.type==='h1').props.children[0],heroSlides[0].title,'A video is not cut off by the image timer');
+videoHero.advance(5000);assert.equal(videoHero.find(node=>node.type==='h1').props.children[0],heroSlides[0].title,'A video is not cut off by the image timer');
 videoHero.find(node=>node.type==='video').props.onEnded();assert.equal(videoHero.find(node=>node.type==='h1').props.children[0],heroSlides[1].title);videoHero.dispose();
-console.log('PASS: video hero waits for ended rather than stopping at two seconds; existing image timer, pause, failure and reduced-motion adapters retained');
+console.log('PASS: video hero waits for ended rather than stopping at five seconds; existing image timer, pause, failure and reduced-motion adapters retained');

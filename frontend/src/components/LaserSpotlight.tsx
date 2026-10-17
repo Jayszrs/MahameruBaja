@@ -28,7 +28,7 @@ export default function LaserSpotlight() {
         </div>
         <div className="laser-hero-copy">
           <span className="hero-service-label">
-            <span /> LASER CUTTING & CNC BENDING
+            <span /> LASER CUTTING & BENDING
           </span>
           <h1 id="laser-home-title">
             Dari presisi.
@@ -70,7 +70,7 @@ export default function LaserSpotlight() {
         <div className="industrial-container">
           <span>LASER CUTTING</span>
           <i />
-          <span>CNC BENDING</span>
+          <span>BENDING</span>
           <i />
           <span>FABRIKASI & EREKSION</span>
           <i />

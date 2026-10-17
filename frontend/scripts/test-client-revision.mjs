@@ -106,6 +106,13 @@ try {
     assert.ok(footer.includes('class="company-footer-photo" aria-hidden="true"')&&footer.includes('toko-mahameru.jpg'),'Shared shop photo renders on article and division footers');
     assert.ok(footer.includes('footer-company-logo')&&footer.includes('feColorMatrix')&&!footer.includes('main-company-logo'),'Footer has no white logo plate');
     assert.ok(footer.includes('aria-label="Navigasi perusahaan"')&&footer.includes('href="/kebijakan-privasi"'),'Existing navigation remains present');
+    assert.ok(footer.includes('MATERIAL &amp; JASA CUTTING')&&footer.includes('Dari trading material, cutting, bending, fabrikasi sampai erection.'),'Shared footer uses the requested cutting wording and motto');
+    if(route===articleHref){
+      assert.ok(html.includes('class="article-editorial-visual"')&&html.includes('class="article-editorial-shade"'),'Article detail renders a full-width static photo hero with readable heading');
+      const heading=html.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0]||'';
+      assert(!heading.includes('CNC'),'Visible article heading uses Laser Cutting & Bending');
+      assert(!html.includes('class="article-cover"'),'Old narrow framed hero is removed');
+    }
     if(route.startsWith('/unit/'))assertCallout(html);
   }
   console.log('PASS: shared photo and transparent logo SSR on article listing/detail and all five division footers, existing footer links retained');

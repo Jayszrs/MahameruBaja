@@ -7,9 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "../data/heroSlides";
 import HeroAnnouncementTicker from "./HeroAnnouncementTicker";
 
-const ROTATION_INTERVAL = 2000;
+const ROTATION_INTERVAL = 5000;
 
-export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl, companyName = "Mahameru Baja", area = "Bekasi / Jawa Barat", servicesLabel = "Retail • Trading • Production", ratingSourceName = "Mahameru Baja", serviceItems = ["Retail besi", "Supply proyek", "Laser cutting", "CNC bending", "Fabrikasi"] }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string; companyName?: string; area?: string; servicesLabel?: string; ratingSourceName?: string; serviceItems?: string[] }) {
+export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl, companyName = "Mahameru Baja", area = "Bekasi / Jawa Barat", servicesLabel = "Retail • Trading • Production", ratingSourceName = "Mahameru Baja", serviceItems = ["Retail besi", "Supply proyek", "Laser cutting", "bending", "Fabrikasi"] }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string; companyName?: string; area?: string; servicesLabel?: string; ratingSourceName?: string; serviceItems?: string[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
@@ -78,7 +78,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
       onFocusCapture={() => setInteracting(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false); }}
     >
       <div className="hero-carousel-media" aria-hidden="true">
-        {heroSlides.map((slide, index) => (index === activeIndex || index === nextIndex || index === previousIndex) && (
+        {heroSlides.map((slide, index) => (index === activeIndex || index === previousIndex) && (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
             <div className="hero-carousel-parallax" data-parallax="0.32">
               {failed.has(index) ? <Image unoptimized src={slide.poster || heroSlides.find(s=>s.type === "image")?.media || "/images/laser-cutting-illustration.jpg"} alt="" fill sizes="100vw" /> : slide.type === "video" ? (
@@ -89,7 +89,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
                   muted
                   onEnded={() => videoEnded(index)}
                   playsInline
-                  preload={index === 0 ? "auto" : "metadata"}
+                  preload="metadata"
                   style={{ objectPosition: slide.objectPosition }}
                   onError={() => setFailed(current => new Set(current).add(index))}
                 />

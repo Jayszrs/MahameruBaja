@@ -383,8 +383,6 @@
 .jasa-paths :is(a,strong), .jasa-paths :is(a,strong):hover { text-decoration:none; border-bottom:0; }
 .jasa-paths a:focus-visible { outline:3px solid var(--color-brand,#c41f2b); outline-offset:-4px; }
 .directory-portrait .directory-cartoon { position:relative; width:100%; height:100%; display:flex; justify-content:center; background:#e5e8e7; overflow:hidden; }
-.directory-portrait .directory-cartoon>img { display:block; height:100%; width:auto; max-width:100%; object-fit:contain; object-position:center bottom; }
-.directory-portrait .directory-cartoon>.directory-cap-logo { position:absolute; top:9%; left:50%; transform:translateX(-50%); height:20%; width:17%; max-width:64px; object-fit:contain; }
 .directory-illustration-note { position:absolute; bottom:12px; right:12px; color:#39474a; background:#f4f6f4e6; padding:4px 8px; border-radius:4px; font-size:11px; }
 .directory-portrait .directory-number { z-index:1; }
 .directory-role { z-index:1; }
@@ -403,8 +401,64 @@
 .article-index-page .simple-hero-media { opacity:.2; }
 .article-index-page .simple-hero-media img { object-fit:cover; }
 .article-index-page :is(h3,p) { overflow-wrap:break-word; }
+
+/* Keep the badge anchored to the cap, not the varying contact-card width. */
+.directory-portrait .directory-cartoon .directory-avatar-art { position:relative; height:100%; aspect-ratio:1; flex:none; }
+.directory-avatar-art>img { display:block; width:100%; height:100%; object-fit:contain; }
+.directory-cartoon .directory-avatar-art>.directory-cap-logo { position:absolute; left:50%; top:11.5%; transform:translateX(-50%); width:13%; height:9%; background:transparent; filter:drop-shadow(0 1px 1px #0004); }
+.directory-card .directory-role { font-size:11px; }
+.directory-cards .directory-card { margin-top:0; }
+
+/* Full-bleed article photography with a readable, static editorial heading. */
+.article-reading-page .article-detail-hero.article-editorial-hero { position:relative; display:flex; align-items:flex-end; min-height:clamp(480px,68svh,760px); padding:72px 0 48px; background:#15191b; isolation:isolate; overflow:hidden; }
+.article-editorial-visual { position:absolute; inset:0; z-index:-2; }
+.article-editorial-visual img { object-fit:cover; object-position:center; }
+.article-editorial-shade { position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg,#11182040 0%,#11182080 38%,#111820ed 100%); }
+.article-editorial-heading { width:min(1280px,100%); margin-inline:auto; padding-inline:32px; }
+.article-reading-page .article-editorial-heading h1 { max-width:25ch; font-size:clamp(32px,4.3vw,60px); line-height:1.13; margin-bottom:24px; }
+.article-editorial-heading .article-detail-breadcrumb { width:fit-content; max-width:100%; margin-bottom:28px; background:#111a; border-color:#ffffff38; }
+.article-editorial-heading :is(time,.text-white\/40) { color:#e0e4e6; }
+
+.social-feed .social-image-preview { position:relative; display:block; width:100%; aspect-ratio:4 / 5; overflow:hidden; background:#e7e9e7; }
+.social-feed .social-image-preview img { width:100%; height:100%; object-fit:cover; }
+.social-embed-container { min-width:0; }
+.social-load-embed { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:100%; min-height:590px; padding:32px; background:#f0f1ef; color:#a51e29; font-size:16px; font-weight:700; cursor:pointer; }
+.social-post-youtube .social-load-embed { min-height:0; aspect-ratio:9 / 16; }
+.social-load-embed span { color:#4c5558; font-size:14px; line-height:1.6; font-weight:400; }
+.social-load-embed:focus-visible { outline:3px solid #bc2730; outline-offset:-4px; }
+@media(max-width:600px) {
+  .social-load-embed { min-height:560px; }
+  .social-post-tiktok .social-single-frame { height:560px; }
+}
+
+/* Operational labels stay readable at normal browser zoom on every CMS page. */
+.admin-shell .editor-field { font-size:14px; line-height:1.6; }
+.admin-shell .editor-field :is(input,select,textarea) { font-size:15px; line-height:1.55; }
+.admin-shell :is(.editor-field small,.admin-field-help,.promotion-editor-hint,.promotion-editor-note,.editor-footer-note,.admin-list-count,.editor-notice,.inventory-row-meta,.admin-status-pill,.editor-publish) { font-size:13px; line-height:1.65; }
+.admin-shell .editor-item-actions :is(button,span),.admin-shell :is(.admin-primary,.admin-secondary,.admin-danger,.admin-view-tabs>button) { font-size:14px; min-height:44px; }
+.admin-shell .editor-item-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+.admin-shell .editor-item-actions button { padding:10px 14px; }
+.admin-shell :is(.admin-save-state,.admin-location small,.admin-nav-caption,.admin-sidebar-footer small,.admin-group-number) { font-size:12px; line-height:1.5; }
+.admin-shell :is(.admin-submenu>a,.admin-group-toggle,.admin-sidebar-footer>a,.admin-sidebar-footer button) { font-size:14px; line-height:1.55; }
+.admin-shell :is(.admin-record small,.admin-record>span,.promotion-editor-summary small,.division-choice-meta small,.admin-recent-table small,.admin-metrics small,.admin-panel-heading p) { font-size:13px; line-height:1.6; }
+.admin-shell .promotion-editor-media>div:first-child img { width:100%; height:auto; max-height:560px; object-fit:contain; }
+.admin-shell .promotion-editor-summary>img { width:64px; height:88px; object-fit:contain; }
 [data-static-motion] [data-parallax], [data-static-motion] .auto-parallax { transform:none!important; will-change:auto!important; }
 @media(max-width:760px) {
+  .public-site :is(.reveal,[data-reveal],.will-reveal) { opacity:1!important; transform:none!important; filter:none!important; animation:none!important; transition:none!important; }
+  .public-site [data-parallax] { transform:none!important; will-change:auto!important; }
+  .public-site .hero-carousel-layer { transform:none; transition:opacity .25s ease; }
+  .public-site .hero-carousel-copy { animation:none; }
+  .public-site .hero-carousel-layer :is(img,video) { filter:none; }
+  .public-site .hero-carousel-parallax { transform:none; will-change:auto; }
+  .public-site :is(.company-footer,.home-final,.social-feed,.directory-card) { box-shadow:none; }
+  .public-site :is(.site-navbar,.projects-lightbox),.promo-preview-dialog::backdrop { backdrop-filter:none; }
+  .article-reading-page .article-detail-hero.article-editorial-hero { min-height:520px; padding:56px 0 32px; }
+  .article-editorial-heading { padding-inline:20px; }
+  .article-reading-page .article-editorial-heading h1 { font-size:clamp(29px,7.7vw,40px); }
+  .article-editorial-heading .article-detail-breadcrumb { margin-bottom:22px; }
+  .admin-shell .editor-field :is(input,select,textarea) { font-size:16px; }
+  .directory-card .directory-role { font-size:10px; }
   .home-promos-track .home-promo-card.has-poster { flex:0 0 min(78vw,300px); }
   .home-promo-card.has-poster .home-promo-content h3 { font-size:22px; }
   .home-promo-card.has-poster .home-promo-content p { font-size:14px; line-height:1.65; }
@@ -427,4 +481,51 @@
   .whatsapp-floating .wa-admin-menu { max-height:65dvh; max-width:calc(100vw - 28px); overflow-y:auto; }
   .product-detail-mobile-actions { padding-bottom:calc(12px + env(safe-area-inset-bottom,0px)); }
   .product-detail-content { padding-bottom:110px; }
+}
+
+/* Contact identities sit directly on the page, not on a second card surface. */
+.contact-directory .directory-card { background:transparent; border:0; border-radius:0; box-shadow:none; overflow:visible; }
+.contact-directory .directory-card .directory-portrait { height:260px; max-width:320px; margin-inline:auto; background:transparent; overflow:hidden; }
+.contact-directory .directory-card .directory-cartoon { background:transparent; }
+.contact-directory .directory-portrait>img { width:100%; height:100%; border-radius:0; object-fit:contain; }
+.contact-directory .directory-illustration-note { position:static; display:block; padding:6px 0 0; margin:0; background:transparent; color:#58615f; font-size:11px; text-align:center; }
+.contact-directory .directory-card-body { max-width:360px; margin-inline:auto; padding:18px 0 0; }
+.contact-directory .directory-card-body>h3 { text-align:center; }
+.contact-directory .directory-card-body>p { font-size:14px; color:#4d5653; text-align:center; min-height:0; line-height:1.6; margin-bottom:18px; }
+.directory-position { display:block; }
+.contact-directory .directory-links a { min-height:44px; font-size:14px; }
+.contact-directory .directory-whatsapp { border-radius:6px; min-height:48px; font-size:14px; }
+.public-site .partner-logo-strip { align-items:center; gap:36px; padding:12px 0 20px; overflow-x:auto; overflow-y:hidden; touch-action:pan-x pan-y; }
+.public-site .partner-logo-strip :is(figure,.home-client-logo,.home-client-logo:last-child) { display:flex; align-items:center; justify-content:center; flex:0 0 220px; min-height:120px; margin:0; padding:0; background:transparent; border:0; border-radius:0; box-shadow:none; filter:none; }
+.public-site .partner-logo-strip :is(img,svg) { display:block; width:220px; height:110px; object-fit:contain; mix-blend-mode:multiply; }
+.public-site .partner-logo-strip:focus-visible { outline:3px solid #bd2530; outline-offset:4px; }
+.partner-logo-editor { max-width:1600px; margin-inline:auto; }
+.partner-logo-editor .admin-page-heading p { max-width:800px; }
+.partner-editor-record>summary { display:flex; gap:16px; align-items:center; cursor:pointer; padding:12px 0; }
+.partner-editor-record>summary>strong { font-size:17px; overflow-wrap:anywhere; }
+.partner-editor-record>summary>span { margin-left:auto; font-size:13px; color:#53605b; }
+.partner-editor-fields { display:grid; grid-template-columns:minmax(180px,280px) minmax(0,1fr); gap:28px; align-items:start; }
+.partner-editor-preview { display:grid; place-items:center; min-height:160px; padding:12px; background:#f0f1ef; }
+.partner-editor-preview img { display:block; width:100%; height:160px; object-fit:contain; }
+.partner-editor-preview p { font-size:14px; line-height:1.6; color:#4d5653; text-align:center; }
+/* vh fallbacks keep dialogs usable when dynamic viewport units are unsupported. */
+.poster-welcome { max-height:92vh; max-height:92dvh; }
+@media(max-width:760px) {
+  .poster-welcome { width:calc(100vw - 20px); max-height:calc(100vh - 24px); max-height:calc(100dvh - 24px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)); }
+  .poster-welcome-image { height:clamp(180px,38vh,340px); height:clamp(180px,38dvh,340px); }
+  .poster-welcome-layout.is-expanded .poster-welcome-image { height:calc(82vh - 130px); height:calc(82dvh - 130px); }
+  .public-site .partner-logo-strip { gap:24px; }
+  .public-site .partner-logo-strip :is(figure,.home-client-logo,.home-client-logo:last-child) { flex-basis:150px; min-height:96px; }
+  .public-site .partner-logo-strip :is(img,svg) { width:150px; height:86px; }
+  .contact-directory .directory-cards { gap:40px; }
+  .contact-directory .directory-card .directory-portrait { height:210px; }
+  .contact-directory .directory-card-body { width:100%; max-width:360px; padding-top:12px; }
+  .partner-editor-fields { grid-template-columns:minmax(0,1fr); gap:18px; }
+  .partner-editor-preview { max-width:320px; width:100%; }
+  .partner-logo-editor .editor-list-heading { flex-wrap:wrap; gap:16px; }
+  .partner-logo-editor input { font-size:16px; }
+}
+@media(hover:none),(pointer:coarse) {
+  .public-site :is(.home-product-tile,.home-promo-card,.directory-card,.home-client-logo):hover { transform:none; }
+  .public-site .partner-logo-strip :is(figure,img,svg) { transition:none; animation:none; }
 }

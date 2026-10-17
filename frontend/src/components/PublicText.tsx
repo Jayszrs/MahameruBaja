@@ -3,6 +3,7 @@ import { Children, cloneElement, createContext, isValidElement, useContext, useM
 import { usePathname } from "next/navigation";
 import { contentOwner } from "../data/divisionCms";
 import { normalizeWebsiteText, websitePage, type WebsiteText } from "../data/websiteTexts";
+import { serviceWording } from "../data/serviceWording";
 
 const Texts = createContext<WebsiteText[]>([]);
 export function WebsiteTextProvider({ texts, children }: { texts: WebsiteText[]; children: ReactNode }) { return <Texts.Provider value={texts}>{children}</Texts.Provider>; }
@@ -41,9 +42,12 @@ export default function PublicText({ children }: { children: ReactNode }) {
     const page = websitePage(path); const slug = /^\/unit\/([^/]+)/.exec(path)?.[1] || null;
     const applicable = texts.filter(row => row.published && contentOwner(row) === slug && (row.page === "all" || row.page === page));
     const result = new Map<string, string>();
-    for (const row of [...applicable.filter(row => row.page === "all"), ...applicable.filter(row => row.page !== "all")]) result.set(normalizeWebsiteText(row.source), row.replacement);
+    for (const row of [...applicable.filter(row => row.page === "all"), ...applicable.filter(row => row.page !== "all")]) {
+      result.set(normalizeWebsiteText(row.source), row.replacement);
+      result.set(normalizeWebsiteText(serviceWording(row.source)), row.replacement);
+    }
     return result;
   }, [texts, path]);
   if (path.startsWith("/admin")) return <>{children}</>;
-  return <>{responsiveArrowHints(replacements.size ? translatePublicTree(children, value => replacements.get(normalizeWebsiteText(value)) || value) : children)}</>;
+  return <>{responsiveArrowHints(translatePublicTree(children, value => serviceWording(replacements.get(normalizeWebsiteText(value)) || value)))}</>;
 }

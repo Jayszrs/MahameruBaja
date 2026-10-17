@@ -1,6 +1,7 @@
 import Markdown, { defaultUrlTransform } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { safeArticleImage, safeArticleLink } from "../data/articleCms";
+import { serviceWording } from "../data/serviceWording";
 
 /** The public article and admin preview share this renderer. Raw HTML is never executed. */
 export default function ArticleContent({ content }: { content: string }) {
@@ -10,5 +11,5 @@ export default function ArticleContent({ content }: { content: string }) {
       table: ({ children }) => <div className="article-table-scroll"><table>{children}</table></div>,
       img: ({ src, alt }) => typeof src === "string" && safeArticleImage(src) ? <img src={src} alt={alt || ""} loading="lazy" /> : null,
       a: ({ href, children }) => href && safeArticleLink(href) ? <a href={href} {...(/^https?:/.test(href) ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{children}</a> : <span>{children}</span>,
-    }}>{content}</Markdown></div>;
+    }}>{serviceWording(content)}</Markdown></div>;
 }

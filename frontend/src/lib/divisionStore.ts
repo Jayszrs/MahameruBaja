@@ -12,6 +12,7 @@ import { contactVisibleInDivision } from "../data/siteContent";
 import type { AdminIdentity } from "../data/adminAccount";
 import { cmsCollection } from "./cmsCollection";
 import { CmsError } from "./cmsError";
+import { publicServiceWording } from "../data/serviceWording";
 
 const epoch = "2026-10-10T00:00:00.000Z";
 const initial = () => seeds.map(seed => divisionSchema.parse({ ...seed, ...divisionIdentity[seed.slug],
@@ -29,7 +30,7 @@ export const readPublicDivisions = cache(() => cachedPublicCms("public-divisions
   const content = await readSiteContent();
   const active = new Set(records.filter(d => d.status === "active").map(d => d.slug));
   const contacts = content.contacts.filter(c => c.published && (!contentOwner(c) || active.has(contentOwner(c)!)));
-  return records.filter(d => d.status === "active").map(d => ({ ...d, admins: contacts.filter(c => contactVisibleInDivision(c,d.slug)).map(c => ({ name: c.name, phone: c.whatsapp || c.mobile || c.phone })).filter(c => c.phone) }));
+  return records.filter(d => d.status === "active").map(d => publicServiceWording({ ...d, admins: contacts.filter(c => contactVisibleInDivision(c,d.slug)).map(c => ({ name: c.name, phone: c.whatsapp || c.mobile || c.phone })).filter(c => c.phone) }));
 }));
 export async function editableDivisions(actor: AdminIdentity) { return (await readDivisions()).filter(d => !actor.division || d.slug === actor.division); }
 export async function ensureDivision(slug: string, active = false) {

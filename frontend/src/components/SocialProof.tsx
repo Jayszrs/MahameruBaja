@@ -5,8 +5,7 @@ import Image from "./CmsImage";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { ReviewContent } from "../data/siteContent";
 
-import { clientPartners } from "../data/clientPartners";
-import { supplierPartners } from "../data/supplierPartners";
+import type { PartnerLogo } from "../data/partnerLogos";
 
 function useMarquee(itemCount: number, pixelsPerSecond: number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -18,7 +17,8 @@ function useMarquee(itemCount: number, pixelsPerSecond: number) {
   useEffect(() => {
     const element = ref.current;
     if (!element || !itemCount) return;
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 760px)");
+    if (reducedMotion.matches) return;
     let frame = 0;
     let previous = 0;
     let fraction = 0;
@@ -162,30 +162,28 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
   </section></PublicText>;
 }
 
-function Clients() {
-  const marquee = useMarquee(clientPartners.length, 46);
+function Clients({logos}:{logos:PartnerLogo[]}) {
+  if(!logos.length)return null;
   return <PublicText><section className="home-clients" id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
       <div className="proof-client-heading"><div><h2 id="clients-heading">Kepercayaan yang tumbuh<br /><em>melalui kerja sama.</em></h2><p className="partnership-intro">Perusahaan yang telah bekerja sama dengan Mahameru Baja Indonesia dalam memenuhi kebutuhan material dan pekerjaan proyek.</p></div></div>
-      <div className="home-client-logo-grid proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo perusahaan, geser dengan mouse atau jari">
-        {[0, 1, 2].flatMap((copy) => clientPartners.map((client) => <div className="home-client-logo" key={`${copy}-${client.name}`} aria-hidden={copy !== 1}>
-          <Image src={client.logo} alt={copy === 1 ? `Logo ${client.name}` : ""} width={80} height={80} sizes="80px" draggable={false} />
-          <span>{client.name}</span>
-        </div>))}
+      <div className="home-client-logo-grid proof-marquee partner-logo-strip" tabIndex={0} aria-label="Logo perusahaan rekanan. Geser atau gunakan tombol panah.">
+        {logos.map(client=><figure className="home-client-logo" key={client.id} data-partner-id={client.id} title={client.name}><Image src={client.logo} alt={client.name?`Logo ${client.name}`:"Logo perusahaan rekanan"} width={260} height={150} sizes="(max-width:760px) 150px, 220px" loading="lazy" draggable={false}/></figure>)}
       </div>
     </div>
   </section></PublicText>;
 }
 
-function Suppliers() {
-  const marquee = useMarquee(supplierPartners.length, 38);
+function Suppliers({logos}:{logos:PartnerLogo[]}) {
+  if(!logos.length)return null;
   return <PublicText><section className="home-suppliers" id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
     <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Mahameru Baja bekerja dengan jaringan pemasok material baja dan produk turunannya untuk mendukung kebutuhan toko, fabrikasi, serta pengadaan proyek.</p></div>
-    <div className="supplier-ribbon-controls"><p>Geser untuk melihat pemasok material kami.</p><button type="button" className="carousel-keyboard-control" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan pergeseran logo" : "Hentikan pergeseran logo"}</button></div>
-    <div className="supplier-logo-grid supplier-logo-ribbon proof-marquee" {...marquee.handlers} tabIndex={0} aria-label="Logo supplier. Geser ke samping atau gunakan tombol panah.">{[0, 1, 2].flatMap(copy => supplierPartners.map(supplier => <figure key={`${copy}-${supplier.id}`} aria-hidden={copy !== 1}><Image src={supplier.logo} alt={copy !== 1 ? "" : supplier.name ? `Logo ${supplier.name}` : "Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="240px" draggable={false} /><figcaption>{supplier.name || "\u00a0"}</figcaption></figure>))}</div>
+    <div className="supplier-ribbon-controls"><p>Geser untuk melihat pemasok material kami.</p></div>
+    <div className="supplier-logo-grid supplier-logo-ribbon proof-marquee partner-logo-strip" tabIndex={0} aria-label="Logo supplier. Geser ke samping atau gunakan tombol panah.">{logos.map(supplier=><figure key={supplier.id} data-partner-id={supplier.id} title={supplier.name}><Image src={supplier.logo} alt={supplier.name?`Logo ${supplier.name}`:"Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="(max-width:760px) 150px, 220px" loading="lazy" draggable={false}/></figure>)}</div>
   </div></section></PublicText>;
 }
 
-export default function SocialProof({ content, companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: ReviewContent; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
-  return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <><Clients /><Suppliers /></>}</>;
+export default function SocialProof({ content, partnerLogos = [], companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: ReviewContent; partnerLogos?:PartnerLogo[]; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
+  const published=partnerLogos.filter(row=>row.published&&row.logo);
+  return <><Reviews content={content} companyName={companyName} includeImported={includeImported} />{!reviewsOnly && <><Clients logos={published.filter(row=>row.kind==="client")} /><Suppliers logos={published.filter(row=>row.kind==="supplier")} /></>}</>;
 }

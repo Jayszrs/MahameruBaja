@@ -92,9 +92,11 @@ try{
   for(const [index,slug] of [null,...slugs].entries()) {
     const session=slug?sessions[index-1]:owner;
     const fresh=await (await call("/api/admin/content","GET",undefined,session)).json();
-    const hero={...sourceHero,id:`qa-hero-copy-${slug||'main'}`,ownerDivision:slug,audience:slug?[slug]:[],published:true};
+    const hero={...sourceHero,title:`Layanan CNC bending ${slug||'main'}`,id:`qa-hero-copy-${slug||'main'}`,ownerDivision:slug,audience:slug?[slug]:[],published:true};
     const textRows=['title','accent','description'].map(field=>({id:`qa-${field}-${slug||'main'}`,ownerDivision:slug,page:'home',source:hero[field],replacement:`Teks ${field} ${slug||'main'} QA`,published:true}));
     assert.equal((await call("/api/admin/content","PUT",{...fresh,heroSlides:[hero],websiteTexts:[...fresh.websiteTexts,...textRows],_base:fresh},session)).status,200);
+    const rawHero=(await (await call('/api/admin/content','GET',undefined,session)).json()).heroSlides.find(item=>item.id===hero.id);
+    assert.equal(rawHero.title,hero.title,'Public wording policy must not rewrite saved CMS content');
     const html=await (await call(slug?`/unit/${slug}`:'/')).text();
     const heading=html.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0]||'';
     assert.ok(heading.includes(`Teks title ${slug||'main'} QA`)&&heading.includes(`Teks accent ${slug||'main'} QA`),'Published hero title and accent reach actual H1');
@@ -104,8 +106,10 @@ try{
   console.log('PASS: supplied hero title, red accent and description edited and rendered for main and all five division administrators over HTTP');
   const serviceDivision=await (await call(`/api/admin/divisions/${slugs[0]}`,"GET",undefined,sessions[0])).json();
   const serviceTitle=serviceDivision.offerings[0];
-  assert.equal((await call(`/api/admin/divisions/${serviceDivision.id}`,"PUT",{...serviceDivision,offeringDescriptions:{...serviceDivision.offeringDescriptions,[serviceTitle]:"Penjelasan layanan khusus Tambun QA."}},sessions[0])).status,200);
-  assert.ok((await (await call(`/unit/${slugs[0]}/layanan`)).text()).includes("Penjelasan layanan khusus Tambun QA."),"Service paragraphs are editable, not repeated generic values");
+  assert.equal((await call(`/api/admin/divisions/${serviceDivision.id}`,"PUT",{...serviceDivision,offerings:[...serviceDivision.offerings,'CNC Bending QA'],offeringDescriptions:{...serviceDivision.offeringDescriptions,[serviceTitle]:"Penjelasan layanan khusus Tambun QA.",'CNC Bending QA':'Penjelasan CNC bending spesifik QA.'}},sessions[0])).status,200);
+  const serviceHtml=await (await call(`/unit/${slugs[0]}/layanan`)).text();
+  assert.ok(serviceHtml.includes("Penjelasan layanan khusus Tambun QA."),"Service paragraphs are editable, not repeated generic values");
+  assert.ok(serviceHtml.includes('>Bending QA</h2>')&&serviceHtml.includes('Penjelasan bending spesifik QA.'),'Normalized service names retain the matching custom description');
   const popupBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
   assert.equal((await call("/api/admin/content","PUT",{...popupBase,promotions:popupBase.promotions.map(item=>item.id==="client-poster-hollow-20261017"?{...item,showInPopup:false}:item),_base:popupBase},owner)).status,200);
   const popupSaved=await (await call("/api/admin/content","GET",undefined,owner)).json();
@@ -147,7 +151,8 @@ try{
   assert.ok(sharedHomeHtml.includes('<span></span>LOKASI</p>') && sharedHomeHtml.includes("Dekat. Lengkap.") && sharedHomeHtml.includes("Siap melayani kebutuhan Anda.") && sharedHomeHtml.includes("Solusi material untuk setiap proyek."));
   assert.ok(sharedHomeHtml.includes("Media sosial kami.") && sharedHomeHtml.includes("Ikuti kegiatan dan pekerjaan kami.") && !sharedHomeHtml.includes("Kabar dari tim."));
   const socialFrames = sharedHomeHtml.match(/<iframe[^>]*class="social-single-frame"[^>]*>/g) || [];
-  assert.ok(socialFrames.length > 0 && socialFrames.every(frame => /allow="[^"]*fullscreen/.test(frame) && !/allowfullscreen/i.test(frame)),"Social embeds retain fullscreen with a single modern permission attribute");
+  assert.equal(socialFrames.length,0,'Third-party social frames must not be loaded with the initial homepage');
+  assert.ok(sharedHomeHtml.includes('class="social-load-embed"')&&sharedHomeHtml.includes('www.instagram.com/'),'Deferred embeds retain an accessible load button and their original source links');
   assert.equal((sharedHomeHtml.match(/class="directory-card"/g) || []).length,10,"All ten published contacts appear on the main homepage");
   assert.ok(!sharedHomeHtml.includes("home-offering-ribbon"),"Remove the unsolicited five-division service ribbon from the main homepage");
   assert.ok(!sharedHomeHtml.includes("home-gallery-strip") && sharedHomeHtml.includes("project-album-grid project-album-ribbon"),"Replace illustrative gallery preview with actual project albums");
@@ -203,8 +208,8 @@ try{
   assert.equal((await call("/images/brand/mbi-favicon-white-v3.png")).status,200);
   assert.ok(base.promotions.filter(p => p.published).length >= 4, "Multiple real service/calendar banners");
   assert.ok(mainHtml.includes("event-countdown") && mainHtml.includes("Menuju Halloween") && mainHtml.includes("Perkiraan menuju Ramadan"));
-  assert.ok(mainHtml.includes("social-permata-grid") && mainHtml.includes("instagram.com/p/DeG2uVRh2uq/embed/"));
-  assert.ok(mainHtml.includes("youtube-nocookie.com/embed/IP6GsNxExVU") && mainHtml.includes('href="https://www.youtube.com/@MahameruBajaIndonesia"'), "Verified MBI video and channel are included");
+  assert.ok(mainHtml.includes("social-permata-grid") && mainHtml.includes('href="https://www.instagram.com/reel/DeG2uVRh2uq/"')&&mainHtml.includes('class="social-load-embed"'));
+  assert.ok(mainHtml.includes('href="https://www.youtube.com/shorts/IP6GsNxExVU"') && mainHtml.includes('href="https://www.youtube.com/@MahameruBajaIndonesia"'), "Deferred verified MBI video retains its source link and channel");
   assert.ok(!mainHtml.includes("social-profile-frame"), "No tall profile-grid embeds");
   assert.equal(base.socialPosts.filter(p => p.published && p.platform === "instagram").length, 4);
   assert.equal((await call("/admin/produk")).status, 307);
@@ -400,9 +405,9 @@ try{
   assert.ok(nativeHtml.includes('class="social-native-video"') && nativeHtml.includes(videoUrl) && nativeHtml.includes('controls=""') && nativeHtml.includes('playsInline=""'));
   const onlyGarudaSocial = await (await call("/sosial-media?divisi=retail-cibitung")).text();
   assert.ok(onlyGarudaSocial.includes("gmbgarudaofficial") && !onlyGarudaSocial.includes("Dd59WrvhJtC"));
-  assert.ok(onlyGarudaSocial.includes('href="https://www.youtube.com/@GarudaMarginalbaja"') && onlyGarudaSocial.includes("youtube-nocookie.com/embed/0onyCem9_qI") && onlyGarudaSocial.includes("youtube-nocookie.com/embed/rGpjrXQM92M"), "Garuda's verified channel and two videos are available in its directory");
+  assert.ok(onlyGarudaSocial.includes('href="https://www.youtube.com/@GarudaMarginalbaja"') && onlyGarudaSocial.includes('href="https://www.youtube.com/shorts/0onyCem9_qI"') && onlyGarudaSocial.includes('href="https://www.youtube.com/shorts/rGpjrXQM92M"'), "Garuda's verified channel and two deferred videos retain their original source links");
   const garudaSocialHome = await (await call("/unit/retail-cibitung")).text();
-  assert.ok(garudaSocialHome.includes("youtube-nocookie.com/embed/0onyCem9_qI"), "Garuda homepage has its own video");
+  assert.ok(garudaSocialHome.includes('href="https://www.youtube.com/shorts/0onyCem9_qI"')&&garudaSocialHome.includes('class="social-load-embed"'), "Garuda homepage has its own deferred video and original source link");
   const onlyLaserSocial = await (await call("/sosial-media?divisi=laser-cutting")).text();
   assert.ok(onlyLaserSocial.includes("Dd59WrvhJtC") && !onlyLaserSocial.includes("Dd5a7EzDk9N"));
   assert.ok(!onlyLaserSocial.includes("0onyCem9_qI") && !onlyLaserSocial.includes('href="https://www.youtube.com/@GarudaMarginalbaja"'), "Garuda videos/channel are not mixed into the laser division");

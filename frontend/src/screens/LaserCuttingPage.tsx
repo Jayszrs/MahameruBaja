@@ -14,7 +14,7 @@ import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
   { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
-  { name: "CNC bending & tekuk plat", description: "Pembentukan plat dengan mesin CNC bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
+  { name: "Bending & tekuk plat", description: "Pembentukan plat dengan mesin bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
   { name: "Fabrikasi & finishing", description: "Pekerjaan fabrikasi (perakitan dan pengelasan), finishing, hingga erection (pemasangan di lokasi) sesuai kebutuhan proyek.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
   { name: "Produksi & pekerjaan proyek", description: "Pengerjaan produksi dalam jumlah tertentu, termasuk kebutuhan custom dan pekerjaan proyek sesuai gambar, spesifikasi, dan jadwal.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
 ]
@@ -28,7 +28,7 @@ const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
 ]
 
 const servicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
-  { title: "Laser Cutting & CNC Bending", detail: "Potong dan tekuk plat sesuai gambar Anda. Kirim desain, ukuran, bahan, dan jumlah agar tim bisa mengecek pengerjaan serta menyiapkan harga.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
+  { title: "Laser Cutting & Bending", detail: "Potong dan tekuk plat sesuai gambar Anda. Kirim desain, ukuran, bahan, dan jumlah agar tim bisa mengecek pengerjaan serta menyiapkan harga.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
   { title: "Penjualan Material", detail: "Cari besi beton, hollow, pipa, plat, dan material bangunan lainnya. Tanyakan ukuran, stok, dan harga terbaru langsung kepada tim toko.", href: "/produk", action: "Cari material" },
   { title: "Bantu Pilih Material", detail: "Masih bingung memilih besi? Ceritakan rencana pekerjaan Anda. Tim membantu mengecek pilihan jenis, ukuran, dan jumlah yang dibutuhkan.", href: "/kontak", action: "Tanya tim toko" },
   { title: "Material untuk Proyek", detail: "Kirim daftar material, jumlah, lokasi, dan rencana pengiriman. Tim MBI Trading membantu menyiapkan penawaran untuk kebutuhan proyek Anda.", href: "/unit/trading-proyek", action: "Hubungi MBI Trading" },
@@ -104,7 +104,7 @@ export default function LaserCuttingPage() {
       <section className="company-about-hero jasa-hero">
         <RotatingHeroMedia className="company-about-background" images={[laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
         <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
-          <p className="industrial-eyebrow">LASER CUTTING / CNC BENDING / FABRIKASI</p>
+          <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Kami menyediakan jasa<br /><em>laser cutting & bending.</em></h1>
           <p>Dari gambar kerja hingga komponen siap pakai. Kami melayani pemotongan, pembentukan plat, dan fabrikasi sesuai spesifikasi kebutuhan Anda. Kirim gambar untuk ditinjau tim sebelum penawaran.</p>
           <a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a>

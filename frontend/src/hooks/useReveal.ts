@@ -9,13 +9,13 @@ export function useReveal(threshold = 0.12) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 760px)').matches) {
       setVisible(true);
       return;
     }
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
+        if (entry.isIntersecting) { setVisible(true); observer.disconnect(); }
       },
       { threshold }
     );
@@ -29,7 +29,7 @@ export function useReveal(threshold = 0.12) {
 export function useScrollY() {
   const [y, setY] = useState(0);
   useEffect(() => {
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 760px)');
     if (motion.matches) return;
     const handler = () => setY(window.scrollY);
     window.addEventListener('scroll', handler, { passive: true });
@@ -42,14 +42,17 @@ export function useCounter(target: number, duration = 1800, start = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!start) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 760px)').matches) { setCount(target); return; }
     let startTime: number | null = null;
+    let frame = 0;
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
       setCount(Math.floor(progress * target));
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) frame = requestAnimationFrame(step);
     };
-    requestAnimationFrame(step);
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
   }, [target, duration, start]);
   return count;
 }

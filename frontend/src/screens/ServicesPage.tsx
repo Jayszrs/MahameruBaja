@@ -7,7 +7,7 @@ import IndustryIcon, { type IconName } from '../components/IndustryIcon';
 import MaterialCollage from '../components/MaterialCollage';
 
 const services = [
-  { id: 'laser-cutting', title: 'Laser Cutting & CNC Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
+  { id: 'laser-cutting', title: 'Laser Cutting & Bending', desc: 'Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.', image: laserImage, points: ['Gambar teknik / CAD', 'Cutting custom, ornamen dan panel', 'Bending sesuai gambar kerja', 'Request melalui halaman Laser Cutting & Bending'] },
   {
     id: 'penjualan',
     title: 'Penjualan Material',

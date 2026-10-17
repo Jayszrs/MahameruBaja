@@ -11,6 +11,7 @@ import { cachedPublicCms } from "./publicCmsCache";
 import { articles } from "../data/articles";
 import { ArticleError, articleCollectionSchema, articleInputSchema, articleReadTime, articleRecordSchema, articleSlug, publicArticle, type ArticleInput, type ArticleRecord } from "../data/articleCms";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
+import { publicServiceWording } from "../data/serviceWording";
 
 export const articleDataDirectory = process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data");
 const file = path.join(articleDataDirectory, "articles.json");
@@ -28,7 +29,7 @@ export async function readArticles(): Promise<ArticleRecord[]> {
 export const readPublishedArticles = cache(() => cachedPublicCms("published-articles", async () => { const active = new Set((await readDivisions()).filter(d=>d.status === "active").map(d=>d.slug)); return (await readArticles())
   .filter(article => article.status === "published" && (!contentOwner(article) || active.has(contentOwner(article)!)))
   .sort((left, right) => right.date.localeCompare(left.date) || left.id.localeCompare(right.id))
-  .map(publicArticle); }));
+  .map(article => publicServiceWording(publicArticle(article))); }));
 
 async function mutate<T>(update: (records: ArticleRecord[]) => { records: ArticleRecord[]; result: T }): Promise<T> {
   if (usingPreviewBlob()) {

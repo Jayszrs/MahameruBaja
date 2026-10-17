@@ -19,8 +19,10 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
   return (
     <PublicText><div className="article-reading-page" data-static-motion>
       {/* Hero */}
-      <section className="article-detail-hero bg-graphite" aria-labelledby="article-heading">
-        <div className="max-w-[800px] mx-auto px-6 pb-10">
+      <section className="article-detail-hero article-editorial-hero" aria-labelledby="article-heading">
+        <div className="article-editorial-visual"><Image src={article.image} alt={article.imageAlt || article.title} fill sizes="100vw" loading="eager" fetchPriority="high"/></div>
+        <div className="article-editorial-shade" aria-hidden="true"/>
+        <div className="article-editorial-heading">
           <nav aria-label="Breadcrumb" className="article-detail-breadcrumb">
             <Link to="/" className="hover:text-white transition-colors">Beranda</Link>
             <span>/</span>
@@ -44,15 +46,6 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
           </div>
         </div>
       </section>
-
-      {/* Hero image */}
-      <div className="article-cover relative bg-graphite">
-        <div className="max-w-[800px] mx-auto px-6">
-          <div className="rounded-md overflow-hidden aspect-video bg-graphite -mb-8">
-            <Image src={article.image} alt={article.imageAlt || article.title} width={1200} height={675} sizes="(max-width:800px) 100vw, 800px" className="w-full h-full object-cover" loading="eager" fetchPriority="high"/>
-          </div>
-        </div>
-      </div>
 
       {/* Content */}
       <div className="bg-surface py-16">

@@ -1,5 +1,7 @@
 "use client";
 import PublicText from "./PublicText";
+import Image from "./CmsImage";
+import SocialEmbed from "./SocialEmbed";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Link from "next/link";
@@ -18,7 +20,7 @@ function Post({ post }: { post: SocialPost }) {
   const division = divisions.find(d => d.slug === post.division);
   return <PublicText><article className={`social-feed social-single-post social-post-${post.platform}`}>
     <header className="social-post-source"><div><strong>{division?.name || post.title}</strong><small>{post.handle || platformLabels[post.platform]}</small></div><span className="social-post-platform" aria-label={`Konten ${platformLabels[post.platform]}`} title={platformLabels[post.platform]}><SocialIcon platform={post.platform} /></span></header>
-    {post.videoUrl ? <video key={playerKey} className="social-native-video" src={post.videoUrl} poster={post.image || undefined} controls playsInline preload="metadata" onError={() => setVideoError(true)} aria-label={post.title}><a href={post.url}>Buka unggahan asli</a></video> : embed ? <iframe key={playerKey} className="social-single-frame" src={embed} title={post.title} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" /> : <a className="social-external-post" href={post.url} target="_blank" rel="noopener noreferrer">{post.image && <img src={post.image} alt="" loading="lazy" />}<SocialIcon platform={post.platform} />Buka unggahan ↗</a>}
+    {post.videoUrl ? <video key={playerKey} className="social-native-video" src={post.videoUrl} poster={post.image || undefined} controls playsInline preload="none" onError={() => setVideoError(true)} aria-label={post.title}><a href={post.url}>Buka unggahan asli</a></video> : post.image ? <a className="social-image-preview" href={post.url} target="_blank" rel="noopener noreferrer" aria-label={`Lihat ${post.title} di ${platformLabels[post.platform]}`}><Image src={post.image} alt={post.title} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"/></a> : embed ? <SocialEmbed key={playerKey} src={embed} title={post.title}/> : <a className="social-external-post" href={post.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={post.platform} />Buka unggahan ↗</a>}
     {videoError && <div className="social-player-error" role="status"><span>Video belum berhasil dimuat.</span><button type="button" onClick={() => { setPlayerKey(key => key + 1); setVideoError(false); }}>Coba lagi</button></div>}
     <footer><h3>{post.title}</h3>{post.caption && <p>{post.caption}</p>}<a href={post.url} target="_blank" rel="noopener noreferrer">Lihat di {platformLabels[post.platform]} →</a></footer>
   </article></PublicText>;

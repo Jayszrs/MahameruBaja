@@ -8,6 +8,7 @@ export const adminNavigation: AdminNavGroup[] = [
     { label: "Profil divisi", href: "/admin/divisi" }, { label: "Kontak & divisi", href: "/admin/konten?tab=contacts" }, { label: "Ulasan Google", href: "/admin/konten?tab=reviews" },
     { label: "Produk & stok", href: "/admin/produk" },
     { label: "Teks website", href: "/admin/teks" },
+    { label: "Logo supplier", href: "/admin/mitra?tab=suppliers" }, { label: "Logo perusahaan rekanan", href: "/admin/mitra?tab=clients" },
   ] },
   { id: "social", number: "03", label: "Sosial media", path: "/admin/sosial", items: [
     { label: "Akun sosial", href: "/admin/sosial?tab=accounts" }, { label: "Unggahan sosial", href: "/admin/sosial?tab=posts" },

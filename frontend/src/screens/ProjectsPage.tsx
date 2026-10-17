@@ -13,7 +13,7 @@ const filters = ["Semua", "Laser Cutting & Bending", "Retail", "Mesin", "Produk"
 
 const galleryItems = [
   { id: 1, src: laserImage, category: "Laser Cutting & Bending", title: "Ilustrasi proses laser cutting", span: "col-span-2", desc: "Contoh pengerjaan: memotong plat mengikuti gambar kerja untuk panel, ornamen, dan komponen custom.", unit: { label: "Jasa laser cutting", href: "/jasa" } },
-  { id: 2, src: "/images/cnc-bending-visual-v1.png", category: "Mesin", title: "Ilustrasi proses CNC bending", span: "", desc: "Contoh pengerjaan: menekuk plat sesuai ukuran dan sudut dari gambar yang disetujui.", unit: { label: "Jasa laser cutting", href: "/jasa" } },
+  { id: 2, src: "/images/cnc-bending-visual-v1.png", category: "Mesin", title: "Ilustrasi proses bending", span: "", desc: "Contoh pengerjaan: menekuk plat sesuai ukuran dan sudut dari gambar yang disetujui.", unit: { label: "Jasa laser cutting", href: "/jasa" } },
   { id: 3, src: "/images/steel-indonesia/toko-mahameru.jpg", category: "Retail", title: "Toko Mahameru Baja, Tambun Selatan", span: "col-span-2 row-span-2", desc: "Contoh layanan: pembelian besi satuan langsung di toko, dibantu cek ukuran dan stok.", unit: { label: "Toko Tambun", href: "/unit/retail-tambun" } },
   { id: 4, src: "/images/steel-indonesia/besi-beton.jpg", category: "Produk", title: "Besi beton", span: "", desc: "Contoh pengadaan: besi beton sesuai daftar kebutuhan, jumlah, dan jadwal proyek.", unit: { label: "Lihat produk", href: "/produk" } },
   { id: 5, src: "/images/steel-indonesia/hollow.jpg", category: "Produk", title: "Besi hollow", span: "", desc: "Contoh pengadaan: hollow untuk rangka dan konstruksi, tersedia berbagai ukuran.", unit: { label: "Lihat produk", href: "/produk" } },

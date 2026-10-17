@@ -29,7 +29,7 @@ export const businessUnits = [
   {
     slug: "laser-cutting",
     name: "MBI Laser Cutting",
-    label: "Laser cutting & CNC bending",
+    label: "Laser cutting & bending",
     category: "Cutting / bending / fabrikasi",
     description:
       "Dari gambar teknik ke kebutuhan produksi: cutting plat, bending, komponen custom dan fabrikasi.",
@@ -41,7 +41,7 @@ export const businessUnits = [
 export const laserImage = "/images/laser-cutting-illustration.jpg"
 export const laserServices = [
   "Laser Cutting",
-  "CNC Bending",
+  "Bending",
   "Laser Cutting + Bending",
   "Fabrikasi",
   "Pekerjaan Proyek",
@@ -61,7 +61,7 @@ export const laserFAQs = [
       "Siapkan DWG atau DXF untuk gambar teknik. PDF, AI, CDR, JPG dan PNG dapat digunakan sebagai bahan konsultasi awal. Kesesuaian file untuk produksi perlu ditinjau tim; lampiran dikirim langsung lewat WhatsApp pada versi ini.",
   },
   {
-    question: "Apakah bisa laser cutting sekaligus CNC bending?",
+    question: "Apakah bisa laser cutting sekaligus bending?",
     answer:
       "Pilih Laser Cutting + Bending dan sertakan detail tekukan serta gambar kerja. Kapasitas mesin, toleransi, ketebalan material dan kelayakan desain harus dikonfirmasi sebelum pekerjaan disetujui.",
   },

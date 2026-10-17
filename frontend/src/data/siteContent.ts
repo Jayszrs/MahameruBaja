@@ -12,6 +12,7 @@ import { heroAnnouncementSchema } from "./heroAnnouncements";
 import { defaultGarudaReviews } from "./divisionLocations";
 import { inventoryListSchema, defaultInventory } from "./inventory";
 import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery";
+import { partnerLogoListSchema, defaultPartnerLogos } from "./partnerLogos";
 
 export const divisionSlugs = ["retail-tambun", "retail-cibitung", "trading-proyek", "laser-cutting", "fabrikasi-erection"] as const;
 const text = (max: number) => z.string().trim().max(max);
@@ -43,6 +44,7 @@ export const reviewProfileSchema = z.object({
   if (new Set(profile.reviews.map(r => r.id)).size !== profile.reviews.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reviews"], message: "ID ulasan harus unik" });
 });
 export const siteContentSchema = z.object({
+  partnerLogos:partnerLogoListSchema.default(defaultPartnerLogos),
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
   websiteTexts: z.array(websiteTextSchema).max(500).default([]),
   clientPosterVersion: z.number().int().nonnegative().default(0),
@@ -86,6 +88,7 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  partnerLogos:defaultPartnerLogos,
   heroAnnouncements:[],
   websiteTexts: [],
   clientPosterVersion: 1,

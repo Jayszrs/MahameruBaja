@@ -58,17 +58,17 @@ export const divisions = [
     primary: { label: "Kirim kebutuhan proyek", href: "/minta-penawaran?unit=trading-proyek" }, quote: "/minta-penawaran?unit=trading-proyek",
   },
   {
-    slug: "laser-cutting", name: "MBI Laser Cutting & Bending", label: "Laser cutting & CNC bending", area: "Tambun Selatan, Bekasi",
+    slug: "laser-cutting", name: "MBI Laser Cutting & Bending", label: "Laser cutting & bending", area: "Tambun Selatan, Bekasi",
     title: "Jasa laser cutting plat dari gambar ke komponen.",
     intro: "Mulai dari gambar kerja. Tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
-    description: "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, CNC bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
+    description: "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
     hero: "/images/laser-cutting-illustration.jpg",
     images: [
       { src: "/images/laser-cutting-illustration.jpg", title: "Ilustrasi laser cutting" },
-      { src: "/images/cnc-bending-visual-v1.png", title: "Ilustrasi CNC bending" },
+      { src: "/images/cnc-bending-visual-v1.png", title: "Ilustrasi bending" },
       { src: "/images/steel-indonesia/plat-hitam.jpg", title: "Material plat" },
     ],
-    offerings: ["Laser cutting plat & custom", "CNC bending 160 ton", "Cutting + bending", "Fabrikasi & finishing"],
+    offerings: ["Laser cutting plat & custom", "Bending 160 ton", "Cutting + bending", "Fabrikasi & finishing"],
     process: ["Kirim gambar DWG, DXF, atau PDF", "Review material dan ukuran", "Penawaran, produksi, dan pemeriksaan hasil"],
     faq: [
       { question: "Format desain apa yang bisa dikirim?", answer: "DWG dan DXF cocok untuk gambar teknik. PDF, AI, CDR, JPG, atau PNG dapat menjadi bahan konsultasi awal. File produksi ditinjau tim." },

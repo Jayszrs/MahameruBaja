@@ -70,7 +70,7 @@ function StatsSection() {
     { value: 'Tambun', label: 'Lokasi toko', sub: 'Tambun Selatan, Kabupaten Bekasi' },
     { value: 'Retail', label: 'Pembelian satuan', sub: 'Material untuk rumah dan renovasi' },
     { value: 'Proyek', label: 'Pengadaan material', sub: 'Penawaran sesuai daftar kebutuhan' },
-    { value: 'Custom', label: 'Pekerjaan produksi', sub: 'Laser cutting dan CNC bending' },
+    { value: 'Custom', label: 'Pekerjaan produksi', sub: 'Laser cutting dan bending' },
   ];
 
   return (
@@ -147,7 +147,7 @@ function AboutPhotoStory() {
   const photos = [
     { src: '/images/hero-steel-warehouse-v2.png', alt: 'Ilustrasi persediaan material baja di gudang', label: 'Material siap direncanakan', note: 'Visual ilustrasi' },
     { src: '/images/steel-indonesia/wiremesh.jpg', alt: 'Persediaan wiremesh untuk konstruksi', label: 'Pilihan material konstruksi', note: 'Foto material' },
-    { src: '/images/cnc-bending-visual-v1.png', alt: 'Ilustrasi proses CNC bending pada plat logam', label: 'Pekerjaan berbasis gambar', note: 'Visual ilustrasi' },
+    { src: '/images/cnc-bending-visual-v1.png', alt: 'Ilustrasi proses bending pada plat logam', label: 'Pekerjaan berbasis gambar', note: 'Visual ilustrasi' },
     { src: '/images/hero-steel-logistics-v1.png', alt: 'Ilustrasi pengiriman baja konstruksi', label: 'Alur kebutuhan proyek', note: 'Visual ilustrasi' },
   ];
 

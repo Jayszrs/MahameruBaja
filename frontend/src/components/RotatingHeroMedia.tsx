@@ -14,11 +14,11 @@ export default function RotatingHeroMedia({ images, className = "" }: { images: 
   }, []);
   useEffect(() => {
     if (sources.length < 2 || paused || hidden || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setTimeout(() => setActive(index => (index + 1) % sources.length), 2000);
+    const timer = window.setTimeout(() => setActive(index => (index + 1) % sources.length), 5000);
     return () => window.clearTimeout(timer);
   }, [active, paused, hidden, sources.length]);
   return <div className={`rotating-hero-media ${className}`}>
-    <div aria-hidden="true">{sources.map((src, index) => <Image key={src} src={src} alt="" fill sizes="100vw" priority={index === 0} className={index === active % sources.length ? "is-active" : ""} />)}</div>
+    <div aria-hidden="true">{sources.length > 0 && <Image key={sources[active % sources.length]} src={sources[active % sources.length]} alt="" fill sizes="100vw" loading="eager" className="is-active" />}</div>
     {sources.length > 1 && <button type="button" className="carousel-keyboard-control" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan pergantian gambar" : "Hentikan pergantian gambar"}</button>}
   </div>;
 }

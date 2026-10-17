@@ -14,14 +14,14 @@ export interface Article {
 
 export const articles: Article[] = [
   {
-    id: 'laser-guide', slug: 'panduan-request-laser-cutting-bekasi', title: 'Menyiapkan Gambar untuk Laser Cutting & CNC Bending di Bekasi', category: 'Laser Cutting & Bending', date: '2026-10-03', excerpt: 'Panduan gambar kerja, material, ketebalan dan jumlah untuk konsultasi laser cutting plat di Bekasi, Tambun dan Cibitung. Harga ditentukan setelah review teknis.', image: 'https://images.unsplash.com/photo-1738162837438-92ff852619a1?auto=format&fit=crop&w=1000&q=80', readTime: '4 mnt baca', content: `
+    id: 'laser-guide', slug: 'panduan-request-laser-cutting-bekasi', title: 'Menyiapkan Gambar untuk Laser Cutting & Bending di Bekasi', category: 'Laser Cutting & Bending', date: '2026-10-03', excerpt: 'Panduan gambar kerja, material, ketebalan dan jumlah untuk konsultasi laser cutting plat di Bekasi, Tambun dan Cibitung. Harga ditentukan setelah review teknis.', image: 'https://images.unsplash.com/photo-1738162837438-92ff852619a1?auto=format&fit=crop&w=1000&q=80', readTime: '4 mnt baca', content: `
 ## Mulai dari gambar kerja yang jelas
 Untuk konsultasi jasa laser cutting plat, siapkan gambar dengan dimensi dan satuan yang jelas. DWG atau DXF membantu tim membaca geometri. PDF, AI, CDR, JPG dan PNG dapat menjadi referensi awal, tetapi kesesuaiannya untuk produksi perlu ditinjau.
 
 ## Detail material dan kebutuhan komponen
 Tuliskan jenis material, ketebalan, ukuran dan jumlah. Sertakan apakah material disediakan pelanggan atau perlu pengadaan. Kapasitas mesin dan kelayakan pemrosesan harus dikonfirmasi, bukan diasumsikan.
 
-## Jika membutuhkan CNC bending
+## Jika membutuhkan bending
 Lengkapi arah tekukan, sudut, dimensi hasil akhir dan gambar kerja. Tim perlu meninjau urutan proses cutting serta bending sebelum memberikan penawaran.
 
 ## Harga dan jadwal bukan angka tetap

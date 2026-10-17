@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function MotionController() {
   useEffect(() => {
     const root = document.documentElement;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce), (pointer: coarse), (max-width: 760px)").matches) return;
     const main = document.querySelector("main");
     if (!main) return;
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;

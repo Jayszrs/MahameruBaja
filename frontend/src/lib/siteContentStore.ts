@@ -14,6 +14,7 @@ import { verifiedInstagramPosts, verifiedYouTubePosts, verifiedGarudaYouTubePost
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 import { cache } from "react";
 import { cachedPublicCms } from "./publicCmsCache";
+import { publicServiceWording } from "../data/serviceWording";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
@@ -97,7 +98,7 @@ export const readPublicSiteContent = cache(() => cachedPublicCms("public-site-co
     const { contactId:_contactId, ...publicItem } = item;
     return { ...publicItem, contactUnavailable:true };
   });
-  return next;
+  return publicServiceWording(next);
 }));
 export async function writeSiteContent(input: SiteContent, base?: SiteContent, actor?: AdminIdentity) {
   if (usingPreviewBlob()) {
