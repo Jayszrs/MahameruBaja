@@ -34,9 +34,10 @@ export default function WelcomePosters({ promotions }: { promotions: Promotion[]
   const close = () => setOpen(false);
   const step = (by: number) => setIndex(current => (current + by + live.length) % live.length);
   return <dialog className="poster-welcome" ref={dialog} aria-labelledby="welcome-poster-heading" onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }} onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
-    <header className="poster-welcome-header"><h2 id="welcome-poster-heading">{item.title}</h2><button type="button" autoFocus aria-label="Tutup poster" onClick={close}>×</button></header>
-    <div className="poster-welcome-image"><Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:600px) 94vw, 560px" /></div>
-    <footer className="poster-welcome-footer"><div className="poster-welcome-navigation">{live.length > 1 && <button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">←</button>}<p aria-live="polite">{index + 1} / {live.length}</p>{live.length > 1 && <button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">→</button>}</div><Link href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link></footer>
-    <p className="poster-welcome-note">{item.terms}</p>
+    <h2 className="poster-welcome-accessible" id="welcome-poster-heading">{item.title}</h2>
+    <button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}>×</button>
+    <Link className="poster-welcome-image" href={item.ctaHref} onClick={close} aria-label={`${item.ctaLabel}: ${item.title}`} aria-describedby="welcome-poster-terms"><Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:600px) 90vw, 560px" /></Link>
+    {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">←</button><p aria-live="polite">{index + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">→</button></nav>}
+    <p className="poster-welcome-accessible" id="welcome-poster-terms">{item.terms}</p>
   </dialog>;
 }

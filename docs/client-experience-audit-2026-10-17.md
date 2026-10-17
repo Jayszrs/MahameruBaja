@@ -2,6 +2,14 @@
 
 Status: implemented and functionally tested locally, not released or visually approved. No production CMS data was written during this revision. No commit/push/deployment was performed in this turn.
 
+## Follow-up: centered, artwork-only popup
+
+The client requested a centered promotional poster without the white card. The dialog now explicitly uses fixed positioning, zero insets and automatic margins, rather than relying on browser default dialog margins that the CSS reset removes. Its background is transparent; visible title/footer/terms panels are removed. The original poster is the clickable offer link, with its title and terms retained for assistive technology. Close and previous/next controls remain separate dark 44px targets with visible keyboard focus. The artwork uses `object-fit: contain`, never cropping the original. The viewport-based width reserves room for controls on short screens as well as phones.
+
+Design reason: the client-supplied artwork is the focal point; a dark backdrop separates it from the page without introducing a second white card. Existing brand direction and ENERGY 2 / RHYTHM 2 / MOTION 2 are retained; no extra animation or generated artwork is added.
+
+Follow-up checks: popup adapter tests, CTA destination/accessibility, absence of the old header/footer, explicit transparent/centered CSS and viewport sizing calculations at 320×568, 375×667, 1440×900 and 667×375 passed. These calculations are not browser layout measurements. Typecheck passed. Visual/mobile/contrast/browser click-through remain PENDING because no browser surface is available. No release approval is claimed.
+
 ## Changes
 
 - Shared main/division hero interval is 2,000 ms. Hover no longer freezes it. Keyboard focus, explicit keyboard pause, hidden-tab and reduced-motion protections remain. Videos no longer prevent the interval from advancing.

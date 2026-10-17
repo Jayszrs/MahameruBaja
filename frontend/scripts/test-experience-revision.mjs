@@ -56,6 +56,18 @@ popup.find(node=>node.type==='dialog').props.ref.current={showModal(){opened++;}
 popup.advance(699); assert.equal(opened,0); popup.advance(1); assert.equal(opened,1); assert.equal(popup.document.body.style.overflow,'hidden');
 const currentPoster=()=>popup.find(node=>node.props?.className==='poster-welcome-image').props.children.props.src;
 assert.equal(currentPoster(),clientPosters[0].image);
+const posterLink=popup.find(node=>node.props?.className==='poster-welcome-image');
+assert.equal(posterLink.props.href,clientPosters[0].ctaHref,'The poster itself opens its configured offer');
+assert.ok(posterLink.props['aria-label'].includes(clientPosters[0].title));
+assert.throws(()=>popup.find(node=>node.props?.className==='poster-welcome-header'),/Expected component element/,'No visible white-card header');
+assert.throws(()=>popup.find(node=>node.props?.className==='poster-welcome-footer'),/Expected component element/,'No visible white-card footer');
+const popupCss=fs.readFileSync(path.join(frontend,'src/experience-revision.css'),'utf8');
+const dialogCss=/\.poster-welcome \{([^}]+)\}/.exec(popupCss)[1];
+assert.match(dialogCss,/position:fixed/); assert.match(dialogCss,/inset:0/); assert.match(dialogCss,/margin:auto/); assert.match(dialogCss,/background:transparent/);
+for(const [width,height] of [[375,667],[320,568],[1440,900],[667,375]]) {
+  const posterWidth=Math.min(560,width-32,(height-144)*.66875);
+  assert.ok(posterWidth<=width-32 && posterWidth*1600/1070+112<=height-32+.001,'Poster and 44px controls fit the viewport without cropping');
+}
 popup.find(node=>node.props?.['aria-label']==='Poster berikutnya').props.onClick(); popup.render(); assert.equal(currentPoster(),clientPosters[1].image);
 popup.find(node=>node.type==='dialog').props.onCancel(); popup.render(); assert.equal(closed,1); assert.equal(popup.document.body.style.overflow,''); popup.dispose();
 const repeat=await harness('src/components/WelcomePosters.tsx',{promotions:clientPosters},false,popupOptions); repeat.find(node=>node.type==='dialog').props.ref.current={showModal(){opened++;},close(){}}; repeat.advance(1000); assert.equal(opened,1,'Dismissed posters do not reopen on same-site navigation in this session'); repeat.dispose();
