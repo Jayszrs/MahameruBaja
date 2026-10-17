@@ -108,6 +108,17 @@ assert.match(dialogCss,/overflow:auto/,'Details scroll inside the viewport-const
 assert.ok(popup.find(node=>node.props?.className==='poster-welcome-details'));
 assert.ok(popup.find(node=>node.props?.className==='poster-contact-button').props.href.startsWith('https://wa.me/'));
 assert.ok(popup.find(node=>node.type==='h2').props.children===clientPosters[0].title);
+const mobileInfo=popup.find(node=>node.props?.className==='poster-mobile-information');
+const nodeText=node=>typeof node==='string'?node:typeof node==='number'?String(node):Array.isArray(node)?node.map(nodeText).join(' '):node&&typeof node==='object'?nodeText(node.props?.children):'';
+assert(nodeText(mobileInfo).includes(clientPosters[0].summary),'Compact mobile layout retains the full summary inside optional details');
+assert(nodeText(mobileInfo).includes('Team')||nodeText(mobileInfo).includes('Tim'),'The same scoped contact is retained in mobile details');
+assert.equal(popup.find(node=>node.props?.className==='poster-welcome-more').props.open,undefined,'Optional detail is closed by default');
+assert.ok(popup.find(node=>node.type==='summary'&&node.props.children==='Detail promo & kontak'));
+assert.match(popupCss,/\.poster-mobile-information \{ display:none;/,'No repeated mobile information on desktop');
+assert.match(popupCss,/\.poster-welcome\[open\] \{ display:flex; flex-direction:column; overflow:hidden;/,'Only open mobile dialogs receive the compact flex layout');
+assert.match(popupCss,/\.poster-welcome-contact>\.poster-offer-link \{ display:none;/,'Secondary action moves into optional details on mobile');
+assert.match(popupCss,/\.poster-welcome-layout \{ min-height:0; overflow-y:auto; overscroll-behavior:contain;/,'Short screens retain one scrollable body with close and navigation outside it');
+console.log('PASS: compact mobile popup keeps one primary action, closed optional issuer/contact details, no duplicated mobile assets, unchanged desktop detail and bounded scroll body (source/component checks)');
 assert.match(popupCss,/\.poster-welcome-layout \{ grid-template-columns:minmax\(0,1fr\);/,'Mobile stacks artwork and readable details');
 popup.find(node=>node.props?.['aria-label']==='Poster berikutnya').props.onClick(); popup.render(); assert.equal(currentPoster(),clientPosters[1].image);
 popup.find(node=>node.type==='dialog').props.onCancel(); popup.render(); assert.equal(closed,1); assert.equal(popup.document.body.style.overflow,'');

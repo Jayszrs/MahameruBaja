@@ -60,11 +60,22 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
         <p className="poster-welcome-category">{item.label}</p>
         <h2 id="welcome-poster-heading">{item.title}</h2><p className="poster-welcome-description">{item.summary}</p>
         <div className="poster-welcome-provider">{details.division?.logo&&<Image src={details.division.logo} alt="" width={56} height={56} transparentLogo/>}<div><span>Penawaran dari</span><strong>{details.division?.name || "Mahameru Baja Indonesia"}</strong>{details.division?.label&&<small>{details.division.label}{details.division.area?` · ${details.division.area}`:""}</small>}</div></div>
-        <div className="poster-welcome-contact"><span>Hubungi tim kami</span><strong>{details.contact?.name || (details.division ? `Tim ${details.division.name}` : "Tim Mahameru Baja")}</strong>{details.contact?.role&&<small>{details.contact.role}</small>}{details.contact&&(details.contact.whatsapp || details.contact.phone || details.contact.mobile)&&<small>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</small>}
+        <div className="poster-welcome-contact"><div className="poster-contact-identity"><span>Hubungi tim kami</span><strong>{details.contact?.name || (details.division ? `Tim ${details.division.name}` : "Tim Mahameru Baja")}</strong>{details.contact?.role&&<small>{details.contact.role}</small>}{details.contact&&(details.contact.whatsapp || details.contact.phone || details.contact.mobile)&&<small>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</small>}</div>
           {details.whatsappHref?<a className="poster-contact-button" href={details.whatsappHref} target="_blank" rel="noopener noreferrer" onClick={close}>Chat {details.contact?.name} di WhatsApp</a>:<Link className="poster-contact-button" href={details.contactHref} onClick={close}>Lihat kontak {details.division?.name || "kami"}</Link>}
           {item.ctaHref!==details.contactHref&&<Link className="poster-offer-link" href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link>}
         </div>
-        <details className="poster-welcome-more" key={item.id} onToggle={event=>setReading(event.currentTarget.open)}><summary>Detail penawaran & ketentuan</summary><dl className="poster-welcome-facts">{item.benefit&&<div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo&&<div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>{item.terms&&<p className="poster-welcome-terms">{item.terms}</p>}</details>
+        <details className="poster-welcome-more" key={item.id} onToggle={event=>setReading(event.currentTarget.open)}>
+          <summary>Detail promo & kontak</summary>
+          <div className="poster-mobile-information">
+            {item.summary&&<p>{item.summary}</p>}
+            <dl className="poster-welcome-facts">
+              <div><dt>Penawaran dari</dt><dd>{details.division?.name || "Mahameru Baja Indonesia"}{details.division?.label&&<small>{details.division.label}{details.division.area?` · ${details.division.area}`:""}</small>}</dd></div>
+              {details.contact&&<div><dt>Kontak</dt><dd>{details.contact.name}{details.contact.role&&<small>{details.contact.role}</small>}{(details.contact.whatsapp || details.contact.phone || details.contact.mobile)&&<small>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</small>}</dd></div>}
+            </dl>
+            {item.ctaHref!==details.contactHref&&<Link className="poster-offer-link" href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link>}
+          </div>
+          <dl className="poster-welcome-facts">{item.benefit&&<div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo&&<div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>{item.terms&&<p className="poster-welcome-terms">{item.terms}</p>}
+        </details>
       </section>
     </div>
     {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">Sebelumnya</button><p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">Berikutnya</button></nav>}
