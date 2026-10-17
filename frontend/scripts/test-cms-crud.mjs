@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 import { cmsVideo } from "./fixtures/cms-video.mjs";
 
 assert.equal(process.env.ARTICLE_TEST_ISOLATED, "1", "Run only against a disposable CMS_DATA_DIR.");
 const base = process.env.ARTICLE_TEST_URL || "http://localhost:3000";
+const persistenceFile=path.join(process.env.CMS_TEST_ARTIFACTS_DIR || '/artifacts','crud-persistence.json');
 assert(["localhost", "127.0.0.1"].includes(new URL(base).hostname));
 let checks = 0;
 async function request(cookie, path, method = "GET", data) {
@@ -25,9 +27,10 @@ const actors = [
   { cookie: await login("division-a@example.test", "division-fixture-a"), division: "retail-tambun" },
   { cookie: await login("division-b@example.test", "division-fixture-b"), division: "retail-cibitung" },
 ];
+if(process.env.CMS_TEST_ALL_DIVISIONS==='1')for(const division of ['trading-proyek','laser-cutting','fabrikasi-erection'])actors.push({cookie:await login(`qa.${division}@example.test`,'division-fixture-a'),division});
 const content = () => json(root, "/api/admin/content");
 if (process.argv.includes("--after-restart")) {
-  const saved = JSON.parse(await readFile("/artifacts/crud-persistence.json", "utf8"));
+  const saved = JSON.parse(await readFile(persistenceFile, "utf8"));
   assert.deepEqual(await content(), saved.content);
   assert.deepEqual(await json(root, "/api/admin/requests"), saved.requests);
   assert.deepEqual(await json(root, "/api/admin/inventory"), saved.inventory);
@@ -36,12 +39,12 @@ if (process.argv.includes("--after-restart")) {
 }
 const initial = await content();
 if (process.argv.includes("--empty")) {
-  const empty = { ...initial, _base: initial, contacts: [], reviews: [], socialAccounts: [], socialPosts: [], promotions: [], heroSlides: [], galleryProjects: [], divisionReviews: {}, garudaReviews: { ...initial.garudaReviews, reviews: [] } };
+  const empty = { ...initial, _base: initial, contacts: [], reviews: [], socialAccounts: [], socialPosts: [], promotions: [], heroSlides: [], galleryProjects: [], websiteTexts: [], heroAnnouncements: [], divisionReviews: {}, garudaReviews: { ...initial.garudaReviews, reviews: [] } };
   await json(root, "/api/admin/content", "PUT", empty);
   await json(root, "/api/admin/inventory", "PUT", { items: [], base: initial.inventory });
   for (const article of await json(root, "/api/admin/articles")) await json(root, `/api/admin/articles/${article.id}`, "DELETE", { revision: article.revision });
   for (const path of ["/", "/kontak", "/informasi", "/sosial-media", "/produk", "/proyek", "/unit/retail-tambun", "/unit/retail-cibitung", "/unit/laser-cutting", "/unit/fabrikasi-erection/galeri", "/admin", "/admin/hero", "/admin/galeri", "/admin/produk"]) assert.equal((await request(path.startsWith("/admin") ? root : null, path)).status, 200, path);
-  const reloaded = await content(); for (const key of ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "inventory"]) assert.deepEqual(reloaded[key], [], `Empty ${key} must not reseed`);
+  const reloaded = await content(); for (const key of ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts", "heroAnnouncements", "inventory"]) assert.deepEqual(reloaded[key], [], `Empty ${key} must not reseed`);
   assert.deepEqual(await json(root, "/api/admin/articles"), []);
   console.log(`CMS empty states: ${checks} HTTP checks passed; public/admin routes remain available and deleted content stays empty.`); process.exit(0);
 }
@@ -56,11 +59,11 @@ async function change(actor, key, update, before) {
   const current = before || await json(actor.cookie, "/api/admin/content");
   return json(actor.cookie, "/api/admin/content", "PUT", { ...current, [key]: update(structuredClone(current[key])), _base: current });
 }
-const keys = ["contacts", "socialAccounts", "socialPosts", "heroSlides", "promotions", "galleryProjects"];
+const keys = ["contacts", "socialAccounts", "socialPosts", "heroSlides", "promotions", "galleryProjects", "heroAnnouncements", "websiteTexts"];
 for (const actor of actors) {
   for (const key of keys) {
     const before = await content(), id = `crud-${key}-${actor.division || "central"}-${runId}`;
-    const image = key === "socialAccounts" ? null : await upload(actor.cookie);
+    const image = ['socialAccounts','heroAnnouncements','websiteTexts'].includes(key) ? null : await upload(actor.cookie);
     const row = { ...structuredClone(initial[key][0]), id, ownerDivision: actor.division, audience: actor.division ? [actor.division] : undefined, published: false };
     if ("division" in row) row.division = actor.division || "retail-tambun";
     if ("divisions" in row) row.divisions = actor.division ? [actor.division] : [];
@@ -70,6 +73,8 @@ for (const actor of actors) {
     if (key === "heroSlides") Object.assign(row, { title: id, type: "image", media: image });
     if (key === "promotions") Object.assign(row, { title: id, image, imageAlt: id, benefit: "Konsultasi", appliesTo: "Material", terms: "Konfirmasi admin", startDate: "", endDate: "" });
     if (key === "galleryProjects") Object.assign(row, { title: id, photos: [{ id: id + "-photo", src: image, alt: id, caption: "Foto fixture" }], coverId: id + "-photo" });
+    if (key === "heroAnnouncements") Object.assign(row,{messages:[id]});
+    if (key === "websiteTexts") Object.assign(row,{page:'home',source:id,replacement:'Fixture text',published:false});
     let saved = await change(actor, key, rows => [...rows, row]);
     assert(saved[key].some(r => r.id === id));
     assert((await json(actor.cookie, "/api/admin/content"))[key].some(r => r.id === id));
@@ -78,11 +83,22 @@ for (const actor of actors) {
     saved = await change(actor, key, rows => rows.map(r => r.id === id ? { ...r, published: true } : r));
     assert.equal(saved[key].find(r => r.id === id).published, true);
     if (image) assert.equal((await request(null, image)).status, 200, `${key} published media must be public`);
-    else assert((await (await request(null, "/sosial-media")).text()).includes(id), "Published social account visible publicly");
+    else if(key==='socialAccounts')assert((await (await request(null, "/sosial-media")).text()).includes(id), "Published social account visible publicly");
+    if(key==='heroSlides'){
+      const body=new FormData();body.set('media',new File([cmsVideo],'hero.mp4',{type:'video/mp4'}));body.set('kind','video');
+      checks++;const uploaded=await fetch(base+'/api/admin/media',{method:'POST',headers:{Origin:base,Cookie:actor.cookie},body});
+      assert.equal(uploaded.status,200);const video=await uploaded.json();assert.equal(video.type,'video');
+      assert.equal((await request(null,video.url)).status,404,'Unpublished upload is private');
+      saved=await change(actor,key,rows=>rows.map(r=>r.id===id?{...r,type:'video',media:video.url,poster:image}:r));
+      const range=await fetch(base+video.url,{headers:{Range:'bytes=0-15'}});checks++;assert.equal(range.status,206);assert.deepEqual(Buffer.from(await range.arrayBuffer()),cmsVideo.subarray(0,16));
+      saved=await change(actor,key,rows=>rows.map(r=>r.id===id?{...r,media:`https://media.example.test/hero-${actor.division||'central'}.mp4`}:r));
+      assert.ok(saved[key].find(r=>r.id===id).media.startsWith('https://media.example.test/'));
+      assert.equal((await request(null,video.url)).status,404,'Replacing the video with a link revokes its previous public access');
+    }
     const stale = structuredClone(saved);
-    saved = await change(actor, key, rows => rows.map(r => r.id === id ? { ...r, ...(key === "contacts" ? { role: "Tim fixture disunting" } : key === "socialAccounts" ? { handle: "@edited-" + id } : { title: "Edited " + id }) } : r));
+    saved = await change(actor, key, rows => rows.map(r => r.id === id ? { ...r, ...(key === "contacts" ? { role: "Tim fixture disunting" } : key === "socialAccounts" ? { handle: "@edited-" + id } : key==='heroAnnouncements'?{messages:['Edited '+id]}:key==='websiteTexts'?{replacement:'Edited '+id}:{ title: "Edited " + id }) } : r));
     const edited = saved[key].find(r => r.id === id);
-    assert.match(key === "contacts" ? edited.role : key === "socialAccounts" ? edited.handle : edited.title, /fixture disunting|edited-|Edited/);
+    assert.match(key === "contacts" ? edited.role : key === "socialAccounts" ? edited.handle : key==='heroAnnouncements'?edited.messages[0]:key==='websiteTexts'?edited.replacement:edited.title, /fixture disunting|edited-|Edited/);
     await json(actor.cookie, "/api/admin/content", "PUT", { ...stale, [key]: stale[key].map(r => r.id === id ? { ...r, published: false } : r), _base: stale }, 409);
     await change(actor, key, rows => rows.map(r => r.id === id ? { ...r, published: false } : r));
     if (image) assert.equal((await request(null, image)).status, 404, `${key} unpublish revokes public media`);
@@ -91,6 +107,7 @@ for (const actor of actors) {
     const after = await content();
     for (const other of keys) assert.deepEqual(after[other], before[other], `CRUD ${key} leaves ${other} baseline unchanged`);
   }
+  console.log(`PASS: eight content collections and image/video/link hero CRUD for ${actor.division||'Super Admin'}`);
 }
 // A real H.264 upload follows the same draft and ownership permissions as images.
 const videoActor = actors[1], videoForm = new FormData();
@@ -174,5 +191,5 @@ for (const actor of actors) {
 // Save a real published upload and all stores for the restart phase.
 const media = await upload(root);
 await change(actors[0], "contacts", rows => [...rows.filter(row => row.id !== "crud-persistence"), { ...initial.contacts[0], id: "crud-persistence", ownerDivision: null, name: "CRUD persistence fixture", photo: media, published: true }]);
-await writeFile("/artifacts/crud-persistence.json", JSON.stringify({ content: await content(), requests: await json(root, "/api/admin/requests"), inventory: await json(root, "/api/admin/inventory"), media }));
-console.log(`Full CMS CRUD: ${checks} HTTP checks passed for Super Admin, division A/B, publishing, private media, conflicts, invoice and archive/restore.`);
+await writeFile(persistenceFile, JSON.stringify({ content: await content(), requests: await json(root, "/api/admin/requests"), inventory: await json(root, "/api/admin/inventory"), media }));
+console.log(`Full CMS CRUD: ${checks} HTTP checks passed for ${actors.length} admin roles, publishing, private media, conflicts, invoice and archive/restore.`);

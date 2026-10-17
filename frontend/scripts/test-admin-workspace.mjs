@@ -77,7 +77,7 @@ for (const [url, label] of views) {
 }
 await page.goto(base + "/admin/promosi?view=live"); assert.equal(await page.locator(".promotion-editor-panel").count(), 1);
 await page.goto(base + "/admin/promosi?view=draft"); assert.equal(await page.locator(".promotion-editor-panel").count(), content.promotions.filter(item => !item.published).length);
-await page.goto(base + "/admin/hero"); assert(await page.locator(".hero-editor-preview").count() > 0);
+await page.goto(base + "/admin/hero"); assert(await page.locator(".hero-media-preview").count() > 0);
 await page.goto(base + "/admin/galeri"); assert(await page.locator(".gallery-editor-project").count() > 0);
 await page.goto(base + "/admin/produk"); assert(await page.locator(".inventory-editor").count() === 1);
 await page.goto(base + "/admin/permintaan?view=archived"); assert.equal(await page.locator(".requests-records>button").count(), 1);

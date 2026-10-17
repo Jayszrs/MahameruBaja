@@ -1,21 +1,21 @@
 import assert from "node:assert/strict";
-import { createRequire } from "node:module";
+import sharp from 'sharp';
 import { mkdir, readdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { cmsVideo } from "./fixtures/cms-video.mjs";
-const sharp = createRequire("/app/frontend/server.js")("sharp");
 assert.equal(process.env.ARTICLE_TEST_ISOLATED, "1", "Use only a disposable CMS store.");
 const base = process.env.ARTICLE_TEST_URL || "http://localhost:3000";
 assert(["localhost", "127.0.0.1"].includes(new URL(base).hostname));
 const dataDir = process.env.CMS_MEDIA_TEST_DATA_DIR;
-assert.equal(dataDir, "/app/cms-data", "Mount the disposable media fixture volume for fault injection.");
+if(dataDir!=='/app/cms-data')assert.ok(dataDir&&path.resolve(dataDir).startsWith(path.resolve('tmp')+path.sep),'Fault injection must stay in disposable local tmp or the fixture mount');
+const persistenceFile=path.join(process.env.CMS_TEST_ARTIFACTS_DIR||'/artifacts','media-persistence.json');
 let checks = 0;
 async function request(cookie, endpoint, options = {}) { checks++; return fetch(base + endpoint, { redirect: "manual", ...options, headers: { Origin: base, ...(cookie ? { Cookie: cookie } : {}), ...options.headers } }); }
 async function json(cookie, endpoint, method = "GET", data, status = 200) { const response = await request(cookie, endpoint, { method, ...(data ? { headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) } : {}) }); const text = await response.text(); assert.equal(response.status, status, `${method} ${endpoint}: ${text}`); return text ? JSON.parse(text) : null; }
 async function login(email, password) { const response = await request(null, "/api/admin/login", { method: "POST", body: new URLSearchParams({ email, password }) }); assert.equal(response.status, 303); const cookie = response.headers.get("set-cookie")?.split(";")[0]; assert(cookie); return cookie; }
 const root = await login("cms-test@example.test", "article-test-local"), a = await login("division-a@example.test", "division-fixture-a"), b = await login("division-b@example.test", "division-fixture-b");
 if (process.argv.includes("--after-restart")) {
-  const saved = JSON.parse(await readFile("/artifacts/media-persistence.json", "utf8"));
+  const saved = JSON.parse(await readFile(persistenceFile, "utf8"));
   for (const url of [saved.image, saved.video]) { assert.equal((await request(a, url)).status, 200); assert.equal((await request(b, url)).status, 404); assert.equal((await request(null, url)).status, 404); assert.equal((await request(a, url, { headers: { Range: "bytes=0-3" } })).status, 206); }
   for (const url of [saved.legacy, saved.legacyArticle]) { assert.equal((await request(b, url)).status, 200); assert.equal((await request(a, url)).status, 404); }
   const limited = await request(b, "/api/admin/media", { method: "POST", headers: { "Content-Type": "multipart/form-data; boundary=none" }, body: "broken" }); assert.equal(limited.status, 429);
@@ -98,5 +98,5 @@ assert.deepEqual((await readdir(path.join(dataDir, "private-media"))).sort(), fi
 let limited = false;
 for (let i = 0; i < 61; i++) { const response = await request(b, i % 2 ? "/api/admin/media" : "/api/admin/articles/upload", { method: "POST", headers: { "Content-Type": "multipart/form-data; boundary=none" }, body: "broken" }); if (response.status === 429) { assert(Number(response.headers.get("retry-after")) > 0); limited = true; break; } assert.equal(response.status, 400); }
 assert(limited, "Persistent account upload limit must reject repeated attempts.");
-await writeFile("/artifacts/media-persistence.json", JSON.stringify({ image: images[0], video: video.url, legacy, legacyArticle }));
+await writeFile(persistenceFile, JSON.stringify({ image: images[0], video: video.url, legacy, legacyArticle }));
 console.log(`CMS uploads: ${checks} HTTP requests passed across JPEG/PNG/WebP, all API aliases, ownership/publication/legacy privacy, MP4/Range/HEAD, malformed uploads, type-safe save, rollback and rate limits.`);

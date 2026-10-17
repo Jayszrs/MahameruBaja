@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { writeFile, readFile } from "node:fs/promises";
+import path from 'node:path';
+const persistenceFile=path.join(process.env.CMS_TEST_ARTIFACTS_DIR||'/artifacts','persistence.json');
 assert.equal(process.env.ARTICLE_TEST_ISOLATED,"1","Use only a disposable local CMS_DATA_DIR.");
 const base=process.env.ARTICLE_TEST_URL||"http://localhost:3000";
 assert(["localhost","127.0.0.1"].includes(new URL(base).hostname));
@@ -9,14 +11,14 @@ async function request(cookie,path,method="GET",data,origin=base) {checks++;retu
 async function json(cookie,path,method="GET",data,status=200) {const r=await request(cookie,path,method,data);const text=await r.text();assert.equal(r.status,status,`${method} ${path}: ${text}`);return text?JSON.parse(text):undefined;}
 const superLogin=await login("cms-test@example.test","article-test-local"); const root=superLogin.cookie;assert(root);
 if(process.argv.includes("--after-restart")) {
-  const saved=JSON.parse(await readFile("/artifacts/persistence.json","utf8"));
+  const saved=JSON.parse(await readFile(persistenceFile,"utf8"));
   assert.deepEqual(await json(root,"/api/admin/divisions"),saved.divisions);
   assert.deepEqual(await json(root,"/api/admin/accounts"),saved.accounts);
   assert.deepEqual(await json(root,"/api/admin/content"),saved.content);
   assert.deepEqual(await json(root,"/api/admin/articles"),saved.articles);
   console.log("Division/account/content/article stores survived restart without reseeding.");process.exit(0);
 }
-const accounts=await json(root,"/api/admin/accounts");assert.equal(accounts.length,3);assert(accounts.every(a=>!('passwordHash'in a)&&!('sessionVersion'in a)));
+const accounts=await json(root,"/api/admin/accounts");assert.equal(accounts.length,process.env.CMS_TEST_ALL_DIVISIONS==='1'?6:3);assert(accounts.every(a=>!('passwordHash'in a)&&!('sessionVersion'in a)));
 const initial=await json(root,"/api/admin/divisions");assert.equal(initial.length,5);assert(initial.every(d=>d.status==="active"));
 const a=(await login("division-a@example.test","division-fixture-a")).cookie,b=(await login("division-b@example.test","division-fixture-b")).cookie;assert(a&&b);
 const divisionA=(await json(a,"/api/admin/divisions"))[0],divisionB=(await json(b,"/api/admin/divisions"))[0];assert.equal(divisionA.slug,"retail-tambun");assert.equal(divisionB.slug,"retail-cibitung");
@@ -78,5 +80,5 @@ const superAccount=accounts.find(a=>a.role==="super_admin");await json(root,`/ap
 created=await json(root,`/api/admin/divisions/${created.id}`,"PUT",{...created,status:"archived"});assert.equal((await request(null,"/unit/"+created.slug)).status,404);await json(null,"/api/requests","POST",{...reqInput,businessUnitSlug:created.slug},400);await json(root,`/api/admin/divisions/${created.id}`,"DELETE",{revision:created.revision});
 own=await json(root,`/api/admin/divisions/${divisionA.id}`,"PUT",{...own,status:"archived"});assert.equal((await request(a,"/api/admin/content")).status,401);assert(!(await login("division-a@example.test","division-fixture-a")).cookie);assert.equal((await request(null,"/unit/retail-tambun")).status,404);assert.equal((await request(null,`/informasi/${article.slug}`)).status,404);await json(root,`/api/admin/divisions/${divisionA.id}`,"DELETE",{revision:own.revision},409);own=await json(root,`/api/admin/divisions/${divisionA.id}`,"PUT",{...own,status:"active"});assert((await login("division-a@example.test","division-fixture-a")).cookie);
 await json(a,`/api/admin/articles/${article.id}`,"DELETE",{revision:article.revision});
-await writeFile("/artifacts/persistence.json",JSON.stringify({divisions:await json(root,"/api/admin/divisions"),accounts:await json(root,"/api/admin/accounts"),content:await json(root,"/api/admin/content"),articles:await json(root,"/api/admin/articles")}));
+await writeFile(persistenceFile,JSON.stringify({divisions:await json(root,"/api/admin/divisions"),accounts:await json(root,"/api/admin/accounts"),content:await json(root,"/api/admin/content"),articles:await json(root,"/api/admin/articles")}));
 console.log(`Divisions/accounts/ownership integration: ${checks} HTTP checks passed on disposable local storage.`);

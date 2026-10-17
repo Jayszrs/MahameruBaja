@@ -56,7 +56,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   }, [activeIndex, paused, userPaused, interacting]);
 
   useEffect(() => {
-    if (paused || userPaused || interacting || nextIndex === activeIndex || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (paused || userPaused || interacting || nextIndex === activeIndex || activeSlide.type === "video" && !failed.has(activeIndex) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => {
       setPreviousIndex(activeIndex);
       setActiveIndex(nextIndex);
