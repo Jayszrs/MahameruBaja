@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Image from "./CmsImage";
@@ -67,8 +68,8 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   const { divisionWhatsApp } = useDivisionDirectory();
   const location = useLocation();
   const base = division ? `/unit/${division.slug}` : "/";
-  const brandName = division ? division.name.toUpperCase() : "MAHAMERU BAJA";
-  const brandLabel = division?.label || "INDONESIA";
+  const brandName = division ? division.name.toUpperCase() : "MBI LASER CUTTING";
+  const brandLabel = division?.label || "MAHAMERU BAJA INDONESIA";
   const bottomLinks = division ? [...divisionNavigation(division).map(link => ({ ...link, hasMega: false })), { label: "Website utama", href: "/", hasMega: false }] : mainBottomLinks;
   const navigate = useNavigate();
   const { count, setOpen: setQuotationOpen } = useQuotation();
@@ -143,7 +144,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   }
 
   return (
-    <>
+    <PublicText>
       {/* MAIN NAVBAR */}
       <div
         inert={homeNavHidden}
@@ -210,20 +211,6 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
               >
                 <WAIcon />
               </a>
-
-              {/* Quotation count */}
-              <button
-                onClick={() => setQuotationOpen(true)}
-                aria-label={`Daftar Penawaran — ${count} item`}
-                className={`relative p-2 rounded-lg transition-colors ${navSolid ? 'text-graphite hover:bg-warm-white' : 'text-white hover:bg-white/10'}`}
-              >
-                <ListIcon />
-                {count > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center">
-                    {count > 9 ? '9+' : count}
-                  </span>
-                )}
-              </button>
 
               {/* Penawaran CTA (desktop) */}
               <Link
@@ -423,7 +410,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
           </div>
         </div>
       )}
-    </>
+    </PublicText>
   );
 }
 

@@ -6,6 +6,8 @@ import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt
 import { promotionSchema, samplePromotions, additionalPromotions } from "./promotions";
 import { divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
+import { websiteTextSchema } from "./websiteTexts";
+import { clientPosters } from "./clientPosters";
 import { defaultGarudaReviews } from "./divisionLocations";
 import { inventoryListSchema, defaultInventory } from "./inventory";
 import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery";
@@ -40,6 +42,8 @@ export const reviewProfileSchema = z.object({
   if (new Set(profile.reviews.map(r => r.id)).size !== profile.reviews.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reviews"], message: "ID ulasan harus unik" });
 });
 export const siteContentSchema = z.object({
+  websiteTexts: z.array(websiteTextSchema).max(500).default([]),
+  clientPosterVersion: z.number().int().nonnegative().default(0),
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),
   showcaseVersion: z.number().int().min(0).default(0),
@@ -79,6 +83,8 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  websiteTexts: [],
+  clientPosterVersion: 1,
   divisionReviews: {},
   garudaReviews: defaultGarudaReviews,
   inventory: defaultInventory,
@@ -87,7 +93,7 @@ export const defaultSiteContent: SiteContent = {
   revision: 0, rating: googleRating, reviewCount: googleReviewCount, ratingDate: googleReviewsCapturedAt,
   mapsUrl: "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8", reviews: googleReviews,
   socialAccounts: defaultSocialAccounts, socialPosts: defaultSocialPosts,
-  promotions: [...samplePromotions, ...additionalPromotions],
+  promotions: [...samplePromotions, ...additionalPromotions, ...clientPosters],
   contacts: divisionSlugs.flatMap(slug => divisionIdentity[slug].admins.map(admin => ({ id: `${slug}-${admin.name.toLowerCase()}`, name: admin.name, role: "Admin divisi", phone: admin.phone, mobile: admin.phone, whatsapp: admin.phone, email: "", photo: "", divisions: [slug], published: true }))),
 };
 

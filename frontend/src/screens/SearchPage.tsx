@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
@@ -20,7 +21,7 @@ export default function SearchPage() {
   const suggestions = ['Besi Beton', 'Hollow Galvanis', 'Besi WF', 'Plat Besi', 'Wiremesh', 'Pipa'];
 
   return (
-    <>
+    <PublicText>
       <section className="pt-32 pb-10 bg-graphite relative overflow-hidden" aria-labelledby="search-hero-heading">
         <div className="simple-hero-media" data-parallax="0.24" aria-hidden="true"><img src="/images/steel-indonesia/wiremesh.jpg" alt="" /></div>
         <div className="simple-hero-shade" aria-hidden="true" />
@@ -100,6 +101,6 @@ export default function SearchPage() {
           </>
         )}
       </div>
-    </>
+    </PublicText>
   );
 }

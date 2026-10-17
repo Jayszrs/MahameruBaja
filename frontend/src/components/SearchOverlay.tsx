@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -59,7 +60,7 @@ export default function SearchOverlay({ open, onClose }: Props) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Pencarian produk">
+    <PublicText><div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Pencarian produk">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-gunmetal/70 backdrop-blur-sm" onClick={onClose} />
 
@@ -194,6 +195,6 @@ export default function SearchOverlay({ open, onClose }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </div></PublicText>
   );
 }

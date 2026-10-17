@@ -1,9 +1,10 @@
 import Link from "next/link";
+import PublicText from "../../src/components/PublicText";
 
 export const metadata = { title: "Kebijakan Privasi" };
 
 export default function PrivacyPage() {
-  return <section className="home-section bg-white"><div className="home-shell max-w-4xl">
+  return <PublicText><section className="home-section bg-white"><div className="home-shell max-w-4xl">
     <p className="home-eyebrow text-brand"><span />Informasi situs</p>
     <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-8">Kebijakan Privasi</h1>
     <div className="space-y-7 text-sm leading-8 text-steel-grey">
@@ -14,5 +15,5 @@ export default function PrivacyPage() {
       <p>Untuk pertanyaan mengenai data yang Anda kirimkan kepada Mahameru Baja, hubungi kami melalui <a className="text-brand underline" href="https://wa.me/6281218052017" target="_blank" rel="noopener noreferrer">WhatsApp utama</a>.</p>
     </div>
     <Link href="/kontak" className="home-button home-button-dark mt-10">Hubungi kami →</Link>
-  </div></section>;
+  </div></section></PublicText>;
 }

@@ -1,4 +1,6 @@
 "use client";
+import PublicText from "../components/PublicText";
+import RotatingHeroMedia from "../components/RotatingHeroMedia";
 
 import { Link } from 'react-router';
 import type { Article } from '../data/articles';
@@ -13,10 +15,10 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
   const featured = articles[0];
 
   return (
-    <>
+    <PublicText>
       {/* Hero */}
       <section className="bg-graphite relative overflow-hidden" aria-labelledby="informasi-hero-heading">
-        <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/hero-steel-warehouse-v2.png" alt="" /></div>
+        <RotatingHeroMedia className="simple-hero-media" images={["/images/hero-steel-warehouse-v2.png","/images/steel-indonesia/besi-beton.jpg","/images/laser-cutting-illustration.jpg"]} />
         <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 pt-8 pb-12">
@@ -125,6 +127,6 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
           </Link>
         </div>
       </section>
-    </>
+    </PublicText>
   );
 }

@@ -8,10 +8,15 @@ import "../src/article-cms.css";
 import "../src/revision.css";
 import "../src/project-gallery.css";
 import "../src/unified-home.css";
+import "../src/client-readability.css";
 import "../src/admin-workspace.css";
 import "../src/admin-management.css";
+import "../src/experience-revision.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
+import { readPublicSiteContent } from "../src/lib/siteContentStore";
+import { WebsiteTextProvider } from "../src/components/PublicText";
+import WelcomePosters from "../src/components/WelcomePosters";
 import { connection } from "next/server";
 import AppShell from "../src/components/AppShell";
 import AdminNavigationProvider from "../src/components/AdminNavigationProvider";
@@ -67,10 +72,10 @@ export const viewport: Viewport = { width: "device-width", initialScale: 1, them
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   await connection();
-  const divisions = await readPublicDivisions();
+  const [divisions, content] = await Promise.all([readPublicDivisions(), readPublicSiteContent()]);
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><AdminNavigationProvider><AppShell>{children}</AppShell></AdminNavigationProvider></DivisionDirectory></body>
+      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><AdminNavigationProvider><AppShell>{children}<WelcomePosters promotions={content.promotions} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
     </html>
   );
 }

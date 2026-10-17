@@ -11,6 +11,7 @@ import QuotationDrawer from "./QuotationDrawer";
 import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
 import RouteProgress from "./RouteProgress";
+import HorizontalRibbons from "./HorizontalRibbons";
 
 
 export default function AppShell({ children }: { children: ReactNode }) {
@@ -30,6 +31,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
     <QuotationProvider>
       <div className="public-site min-h-screen flex flex-col">
         <RouteProgress />
+        <HorizontalRibbons />
         <Navbar division={division} onSearchOpen={() => setSearchOpen(true)} />
         <main className={`flex-1 page-enter ${pathname === "/" || pathname === `/unit/${division?.slug}` ? "pt-0" : "site-main"}`}>
           {!productPage && <MotionController key={pathname} />}

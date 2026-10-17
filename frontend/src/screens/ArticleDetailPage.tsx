@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 
 import type { Article } from '../data/articles';
 import ArticleContent from '../components/ArticleContent';
@@ -15,7 +16,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
   const { ref, visible } = useReveal();
 
   return (
-    <>
+    <PublicText>
       {/* Hero */}
       <section className="article-detail-hero bg-graphite" aria-labelledby="article-heading">
         <div className="max-w-[800px] mx-auto px-6 pb-10">
@@ -112,6 +113,6 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
           </div>
         </section>
       )}
-    </>
+    </PublicText>
   );
 }

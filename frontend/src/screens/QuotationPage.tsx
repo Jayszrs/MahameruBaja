@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState } from 'react';
@@ -136,7 +137,7 @@ export default function QuotationPage() {
   }
 
   return (
-    <>
+    <PublicText>
       {/* Hero */}
       <section className="pt-36 pb-12 bg-navy relative overflow-hidden" aria-labelledby="quotation-hero-heading">
         <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/hero-steel-logistics-v1.png" alt="" /></div>
@@ -311,6 +312,6 @@ export default function QuotationPage() {
           </form>
         </div>
       </section>
-    </>
+    </PublicText>
   );
 }

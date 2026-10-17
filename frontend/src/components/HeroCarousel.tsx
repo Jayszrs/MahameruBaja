@@ -1,16 +1,18 @@
 "use client";
+import PublicText from "./PublicText";
 
 import Image from "./CmsImage";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "../data/heroSlides";
 
-const ROTATION_INTERVAL = 4000;
+const ROTATION_INTERVAL = 2000;
 
 export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl, companyName = "Mahameru Baja", area = "Bekasi / Jawa Barat", servicesLabel = "Retail • Trading • Production", ratingSourceName = "Mahameru Baja", serviceItems = ["Retail besi", "Supply proyek", "Laser cutting", "CNC bending", "Fabrikasi"] }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string; companyName?: string; area?: string; servicesLabel?: string; ratingSourceName?: string; serviceItems?: string[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
+  const [interacting, setInteracting] = useState(false);
   const [playedVideos, setPlayedVideos] = useState<Set<number>>(() => new Set());
   const [failed, setFailed] = useState<Set<number>>(() => new Set());
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
@@ -47,19 +49,19 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
-      if (index === activeIndex && !paused && !userPaused && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) void video.play().catch(() => { setFailed(current => new Set(current).add(index)); });
+      if (index === activeIndex && !paused && !userPaused && !interacting && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) void video.play().catch(() => { setFailed(current => new Set(current).add(index)); });
       else video.pause();
     });
-  }, [activeIndex, paused, userPaused]);
+  }, [activeIndex, paused, userPaused, interacting]);
 
   useEffect(() => {
-    if (paused || userPaused || nextIndex === activeIndex || window.matchMedia("(prefers-reduced-motion: reduce)").matches || activeSlide.type === "video" && !failed.has(activeIndex)) return;
+    if (paused || userPaused || interacting || nextIndex === activeIndex || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => {
       setPreviousIndex(activeIndex);
       setActiveIndex(nextIndex);
     }, ROTATION_INTERVAL);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, nextIndex, paused, userPaused, activeSlide.type, failed]);
+  }, [activeIndex, nextIndex, paused, userPaused, interacting, activeSlide.type, failed]);
 
   useEffect(() => {
     if (previousIndex === null) return;
@@ -68,10 +70,11 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   }, [previousIndex]);
 
   return (
-    <section
-      className={`hero-carousel ${paused || userPaused ? "is-paused" : ""}`}
+    <PublicText><section
+      className={`hero-carousel ${paused || userPaused || interacting ? "is-paused" : ""}`}
       aria-roledescription="carousel"
       aria-label={`Layanan utama ${companyName}`}
+      onFocusCapture={() => setInteracting(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false); }}
     >
       <div className="hero-carousel-media" aria-hidden="true">
         {heroSlides.map((slide, index) => (index === activeIndex || index === nextIndex || index === previousIndex) && (
@@ -136,27 +139,12 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
           {activeSlide.visualNote && <small>{activeSlide.visualNote}</small>}
         </div>
 
-        <div className="hero-slide-dots" role="tablist" aria-label="Pilih layanan unggulan">
-          {heroSlides.map((slide, index) => (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              aria-selected={index === activeIndex}
-              aria-label={`${index + 1} dari ${heroSlides.length}: ${slide.eyebrow}`}
-              className={index === activeIndex ? "is-active" : ""}
-              onClick={() => goToSlide(index)}
-            >
-              <i aria-hidden="true">{index === activeIndex && <b aria-hidden="true" />}</i>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="home-hero-rail" aria-label="Layanan utama">
         <div className="home-shell">{serviceItems.map((service, index) => <span key={service}>{index > 0 && <i aria-hidden="true" />}{service}</span>)}</div>
       </div>
-      <button type="button" className="hero-carousel-pause" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan slideshow ▶" : "Jeda slideshow Ⅱ"}</button>
-    </section>
+      <button type="button" className="carousel-keyboard-control" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan pergantian hero" : "Hentikan pergantian hero"}</button>
+    </section></PublicText>
   );
 }

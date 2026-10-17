@@ -39,7 +39,8 @@ async function currentDocument(key: string) {
   if (pending) return pending;
 
   const readPromise = (async () => {
-    const result = await get(currentPath(key), { access: "private", useCache: false });
+    // Compressed responses can carry weak ETags, which cannot authorize a CAS write.
+    const result = await get(currentPath(key), { access: "private", useCache: false, headers: { "Accept-Encoding": "identity" } });
     if (!result) return null;
     if (!result.stream || !result.blob.etag) throw new Error("STORAGE_READ_FAILED");
     const envelope = envelopeSchema.parse(JSON.parse(await new Response(result.stream).text()));

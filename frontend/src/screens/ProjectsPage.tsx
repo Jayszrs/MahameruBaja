@@ -1,4 +1,6 @@
 "use client";
+import PublicText from "../components/PublicText";
+import RotatingHeroMedia from "../components/RotatingHeroMedia";
 
 import Image from "../components/CmsImage";
 import { useEffect, useState } from "react";
@@ -56,11 +58,9 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
   }, [lightbox]);
 
   return (
-    <>
+    <PublicText>
       <section className="projects-hero" aria-labelledby="projects-hero-heading">
-        <div className="projects-parallax-media" data-parallax="0.26" aria-hidden="true">
-          <Image src={laserImage} alt="" fill priority sizes="100vw" />
-        </div>
+        <RotatingHeroMedia className="projects-parallax-media" images={[laserImage,"/images/steel-indonesia/toko-mahameru.jpg","/images/steel-indonesia/besi-beton.jpg"]} />
         <div className="projects-hero-shade" aria-hidden="true" />
         <div className="home-grid" aria-hidden="true" />
         <div className="home-shell projects-hero-content" data-reveal>
@@ -76,8 +76,8 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
       <section className="projects-gallery" aria-labelledby="gallery-heading">
         <div className="home-shell">
           <div className="home-section-heading" data-reveal>
-            <div><p className="home-eyebrow text-brand"><span />Galeri terkurasi</p><h2 id="gallery-heading">Lihat material dari dekat.</h2></div>
-            <p>Gunakan filter untuk menjelajahi dokumentasi toko, produk, warehouse, dan pekerjaan produksi. Klik gambar untuk melihat detailnya.</p>
+            <div><p className="home-eyebrow text-brand"><span />Galeri material & pekerjaan</p><h2 id="gallery-heading">Lihat material dari dekat.</h2></div>
+            <p>Pilih kategori untuk melihat foto toko, produk, gudang, dan proses pengerjaan. Buka gambar untuk melihat lebih jelas.</p>
           </div>
           <div className="projects-filters" aria-label="Filter galeri" data-reveal>
             {filters.map((filter) => (
@@ -128,6 +128,6 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
           <div className="home-actions"><Link to="/minta-penawaran" className="home-button home-button-primary">Minta penawaran →</Link><Link to="/produk" className="home-button home-button-ghost">Lihat produk →</Link></div>
         </div>
       </section>
-    </>
+    </PublicText>
   );
 }

@@ -10,6 +10,7 @@ export const divisionSchema = z.object({
   aboutHeadline: text(250), values: z.array(text(500)).max(12), hero: assetUrl,
   images: z.array(z.object({ src: assetUrl, title: text(200) })).max(20),
   offerings: z.array(text(250)).max(30), process: z.array(text(500)).max(12),
+  offeringDescriptions: z.record(text(250).min(1), text(2000)).default({}),
   faq: z.array(z.object({ question: text(300), answer: text(2000) })).max(30),
   address: text(1000), mapsUrl: text(1000).refine(v => !v || /^https:\/\/(?:maps\.app\.goo\.gl|goo\.gl|(?:www\.)?google\.(?:com|co\.id))\//.test(v), "Gunakan tautan Google Maps HTTPS."),
   mapEmbed: text(1500).refine(v => !v || /^https:\/\/(?:www\.)?google\.(?:com|co\.id)\/maps(?:[/?])/.test(v), "Gunakan URL embed Google Maps."),

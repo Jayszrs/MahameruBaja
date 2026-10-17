@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useState } from "react";
@@ -11,7 +12,7 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
   const [selected, setSelected] = useState(divisionSlug || "all");
   const visible = contacts.filter(c => c.published && (selected === "all" ? c.audience === undefined || c.audience.length > 0 : contactVisibleInDivision(c,selected)));
   const unit = divisions.find(d => d.slug === selected);
-  return <section className="contact-directory" id="tim-kontak">
+  return <PublicText><section className="contact-directory" id="tim-kontak">
     <div className="industrial-container">
       <div className="directory-heading" data-reveal><div><p className="industrial-eyebrow">ORANG YANG TEPAT / LANGKAH BERIKUTNYA</p><h2>Mari bicarakan<br /><em>kebutuhan Anda.</em></h2></div><p>Pilih divisi, lalu hubungi tim untuk produk, gambar kerja, atau kebutuhan proyek Anda.</p></div>
       {!divisionSlug && <div className="directory-toolbar"><label htmlFor="contact-division">Hubungi kami — pilih divisi<select id="contact-division" value={selected} onChange={e => setSelected(e.target.value)}><option value="all">Semua divisi</option>{divisions.map(d => <option value={d.slug} key={d.slug}>{d.name} — {d.label}</option>)}</select></label>{unit && <Link href={`/unit/${unit.slug}`}>Lihat profil divisi ↗</Link>}</div>}
@@ -28,5 +29,5 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
       })}</div>
       {!visible.length && <p className="directory-empty">Tim untuk divisi ini sedang diperbarui. <a href="https://wa.me/6281218052017" target="_blank" rel="noopener noreferrer">Hubungi kontak utama ↗</a></p>}
     </div>
-  </section>;
+  </section></PublicText>;
 }

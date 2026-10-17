@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Image from "./CmsImage";
@@ -51,7 +52,7 @@ export default function ProductCard({ product, variant = 'default', stockItems =
   }
 
   return (
-    <article className="product-card group relative bg-white rounded-xl border border-light-steel/70 overflow-hidden flex flex-col">
+    <PublicText><article className="product-card group relative bg-white rounded-xl border border-light-steel/70 overflow-hidden flex flex-col">
       {/* Image */}
       <Link to={detailUrl} className="block relative overflow-hidden bg-surface-2 aspect-[4/3]">
         <Image
@@ -142,7 +143,7 @@ export default function ProductCard({ product, variant = 'default', stockItems =
           Cek Stok via WA
         </a>
       </div>
-    </article>
+    </article></PublicText>
   );
 }
 

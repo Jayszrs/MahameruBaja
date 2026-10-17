@@ -1,4 +1,6 @@
 "use client";
+import PublicText from "../components/PublicText";
+import RotatingHeroMedia from "../components/RotatingHeroMedia";
 
 import { useState } from 'react';
 import { Link } from 'react-router';
@@ -61,10 +63,10 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
     }`;
 
   return (
-    <>
+    <PublicText>
       {/* Hero */}
       <section className="pt-36 pb-14 bg-graphite relative overflow-hidden" aria-labelledby="kontak-hero-heading">
-        <div className="simple-hero-media" data-parallax="0.27" aria-hidden="true"><img src="/images/steel-indonesia/toko-mahameru.jpg" alt="" /></div>
+        <RotatingHeroMedia className="simple-hero-media" images={["/images/steel-indonesia/toko-mahameru.jpg","/images/steel-indonesia/hollow.jpg","/images/steel-indonesia/besi-beton.jpg"]} />
         <div className="simple-hero-shade" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-5">
@@ -240,7 +242,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
           </div>
         </div>
       </section>
-    </>
+    </PublicText>
   );
 }
 

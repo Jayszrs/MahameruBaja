@@ -8,6 +8,7 @@ import { randomUUID } from "node:crypto";
 import { defaultSiteContent, siteContentSchema, type SiteContent } from "../data/siteContent";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 import { additionalPromotions } from "../data/promotions";
+import { clientPosters } from "../data/clientPosters";
 import { mergeInventory } from "../data/inventory";
 import { verifiedInstagramPosts, verifiedYouTubePosts, verifiedGarudaYouTubePosts, defaultSocialAccounts } from "../data/socialMedia";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
@@ -17,6 +18,11 @@ import { cachedPublicCms } from "./publicCmsCache";
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
 function legacyIdentity(content: SiteContent): SiteContent {
+  if (content.clientPosterVersion < 1) {
+    const ids = new Set(content.promotions.map(item => item.id));
+    const missing = clientPosters.filter(item => !ids.has(item.id));
+    if (content.promotions.length + missing.length <= 20) content = { ...content, clientPosterVersion: 1, promotions: [...content.promotions, ...missing] };
+  }
   if (content.socialSourceVersion < 1) {
     const urls = new Set(content.socialPosts.map(post => post.url));
     const youtube = defaultSocialAccounts.find(account => account.platform === "youtube" && account.handle === "Mahameru Baja Indonesia")!;

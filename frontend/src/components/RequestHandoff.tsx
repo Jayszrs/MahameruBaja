@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useEffect, useState } from "react";
@@ -54,7 +55,7 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
     finally { setSharing(false); }
   }
 
-  return <section className="request-handoff" aria-label="PDF dan WhatsApp">
+  return <PublicText><section className="request-handoff" aria-label="PDF dan WhatsApp">
     <div className="request-document-icon" aria-hidden="true">PDF</div>
     <div className="request-handoff-copy"><p className="industrial-eyebrow">PERMINTAAN / {id}</p><h3>Dokumen siap untuk tim.</h3><p role="status">{file ? `${file.name} sudah dibuat.` : error ? "Pembuatan PDF perlu diulang." : "Menyiapkan PDF secara otomatis..."}</p><small>Dokumen ini merangkum kebutuhan Anda. Harga dan jadwal dikonfirmasi oleh tim.</small></div>
     <div className="request-handoff-actions">
@@ -64,5 +65,5 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
       {error && <button type="button" className="handoff-secondary" onClick={() => setRetry(value => value + 1)}>Coba buat PDF lagi</button>}
     </div>
     <p className="handoff-note">{canShare ? "Pilih WhatsApp pada menu berbagi untuk mengirim berkas secara langsung." : "Setelah WhatsApp terbuka, pilih lampiran Dokumen dan sertakan PDF yang sudah diunduh."} Pesan dan berkas baru terkirim setelah Anda menekan Kirim.</p>
-  </section>;
+  </section></PublicText>;
 }

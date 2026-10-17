@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 import Image from "../components/CmsImage";
 import Link from "next/link";
@@ -29,7 +30,7 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 function BusinessRoutes() {
   const { divisions, divisionIdentity } = useDivisionDirectory();
   return (
-    <section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
+    <PublicText><section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading" data-reveal>
           <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">{divisions.length} divisi.<br />Satu Mahameru, satu solusi.</h2></div>
@@ -60,7 +61,7 @@ function BusinessRoutes() {
           </div>
         </div>
       </div>
-    </section>
+    </section></PublicText>
   );
 }
 

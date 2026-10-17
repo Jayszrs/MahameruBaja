@@ -17,7 +17,10 @@ const adapter = {
     gets++; assert.equal(options.access, "private"); assert.equal(options.useCache, false);
     if (failRead) throw new Error("FIXTURE_403");
     const row = memory.get(key);
-    return row ? { stream: new Response(row.text).body, blob: { etag: row.etag } } : null;
+    // Reproduce Blob's compressed response: its weak ETag is not valid for ifMatch.
+    const identity = options.headers?.["Accept-Encoding"] === "identity";
+    if (key.endsWith("/current.json") || key.endsWith("/security/state.json")) assert.ok(identity, "CAS reads must request the uncompressed representation");
+    return row ? { stream: new Response(row.text).body, blob: { etag: identity ? row.etag : `W/${row.etag}` } } : null;
   },
   async list(options) {
     lists++;
@@ -153,6 +156,15 @@ try {
   for (let i = 0; i < 2; i++) await cache.cachedPublicCms("fixture-local", async () => ++localReads);
   assert.equal(localReads, 2);
   console.log("PASS: immediate publication invalidation, isolated stores, uncached local reads and no cached errors");
+  process.env.VERCEL = "1";
+  process.env.CMS_BLOB_PREFIX = prefix;
+  const security = loader()("securityState");
+  const sid = "11111111-1111-4111-8111-111111111111";
+  await security.registerSecuritySession({ sid, accountId: "fixture-owner", version: 0, expiresAt: Date.now() + 60000 });
+  assert.equal((await security.readSecuritySession(sid)).accountId, "fixture-owner");
+  await security.revokeSecuritySession(sid);
+  assert.equal(await security.readSecuritySession(sid), null);
+  console.log("PASS: security session CAS reads use strong ETags; session creation and revocation persist");
   console.log(`Fixture calls: ${gets} get, ${lists} list, ${puts} put. No live Blob access or deletion.`);
 } finally {
   for (const [key, value] of Object.entries(previous)) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }

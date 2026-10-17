@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Link from "next/link";
@@ -15,22 +16,22 @@ function Post({ post }: { post: SocialPost }) {
   const [videoError, setVideoError] = useState(false);
   const embed = socialEmbedUrl(post.platform, post.url);
   const division = divisions.find(d => d.slug === post.division);
-  return <article className={`social-feed social-single-post social-post-${post.platform}`}>
+  return <PublicText><article className={`social-feed social-single-post social-post-${post.platform}`}>
     <header className="social-post-source"><div><strong>{division?.name || post.title}</strong><small>{post.handle || platformLabels[post.platform]}</small></div><span className="social-post-platform" aria-label={`Konten ${platformLabels[post.platform]}`} title={platformLabels[post.platform]}><SocialIcon platform={post.platform} /></span></header>
     {post.videoUrl ? <video key={playerKey} className="social-native-video" src={post.videoUrl} poster={post.image || undefined} controls playsInline preload="metadata" onError={() => setVideoError(true)} aria-label={post.title}><a href={post.url}>Buka unggahan asli</a></video> : embed ? <iframe key={playerKey} className="social-single-frame" src={embed} title={post.title} loading="lazy" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" /> : <a className="social-external-post" href={post.url} target="_blank" rel="noopener noreferrer">{post.image && <img src={post.image} alt="" loading="lazy" />}<SocialIcon platform={post.platform} />Buka unggahan ↗</a>}
     {videoError && <div className="social-player-error" role="status"><span>Video belum berhasil dimuat.</span><button type="button" onClick={() => { setPlayerKey(key => key + 1); setVideoError(false); }}>Coba lagi</button></div>}
     <footer><h3>{post.title}</h3>{post.caption && <p>{post.caption}</p>}<a href={post.url} target="_blank" rel="noopener noreferrer">Lihat di {platformLabels[post.platform]} →</a></footer>
-  </article>;
+  </article></PublicText>;
 }
 
 export default function SocialHub({ accounts, posts, full = false, companyName = "Mahameru Baja", moreHref = "/sosial-media" }: { accounts: SocialAccount[]; posts: SocialPost[]; full?: boolean; companyName?: string; moreHref?: string }) {
   const [filter, setFilter] = useState<SocialPlatform | "all">("all");
   const published = posts.filter(post => post.published && (filter === "all" || post.platform === filter));
   const shown = full ? published : published.slice(0, 6);
-  return <section className={`social-hub ${full ? "social-hub-full" : ""}`} id="sosial"><div className="industrial-container">
+  return <PublicText><section className={`social-hub ${full ? "social-hub-full" : ""}`} id="sosial"><div className="industrial-container">
     <div className="social-heading" data-reveal><div><p className="industrial-eyebrow">SOSIAL MEDIA / {companyName}</p><h2>Media sosial kami.<br />{" "}<em>Ikuti kegiatan dan pekerjaan kami.</em></h2><p>Lihat informasi produk, kegiatan, dan hasil pekerjaan melalui akun resmi kami.</p></div>{!full && <Link href={moreHref}>Semua unggahan ↗</Link>}</div>
     {full && posts.some(post => post.published) && <div className="social-filters" aria-label="Filter platform">{(["all", ...socialPlatforms] as const).map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value === "all" ? "Semua" : platformLabels[value]}</button>)}</div>}
     {shown.length ? <div className="social-post-grid social-permata-grid">{shown.map(post => <Post key={post.id} post={post} />)}</div> : <p className="social-empty">Belum ada unggahan untuk pilihan ini. Kunjungi akun resmi kami di bawah.</p>}
     <nav className="social-account-directory" aria-label="Akun resmi">{accounts.filter(a=>a.published&&a.url).map(a=><a key={`${a.platform}:${a.handle}`} href={a.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={a.platform}/><span>{platformLabels[a.platform]}<strong>{a.handle}</strong></span>↗</a>)}</nav>
-  </div></section>;
+  </div></section></PublicText>;
 }

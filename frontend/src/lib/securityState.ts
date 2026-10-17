@@ -30,7 +30,8 @@ export function securityEvent(event: "login_success" | "login_failed" | "login_l
 }
 
 async function readBlobState(): Promise<{ value: State; etag?: string }> {
-  const result = await get(blobPath(), { access: "private", useCache: false });
+  // Keep the strong storage ETag even after session/rate data grows large enough to compress.
+  const result = await get(blobPath(), { access: "private", useCache: false, headers: { "Accept-Encoding": "identity" } });
   if (!result) return { value: empty() };
   if (!result.stream) throw new Error("SECURITY_STORAGE_READ_FAILED");
   return { value: schema.parse(JSON.parse(await new Response(result.stream).text())), etag: result.blob.etag };

@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "./PublicText";
 
 import { useEffect } from 'react';
 import { Link } from 'react-router';
@@ -16,7 +17,7 @@ export default function QuotationDrawer() {
 
 
   return (
-    <div className="fixed inset-0 z-50" aria-modal="true" role="dialog" aria-label="Daftar Penawaran">
+    <PublicText><div className="fixed inset-0 z-50" aria-modal="true" role="dialog" aria-label="Daftar Penawaran">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-gunmetal/60 backdrop-blur-sm"
@@ -128,7 +129,7 @@ export default function QuotationDrawer() {
           </div>
         )}
       </div>
-    </div>
+    </div></PublicText>
   );
 }
 

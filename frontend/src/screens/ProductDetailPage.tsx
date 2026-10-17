@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState } from 'react';
@@ -46,7 +47,7 @@ export default function ProductDetailPage({ inventory = [], selectedDivision }: 
   }
 
   return (
-    <>
+    <PublicText>
       {/* Breadcrumb */}
       <div className="bg-white border-b border-light-steel">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-3">
@@ -302,7 +303,7 @@ export default function ProductDetailPage({ inventory = [], selectedDivision }: 
           Chat WA
         </a>
       </div>
-    </>
+    </PublicText>
   );
 }
 

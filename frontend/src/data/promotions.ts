@@ -31,13 +31,16 @@ export const promotionSchema = z.object({ ...ownershipFields,
   ctaLabel: short(70).min(1),
   ctaHref: short(250).refine(safeInternalLink,"Gunakan tujuan di dalam website."),
   published: z.boolean(),
+  showInPopup: z.boolean().optional(),
+  showInBanner: z.boolean().optional(),
   countdownAt: z.string().datetime({ offset: true }).or(z.literal("")).default(""),
   countdownLabel: short(80).default("Menuju acara"),
   countdownEstimated: z.boolean().default(false),
 }).superRefine((item, ctx) => {
   if (item.startDate && item.endDate && item.startDate > item.endDate) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["endDate"], message: "Tanggal selesai harus sesudah tanggal mulai" });
   if (item.published) {
-    for (const key of ["benefit", "appliesTo", "terms", "image", "imageAlt"] as const) {
+    const required = item.showInPopup && item.showInBanner === false ? ["image", "imageAlt"] as const : ["benefit", "appliesTo", "terms", "image", "imageAlt"] as const;
+    for (const key of required) {
       if (!item[key]) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [key], message: "Isi sebelum menerbitkan banner" });
     }
   }

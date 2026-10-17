@@ -45,6 +45,34 @@ try{
   const owner=await login("qa.owner@example.test");
   const publicContacts=await (await call("/api/contacts")).json(); assert.equal(publicContacts.length,10); assert.ok(publicContacts.every(c=>!Object.hasOwn(c,"email")));
   const sessions=await Promise.all(accounts.map(a=>login(a.email)));
+  const copyBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(copyBase.promotions.filter(item=>item.id.startsWith("client-poster-")&&item.showInPopup).length,4);
+  const centralCopy={id:"qa-copy-main",ownerDivision:null,page:"all",source:"Bantuan",replacement:"Bantuan pelanggan QA",published:true};
+  assert.equal((await call("/api/admin/content","PUT",{...copyBase,websiteTexts:[centralCopy],_base:copyBase},owner)).status,200);
+  const copiedMain=await (await call("/")).text(); assert.ok(copiedMain.includes("<h3>Bantuan pelanggan QA</h3>"),"CMS text reaches rendered website, not just stored JSON");
+  const ownCopyBase=await (await call("/api/admin/content","GET",undefined,sessions[0])).json();
+  assert.equal(ownCopyBase.websiteTexts.length,0,"Division does not receive another website's copy");
+  const tambunCopy={...centralCopy,id:"qa-copy-tambun",ownerDivision:slugs[0],replacement:"Bantuan Tambun QA"};
+  assert.equal((await call("/api/admin/content","PUT",{...ownCopyBase,websiteTexts:[tambunCopy],_base:ownCopyBase},sessions[0])).status,200);
+  assert.ok((await (await call("/unit/retail-tambun")).text()).includes("<h3>Bantuan Tambun QA</h3>"));
+  assert.ok(!(await (await call("/unit/retail-cibitung")).text()).includes("<h3>Bantuan Tambun QA</h3>"));
+  const scopedCopy=await (await call("/api/admin/content","GET",undefined,sessions[0])).json();
+  assert.equal((await call("/api/admin/content","PUT",{...scopedCopy,websiteTexts:[{...tambunCopy,ownerDivision:slugs[1]}],_base:scopedCopy},sessions[0])).status,403);
+  assert.equal((await call("/admin/teks","GET",undefined,owner)).status,200);
+  const serviceDivision=await (await call(`/api/admin/divisions/${slugs[0]}`,"GET",undefined,sessions[0])).json();
+  const serviceTitle=serviceDivision.offerings[0];
+  assert.equal((await call(`/api/admin/divisions/${serviceDivision.id}`,"PUT",{...serviceDivision,offeringDescriptions:{...serviceDivision.offeringDescriptions,[serviceTitle]:"Penjelasan layanan khusus Tambun QA."}},sessions[0])).status,200);
+  assert.ok((await (await call(`/unit/${slugs[0]}/layanan`)).text()).includes("Penjelasan layanan khusus Tambun QA."),"Service paragraphs are editable, not repeated generic values");
+  const popupBase=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal((await call("/api/admin/content","PUT",{...popupBase,promotions:popupBase.promotions.map(item=>item.id==="client-poster-hollow-20261017"?{...item,showInPopup:false}:item),_base:popupBase},owner)).status,200);
+  const popupSaved=await (await call("/api/admin/content","GET",undefined,owner)).json();
+  assert.equal(popupSaved.promotions.find(item=>item.id==="client-poster-hollow-20261017").showInPopup,false,"Admin can disable a default poster without it reappearing");
+  let auditedRoutes=0;
+  for(const route of ["/","/tentang-kami","/produk","/jasa","/proyek","/kontak","/sosial-media","/informasi","/minta-penawaran","/cari?q=hollow","/kebijakan-privasi","/syarat-ketentuan",...slugs.flatMap(slug=>["","/tentang","/layanan","/produk","/galeri","/kontak"].map(section=>`/unit/${slug}${section}`))]){
+    const page=await call(route); assert.equal(page.status,200,`Public route ${route}`); await page.arrayBuffer(); auditedRoutes++;
+  }
+  console.log(`PASS: HTTP audit of ${auditedRoutes} public routes across main website and all five divisions (not browser click-through)`);
+  console.log("PASS: real HTTP CMS text publication, website/division isolation, forbidden ownership changes, text editor route and persistent poster switch");
   for(const [index,slug] of slugs.entries()){
     assert.equal((await call("/api/admin/requests","POST",input(slug,`QA ${slug}`),sessions[index])).status,201);
     assert.equal((await call("/api/admin/requests","POST",input(slugs[(index+1)%5],"QA Forbidden"),sessions[index])).status,403);

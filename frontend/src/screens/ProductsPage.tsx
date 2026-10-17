@@ -1,4 +1,5 @@
 "use client";
+import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState, useEffect } from 'react';
@@ -179,7 +180,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
   );
 
   return (
-    <>
+    <PublicText>
       {/* Hero */}
       <section className="bg-graphite pt-4 pb-10 relative overflow-hidden" aria-labelledby="products-hero">
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
@@ -345,7 +346,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
           </div>
         </div>
       )}
-    </>
+    </PublicText>
   );
 }
 

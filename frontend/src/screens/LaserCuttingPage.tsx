@@ -1,4 +1,6 @@
 "use client";
+import PublicText from "../components/PublicText";
+import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import Image from "../components/CmsImage"
@@ -26,13 +28,13 @@ const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
 ]
 
 const servicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
-  { title: "Laser Cutting & CNC Bending", detail: "Cutting plat berdasarkan gambar CAD, bending, komponen custom dan fabrikasi. Jenis material, kapasitas mesin serta jadwal dikonfirmasi setelah review teknis.", href: "#laser-cutting", action: "Lihat detail" },
-  { title: "Penjualan Material", detail: "Penjualan berbagai jenis besi dan material baja untuk kebutuhan konstruksi, dari satuan hingga volume besar. Stok selalu diperbarui untuk memastikan ketersediaan.", href: "/produk", action: "Lihat produk" },
-  { title: "Konsultasi Material", detail: "Tim berpengalaman kami siap membantu Anda memilih jenis dan spesifikasi material yang tepat, menghitung estimasi kebutuhan, dan memberikan rekomendasi yang sesuai dengan proyek.", href: "https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20ingin%20konsultasi%20material.", action: "Chat WhatsApp", external: true },
-  { title: "Pemesanan Proyek", detail: "Layanan khusus untuk kebutuhan material proyek konstruksi berskala besar. Kami menyediakan penawaran resmi, faktur, dan dapat menyesuaikan jadwal pengiriman sesuai tahapan proyek.", href: "/unit/trading-proyek", action: "Kenali suplai proyek" },
-  { title: "Pengiriman Material", detail: "Layanan pengiriman material ke lokasi proyek di area Bekasi dan sekitarnya. Kami memastikan material sampai dalam kondisi baik dan sesuai dengan pesanan.", href: "/minta-penawaran", action: "Tanya pengiriman" },
-  { title: "Supply Retail", detail: "Melayani pembelian satuan untuk kebutuhan rumah tangga, renovasi rumah, dan proyek kecil. Tidak ada minimum order untuk pembelian retail.", href: "/unit/retail-tambun", action: "Lihat toko" },
-  { title: "Supply Kontraktor & Perusahaan", detail: "Program khusus untuk kontraktor dan perusahaan yang membutuhkan pasokan material secara rutin. Termasuk penawaran harga khusus dan layanan prioritas.", href: "/unit/trading-proyek", action: "Untuk perusahaan" },
+  { title: "Laser Cutting & CNC Bending", detail: "Potong dan tekuk plat sesuai gambar Anda. Kirim desain, ukuran, bahan, dan jumlah agar tim bisa mengecek pengerjaan serta menyiapkan harga.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
+  { title: "Penjualan Material", detail: "Cari besi beton, hollow, pipa, plat, dan material bangunan lainnya. Tanyakan ukuran, stok, dan harga terbaru langsung kepada tim toko.", href: "/produk", action: "Cari material" },
+  { title: "Bantu Pilih Material", detail: "Masih bingung memilih besi? Ceritakan rencana pekerjaan Anda. Tim membantu mengecek pilihan jenis, ukuran, dan jumlah yang dibutuhkan.", href: "/kontak", action: "Tanya tim toko" },
+  { title: "Material untuk Proyek", detail: "Kirim daftar material, jumlah, lokasi, dan rencana pengiriman. Tim MBI Trading membantu menyiapkan penawaran untuk kebutuhan proyek Anda.", href: "/unit/trading-proyek", action: "Hubungi MBI Trading" },
+  { title: "Pengiriman Material", detail: "Tanyakan pengiriman ke lokasi Anda di Bekasi dan sekitarnya. Biaya, jangkauan, dan jadwal disepakati bersama admin sesuai pesanan.", href: "/minta-penawaran", action: "Tanya pengiriman" },
+  { title: "Belanja untuk Renovasi & Bengkel", detail: "Lengkapi kebutuhan rumah, renovasi, dan bengkel lewat toko Mahameru Baja. Konfirmasikan pilihan material dan jumlah yang ingin dibeli.", href: "/unit/retail-tambun", action: "Lihat toko" },
+  { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
 ]
 
 export default function LaserCuttingPage() {
@@ -98,9 +100,9 @@ export default function LaserCuttingPage() {
     }
   }
   return (
-    <>
+    <PublicText>
       <section className="company-about-hero jasa-hero">
-        <div className="company-about-background" data-parallax="0.22"><Image src={laserImage} alt="Ilustrasi proses laser cutting plat" fill sizes="100vw" priority /></div>
+        <RotatingHeroMedia className="company-about-background" images={[laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
         <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
           <p className="industrial-eyebrow">LASER CUTTING / CNC BENDING / FABRIKASI</p>
           <h1>Kami menyediakan jasa<br /><em>laser cutting & bending.</em></h1>
@@ -136,7 +138,7 @@ export default function LaserCuttingPage() {
               </article>
             ))}
           </div>
-          <p className="verification-note">Kapasitas mesin, toleransi, dan material yang dapat diproses dikonfirmasi dalam review teknis sebelum penawaran.</p>
+          <p className="verification-note">Tim mengecek jenis bahan, ukuran, ketebalan, dan kemampuan mesin sebelum memberikan harga serta jadwal pengerjaan.</p>
         </div>
       </section>
       <section className="laser-process">
@@ -294,6 +296,6 @@ export default function LaserCuttingPage() {
           ))}
         </div>
       </section>
-    </>
+    </PublicText>
   )
 }
