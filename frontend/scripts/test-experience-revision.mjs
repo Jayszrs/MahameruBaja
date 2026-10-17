@@ -200,7 +200,7 @@ class FakeNode {}
 class FakeElement extends FakeNode {}
 class FakeTrack extends FakeElement {
   scrollLeft=0; scrollWidth=1200; clientWidth=400;
-  classList={add(){},remove(){}};
+  classList={add(){},remove(){},contains(){return false;}};
   closest(){return this;} matches(){return true;} contains(node){return node===this;}
   setPointerCapture(){} scrollTo({left}){this.scrollLeft=left;}
 }

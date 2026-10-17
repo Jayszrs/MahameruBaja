@@ -3,7 +3,7 @@ import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 import Image from "../components/CmsImage";
 import Link from "next/link";
-import SmoothImage from "../components/SmoothImage";
+import DivisionCardMedia from "../components/DivisionCardMedia";
 import type { SiteContent } from "../data/siteContent";
 import { type Division } from "../data/divisionContent";
 import UnifiedHomeContent from "../components/UnifiedHomeContent";
@@ -30,9 +30,9 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
 function BusinessRoutes() {
   const { divisions, divisionIdentity } = useDivisionDirectory();
   return (
-    <PublicText><section className="home-section home-routes" id="pilih-divisi" aria-labelledby="routes-heading">
+    <PublicText><section className="home-section home-routes" id="pilih-divisi" data-static-motion aria-labelledby="routes-heading">
       <div className="home-shell">
-        <div className="home-section-heading" data-reveal>
+        <div className="home-section-heading">
           <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">{divisions.length} divisi.<br />Satu Mahameru, satu solusi.</h2></div>
           <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
         </div>
@@ -40,8 +40,8 @@ function BusinessRoutes() {
           {divisions.map((division, index) => {
             const route = { index: String(index+1).padStart(2,"0"), tag:division.label, title:division.name, text:division.intro, href:`/unit/${division.slug}`, image:division.hero, imageAlt:division.name };
             return (
-            <Link href={route.href} prefetch={false} className="home-route-card" key={route.index} data-reveal>
-              <div className="home-route-media" data-parallax="0.12"><SmoothImage src={route.image} alt={route.imageAlt} sizes="(max-width: 760px) 100vw, (max-width: 1500px) 50vw, 860px" /></div>
+            <Link href={route.href} prefetch={false} className="home-route-card" key={route.index}>
+              <DivisionCardMedia key={division.routeMedia?.media||route.image} media={division.routeMedia} fallback={route.image} alt={route.imageAlt}/>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
               <Image className="route-division-logo" src={division.slug === "laser-cutting" ? mainLogo : divisionIdentity[division.slug].logo} alt={`Logo ${division.name}`} width={140} height={120} transparentLogo />

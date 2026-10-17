@@ -7,6 +7,7 @@ const fixtures=divisions.map((division,i)=>({id:`fixture-${i}`,name:`Kontak uji 
 const imports={
   './DivisionDirectory':{useDivisionDirectory:()=>({divisions})},
   '../data/companyIdentity':{mainLogo:'/images/brand/mbi-laser.png'},
+  '../data/contactIllustrations':{contactIllustration:()=> 'male'},
   '../data/siteContent':{contactVisibleInDivision:(c,slug)=>c.divisions.includes(slug),internationalPhone:value=>'62'+value.slice(1)},
 };
 for(const division of divisions){

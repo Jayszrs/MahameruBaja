@@ -2,6 +2,8 @@
 
 17 October 2026. This request supersedes the previous 10-second popup interval.
 
+Follow-up: automatic supplier/client ribbons, explicit female contact choices, direct original Instagram photos and route-card media now supersede the manual-only ribbon implementation below. See `static-social-route-media-2026-10-17.md` for the current behavior and verification limits.
+
 ## Changes
 
 - Popup: five-second rotation, no pause/resume button. Manual navigation starts a fresh interval. Zoom, expanded terms, keyboard focus in the details, hidden documents and reduced-motion preferences still stop automatic changes. A new website/preview session resets zoom and reading state.

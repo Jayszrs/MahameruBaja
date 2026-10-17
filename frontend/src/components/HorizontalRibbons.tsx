@@ -9,6 +9,7 @@ export default function HorizontalRibbons() {
       if (event.pointerType !== "mouse" || event.button !== 0 || !(event.target instanceof Element)) return;
       const node = event.target.closest<HTMLElement>(selector);
       suppress = null;
+      if (node?.classList.contains("logo-marquee") && !matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       if (node && node.scrollWidth > node.clientWidth) {
         drag = { node, pointer: event.pointerId, x: event.clientX, scroll: node.scrollLeft, moved: false };
         document.addEventListener("pointermove",move,{passive:false});
@@ -27,6 +28,7 @@ export default function HorizontalRibbons() {
     const key = (event: KeyboardEvent) => {
       const node = event.target;
       if (!(node instanceof HTMLElement) || !node.matches(selector) || !["ArrowLeft","ArrowRight","Home","End"].includes(event.key)) return;
+      if (node.classList.contains("logo-marquee") && !matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       event.preventDefault(); const left = event.key === "Home" ? 0 : event.key === "End" ? node.scrollWidth - node.clientWidth : node.scrollLeft + (event.key === "ArrowRight" ? 1 : -1) * node.clientWidth * .8;
       node.scrollTo({left,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth"});
     };

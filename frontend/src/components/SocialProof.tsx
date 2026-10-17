@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import type { ReviewContent } from "../data/siteContent";
 
 import type { PartnerLogo } from "../data/partnerLogos";
+import LogoMarquee from "./LogoMarquee";
 
 function useMarquee(itemCount: number, pixelsPerSecond: number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -164,22 +165,19 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
 
 function Clients({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><section className="home-clients" id="klien" aria-labelledby="clients-heading">
+  return <PublicText><section className="home-clients" data-static-motion id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
       <div className="proof-client-heading"><div><h2 id="clients-heading">Kepercayaan yang tumbuh<br /><em>melalui kerja sama.</em></h2><p className="partnership-intro">Perusahaan yang telah bekerja sama dengan Mahameru Baja Indonesia dalam memenuhi kebutuhan material dan pekerjaan proyek.</p></div></div>
-      <div className="home-client-logo-grid proof-marquee partner-logo-strip" tabIndex={0} aria-label="Logo perusahaan rekanan. Geser atau gunakan tombol panah.">
-        {logos.map(client=><figure className="home-client-logo" key={client.id} data-partner-id={client.id} title={client.name}><Image src={client.logo} alt={client.name?`Logo ${client.name}`:"Logo perusahaan rekanan"} width={260} height={150} sizes="(max-width:760px) 150px, 220px" loading="lazy" draggable={false}/></figure>)}
-      </div>
+      <LogoMarquee logos={logos} kind="client"/>
     </div>
   </section></PublicText>;
 }
 
 function Suppliers({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><section className="home-suppliers" id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
+  return <PublicText><section className="home-suppliers" data-static-motion id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
     <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Mahameru Baja bekerja dengan jaringan pemasok material baja dan produk turunannya untuk mendukung kebutuhan toko, fabrikasi, serta pengadaan proyek.</p></div>
-    <div className="supplier-ribbon-controls"><p>Geser untuk melihat pemasok material kami.</p></div>
-    <div className="supplier-logo-grid supplier-logo-ribbon proof-marquee partner-logo-strip" tabIndex={0} aria-label="Logo supplier. Geser ke samping atau gunakan tombol panah.">{logos.map(supplier=><figure key={supplier.id} data-partner-id={supplier.id} title={supplier.name}><Image src={supplier.logo} alt={supplier.name?`Logo ${supplier.name}`:"Logo supplier sesuai company profile Mahameru Baja Indonesia"} width={260} height={150} sizes="(max-width:760px) 150px, 220px" loading="lazy" draggable={false}/></figure>)}</div>
+    <LogoMarquee logos={logos} kind="supplier"/>
   </div></section></PublicText>;
 }
 

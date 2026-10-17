@@ -94,6 +94,7 @@ export default function MotionController() {
       // Auto-inject ke semua <img> dihapus: tiap gambar ikut loop scroll
       // bikin HP kentang jank + boros baterai tanpa nilai visual.
       main.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
+        if(element.closest("[data-static-motion]"))return;
         if (revealed.has(element)) return;
         revealed.add(element);
         const rect = element.getBoundingClientRect();

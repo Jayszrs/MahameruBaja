@@ -45,12 +45,15 @@ const hub=await harness('src/components/SocialHub.tsx',{accounts:[],posts:[post]
   './SocialEmbed':{__esModule:true,default:props=>React.createElement('iframe',props)},
   './DivisionDirectory':{useDivisionDirectory:()=>({divisions:[]})},
   '../data/socialMedia':load(path.join(root,'src/data/socialMedia.ts')),
+  '../data/instagramArchive':load(path.join(root,'src/data/instagramArchive.ts')),
 }});
 const Post=hub.find(node=>node.props?.post).type;
 const photoHtml=renderToStaticMarkup(React.createElement(Post,{post}));
 assert(photoHtml.includes('social-image-preview')&&photoHtml.includes(post.image));assert(!photoHtml.includes('<iframe'));
 const videoHtml=renderToStaticMarkup(React.createElement(Post,{post:{...post,videoUrl:'https://media.example.test/test.mp4'}}));
-assert(videoHtml.includes('preload="none"')&&videoHtml.includes('controls=""'));hub.dispose();
+assert(videoHtml.includes('preload="none"')&&videoHtml.includes('controls=""'));
+const forcedEmbed=renderToStaticMarkup(React.createElement(Post,{post:{...post,displayMode:'embed',videoUrl:'https://media.example.test/test.mp4'}}));
+assert(forcedEmbed.includes('<iframe')&&!forcedEmbed.includes('<video'),'Explicit embed mode preserves media fields but selects the official player');hub.dispose();
 const embed=await harness('src/components/SocialEmbed.tsx',{src:'https://www.instagram.com/p/fixture123/embed/',title:'Unggahan uji'});
 assert(embed.absent(node=>node.type==='iframe'),'Third-party frame is absent until near viewport or explicit load');
 embed.find(node=>node.type==='button').props.onClick();

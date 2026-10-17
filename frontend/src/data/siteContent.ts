@@ -28,6 +28,7 @@ const photo = text(1000).refine(value => !value || safeLocalAsset(value, ["image
 const phone = text(30).refine(value => !value || /^\+?[\d ()-]{7,30}$/.test(value), "Nomor telepon tidak valid");
 export const contactSchema = z.object({ ...ownershipFields,
   id: text(80).min(1), name: text(100).min(1), role: text(100).min(1),
+  illustration:z.enum(["male","female"]).optional(),
   phone, mobile: phone, whatsapp: phone,
   email: z.union([z.literal(""), z.string().trim().email().max(200)]),
   photo, divisions: z.array(divisionSlugSchema).max(100), published: z.boolean(),

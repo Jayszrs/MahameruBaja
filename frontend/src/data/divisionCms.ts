@@ -8,6 +8,7 @@ export const divisionSchema = z.object({
   useCentralReviews: z.boolean().default(false), name: text(160).min(1), label: text(100).min(1), kind: z.enum(["material", "service"]), area: text(200),
   logo: assetUrl, title: text(250), intro: text(1000), description: text(5000), mission: text(2000),
   aboutHeadline: text(250), values: z.array(text(500)).max(12), hero: assetUrl,
+  routeMedia: z.object({type:z.enum(["image","video"]),media:assetUrl,poster:assetUrl.optional()}).nullable().default(null),
   images: z.array(z.object({ src: assetUrl, title: text(200) })).max(20),
   offerings: z.array(text(250)).max(30), process: z.array(text(500)).max(12),
   offeringDescriptions: z.record(text(250).min(1), text(2000)).default({}),
