@@ -7,6 +7,7 @@ import type { AdminIdentity } from "../data/adminAccount";
 import type { SiteContent } from "../data/siteContent";
 import { CmsError } from "./cmsError";
 import { readDivisions } from "./divisionStore";
+import { promotionProviderSlug } from "../data/popupPosters";
 
 export const emptyReviews = () => ({ rating: 0, reviewCount: null, ratingDate: "Belum dicatat", mapsUrl: "https://maps.google.com/", reviews: [] });
 export const collectionKeys = ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts"] as const;
@@ -64,6 +65,16 @@ export async function mergeScopedContent(current: SiteContent, input: SiteConten
       if (slug && ((row.ownerDivision !== undefined && row.ownerDivision !== slug) || row.division !== previous?.division && row.division && row.division !== slug || !equal(row.divisions, previous?.divisions) && row.divisions?.some(d => d !== slug) || !equal(row.audience, previous?.audience) && row.audience?.some(d => d !== slug) || previous?.audience !== undefined && !equal(row.audience,previous.audience))) throw new CmsError("Penugasan dan penayangan lintas divisi hanya dapat diatur Super Admin.", 403);
       if (slug) row.ownerDivision = slug;
       if ([contentOwner(row), ...(row.divisions || []), ...(row.audience || [])].some(d => d && !known.has(d))) throw new CmsError("Divisi tidak dikenal.");
+      if (key === "promotions" && !equal(row, previous)) {
+        const promo = row as SiteContent["promotions"][number];
+        const provider = promotionProviderSlug(promo);
+        if (provider && !known.has(provider)) throw new CmsError("Divisi penyedia penawaran tidak dikenal.");
+        if (slug && provider && provider !== slug) throw new CmsError("Pilih divisi Anda sebagai penyedia penawaran.", 403);
+        if (promo.contactId) {
+          const contact = input.contacts.find(c => c.id === promo.contactId && c.published && (c.divisions.includes(provider) || contentOwner(c) === provider));
+          if (!provider || !contact) throw new CmsError("Pilih kontak aktif dari divisi penyedia penawaran.", 400);
+        }
+      }
     }
     if (slug && baseRows.some(row => contentOwner(row) !== slug)) throw new CmsError("Data dasar memuat divisi lain.", 403);
     // Only merge rows actually changed by this editor. Unrelated collections stay current.
