@@ -34,10 +34,10 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   useEffect(() => {
     if (preview || path.startsWith("/admin") || !signature) return;
     if (seen.current.has(sessionKey)) return;
-    const timer = window.setTimeout(() => { setIndex(0); setOpen(true); }, 700);
+    const timer = window.setTimeout(() => { setIndex(0); setFocused(false); setReading(false); setExpanded(false); setOpen(true); }, 700);
     return () => clearTimeout(timer);
   }, [sessionKey, signature, path, preview]);
-  useEffect(() => { if (preview) { setIndex(0); setOpen(true); } }, [preview]);
+  useEffect(() => { if (preview) { setIndex(0); setFocused(false); setReading(false); setExpanded(false); setOpen(true); } }, [preview]);
   useEffect(() => {
     if (!open || !preview && path.startsWith("/admin")) return;
     const node = dialog.current; const focused = document.activeElement as HTMLElement | null;

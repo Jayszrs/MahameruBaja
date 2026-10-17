@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Image from "./CmsImage";
 import ContentOwnership from "./ContentOwnership";
 import AdminViewTabs from "./AdminViewTabs";
@@ -13,7 +13,6 @@ import type { SiteContent } from "../data/siteContent";
 
 function LogoPreview({item}:{item:PartnerLogo}) {
   const [failed,setFailed]=useState(false);
-  useEffect(()=>setFailed(false),[item.logo]);
   return <div className="partner-editor-preview">{item.logo && assetUrl.safeParse(item.logo).success && !failed ? <Image src={item.logo} alt={item.name || "Pratinjau logo"} width={280} height={160} sizes="280px" onError={()=>setFailed(true)}/> : <p>{failed ? "Logo belum termuat. Periksa alamat gambar atau unggah kembali." : "Unggah logo atau isi alamat gambar untuk melihat pratinjau."}</p>}</div>;
 }
 export default function PartnerLogoEditor({initialContent}:{initialContent:SiteContent}) {
@@ -52,7 +51,7 @@ export default function PartnerLogoEditor({initialContent}:{initialContent:SiteC
       {!rows.length&&<div className="editor-empty"><h3>Belum ada logo {kind==="supplier"?"supplier":"rekanan"}.</h3><p>Tambahkan logo asli, periksa namanya, lalu aktifkan Terbit dan simpan.</p></div>}
       {rows.map((item,index)=><details className="editor-panel partner-editor-record" key={item.id} open={rows.length===1}><summary><strong>{item.name || "Logo tanpa nama"}</strong><span>{item.published?"Terbit":"Draf"}</span></summary>
         <ContentOwnership value={item} onChange={patch=>update(item.id,patch)}/>
-        <div className="partner-editor-fields"><LogoPreview item={item}/><div>
+        <div className="partner-editor-fields"><LogoPreview key={item.logo} item={item}/><div>
           <label className="editor-field">Nama {kind==="supplier"?"supplier":"perusahaan"}<input name={`partner-name-${item.id}`} value={item.name} maxLength={160} placeholder="Nama sesuai identitas perusahaan" onChange={event=>update(item.id,{name:event.target.value})}/></label>
           <label className="editor-field">Unggah logo<input type="file" name={`partner-upload-${item.id}`} accept="image/jpeg,image/png,image/webp" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value="";if(file)void upload(item,file);}}/><small>{imageUploadHelp} PNG atau WebP transparan disarankan.</small></label>
           <label className="editor-field">Alamat gambar (opsional jika sudah unggah)<input name={`partner-url-${item.id}`} value={item.logo} maxLength={2000} placeholder="https://... atau /images/..." onChange={event=>update(item.id,{logo:event.target.value.trim()})}/><small>Gunakan alamat gambar langsung, bukan halaman website perusahaan.</small></label>

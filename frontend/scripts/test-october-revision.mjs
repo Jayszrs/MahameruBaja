@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import postcss from "postcss";
 import { cmsVideo } from "./fixtures/cms-video.mjs";
+import { verifyPartnerLogos } from "./test-partner-logos-http.mjs";
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const root = path.dirname(frontend);
 // CSS structure checks, not a substitute for viewport/browser rendering.
@@ -36,7 +37,7 @@ const hash=`scrypt:${salt}:${scryptSync(password,salt,64).toString("hex")}`;
 const accounts=slugs.map(division=>({email:`qa.${division}@example.test`,division,passwordHash:hash}));
 const server=spawn(process.execPath,[path.join(root,"node_modules/next/dist/bin/next"),"start","-p","3162"],{cwd:frontend,windowsHide:true,stdio:["ignore","pipe","pipe"],env:{...process.env,CMS_DATA_DIR:directory,BLOB_READ_WRITE_TOKEN:"",VERCEL:"",ADMIN_EMAIL:"qa.owner@example.test",ADMIN_PASSWORD_HASH:hash,ADMIN_ACCOUNTS_JSON:JSON.stringify(accounts),ADMIN_SESSION_SECRET:randomBytes(32).toString("hex")}});
 let logs="";server.stdout.on("data",b=>logs+=b);server.stderr.on("data",b=>logs+=b);
-async function call(url,method="GET",body,cookie){return fetch(origin+url,{method,redirect:"manual",headers:{Origin:origin,...(cookie?{Cookie:cookie}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify(body):undefined});}
+async function call(url,method="GET",body,cookie){const response=await fetch(origin+url,{method,redirect:"manual",headers:{Origin:origin,...(cookie?{Cookie:cookie}:{}),...(body?{"Content-Type":"application/json"}:{})},body:body?JSON.stringify(body):undefined});const bytes=await response.arrayBuffer();return new Response([204,205,304].includes(response.status)?null:bytes,{status:response.status,headers:response.headers});}
 async function login(email){const body=new URLSearchParams({email,password});const r=await fetch(origin+"/api/admin/login",{method:"POST",redirect:"manual",headers:{Origin:origin},body});assert.equal(r.status,303);assert.equal(new URL(r.headers.get("location")).pathname,"/admin");return r.headers.get("set-cookie").split(";")[0];}
 const input=(slug,name)=>({kind:"GENERAL",businessUnitSlug:slug,name,whatsapp:"081234567890",consent:true,items:[],source:"ISOLATED_QA"});
 try{
@@ -45,6 +46,7 @@ try{
   const owner=await login("qa.owner@example.test");
   const publicContacts=await (await call("/api/contacts")).json(); assert.equal(publicContacts.length,10); assert.ok(publicContacts.every(c=>!Object.hasOwn(c,"email")));
   const sessions=await Promise.all(accounts.map(a=>login(a.email)));
+  await verifyPartnerLogos({call,origin,owner,sessions,slugs,picture:await readFile(path.join(frontend,'public/images/brand/mbi-laser.png'))});
   const posterTemplate=(await (await call("/api/admin/content","GET",undefined,owner)).json()).promotions.find(p=>p.id==="client-poster-ring-20261017");
   for (const [i,slug] of slugs.entries()) {
     const before=await (await call("/api/admin/content","GET",undefined,sessions[i])).json();
@@ -274,12 +276,14 @@ try{
   const invalidPost = structuredClone(bannerContent); invalidPost.socialPosts[0].url = "https://www.instagram.com/mbilasercutting/";
   assert.equal((await call("/api/admin/content", "PUT", invalidPost, owner)).status, 400, "Profile URL is not a playable post");
   const migration = structuredClone(bannerContent);
+  delete migration.partnerLogos;
   delete migration.garudaReviewVersion; migration.garudaReviews.reviews = []; migration.garudaReviews.ratingDate = "QA Garuda snapshot";
   migration.showcaseVersion = 0; migration.promotions = migration.promotions.filter(p => !p.id.startsWith("agenda-") && p.id !== "material-divisi");
   migration.socialPosts = [];
   await writeFile(path.join(directory, "site-content.json"), JSON.stringify(migration));
   const migrated = await (await call("/api/admin/content", "GET", undefined, owner)).json();
   assert.equal(migrated.garudaReviewVersion, 1); assert.equal(migrated.garudaReviews.reviews.length, 3);
+  assert.equal(migrated.partnerLogos.length,23,'An old CMS file missing the new collection receives exactly the original supplied logos');
   assert.equal(migrated.garudaReviews.ratingDate, "QA Garuda snapshot", "Import must preserve admin-edited aggregate metadata");
   assert.ok(migrated.promotions.some(p=>p.id==="agenda-halloween-2026") && migrated.socialPosts.length===4);
   assert.equal((await call("/api/admin/content", "PUT", migrated, owner)).status, 200);
@@ -331,7 +335,8 @@ try{
   assert.ok(mainHtml.includes("melalui kerja sama.") && !mainHtml.includes("Logo contoh untuk preview tata letak"));
   assert.ok(mainHtml.includes('id="supplier"') && mainHtml.includes("supplier-krakatau-pipe.webp") && mainHtml.includes("supplier-supplier-logo-pdf.webp"));
   assert.ok(mainHtml.includes("supplier-logo-ribbon proof-marquee"));
-  assert.equal((mainHtml.match(/<figure aria-hidden="false"><img[^>]+supplier-/g) || []).length,17,"17 accessible supplier logos, other copies hidden");
+  assert.equal((mainHtml.match(/data-partner-id="supplier-[^"]+"/g) || []).length,17,"17 supplied supplier logos appear once, with no duplicate animation copies");
+  assert.equal((mainHtml.match(/data-partner-id="client-[^"]+"/g) || []).length,6,"Six original client logos appear once");
   const supplierSources = [...new Set([...mainHtml.matchAll(/src="([^"]*supplier-[^"]*)"/g)].map(match => new URL(match[1].replace(/&amp;/g, "&"), origin).searchParams.get("url")))];
   assert.equal(supplierSources.length,17); for (const source of supplierSources) assert.equal((await call(source)).status,200,source);
   assert.equal((await call("/admin/galeri")).status, 307);

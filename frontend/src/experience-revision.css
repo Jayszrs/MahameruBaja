@@ -376,7 +376,6 @@
 .poster-zoom-label { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); padding:8px 12px; border-radius:5px; background:#111d; font-size:12px; white-space:nowrap; }
 .poster-welcome-layout.is-expanded { display:block; }
 .poster-welcome-layout.is-expanded .poster-welcome-image { height:calc(84dvh - 130px); }
-.poster-welcome .poster-autoplay { display:block; margin:8px auto; width:auto; min-height:44px; padding:8px 16px; border-radius:6px; font-size:12px; }
 .public-site .company-footer-brand .footer-company-logo,
 .public-site .home-final .home-shell .callout-company-logo,
 .public-site .home-routes .home-route-card .route-division-logo { filter:none; box-shadow:none; }
