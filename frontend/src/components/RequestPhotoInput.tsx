@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import PublicText from "./PublicText";
 
 export default function RequestPhotoInput({ photos, onChange, disabled = false }: { photos: File[]; onChange: (files: File[]) => void; disabled?: boolean }) {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -10,7 +11,7 @@ export default function RequestPhotoInput({ photos, onChange, disabled = false }
     return () => urls.forEach(url => URL.revokeObjectURL(url));
   }, [photos]);
 
-  return <div className="request-photo-input">
+  return <PublicText><div className="request-photo-input">
     <label htmlFor="request-photos">Upload foto kebutuhan <span>(opsional)</span></label>
     <p id="request-photos-help">Lampirkan foto material, ukuran, atau gambar kerja agar tim lebih mudah memahami kebutuhan Anda. Maksimal 3 foto JPG, PNG, atau WebP, dengan ukuran total 3 MB.</p>
     <input id="request-photos" type="file" accept="image/jpeg,image/png,image/webp" multiple disabled={disabled}
@@ -35,5 +36,5 @@ export default function RequestPhotoInput({ photos, onChange, disabled = false }
       <button type="button" disabled={disabled} onClick={() => { setError(""); onChange(photos.filter((_, i) => i !== index)); }} aria-label={`Hapus foto ${photo.name}`}>Hapus foto</button>
     </li>)}</ul>}
     <p>Foto disimpan bersama permintaan dan hanya dapat dibuka oleh admin yang menangani. Foto tidak otomatis menjadi lampiran WhatsApp.</p>
-  </div>;
+  </div></PublicText>;
 }

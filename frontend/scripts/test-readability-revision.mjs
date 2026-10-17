@@ -14,6 +14,8 @@ export async function harness(filename, props, reduced = false, options = {}) {
   const slots = []; let cursor = 0, dirty = false, tree, pending = [], clock = 0, id = 0;
   const timers = new Map(), listeners = new Map();
   const hooks = {
+    useCallback(callback) { return callback; },
+    useMemo(callback) { return callback(); },
     useState(initial) {
       const index = cursor++;
       if (!(index in slots)) slots[index] = typeof initial === "function" ? initial() : initial;

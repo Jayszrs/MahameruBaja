@@ -8,6 +8,7 @@ import type { Promotion } from "../data/promotions";
 import type { Division } from "../data/divisionCms";
 import type { TeamContact } from "../data/siteContent";
 import { jakartaDate } from "../lib/jakartaDate";
+import PublicText from "./PublicText";
 
 export default function WelcomePosters({ promotions, divisions = [], contacts = [], preview, onPreviewClose }: { promotions: Promotion[]; divisions?: Division[]; contacts?: TeamContact[]; preview?: Promotion | null; onPreviewClose?: () => void }) {
   const path = usePathname(); const dialog = useRef<HTMLDialogElement>(null);
@@ -37,7 +38,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => setIndex(current => (current + by + live.length) % live.length);
   const details = posterDetails(item, divisions, contacts);
-  return <dialog className="poster-welcome" ref={dialog} aria-labelledby="welcome-poster-heading" onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }} onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
+  return <PublicText><dialog className="poster-welcome" ref={dialog} aria-labelledby="welcome-poster-heading" onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }} onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
     <button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}>×</button>
     <div className="poster-welcome-layout">
       <Link className="poster-welcome-image" href={item.ctaHref} onClick={close} aria-label={`${item.ctaLabel}: ${item.title}`}><Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 90vw, 500px" /></Link>
@@ -55,5 +56,5 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
       </section>
     </div>
     {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">←</button><p aria-live="polite">{index + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">→</button></nav>}
-  </dialog>;
+  </dialog></PublicText>;
 }

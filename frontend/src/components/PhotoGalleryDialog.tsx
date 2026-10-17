@@ -2,6 +2,7 @@
 
 import Image from "./CmsImage";
 import { useEffect, useId, useRef } from "react";
+import PublicText from "./PublicText";
 
 export type GalleryImage = { src: string; alt: string; caption?: string; kind?: "logo" };
 
@@ -31,7 +32,7 @@ export default function PhotoGalleryDialog({ photos, title, index, onSelect, onC
     if (index !== null && photos.length) onSelect((index + direction + photos.length) % photos.length);
   }
   if (!photo || index === null) return null;
-  return <dialog ref={dialog} className="project-album-dialog collage-photo-dialog" aria-labelledby={titleId}
+  return <PublicText><dialog ref={dialog} className="project-album-dialog collage-photo-dialog" aria-labelledby={titleId}
     onCancel={onClose} onClose={onClose}
     onClick={event => { if (event.target === event.currentTarget) onClose(); }}
     onKeyDown={event => {
@@ -52,5 +53,5 @@ export default function PhotoGalleryDialog({ photos, title, index, onSelect, onC
     </div>
     <div className="album-caption" aria-live="polite"><strong>{index + 1} / {photos.length}</strong><p>{photo.caption || photo.alt}</p></div>
     <div className="album-thumbnails" aria-label="Pilih gambar divisi">{photos.map((item, number) => <button type="button" key={item.src} aria-label={`Gambar ${number + 1}: ${item.alt}`} aria-pressed={number === index} onClick={() => onSelect(number)}><Image src={item.src} alt="" width={88} height={68} /></button>)}</div>
-  </dialog>;
+  </dialog></PublicText>;
 }

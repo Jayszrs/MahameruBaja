@@ -9,7 +9,7 @@ import ts from 'typescript';
 const require = createRequire(import.meta.url);
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const modules = new Map();
-function load(file) {
+export function load(file) {
   file = path.resolve(file); if (modules.has(file)) return modules.get(file).exports;
   const module = {exports:{}}; modules.set(file,module);
   const localRequire = name => {

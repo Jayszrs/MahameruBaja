@@ -217,6 +217,24 @@
 .website-copy-links>a { color:#9e1c27; font-size:14px; min-height:44px; display:flex; align-items:center; text-decoration:underline; text-underline-offset:4px; }
 .website-copy-save { display:flex; align-items:center; justify-content:space-between; padding:18px 22px; background:#fff; border:1px solid #d9ddda; border-radius:8px; }
 .website-copy-save p { color:#535d58; font-size:14px; margin:0; }
+.review-source-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin:20px 0; }
+.review-source-stats>div { background:#f3f5f2; padding:18px; border-radius:6px; min-width:0; }
+.review-source-stats span { display:block; font-size:13px; color:#535d58; line-height:1.5; }
+.review-source-stats strong { display:block; font-size:24px; line-height:1.3; margin-top:10px; overflow-wrap:anywhere; }
+.review-source-panel>p,.review-recovery-box p { font-size:14px; color:#535d58; line-height:1.8; }
+.review-recovery-box { padding:20px; border:1px solid #d9ddda; border-radius:8px; margin-top:24px; }
+.review-recovery-box h3 { font-size:17px; margin-bottom:12px; }
+.review-recovery-box .admin-secondary { margin:12px 12px 0 0; }
+.cms-content-record>summary { display:flex; align-items:center; flex-wrap:wrap; gap:12px; min-height:54px; cursor:pointer; list-style:none; }
+.cms-content-record>summary strong { font-size:16px; flex:1; min-width:0; overflow-wrap:anywhere; }
+.cms-content-record>summary span { font-size:13px; color:#535d58; }
+.cms-content-record>summary::after { content:"Buka"; color:#9e1c27; font-size:13px; font-weight:700; }
+.cms-content-record[open]>summary { padding-bottom:18px; border-bottom:1px solid #d9ddda; margin-bottom:20px; }
+.cms-content-record[open]>summary::after { content:"Tutup"; }
+.cms-content-record>summary::-webkit-details-marker { display:none; }
+.review-more-control { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:10px 16px; border:1px solid #c2c9c5; border-radius:6px; color:#29332d; background:#fff; font-size:14px; font-weight:700; }
+.review-more-control:hover { border-color:#bc2730; color:#9e1c27; }
+.review-bottomline { flex-wrap:wrap; gap:16px; }
 @media(max-width:1200px) { .admin-shell .division-editor .admin-profile-tabs { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:900px) { .website-copy-grid { grid-template-columns:minmax(0,1fr); } }
 @media(max-width:767px) {
@@ -227,4 +245,7 @@
   .website-copy-filters .text-editor-controls label { min-width:0; }
   .website-copy-grid .text-editor-card,.website-copy-editor .website-copy-filters { padding:18px; }
   .website-copy-grid .admin-secondary { width:100%; }
+  .review-source-stats { grid-template-columns:minmax(0,1fr); gap:10px; }
+  .review-source-stats>div { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .review-source-stats strong { margin:0; font-size:21px; }
 }

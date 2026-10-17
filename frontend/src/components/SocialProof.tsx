@@ -128,7 +128,9 @@ function Stars({ rating }: { rating: number }) {
 }
 
 function Reviews({ content, companyName, includeImported }: { content: ReviewContent; companyName: string; includeImported: boolean }) {
-  const published = content.reviews.filter(review => review.published && review.rating > 4).slice(0, 8);
+  const [expanded,setExpanded]=useState(false);
+  const available=content.reviews.filter(review=>review.published&&review.rating>4);
+  const published = available.slice(0,expanded?available.length:8);
   const slides: Array<{ kind: "review"; review: typeof published[number] } | { kind: "summary" } | { kind: "invite" }> = published.map(review => ({ kind: "review", review }));
   if (published.length < 3) slides.push({ kind: "summary" }, { kind: "invite" });
   const copies = [0, 1, 2];
@@ -156,7 +158,7 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
         <a href={content.mapsUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>{slide.kind === "summary" ? "Baca seluruh ulasan" : "Tulis ulasan di Google Maps"} <ReviewArrow /></a>
       </article>))}
     </div></div>
-    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
+    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small>{available.length>8&&<button type="button" className="review-more-control" aria-expanded={expanded} onClick={()=>setExpanded(value=>!value)}>{expanded?"Tampilkan 8 kutipan pertama":`Lihat semua ${available.length} kutipan`}</button>}<a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
   </section></PublicText>;
 }
 

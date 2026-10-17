@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PublicText from "./PublicText";
 
 function WhatsAppIcon() {
   return (
@@ -141,7 +142,7 @@ export default function ShareArticle({ title }: { title: string }) {
   ];
 
   return (
-    <div className="article-share" role="group" aria-label="Bagikan artikel">
+    <PublicText><div className="article-share" role="group" aria-label="Bagikan artikel">
       <span className="article-share-label">Terbantu? Bagikan ke yang butuh.</span>
       {buttons.map((button) => (
         <button key={button.key} type="button" className="article-share-icon" title={flash === button.key ? "Tautan disalin — tempel ke Story" : button.label} aria-label={`Bagikan ke ${button.label}`} onClick={button.onClick}>
@@ -156,6 +157,6 @@ export default function ShareArticle({ title }: { title: string }) {
           <ShareIcon />
         </button>
       )}
-    </div>
+    </div></PublicText>
   );
 }

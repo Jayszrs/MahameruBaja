@@ -5,6 +5,7 @@ import ts from 'typescript';
 import { fileURLToPath } from 'node:url';
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const publicComponents = new Set(['Navbar','Footer','UnifiedHomeContent','HeroCarousel','Promotions','ProjectAlbums','ContactDirectory','DivisionLocation','DivisionVision','SocialHub','SocialProof','QuotationDrawer','SearchOverlay','ProductCard','RequestHandoff','EventCountdown','DivisionCollage','WelcomePosters']);
+for(const name of ['ShareArticle','RequestPhotoInput','PhotoGalleryDialog'])publicComponents.add(name);
 const rows = new Map();
 const normalize = text => text.replace(/\s+/g, ' ').trim();
 function add(source, area) {
@@ -29,6 +30,7 @@ for (const directory of ['screens','components','data']) {
           if (ts.isJsxExpression(parent) && !ts.isJsxAttribute(parent.parent)) { if (!/^(?:[a-z0-9_-]+|\s*)$/.test(node.text)) add(node.text,file.slice(0,-4)); break; }
           parent = parent.parent;
         }
+        if(parent && ts.isVariableDeclaration(parent) && /^(title|headline|intro|description|text)$/.test(parent.name.getText(source)) && node.text.includes(' '))add(node.text,file.replace(/\.tsx?$/,''));
       }
       ts.forEachChild(node,visit);
     }

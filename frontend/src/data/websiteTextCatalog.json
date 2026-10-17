@@ -508,6 +508,10 @@
     "area": "DivisionSubPage"
   },
   {
+    "source": "Cari material untuk pekerjaan Anda.",
+    "area": "DivisionSubPage"
+  },
+  {
     "source": "GALERI /",
     "area": "DivisionSubPage"
   },
@@ -520,6 +524,10 @@
     "area": "DivisionSubPage"
   },
   {
+    "source": "Hubungi tim kami.",
+    "area": "DivisionSubPage"
+  },
+  {
     "source": "Kenali tim dan layanan kami.",
     "area": "DivisionSubPage"
   },
@@ -528,7 +536,15 @@
     "area": "DivisionSubPage"
   },
   {
+    "source": "Layanan yang membantu pekerjaan Anda.",
+    "area": "DivisionSubPage"
+  },
+  {
     "source": "Lihat dari dekat.",
+    "area": "DivisionSubPage"
+  },
+  {
+    "source": "Lihat material dan hasil pekerjaan kami.",
     "area": "DivisionSubPage"
   },
   {
@@ -1484,6 +1500,10 @@
     "area": "NotFoundPage"
   },
   {
+    "source": "GALERI DIVISI",
+    "area": "PhotoGalleryDialog"
+  },
+  {
     "source": "Cek Stok via WA",
     "area": "ProductCard"
   },
@@ -2320,6 +2340,26 @@
     "area": "RequestHandoff"
   },
   {
+    "source": "(opsional)",
+    "area": "RequestPhotoInput"
+  },
+  {
+    "source": "Foto disimpan bersama permintaan dan hanya dapat dibuka oleh admin yang menangani. Foto tidak otomatis menjadi lampiran WhatsApp.",
+    "area": "RequestPhotoInput"
+  },
+  {
+    "source": "Hapus foto",
+    "area": "RequestPhotoInput"
+  },
+  {
+    "source": "Lampirkan foto material, ukuran, atau gambar kerja agar tim lebih mudah memahami kebutuhan Anda. Maksimal 3 foto JPG, PNG, atau WebP, dengan ukuran total 3 MB.",
+    "area": "RequestPhotoInput"
+  },
+  {
+    "source": "Upload foto kebutuhan",
+    "area": "RequestPhotoInput"
+  },
+  {
     "source": "Cari besi beton, WF 200, hollow 4×4...",
     "area": "SearchOverlay"
   },
@@ -2422,6 +2462,34 @@
   {
     "source": "Wujudkan potongan plat sesuai desain Anda, dari ornamen sampai komponen mesin. Kirim gambar, ukuran, bahan, dan jumlah; tim membantu mengecek proses dan harga.",
     "area": "serviceDescriptions"
+  },
+  {
+    "source": "Facebook",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "Instagram",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "Menu bagikan HP",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "Terbantu? Bagikan ke yang butuh.",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "Threads",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "TikTok",
+    "area": "ShareArticle"
+  },
+  {
+    "source": "WhatsApp",
+    "area": "ShareArticle"
   },
   {
     "source": "Belum ada unggahan untuk pilihan ini. Kunjungi akun resmi kami di bawah.",
@@ -2585,6 +2653,10 @@
   },
   {
     "source": "Supplier kami.",
+    "area": "SocialProof"
+  },
+  {
+    "source": "Tampilkan 8 kutipan pertama",
     "area": "SocialProof"
   },
   {
