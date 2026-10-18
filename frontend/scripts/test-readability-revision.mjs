@@ -110,6 +110,8 @@ declaration(".carousel-keyboard-control:focus", "clip-path", "none");
 const module = { exports: {} }; new Function("module", "exports", compile(await readFile(path.join(frontend, "src/data/corporateLogos.ts"), "utf8")))(module, module.exports);
 const frames = module.exports.corporateLogoFrames;
 assert.equal(frames["/images/brand/mahameru-retail.png"].name, "mmn"); assert.equal(frames["/images/brand/garuda.png"].name, "gmb");
+assert.equal(frames["/images/brand/mahameru-retail.png"].wordmark,"MAHAMERU BAJA");
+assert.equal(frames["/images/brand/mahameru-retail.png"].clip,"polygon(40px 35px,650px 35px,650px 465px,40px 465px)","Old MMN lettering is outside the retained symbol crop");
 for (const name of ["mbi-laser", "mbi-trading", "mbi-proyek"]) assert.equal(frames[`/images/brand/${name}.png`].name, "mbi");
 assert.equal(frames["/api/cms/media/custom.png"], undefined, "Custom uploaded identity never remapped");
 const brand = await readFile(path.join(frontend, "src/components/Navbar.tsx"), "utf8");

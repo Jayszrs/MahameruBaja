@@ -120,6 +120,7 @@ try {
   assert.ok(form.includes('id="request-photos"') && form.includes('id="catatan"'));
   const about = await (await fetch(`${origin}/tentang-kami`)).text(); assert.ok(!about.includes('class="division-collage-brand"'));
   assert.ok(about.includes('data-corporate-logo="mmn"') && about.includes('data-corporate-logo="gmb"') && about.includes('data-corporate-logo="mbi"'));
+  assert.ok(about.includes('corporate-logo-wordmark')&&about.includes('>MAHAMERU BAJA</text>'),'Retail logo renders the requested full name in actual public HTML');
   const product = await (await fetch(`${origin}/produk/besi-beton-polos-10mm`)).text();
   const suppliers = product.match(/<ol class="inventory-suppliers">[\s\S]*?<\/ol>/)?.[0] || "";
   assert.ok(suppliers.includes("Mahameru Baja Retail Tambun"));

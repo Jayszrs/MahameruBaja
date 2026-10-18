@@ -17,6 +17,7 @@ export default function CmsImage({ transparentLogo = false, ...props }: ImagePro
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 17" />
     </filter></defs>}
     <image href={logoSheetSrc} x="0" y="0" width="1437" height="1095" style={{ clipPath: logo.clip }} filter={transparentLogo ? `url(#${filterId})` : undefined} />
+    {logo.wordmark&&<text className="corporate-logo-wordmark" x="345" y="538" textAnchor="middle" textLength="570" lengthAdjust="spacingAndGlyphs" fill="#d00000" fontSize="68" fontWeight="900" fontFamily="var(--font-archivo), Arial, sans-serif">{logo.wordmark}</text>}
   </svg>;
   const privateOrExternal = typeof props.src === "string" && (props.src.startsWith("/") && !props.src.startsWith("/images/") && props.src !== "/mbi-mark.svg" || props.src.startsWith("https://") && !isPublicBlobUrl(props.src));
   if (transparentLogo) return <>

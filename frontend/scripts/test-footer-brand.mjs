@@ -12,6 +12,13 @@ const render=props=>renderToStaticMarkup(React.createElement(CmsImage,{src:logo,
 const transparent=render({transparentLogo:true});
 assert.ok(transparent.includes('<feColorMatrix')&&transparent.includes('filter="url(#logo-paper-'));
 assert.ok(!render({}).includes('<filter'),'Header and other existing logo presentations are unchanged');
+for(const transparentLogo of [true,false]){
+  const retail=render({src:'/images/brand/mahameru-retail.png',alt:'Mahameru Baja',transparentLogo});
+  assert.ok(retail.includes('corporate-logo-wordmark')&&retail.includes('>MAHAMERU BAJA</text>'),'Retail mark has the exact client-requested name on both surfaces');
+  assert.ok(retail.includes('650px 465px,40px 465px'),'Original symbol is retained but the old MMN lettering is cropped out');
+  assert.ok(!retail.includes('>MMN<'));
+}
+for(const other of ['/images/brand/garuda.png','/images/brand/mbi-laser.png','/images/brand/mbi-trading.png','/images/brand/mbi-proyek.png'])assert.ok(!render({src:other}).includes('corporate-logo-wordmark'),'Other divisions retain their original lettering');
 const custom=render({src:'/uploads/custom-logo.png',transparentLogo:true});
 assert.ok(custom.includes('<img')&&custom.includes('feColorMatrix')&&custom.includes('feComposite')&&!custom.includes('transparentLogo'),'Custom logo paper is removed by a display filter, preserving the original image and alpha');
 assert.ok(custom.includes('src="/uploads/custom-logo.png"'),'Custom CMS source is unchanged');
