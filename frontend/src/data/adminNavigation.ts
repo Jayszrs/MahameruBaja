@@ -16,7 +16,6 @@ export const adminNavigation: AdminNavGroup[] = [
   { id: "home", number: "04", label: "Beranda", path: "/admin/promosi", items: [
     { label: "Banner & poster", href: "/admin/promosi?view=all" },
     { label: "Hero beranda", href: "/admin/hero" }, { label: "Galeri & proyek", href: "/admin/galeri" },
-    { label: "Teks berjalan", href: "/admin/hero#teks-berjalan" },
     { label: "Poster saat masuk", href: "/admin/promosi?view=popup" },
   ] },
   { id: "articles", number: "05", label: "Artikel", path: "/admin/artikel", items: [

@@ -13,6 +13,17 @@ import HeroAnnouncementEditor from "./HeroAnnouncementEditor";
 import AdminOrderList, { moveBefore, focusEditorRecord } from "./AdminOrderList";
 import HeroMediaFields from "./HeroMediaFields";
 
+const heroDestinations = [
+  { label: "Beranda · halaman utama", href: "/" },
+  { label: "Jasa · semua layanan", href: "/jasa" },
+  { label: "Jasa · permintaan penawaran", href: "/jasa#request" },
+  { label: "Produk · katalog", href: "/produk" },
+  { label: "Proyek · hasil pekerjaan", href: "/proyek" },
+  { label: "Penawaran · pilih divisi", href: "/minta-penawaran" },
+  { label: "Beranda · pilih divisi", href: "#pilih-divisi" },
+  { label: "Kontak", href: "/kontak" },
+];
+
 export default function HeroEditor({ initialContent }: { initialContent: SiteContent }) {
   const actor = useAdminIdentity();
   const [content, setContent] = useState(initialContent);
@@ -72,7 +83,7 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
         {busy && <p className="editor-notice" role="status">Sedang memproses. Tunggu sampai selesai sebelum meninggalkan halaman.</p>}
         <fieldset disabled={busy}>
           <HeroAnnouncementEditor content={content} onChange={next => change(() => next)} />
-          <div className="editor-list-heading"><h2>Slide hero</h2><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
+          <div className="editor-list-heading hero-slide-list-heading"><div><span className="hero-step-label">Langkah 2</span><h2>Slide hero</h2></div><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
           <AdminOrderList label="Urutan slide" disabled={busy} items={content.heroSlides.map(slide => ({ id: slide.id, title: slide.eyebrow || "Slide baru", image: slide.poster || (slide.type === "image" ? slide.media : undefined) }))} onMove={(from, to) => change(current => ({ ...current, heroSlides: moveBefore(current.heroSlides, from, to) }))} onSelect={id => focusEditorRecord(`hero-${id}`)} />
           {!content.heroSlides.length && <div className="editor-empty"><h3>Belum ada slide hero</h3><p>Tambahkan slide untuk menampilkan gambar atau video pilihan Anda di beranda.</p></div>}
           {content.heroSlides.map((slide, index) => <section className="editor-panel hero-slide-editor" id={`hero-${slide.id}`} key={slide.id}>
@@ -81,7 +92,11 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
             <HeroMediaFields slide={slide} busy={busy} update={patch => update(slide.id, patch)} upload={(file, poster) => upload(slide.id, file, poster)} />
             <div className="editor-grid">
               {(["eyebrow", "title", "accent", "description"] as const).map(key => <label key={key} className="editor-field">{{ eyebrow: "Label layanan", title: "Judul", accent: "Lanjutan judul", description: "Deskripsi" }[key]}<input name={`hero-${key}-${slide.id}`} value={slide[key]} onChange={event => update(slide.id, { [key]: event.target.value })} /></label>)}
-              {(["primaryAction", "secondaryAction"] as const).map(key => <div key={key} className="editor-field"><strong>Tombol {key === "primaryAction" ? "utama" : "kedua"}</strong><label>Label tombol<input aria-label={`Label tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].label} onChange={event => update(slide.id, { [key]: { ...slide[key], label: event.target.value } })} /></label><label>Tujuan tombol<input aria-label={`Tujuan tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].href} onChange={event => update(slide.id, { [key]: { ...slide[key], href: event.target.value } })} /></label></div>)}
+              {(["primaryAction", "secondaryAction"] as const).map(key => {
+                const destination = heroDestinations.find(item => item.href === slide[key].href);
+                const available = destination ? heroDestinations : [{ label: "Tautan tersimpan · pilih tujuan lain untuk mengganti", href: slide[key].href }, ...heroDestinations];
+                return <div key={key} className="editor-field hero-action-field"><strong>Tombol {key === "primaryAction" ? "utama" : "kedua"}</strong><label>Label tombol<input aria-label={`Label tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].label} onChange={event => update(slide.id, { [key]: { ...slide[key], label: event.target.value } })} /></label><label>Tujuan tombol<select aria-label={`Tujuan tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].href} onChange={event => update(slide.id, { [key]: { ...slide[key], href: event.target.value } })}>{available.map(item => <option key={item.href} value={item.href}>{item.label}</option>)}</select></label><a className="hero-destination-preview" href={slide[key].href} target="_blank" rel="noopener noreferrer">Buka pratinjau tujuan tombol ↗ <span>{destination?.label || slide[key].href}</span></a></div>;
+              })}
             </div>
           </section>)}
         </fieldset>
