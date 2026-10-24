@@ -21,7 +21,7 @@ export default function WebsiteTextEditor({ initialContent, articleChoices=[] }:
   const owner=site==="main"?null:site;const division=divisions.find(d=>d.slug===owner);
   const owned=content.websiteTexts.filter(row=>contentOwner(row)===owner);
   const rows=owned.filter(row=>row.page===page);
-  const choices=choicesForWebsite(catalog,division,content.heroSlides.filter(slide=>!owner || contentOwner(slide)===owner),owned,content,divisions,articleChoices).filter(choice=>choiceOnPage(choice,page));
+  const choices=choicesForWebsite(catalog,division,content.heroSlides.filter(slide=>!owner || contentOwner(slide)===owner),owned,content,divisions,articleChoices,page).filter(choice=>choiceOnPage(choice,page,division));
   const found=choices.filter(choice=>(area==="all" || choice.area===area || choice.areas?.includes(area)) && `${choice.source} ${owned.filter(row=>normalizeWebsiteText(row.source)===choice.source).map(row=>row.replacement).join(' ')}`.toLocaleLowerCase('id').includes(normalizeWebsiteText(query).toLocaleLowerCase('id')));
   function update(next:SiteContent) {setContent(next);setDirty(true);setMessage("");}
   function edit(original:string,value:string) {

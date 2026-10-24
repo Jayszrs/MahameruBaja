@@ -10,6 +10,17 @@
 }
 .admin-shell :is(.admin-submenu>a,.admin-group-toggle,.admin-sidebar-footer>a,.admin-sidebar-footer button) { font-size: 15px; }
 .admin-nav-notification { margin-left:auto; min-width:21px; height:21px; display:inline-grid; place-items:center; padding:0 5px; border-radius:999px; color:#fff; background:#bd2630; font:700 10px/1 system-ui,sans-serif; }
+.admin-offer-toast { position:fixed; z-index:90; top:88px; right:24px; display:grid; grid-template-columns:40px minmax(0,1fr) 32px; align-items:start; gap:12px; width:min(440px,calc(100vw - 32px)); padding:16px; border:1px solid #d9d2c8; border-radius:10px; background:#fff; box-shadow:0 14px 38px #1b231c24; color:#252a2b; }
+.admin-offer-toast-icon { display:grid; place-items:center; width:40px; height:40px; border-radius:8px; background:#fff0ef; color:#a81e29; }
+.admin-offer-toast-icon svg { width:21px; height:21px; }
+.admin-offer-toast>div { display:grid; justify-items:start; gap:4px; }
+.admin-offer-toast strong { font-size:15px; line-height:1.4; }
+.admin-offer-toast p { margin:0; color:#586064; font-size:13px; line-height:1.5; }
+.admin-offer-toast a { margin-top:4px; color:#a51e29; font-size:13px; font-weight:700; text-underline-offset:3px; }
+.admin-offer-toast>button { display:grid; place-items:center; width:32px; height:32px; min-height:32px; padding:0; border:0; border-radius:6px; background:transparent; color:#596064; font-size:22px; line-height:1; cursor:pointer; }
+.admin-offer-toast>button:hover { background:#f2f1ee; color:#202526; }
+.admin-shell .partner-bulk-select { display:flex; align-items:center; gap:9px; margin:0 0 12px; color:#30383c; font-size:14px; line-height:1.4; cursor:pointer; }
+.admin-shell .partner-bulk-select input { width:18px; height:18px; flex:0 0 auto; margin:0; }
 .admin-shell .admin-order-slot { min-width:0; }
 .admin-shell .admin-order-row { transition:background-color .14s ease,border-color .14s ease,box-shadow .14s ease,transform .14s ease; }
 .admin-shell .admin-order-row:hover { border-color:#c8ceca; background:#fbfaf8; }
@@ -22,8 +33,21 @@
 .admin-shell .admin-order-select:is(:hover,:focus-visible) .admin-order-open { opacity:1; }
 .admin-shell .admin-drag-handle { cursor:grab; }
 .admin-shell .admin-drag-handle:focus-visible { outline:2px solid var(--admin-red); outline-offset:2px; }
+.admin-shell .social-post-editor-grid { align-items:start; }
+.admin-shell .social-post-editor-grid>.editor-field { align-self:start; align-content:start; }
+.admin-shell .social-media-sources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 24px; margin:20px 0 8px; }
+.admin-shell .social-media-sources>section { display:grid; align-content:start; gap:10px; min-width:0; }
+.admin-shell .social-media-sources h4 { margin:0; color:#30383c; font-size:15px; line-height:1.45; }
+.admin-shell .social-media-sources .editor-field { align-content:start; gap:7px; margin:0; }
+.admin-shell .social-media-sources>section>small { min-height:42px; color:var(--admin-muted); font-size:13px; line-height:1.55; }
+.admin-shell .social-media-sources .editor-field input[type=file] { min-height:54px; }
+.admin-shell .social-media-sources .editor-field input:not([type=file]) { min-height:48px; }
 .admin-shell .social-preview-guidance { display:grid; gap:4px; margin:18px 0 10px; padding:14px 16px; border:1px solid var(--admin-line); border-radius:7px; background:#f8f7f4; color:var(--admin-muted); font-size:13px; line-height:1.65; }
 .admin-shell .social-preview-guidance p { margin:0; }
+.admin-shell .social-instagram-preview-note { display:grid; justify-items:start; gap:8px; margin:16px 0 22px; padding:16px; border:1px solid var(--admin-line); border-radius:8px; background:#f8f7f4; color:#30383c; text-align:left; }
+.admin-shell .social-instagram-preview-note strong { font-size:15px; line-height:1.45; }
+.admin-shell .social-instagram-preview-note p { max-width:68ch; margin:0; color:var(--admin-muted); font-size:14px; line-height:1.6; }
+.admin-shell .social-instagram-preview-note a { margin-top:4px; text-decoration:none; }
 .admin-shell .social-preview-disclosure { max-width:460px; margin:14px 0 22px; border:1px solid var(--admin-line); border-radius:8px; background:#fff; }
 .admin-shell .social-preview-disclosure>summary { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:48px; padding:10px 14px; color:#333a38; font-size:14px; font-weight:650; cursor:pointer; }
 .admin-shell .social-preview-disclosure[open]>summary { border-bottom:1px solid var(--admin-line); }
@@ -193,8 +217,27 @@
 .admin-shell .invoice-line .invoice-remove { grid-area:remove; align-self:center; justify-self:center; display:grid; place-items:center; width:40px; height:40px; min-height:40px; padding:0; border:1px solid #e4c7c9; border-radius:6px; background:#fff; color:#a51e29; cursor:pointer; }
 .admin-shell .invoice-line .invoice-remove:hover:not(:disabled) { border-color:#a51e29; background:#fff1f1; }
 .admin-shell .invoice-line .invoice-remove:disabled { opacity:.4; cursor:not-allowed; }
-.admin-shell .inventory-editor .editor-panel>details>p { margin:10px 0 0; color:var(--admin-muted); font-size:13px; line-height:1.6; }
-.admin-shell .inventory-editor .inventory-add { margin:14px 0 4px; }
+.admin-shell .inventory-editor .inventory-controls { display:grid; gap:24px; }
+.admin-shell .inventory-editor .inventory-flow-section { display:grid; gap:10px; min-width:0; }
+.admin-shell .inventory-editor .inventory-flow-section h2 { margin:0; font-size:17px; line-height:1.4; }
+.admin-shell .inventory-editor .inventory-flow-section .editor-field { min-width:0; margin:0; }
+.admin-shell .inventory-editor .inventory-add-paths { display:grid; grid-template-columns:minmax(0,1.2fr) 34px minmax(300px,.8fr); align-items:stretch; gap:18px; }
+.admin-shell .inventory-editor .inventory-add { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; margin:0; min-width:0; }
+.admin-shell .inventory-editor .inventory-add>.editor-field { min-width:0; margin:0; }
+.admin-shell .inventory-editor .inventory-add>button,.admin-shell .inventory-editor .inventory-add-new>button { box-sizing:border-box; align-self:end; min-height:46px; height:46px; margin:0; padding:9px 16px; white-space:nowrap; }
+.admin-shell .inventory-editor .inventory-add-divider { position:relative; display:grid; place-items:center; min-width:0; color:var(--admin-muted); font-size:12px; }
+.admin-shell .inventory-editor .inventory-add-divider::before { position:absolute; inset-block:8px; left:50%; border-left:1px solid var(--admin-line); content:""; }
+.admin-shell .inventory-editor .inventory-add-divider>span { position:relative; padding:6px 2px; background:#fff; }
+.admin-shell .inventory-editor .inventory-add-new { display:flex; align-items:center; justify-content:space-between; gap:14px; min-width:0; }
+.admin-shell .inventory-editor .inventory-add-new>div { min-width:0; }
+.admin-shell .inventory-editor .inventory-add-new strong { display:block; color:#30383c; font-size:14px; }
+.admin-shell .inventory-editor .inventory-add-new p { margin:3px 0 0; color:var(--admin-muted); font-size:13px; line-height:1.5; }
+.admin-shell .inventory-editor .inventory-search-section { max-width:780px; }
+.admin-shell .inventory-editor .inventory-search-section small { display:block; margin-top:6px; color:var(--admin-muted); font-size:13px; line-height:1.5; }
+.admin-shell .inventory-editor .editor-fields { display:grid; gap:18px; }
+.admin-shell .inventory-editor .editor-fields>section.editor-panel[id^="inventory-"] { margin:0; }
+.admin-shell .inventory-editor .inventory-view-product { text-decoration:none; }
+.admin-shell .inventory-editor .inventory-remove-product { margin:0; }
 @media(max-width:800px) {
   .admin-shell .invoice-line { grid-template-columns:minmax(0,1fr) minmax(0,1fr) 42px; grid-template-areas:"description description remove" "quantity price remove" "unit unit unit"; }
 }
@@ -202,12 +245,23 @@
   .admin-shell .invoice-line { grid-template-columns:minmax(0,1fr) 42px; grid-template-areas:"description remove" "quantity remove" "price remove" "unit unit"; }
   .admin-shell .invoice-line .invoice-unit-controls { grid-template-columns:minmax(0,1fr); }
 }
+@media(max-width:900px) {
+  .admin-shell .inventory-editor .inventory-add-paths { grid-template-columns:minmax(0,1fr); gap:12px; }
+  .admin-shell .inventory-editor .inventory-add { grid-template-columns:minmax(0,1fr); }
+  .admin-shell .inventory-editor .inventory-add>button,.admin-shell .inventory-editor .inventory-add-new>button { width:100%; }
+  .admin-shell .inventory-editor .inventory-add-divider { min-height:24px; }
+  .admin-shell .inventory-editor .inventory-add-divider::before { inset-block:auto; inset-inline:10%; top:50%; border-left:0; border-top:1px solid var(--admin-line); }
+  .admin-shell .inventory-editor .inventory-add-divider>span { padding:3px 12px; }
+  .admin-shell .inventory-editor .inventory-add-new { align-items:stretch; flex-direction:column; }
+}
 @media(max-width:560px) { .admin-shell .requests-toolbar { grid-template-columns:minmax(0,1fr); } }
 .admin-process-notice { position: sticky; top: 76px; z-index: 24; display: flex; align-items: center; gap: 14px; padding: 14px 32px; background: #fff8e8; color: #5f4318; border-bottom: 1px solid #e3d2ad; }
 .admin-process-notice strong { font-size: 15px; }.admin-process-notice p { font-size: 14px; margin-top: 2px; overflow-wrap: anywhere; }
 .admin-process-spinner { width: 22px; height: 22px; flex-shrink: 0; border: 2px solid #d8c6a1; border-top-color: #805814; border-radius: 50%; animation: admin-process-spin .8s linear infinite; }
 @keyframes admin-process-spin { to { transform: rotate(360deg); } }
 @media(prefers-reduced-motion: reduce) { .admin-process-spinner { animation: none; } }
+@media(max-width:760px) { .admin-shell .social-media-sources { grid-template-columns:minmax(0,1fr); gap:20px; }.admin-shell .social-media-sources>section>small { min-height:0; } }
+@media(max-width:760px) { .admin-offer-toast { top:138px; right:12px; width:calc(100vw - 24px); } }
 @media(max-width: 760px) {
   .admin-shell :is(.editor-panel,.admin-order-list,.requests-detail) { scroll-margin-top: 60px; }
   .admin-shell :is(.article-workspace.is-creating,.admin-management-grid.is-creating,.requests-layout.is-creating) { display: flex; flex-direction: column-reverse; }
