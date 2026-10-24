@@ -1,6 +1,6 @@
 # Website publik dan SEO — 24 Oktober 2026
 
-Hero beranda kini menggunakan bidang terang untuk tulisan dan gambar/video tanpa gradasi hitam. Pada ponsel, konten mengalir sesuai panjang teks dan media berada di bawahnya. Navigasi slide dapat digunakan dengan tombol sebelumnya/berikutnya. Header tetap terlihat dan WhatsApp di sebelah tombol penawaran dihapus; tombol WhatsApp mengambang tetap tersedia.
+Hero beranda memakai satu foto/video sebagai latar penuh dengan tulisan di atasnya, mengikuti klarifikasi pengguna. Lapisan terang menjaga kontras teks tanpa bayangan hitam di kiri. Di desktop dan mobile, media tetap menyatu dengan tulisan, bukan dipisah menjadi kolom atau gambar di bawah konten. Navigasi slide tetap tersedia. Header tetap terlihat dan WhatsApp di sebelah tombol penawaran dihapus; tombol WhatsApp mengambang tetap tersedia.
 
 Poster yang dibuka pengunjung dan pratinjau CMS menggunakan komponen yang sama, dengan gambar utuh, bidang informasi terang, tombol berukuran sentuh, dan tinggi dialog mengikuti viewport. Error Next Image pada foto sosial diperbaiki dengan memindahkan dimensi crop ke pembungkus gambar. Gambar `fill` tetap menggunakan ukuran 100% sesuai kontrak Next.js.
 

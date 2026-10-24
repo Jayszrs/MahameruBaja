@@ -12,6 +12,7 @@ import type { SiteContent } from "../data/siteContent";
 import AdminOrderList, { moveBefore, focusEditorRecord } from "./AdminOrderList";
 import { galleryProjectsSchema } from "../data/projectGallery";
 import type { GalleryProject } from "../data/projectGallery";
+import { contentId } from "../data/socialMedia";
 
 import { useAdminWorkspace } from "./AdminWorkspace";
 
@@ -30,7 +31,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
   function updateProject(update: Partial<GalleryProject>) { change(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === selected ? { ...p, ...update, published: true } : p) })); }
   function addProject() {
     if (content.galleryProjects.length >= 80) return;
-    const id = crypto.randomUUID();
+    const id = contentId();
     change(c => ({ ...c, galleryProjects: [{ id, title: "Proyek baru", category: "Fabrikasi & erection", division: actor.division || divisions[0]?.slug || "fabrikasi-erection", ownerDivision:actor.division, description: "", location: "", year: "", photos: [], coverId: "", published: true }, ...c.galleryProjects] }));
     setSelected(id); focusEditorRecord("gallery-project-form");
   }
@@ -46,7 +47,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
     try {
       for (const file of queue) {
         const url = await uploadCmsFile(file, "image", project.ownerDivision || null);
-        const id = crypto.randomUUID();
+        const id = contentId();
         const photo = { id, src: url, alt: `${project.title} — ${file.name.replace(/\.[^.]+$/, "").slice(0, 30)}`.slice(0, 200), caption: "" };
         setContent(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === uploadedTo ? { ...p, photos: [photo, ...p.photos], coverId: p.coverId || id, published: true } : p) }));
         setDirty(true); count++;

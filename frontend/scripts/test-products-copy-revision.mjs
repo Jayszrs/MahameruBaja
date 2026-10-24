@@ -4,10 +4,11 @@ import { fileURLToPath } from 'node:url';
 import { mkdir, access } from 'node:fs/promises';
 assert.equal(process.env.CMS_REVISION_TEST_ISOLATED, '1', 'Run only against the disposable revision CMS.');
 const require = createRequire(import.meta.url);
-const { chromium } = require(process.env.ARTICLE_PLAYWRIGHT_MODULE || 'C:/Users/jaela/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
-const browser = await chromium.launch({ headless: true, executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
-const base = 'http://localhost:3173';
-const statePath = fileURLToPath(new URL('../../tmp/revision-products-auth.json', import.meta.url));
+const { chromium } = require(process.env.ARTICLE_PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({ headless: true, executablePath: process.env.CMS_CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe' });
+const base = process.env.CMS_TEST_URL || 'http://localhost:3173';
+assert(['localhost', '127.0.0.1'].includes(new URL(base).hostname), 'Local fixture only.');
+const statePath = process.env.CMS_PRODUCTS_AUTH_FILE || fileURLToPath(new URL('../../tmp/revision-products-auth.json', import.meta.url));
 const hasState = await access(statePath).then(() => true, () => false);
 const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, ...(hasState ? { storageState: statePath } : {}) });
 const page = await context.newPage();
@@ -64,12 +65,12 @@ try {
   await page.screenshot({ path: fileURLToPath(new URL('inventory-mobile.png', output)) });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'Inventory editor fits mobile viewport.');
   await page.goto(base + `/produk?q=${encodeURIComponent(unique)}`);
-  await page.getByRole('heading', { name: unique, exact: true }).waitFor();
+  await page.locator('.product-card').getByText(unique, { exact: true }).waitFor();
   await page.goto(base + `/produk/${createdProduct.product.slug}`);
   await page.getByRole('heading', { name: unique, exact: true }).waitFor();
   assert.ok((await page.textContent('body')).includes('5 batang'));
   await page.goto(base + `/cari?q=${encodeURIComponent(unique)}`);
-  await page.getByRole('heading', { name: unique, exact: true }).waitFor();
+  await page.locator('.product-card').getByText(unique, { exact: true }).waitFor();
   console.log('PASS: new product create/upload/save/reload/edit and public catalog/detail/search; mobile editor has no horizontal overflow.');
 
   await page.setViewportSize({ width: 1366, height: 900 });
@@ -101,7 +102,7 @@ try {
   await childPage.getByLabel('Password baru', { exact: true }).fill('NewPass8');
   await childPage.getByLabel('Konfirmasi password baru', { exact: true }).fill('NewPass8');
   const passwordSave = childPage.waitForResponse(response => response.url().endsWith('/api/admin/change-password') && response.request().method() === 'POST');
-  await childPage.getByRole('button', { name: 'Ganti password', exact: true }).click(); assert.equal((await passwordSave).status(), 200);
+  await childPage.locator('form').getByRole('button', { name: 'Ganti password', exact: true }).click(); assert.equal((await passwordSave).status(), 200);
   await child.close();
   console.log('PASS: server rejects 7-character reset, accepts 8; account can log in and replace temporary password with 8 characters.');
 

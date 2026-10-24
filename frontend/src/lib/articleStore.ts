@@ -9,7 +9,8 @@ import { randomUUID } from "node:crypto";
 import { cache } from "react";
 import { cachedPublicCms } from "./publicCmsCache";
 import { articles } from "../data/articles";
-import { ArticleError, articleCollectionSchema, articleInputSchema, articleReadTime, articleRecordSchema, articleSlug, publicArticle, type ArticleInput, type ArticleRecord } from "../data/articleCms";
+import { ArticleError, articleCollectionSchema, articleInputSchema, articleReadTime, articleRecordSchema, articleSlug, orderedArticles, publicArticle, type ArticleInput, type ArticleRecord } from "../data/articleCms";
+import { applyManualOrder, type RecordOrder } from "./recordOrder";
 import { readPreviewBlob, usingPreviewBlob, writePreviewBlob } from "./previewBlobStore";
 import { publicServiceWording } from "../data/serviceWording";
 
@@ -20,15 +21,14 @@ const seed: ArticleRecord[] = articles.map(article => articleRecordSchema.parse(
   createdAt: `${article.date}T00:00:00.000Z`, updatedAt: `${article.date}T00:00:00.000Z` }));
 
 export async function readArticles(): Promise<ArticleRecord[]> {
-  if (usingPreviewBlob()) return (await readPreviewBlob("articles", articleCollectionSchema, seed)).value;
-  try { return articleCollectionSchema.parse(JSON.parse(await readFile(file, "utf8"))); }
-  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return structuredClone(seed); throw error; }
+  if (usingPreviewBlob()) return orderedArticles((await readPreviewBlob("articles", articleCollectionSchema, seed)).value);
+  try { return orderedArticles(articleCollectionSchema.parse(JSON.parse(await readFile(file, "utf8")))); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return orderedArticles(structuredClone(seed)); throw error; }
 }
 
 // Request-scoped memoization keeps the metadata, page, and related links consistent.
 export const readPublishedArticles = cache(() => cachedPublicCms("published-articles", async () => { const active = new Set((await readDivisions()).filter(d=>d.status === "active").map(d=>d.slug)); return (await readArticles())
   .filter(article => article.status === "published" && (!contentOwner(article) || active.has(contentOwner(article)!)))
-  .sort((left, right) => right.date.localeCompare(left.date) || left.id.localeCompare(right.id))
   .map(article => publicServiceWording(publicArticle(article))); }));
 
 async function mutate<T>(update: (records: ArticleRecord[]) => { records: ArticleRecord[]; result: T }): Promise<T> {
@@ -78,7 +78,8 @@ export async function createArticle(input: ArticleInput, actor: AdminIdentity) {
     }
     ensureSlug(records, slug);
     const now = new Date().toISOString();
-    const saved = articleRecordSchema.parse({ ...parsed, slug, id, revision: 0, readTime: articleReadTime(parsed.content),
+    const position = records.some(record => record.sortOrder !== undefined) ? Math.min(...records.map(record => record.sortOrder ?? 0)) - 1 : undefined;
+    const saved = articleRecordSchema.parse({ ...parsed, slug, id, revision: 0, sortOrder: position, readTime: articleReadTime(parsed.content),
       firstPublishedAt: parsed.status === "published" ? now : null, createdAt: now, updatedAt: now });
     return { records: [saved, ...records], result: saved };
   });
@@ -112,5 +113,12 @@ export async function deleteArticle(id: string, revision: number, actor: AdminId
     assertDivisionScope(actor,contentOwner(current));
     if (current.revision !== revision) throw new ArticleError("CONFLICT");
     return { records: records.filter(record => record.id !== id), result: { deleted: id } };
+  });
+}
+export async function reorderArticles(actor: AdminIdentity, requested: RecordOrder) {
+  return mutate(records => {
+    const canEdit = (row: ArticleRecord) => !actor.division || contentOwner(row) === actor.division;
+    const ordered = applyManualOrder(orderedArticles(records), requested, canEdit);
+    return { records: ordered, result: ordered.filter(canEdit) };
   });
 }

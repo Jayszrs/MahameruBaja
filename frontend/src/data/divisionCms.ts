@@ -5,6 +5,7 @@ export const assetUrl = z.string().trim().max(2000).refine(v => !v || safeLocalA
 const text = (max: number) => z.string().trim().max(max);
 export const divisionSchema = z.object({
   id: z.string().min(1), slug: divisionSlugSchema, revision: z.number().int().nonnegative(), status: z.enum(["draft", "active", "archived"]),
+  sortOrder: z.number().int().safe().optional(),
   useCentralReviews: z.boolean().default(false), name: text(160).min(1), label: text(100).min(1), kind: z.enum(["material", "service"]), area: text(200),
   logo: assetUrl, title: text(250), intro: text(1000), description: text(5000), mission: text(2000),
   aboutHeadline: text(250), values: z.array(text(500)).max(12), hero: assetUrl,
@@ -18,8 +19,9 @@ export const divisionSchema = z.object({
   primary: z.object({ label: text(100), href: text(250).refine(v => !v || v.startsWith("/") && safeInternalLink(v), "Gunakan tujuan di dalam website.") }), quote: text(250).refine(v => !v || v.startsWith("/") && safeInternalLink(v), "Gunakan tujuan di dalam website."),
   admins: z.array(z.object({ name: text(120), phone: text(40) })).max(20), createdAt: z.string(), updatedAt: z.string(),
 });
-export const divisionInputSchema = divisionSchema.omit({ id: true, revision: true, createdAt: true, updatedAt: true, admins: true });
+export const divisionInputSchema = divisionSchema.omit({ id: true, revision: true, sortOrder: true, createdAt: true, updatedAt: true, admins: true });
 export type Division = z.infer<typeof divisionSchema>;
+export function orderedDivisions(records: Division[]) { return [...records].sort((left, right) => (left.sortOrder ?? Number.MAX_SAFE_INTEGER) - (right.sortOrder ?? Number.MAX_SAFE_INTEGER)); }
 export const ownershipFields = { ownerDivision: divisionSlugSchema.nullable().optional(), audience: z.array(divisionSlugSchema).max(100).optional() };
 export type ContentOwnership = { ownerDivision?: string | null; audience?: string[] };
 export function contentOwner(item: ContentOwnership & { division?: string; divisions?: string[] }) {

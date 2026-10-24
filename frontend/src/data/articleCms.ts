@@ -54,6 +54,7 @@ export const articleRecordSchema = z.intersection(articleInputSchema, z.object({
   id: z.string().min(1).max(80), revision: z.number().int().min(0),
   readTime: z.string().max(50), createdAt: z.string().datetime(), updatedAt: z.string().datetime(),
   firstPublishedAt: z.string().datetime().nullable(),
+  sortOrder: z.number().int().safe().optional(),
 }));
 export const articleCollectionSchema = z.array(articleRecordSchema).superRefine((records, context) => {
   for (const key of ["id", "slug"] as const) {
@@ -62,6 +63,10 @@ export const articleCollectionSchema = z.array(articleRecordSchema).superRefine(
 });
 export type ArticleInput = z.infer<typeof articleInputSchema>;
 export type ArticleRecord = z.infer<typeof articleRecordSchema>;
+export function orderedArticles(records: ArticleRecord[]) {
+  const manual = records.some(record => record.sortOrder !== undefined);
+  return [...records].sort((left, right) => (manual ? (left.sortOrder ?? Number.MAX_SAFE_INTEGER) - (right.sortOrder ?? Number.MAX_SAFE_INTEGER) : 0) || right.date.localeCompare(left.date) || left.id.localeCompare(right.id));
+}
 
 export function articleReadTime(content: string) {
   const words = content.replace(/!\[[^\]]*\]\([^)]*\)/g, "").replace(/[#*_|>`~-]/g, " ").trim().split(/\s+/).filter(Boolean).length;

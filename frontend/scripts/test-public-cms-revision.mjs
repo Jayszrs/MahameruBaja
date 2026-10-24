@@ -29,6 +29,15 @@ try {
       await page.getByRole("button", { name: "Tutup poster", exact: true }).click();
     }
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `Homepage fits ${width}px viewport`);
+    const hero = await page.locator('.hero-carousel-bright').evaluate(element => {
+      const frame = element.getBoundingClientRect();
+      const media = element.querySelector('.hero-carousel-media').getBoundingClientRect();
+      const copy = element.querySelector('.hero-carousel-copy').getBoundingClientRect();
+      return { fullWidth: Math.abs(media.left - frame.left) < 1 && Math.abs(media.right - frame.right) < 1,
+        behindCopy: media.top <= copy.top && media.bottom >= copy.bottom,
+        position: getComputedStyle(element.querySelector('.hero-carousel-media')).position };
+    });
+    assert(hero.fullWidth && hero.behindCopy && hero.position === 'absolute', `Hero photo and copy form one surface at ${width}px`);
     assert.equal(await page.locator('.site-navbar a[aria-label="Chat WhatsApp"]').count(), 0);
     await page.getByRole("button", { name: "Hubungi via WhatsApp", exact: true }).waitFor();
     const next = page.getByRole("button", { name: "Slide berikutnya", exact: true });

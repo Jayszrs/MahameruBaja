@@ -1,40 +1,41 @@
-/* The copy has its own light surface so uploaded media needs no dark overlay. */
+/* Keep the photograph's color; text gets its own contrast instead of a white wash. */
 .hero-carousel.hero-carousel-bright {
-  --hero-surface: #f7f7f4;
-  --hero-ink: var(--color-gunmetal, #202427);
+  --hero-surface: #303c43;
+  --hero-ink: #fff;
   min-height: 0;
   background: var(--hero-surface);
   color: var(--hero-ink);
 }
-.hero-carousel-bright .hero-carousel-media { inset: 108px 0 59px 56%; z-index: 0; background: #e7e9e5; overflow: hidden; }
+.hero-carousel-bright .hero-carousel-media { inset: 0 0 59px; z-index: 0; background: #e7e9e5; overflow: hidden; }
+.hero-carousel-bright .hero-carousel-media::after { content: ""; position: absolute; inset: 0; z-index: 1; background: rgb(9 17 24 / .12); pointer-events: none; }
 .hero-carousel-bright .hero-carousel-parallax { inset: 0; transform: none; will-change: auto; }
 .hero-carousel-bright .hero-carousel-layer { transform: none; }
-.hero-carousel-bright .hero-carousel-layer :is(img, video) { filter: none; }
+.hero-carousel-bright .hero-carousel-layer :is(img, video) { filter: brightness(1.24) contrast(.92) saturate(1.08); }
 .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { min-height: 770px; padding-block: 168px 60px; flex-direction: column; align-items: start; justify-content: center; }
-.public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: 50%; transform: none; will-change: auto; }
-.public-site .hero-carousel-bright .hero-carousel-copy { max-width: none; }
+.public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: min(760px, 64%); transform: none; will-change: auto; }
+.public-site .hero-carousel-bright .hero-carousel-copy { max-width: none; text-shadow: 0 1px 2px rgb(0 0 0 / .95), 0 0 3px rgb(0 0 0 / .8), 0 3px 18px rgb(0 0 0 / .65); }
 .public-site .hero-carousel-bright .hero-carousel-copy h1 { font-size: clamp(38px, 4.1vw, 60px); line-height: 1.1; letter-spacing: -.035em; overflow-wrap: anywhere; }
-.public-site .hero-carousel-bright .hero-carousel-copy h1 em { color: var(--color-brand-dark, #b51f2d); }
-.public-site .hero-carousel-bright .hero-carousel-eyebrow { color: var(--color-brand-dark, #b51f2d); font-family: var(--font-body); font-size: 14px; letter-spacing: .015em; }
-.public-site .hero-carousel-bright .hero-carousel-copy > p:not(.hero-carousel-eyebrow) { max-width: 52ch; color: #454e53; font-size: 17px; line-height: 1.75; }
-.hero-carousel-bright .home-actions { flex-wrap: wrap; gap: 10px; }
-.public-site .hero-carousel-bright .home-button { min-height: 48px; padding: 12px 18px; border-radius: 8px; font-size: 14px; line-height: 1.45; }
-.public-site .hero-carousel-bright .home-button-ghost { color: var(--hero-ink); border: 1px solid #9ba4a8; background: transparent; }
+.public-site .hero-carousel-bright .hero-carousel-copy h1 em { color: #fff; text-decoration: underline; text-decoration-color: var(--color-brand); text-decoration-thickness: .07em; text-underline-offset: .12em; }
+.public-site .hero-carousel-bright .hero-carousel-eyebrow { color: #fff; font-family: var(--font-body); font-size: 14px; letter-spacing: .015em; }
+.public-site .hero-carousel-bright .hero-carousel-copy > p:not(.hero-carousel-eyebrow) { max-width: 52ch; color: #fff; font-size: 17px; line-height: 1.75; font-weight: 550; }
+.hero-carousel-bright .home-actions { flex-wrap: wrap; align-items: stretch; gap: 10px; }
+.public-site .hero-carousel-bright .home-button { min-height: 48px; padding: 12px 18px; border-radius: 8px; font-size: 14px; line-height: 1.45; text-shadow: none; }
+.public-site .hero-carousel-bright .home-button-ghost { color: #202427; border: 1px solid #fff; background: rgb(255 255 255 / .96); }
 .public-site .hero-carousel-bright .home-button-ghost:hover { color: var(--color-brand-dark); border-color: var(--color-brand-dark); background: #fff; }
 .public-site .hero-carousel-bright .hero-rating-link { color: var(--hero-ink); margin-top: 24px; gap: 8px 12px; }
-.public-site .hero-carousel-bright .hero-rating-stars { color: #8b9193; font-size: 25px; }
-.hero-carousel-bright .hero-rating-stars > span:last-child { color: #946000; }
+.public-site .hero-carousel-bright .hero-rating-stars { color: #fff; font-size: 25px; }
+.hero-carousel-bright .hero-rating-stars > span:last-child { color: #ffd074; }
 .public-site .hero-carousel-bright .hero-rating-link strong { font-size: 18px; }
-.public-site .hero-carousel-bright .hero-rating-link small { color: #525d62; font-size: 13px; line-height: 1.6; }
-.public-site .hero-carousel-bright .hero-carousel-meta { position: static; width: 50%; max-width: none; margin-top: 18px; padding: 16px 0 0; border: 0; border-top: 1px solid #d5d9d6; text-align: left; }
-.public-site .hero-carousel-bright .hero-carousel-meta :is(span, small) { color: #525d62; font-family: var(--font-body); font-size: 13px; letter-spacing: 0; }
+.public-site .hero-carousel-bright .hero-rating-link small { color: #fff; font-size: 13px; line-height: 1.6; }
+.public-site .hero-carousel-bright .hero-carousel-meta { position: static; width: min(760px, 64%); max-width: none; margin-top: 18px; padding: 16px 0 0; border: 0; border-top: 1px solid rgb(255 255 255 / .5); text-align: left; text-shadow: 0 1px 2px #000, 0 0 4px #000; }
+.public-site .hero-carousel-bright .hero-carousel-meta :is(span, small) { color: var(--hero-ink); font-family: var(--font-body); font-size: 13px; letter-spacing: 0; }
 .public-site .hero-carousel-bright .hero-carousel-meta strong { font-size: 15px; color: var(--hero-ink); }
 .hero-slide-selector { display: flex; align-items: center; gap: 16px; margin-top: 20px; width: fit-content; }
-.hero-slide-selector button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #9ba4a8; border-radius: 50%; cursor: pointer; color: var(--hero-ink); background: #fff; }
+.hero-slide-selector button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #fff; border-radius: 50%; cursor: pointer; color: #202427; background: #fff; text-shadow: none; }
 .hero-slide-selector button:hover { color: #fff; background: var(--color-brand-dark); border-color: var(--color-brand-dark); }
 .hero-slide-selector svg { width: 20px; height: 20px; }
 .hero-slide-selector span { min-width: 40px; font-size: 14px; text-align: center; font-variant-numeric: tabular-nums; }
-.hero-carousel-bright :is(a, button):focus-visible { outline: 3px solid var(--color-brand-dark); outline-offset: 4px; }
+.hero-carousel-bright :is(a, button):focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
 .hero-carousel-bright .hero-announcement { position: relative; z-index: 1; }
 
 /* Public dialogs and the CMS preview share the same responsive poster frame. */
@@ -59,12 +60,14 @@
 .promo-preview-copy { overflow-wrap: anywhere; }
 
 @media (max-width: 1023px) {
-  .hero-carousel-bright .hero-carousel-media { top: 56px; left: 56%; }
+  .hero-carousel-bright .hero-carousel-media { inset: 0 0 59px; }
+  .public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: min(720px, 82%); }
+  .hero-carousel-bright .hero-carousel-media::after { background: rgb(9 17 24 / .12); }
   .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { min-height: 740px; padding-top: 120px; }
 }
 @media (max-width: 760px) {
-  .hero-carousel.hero-carousel-bright { display: flex; flex-direction: column; padding-top: calc(76px + env(safe-area-inset-top, 0px)); }
-  .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { order: 1; min-height: 0; padding-block: 32px 28px; gap: 0; }
+  .hero-carousel.hero-carousel-bright { display: block; padding-top: 0; }
+  .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { min-height: 720px; padding-top: calc(116px + env(safe-area-inset-top, 0px)); padding-bottom: 36px; gap: 0; }
   .public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: 100%; }
   .public-site .hero-carousel-bright .hero-carousel-copy h1 { max-width: 22ch; margin: 16px 0 20px; font-size: clamp(32px, 7.3vw, 48px); line-height: 1.12; letter-spacing: -.03em; }
   .public-site .hero-carousel-bright .hero-carousel-copy > p:not(.hero-carousel-eyebrow) { font-size: 16px; line-height: 1.7; }
@@ -74,8 +77,8 @@
   .public-site .hero-carousel-bright .hero-rating-link { margin-top: 20px; }
   .public-site .hero-carousel-bright .hero-rating-link small { font-size: 12px; }
   .public-site .hero-carousel-bright .hero-carousel-meta { display: none; }
-  .hero-carousel-bright .hero-carousel-media { order: 2; position: relative; inset: auto; z-index: 0; width: 100%; height: clamp(230px, 56vw, 400px); }
-  .hero-carousel-bright .hero-announcement { order: 3; }
+  .hero-carousel-bright .hero-carousel-media { position: absolute; inset: 0 0 59px; z-index: 0; width: 100%; height: auto; }
+  .hero-carousel-bright .hero-carousel-media::after { background: rgb(9 17 24 / .12); }
   .poster-welcome[open] { display: flex; flex-direction: column; width: calc(100vw - 24px); max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow: hidden; }
   .poster-welcome .poster-welcome-layout { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
   .poster-welcome .poster-welcome-image { height: clamp(180px, 45dvh, 400px); }

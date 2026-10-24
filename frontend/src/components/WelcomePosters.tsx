@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "./CmsImage";
@@ -16,6 +16,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const [focused, setFocused] = useState(false);
   const [reading, setReading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
   const seen = useRef(new Set<string>());
   const slug = /^\/unit\/([^/]+)/.exec(path)?.[1];
   const today = jakartaDate();
@@ -51,33 +52,45 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => { setReading(false); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
-  return <PublicText><dialog className="poster-welcome" ref={dialog} aria-labelledby="welcome-poster-heading" onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }} onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
-    <div className="poster-welcome-toolbar"><span>{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}>×</button></div>
+  const ratio = imageRatios[item.image] || 2 / 3;
+  return <PublicText><dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
+    style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "170px" } as CSSProperties}
+    onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }}
+    onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
+    <div className="poster-welcome-toolbar"><span className="poster-welcome-accessible">{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
     <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
-      <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}><Image src={item.image} alt={item.imageAlt} fill sizes={expanded ? "90vw" : "(max-width:760px) 90vw, 500px"} /><span className="poster-zoom-label">{expanded ? "Kembali ke detail" : "Perbesar poster"}</span></button>
-      <section className="poster-welcome-details" hidden={expanded} onFocusCapture={() => setFocused(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setFocused(false);}}>
-        {preview&&<p className="poster-preview-label">Pratinjau poster</p>}
-        <p className="poster-welcome-category">{item.label}</p>
-        <h2 id="welcome-poster-heading">{item.title}</h2><p className="poster-welcome-description">{item.summary}</p>
-        <div className="poster-welcome-provider">{details.division?.logo&&<Image src={details.division.logo} alt="" width={56} height={56} transparentLogo/>}<div><span>Penawaran dari</span><strong>{details.division?.name || "Mahameru Baja Indonesia"}</strong>{details.division?.label&&<small>{details.division.label}{details.division.area?` · ${details.division.area}`:""}</small>}</div></div>
-        <div className="poster-welcome-contact"><div className="poster-contact-identity"><span>Hubungi tim kami</span><strong>{details.contact?.name || (details.division ? `Tim ${details.division.name}` : "Tim Mahameru Baja")}</strong>{details.contact?.role&&<small>{details.contact.role}</small>}{details.contact&&(details.contact.whatsapp || details.contact.phone || details.contact.mobile)&&<small>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</small>}</div>
-          {details.whatsappHref?<a className="poster-contact-button" href={details.whatsappHref} target="_blank" rel="noopener noreferrer" onClick={close}>Chat {details.contact?.name} di WhatsApp</a>:<Link className="poster-contact-button" href={details.contactHref} onClick={close}>Lihat kontak {details.division?.name || "kami"}</Link>}
-          {item.ctaHref!==details.contactHref&&<Link className="poster-offer-link" href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link>}
+      <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}>
+        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 96vw, 760px" onLoad={event => {
+          const image = event.currentTarget;
+          if (image.naturalWidth && image.naturalHeight) {
+            const next = image.naturalWidth / image.naturalHeight;
+            setImageRatios(current => current[item.image] === next ? current : { ...current, [item.image]: next });
+          }
+        }}/><span className="poster-welcome-accessible">{expanded ? "Kembali ke detail" : "Perbesar poster"}</span>
+      </button>
+      <section className="poster-welcome-details" hidden={expanded} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
+        {preview && <p className="poster-preview-label">Pratinjau poster</p>}
+        <h2 id="welcome-poster-heading">{item.title}</h2>
+        <div className="poster-lightbox-actions">
+          {details.whatsappHref ? <a className="poster-contact-button" href={details.whatsappHref} target="_blank" rel="noopener noreferrer" onClick={close}>Chat {details.contact?.name} di WhatsApp<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a> : <Link className="poster-contact-button" href={details.contactHref} onClick={close}>Hubungi {details.division?.name || "kami"}</Link>}
         </div>
-        <details className="poster-welcome-more" key={item.id} onToggle={event=>setReading(event.currentTarget.open)}>
+        <details className="poster-welcome-more" key={item.id} onToggle={event => setReading(event.currentTarget.open)}>
           <summary>Detail promo & kontak</summary>
-          <div className="poster-mobile-information">
-            {item.summary&&<p>{item.summary}</p>}
-            <dl className="poster-welcome-facts">
-              <div><dt>Penawaran dari</dt><dd>{details.division?.name || "Mahameru Baja Indonesia"}{details.division?.label&&<small>{details.division.label}{details.division.area?` · ${details.division.area}`:""}</small>}</dd></div>
-              {details.contact&&<div><dt>Kontak</dt><dd>{details.contact.name}{details.contact.role&&<small>{details.contact.role}</small>}{(details.contact.whatsapp || details.contact.phone || details.contact.mobile)&&<small>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</small>}</dd></div>}
-            </dl>
-            {item.ctaHref!==details.contactHref&&<Link className="poster-offer-link" href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link>}
+          <div className="poster-lightbox-information">
+            {item.summary && <p className="poster-welcome-description">{item.summary}</p>}
+            <p className="poster-welcome-provider"><strong>{details.division?.name || "Mahameru Baja Indonesia"}</strong>{details.division?.area && <span>{details.division.area}</span>}</p>
+            {details.contact && <p className="poster-lightbox-contact"><strong>{details.contact.name}</strong>{details.contact.role && <span>{details.contact.role}</span>}{(details.contact.whatsapp || details.contact.phone || details.contact.mobile) && <span>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</span>}</p>}
+            <dl className="poster-welcome-facts">{item.benefit && <div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo && <div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>
+            {item.terms && <p className="poster-welcome-terms">{item.terms}</p>}
+            {item.ctaHref !== details.contactHref && <Link className="poster-offer-link" href={item.ctaHref} onClick={close}>{item.ctaLabel}</Link>}
           </div>
-          <dl className="poster-welcome-facts">{item.benefit&&<div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo&&<div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>{item.terms&&<p className="poster-welcome-terms">{item.terms}</p>}
         </details>
       </section>
     </div>
-    {live.length > 1 && <nav className="poster-welcome-navigation" aria-label="Pilihan poster"><button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya">Sebelumnya</button><p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p><button type="button" onClick={() => step(1)} aria-label="Poster berikutnya">Berikutnya</button></nav>}
+    <nav className="poster-welcome-navigation" aria-label="Pilihan poster">
+      {live.length > 1 && <button type="button" onClick={() => step(-1)} aria-label="Poster sebelumnya"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>}
+      <p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p>
+      {live.length > 1 && <button type="button" onClick={() => step(1)} aria-label="Poster berikutnya"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>}
+    </nav>
   </dialog></PublicText>;
 }

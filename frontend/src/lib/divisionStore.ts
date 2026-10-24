@@ -7,7 +7,8 @@ import { divisions as seeds } from "../data/divisionContent";
 import { divisionIdentity } from "../data/companyIdentity";
 import { divisionAbout } from "../data/divisionAbout";
 import { garudaLocation } from "../data/divisionLocations";
-import { contentOwner, divisionInputSchema, divisionSchema, type Division } from "../data/divisionCms";
+import { contentOwner, divisionInputSchema, divisionSchema, orderedDivisions, type Division } from "../data/divisionCms";
+import { applyManualOrder, type RecordOrder } from "./recordOrder";
 import { contactVisibleInDivision } from "../data/siteContent";
 import type { AdminIdentity } from "../data/adminAccount";
 import { cmsCollection } from "./cmsCollection";
@@ -24,7 +25,7 @@ const initial = () => seeds.map(seed => divisionSchema.parse({ ...seed, ...divis
   createdAt: epoch, updatedAt: epoch,
 }));
 const collection = cmsCollection("divisions", z.array(divisionSchema), initial);
-export const readDivisions = collection.read;
+export const readDivisions = async () => orderedDivisions(await collection.read());
 export const readPublicDivisions = cache(() => cachedPublicCms("public-divisions", async () => {
   const [records, { readSiteContent }] = await Promise.all([readDivisions(), import("./siteContentStore")]);
   const content = await readSiteContent();
@@ -56,12 +57,19 @@ export async function saveDivision(actor: AdminIdentity, input: unknown, id?: st
       if (actor.division && parsed.status !== current.status) throw new CmsError("Hanya Super Admin dapat mengubah status divisi.", 403);
     }
     if (records.some(d => d.slug === parsed.slug && d.id !== id)) throw new CmsError("Alamat divisi sudah digunakan.", 409);
-    if (!current && parsed.status !== "draft") throw new CmsError("Divisi baru harus disimpan sebagai draf terlebih dahulu.");
     if (parsed.status === "active" && [parsed.area, parsed.logo, parsed.title, parsed.intro, parsed.description, parsed.mission, parsed.hero, parsed.address].some(v => !v.trim())) throw new CmsError("Lengkapi area, logo, judul, pengantar, deskripsi, misi, gambar utama, dan alamat sebelum mengaktifkan divisi.");
     if (parsed.status === "active" && (parsed.images.some(image => !image.src.trim() || !image.title.trim()) || parsed.faq.some(item => !item.question.trim() || !item.answer.trim()))) throw new CmsError("Lengkapi gambar dan FAQ yang ditambahkan, atau hapus baris kosong.");
     const now = new Date().toISOString();
-    const saved = divisionSchema.parse({ ...current, ...parsed, id: id || randomUUID(), revision: current ? current.revision + 1 : 0, admins: current?.admins || [], createdAt: current?.createdAt || now, updatedAt: now });
-    return { value: current ? records.map(d => d.id === id ? saved : d) : [...records, saved], result: saved };
+    const position = !current && records.some(record => record.sortOrder !== undefined) ? Math.min(...records.map(record => record.sortOrder ?? 0)) - 1 : current?.sortOrder;
+    const saved = divisionSchema.parse({ ...current, ...parsed, sortOrder: position, id: id || randomUUID(), revision: current ? current.revision + 1 : 0, admins: current?.admins || [], createdAt: current?.createdAt || now, updatedAt: now });
+    return { value: current ? records.map(d => d.id === id ? saved : d) : [saved, ...records], result: saved };
+  });
+}
+export async function reorderDivisions(actor: AdminIdentity, requested: RecordOrder) {
+  if (actor.role !== "super_admin") throw new CmsError("Hanya Super Admin dapat mengatur urutan divisi.", 403);
+  return collection.mutate(records => {
+    const ordered = applyManualOrder(orderedDivisions(records), requested, () => true);
+    return { value: ordered, result: ordered };
   });
 }
 export async function deleteDivision(actor: AdminIdentity, id: string, revision: number) {
