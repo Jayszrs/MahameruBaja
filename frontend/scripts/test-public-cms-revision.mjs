@@ -15,7 +15,7 @@ try {
   const context = await browser.newContext({ reducedMotion: "reduce" });
   const page = await context.newPage();
   page.on("pageerror", error => errors.push(error.message));
-  for (const [width, height] of [[320, 640], [390, 844], [768, 1024], [1440, 1000]]) {
+  for (const [width, height] of [[320, 640], [390, 844], [484, 620], [768, 1024], [1440, 1000]]) {
     await page.setViewportSize({ width, height });
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await page.locator("#home-heading").waitFor();
@@ -25,6 +25,9 @@ try {
       const bounds = await popup.boundingBox();
       assert(bounds && bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= width + 1 && bounds.y + bounds.height <= height + 1, `Poster fits ${width}px viewport`);
       assert(await popup.evaluate(node => node.scrollWidth <= node.clientWidth + 1), "Poster does not overflow horizontally");
+      const artwork = await popup.locator('.poster-welcome-image').boundingBox();
+      assert(artwork && artwork.width >= bounds.width - 4, 'The artwork fills the popup width instead of a split information card');
+      assert.equal(await popup.locator('.poster-welcome-image img').evaluate(node => getComputedStyle(node).objectFit), 'contain', 'Show the complete poster');
       if (artifacts) await page.screenshot({ path: path.join(artifacts, `poster-${width}.png`) });
       await page.getByRole("button", { name: "Tutup poster", exact: true }).click();
     }
@@ -33,11 +36,18 @@ try {
       const frame = element.getBoundingClientRect();
       const media = element.querySelector('.hero-carousel-media').getBoundingClientRect();
       const copy = element.querySelector('.hero-carousel-copy').getBoundingClientRect();
+      const veil = getComputedStyle(element.querySelector('.hero-carousel-media'), '::after');
+      const photograph = element.querySelector('.hero-carousel-layer.is-active img, .hero-carousel-layer.is-active video');
       return { fullWidth: Math.abs(media.left - frame.left) < 1 && Math.abs(media.right - frame.right) < 1,
         behindCopy: media.top <= copy.top && media.bottom >= copy.bottom,
-        position: getComputedStyle(element.querySelector('.hero-carousel-media')).position };
+        position: getComputedStyle(element.querySelector('.hero-carousel-media')).position,
+        veilImage: veil.backgroundImage, veilColor: veil.backgroundColor,
+        photoFilter: photograph ? getComputedStyle(photograph).filter : '' };
     });
     assert(hero.fullWidth && hero.behindCopy && hero.position === 'absolute', `Hero photo and copy form one surface at ${width}px`);
+    assert.equal(hero.veilImage, 'none', 'No gradient wash over the hero photograph');
+    assert(!/rgba?\(247, 247, 244/.test(hero.veilColor), 'No white veil hiding the image');
+    assert.match(hero.photoFilter, /brightness\(1\./, 'Brighten the photo itself');
     assert.equal(await page.locator('.site-navbar a[aria-label="Chat WhatsApp"]').count(), 0);
     await page.getByRole("button", { name: "Hubungi via WhatsApp", exact: true }).waitFor();
     const next = page.getByRole("button", { name: "Slide berikutnya", exact: true });

@@ -64,8 +64,9 @@ export const articleCollectionSchema = z.array(articleRecordSchema).superRefine(
 export type ArticleInput = z.infer<typeof articleInputSchema>;
 export type ArticleRecord = z.infer<typeof articleRecordSchema>;
 export function orderedArticles(records: ArticleRecord[]) {
-  const manual = records.some(record => record.sortOrder !== undefined);
-  return [...records].sort((left, right) => (manual ? (left.sortOrder ?? Number.MAX_SAFE_INTEGER) - (right.sortOrder ?? Number.MAX_SAFE_INTEGER) : 0) || right.date.localeCompare(left.date) || left.id.localeCompare(right.id));
+  // The stored array carries manual order, including slots belonging to other divisions.
+  if (records.some(record => record.sortOrder !== undefined)) return [...records];
+  return [...records].sort((left, right) => right.date.localeCompare(left.date) || left.id.localeCompare(right.id));
 }
 
 export function articleReadTime(content: string) {

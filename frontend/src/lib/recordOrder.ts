@@ -13,10 +13,13 @@ export function applyManualOrder<T extends { id: string; revision: number; sortO
     if (!original || original.revision !== row.revision) throw new CmsError("Data telah berubah. Muat ulang sebelum menyimpan urutan.", 409);
   }
   if (requested.length !== current.filter(canEdit).length) throw new CmsError("Daftar telah berubah. Muat ulang sebelum menyimpan urutan.", 409);
+  const existing = current.filter(canEdit);
+  if (requested.every((row, index) => row.id === existing[index]?.id)) return current;
   const ordered = requested.map(row => originals.get(row.id)!);
   let index = 0;
   return current.map((row, position) => {
-    const next = canEdit(row) ? ordered[index++] : row;
-    return { ...next, sortOrder: position, revision: canEdit(next) ? next.revision + 1 : next.revision };
+    if (!canEdit(row)) return row;
+    const next = ordered[index++];
+    return { ...next, sortOrder: position, revision: next.revision + 1 };
   });
 }

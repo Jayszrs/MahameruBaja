@@ -1,5 +1,5 @@
 "use client";
-import PublicText from "../components/PublicText";
+import PublicText, { WebsiteTextScope } from "../components/PublicText";
 import Image from "../components/CmsImage";
 
 import { Link } from 'react-router';
@@ -48,7 +48,7 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
 
           {/* Featured article */}
           <div ref={ref} className={`mb-10 reveal ${visible ? 'visible' : ''}`}>
-            {featured ? <Link
+            {featured ? <WebsiteTextScope ownerDivision={featured.ownerDivision || null}><PublicText><Link
               to={`/informasi/${featured.slug}`}
               className="group grid grid-cols-1 lg:grid-cols-5 gap-0 bg-white border border-light-steel/80 rounded-md overflow-hidden transition-colors duration-300 hover:border-brand/25"
             >
@@ -74,14 +74,13 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
                   </span>
                 </div>
               </div>
-            </Link> : <div className="editor-empty"><h3>Belum ada artikel terbit.</h3><p>Panduan material akan tersedia di sini.</p></div>}
+            </Link></PublicText></WebsiteTextScope> : <div className="editor-empty"><h3>Belum ada artikel terbit.</h3><p>Panduan material akan tersedia di sini.</p></div>}
           </div>
 
           {/* Article grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {articles.slice(1).map((article, i) => (
-              <Link
-                key={article.id}
+              <WebsiteTextScope key={article.id} ownerDivision={article.ownerDivision || null}><PublicText><Link
                 to={`/informasi/${article.slug}`}
                 className={`group bg-white border border-light-steel/80 rounded-md overflow-hidden transition-colors duration-300 hover:border-brand/25 reveal reveal-delay-${(i % 3) + 1} ${visible ? 'visible' : ''}`}
               >
@@ -104,7 +103,7 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
                   </span>
                 </div>
-              </Link>
+              </Link></PublicText></WebsiteTextScope>
             ))}
           </div>
         </div>

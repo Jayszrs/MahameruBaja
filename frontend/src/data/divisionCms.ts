@@ -21,7 +21,7 @@ export const divisionSchema = z.object({
 });
 export const divisionInputSchema = divisionSchema.omit({ id: true, revision: true, sortOrder: true, createdAt: true, updatedAt: true, admins: true });
 export type Division = z.infer<typeof divisionSchema>;
-export function orderedDivisions(records: Division[]) { return [...records].sort((left, right) => (left.sortOrder ?? Number.MAX_SAFE_INTEGER) - (right.sortOrder ?? Number.MAX_SAFE_INTEGER)); }
+export function orderedDivisions(records: Division[]) { return [...records]; }
 export const ownershipFields = { ownerDivision: divisionSlugSchema.nullable().optional(), audience: z.array(divisionSlugSchema).max(100).optional() };
 export type ContentOwnership = { ownerDivision?: string | null; audience?: string[] };
 export function contentOwner(item: ContentOwnership & { division?: string; divisions?: string[] }) {

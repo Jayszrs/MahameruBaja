@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import type { SiteContent } from "../data/siteContent";
 import { textPages, normalizeWebsiteText, type TextPage } from "../data/websiteTexts";
-import { choicesForWebsite,choiceOnPage,textAreaNames } from "../data/websiteTextChoices";
+import { choicesForWebsite,choiceOnPage,textAreaNames,type OwnedWebsiteTextChoice } from "../data/websiteTextChoices";
 import catalog from "../data/websiteTextCatalog.json";
 import { contentId } from "../data/socialMedia";
 import { useAdminIdentity } from "./AdminIdentity";
@@ -11,7 +11,7 @@ import { useDivisionDirectory } from "./DivisionDirectory";
 import { useAdminWorkspace } from "./AdminWorkspace";
 import { contentOwner } from "../data/divisionCms";
 
-export default function WebsiteTextEditor({ initialContent }: { initialContent:SiteContent }) {
+export default function WebsiteTextEditor({ initialContent, articleChoices=[] }: { initialContent:SiteContent; articleChoices?:OwnedWebsiteTextChoice[] }) {
   const actor=useAdminIdentity();const {divisions}=useDivisionDirectory();
   const [content,setContent]=useState(initialContent);const base=useRef(initialContent);
   const [site,setSite]=useState(actor.division || "main");const [page,setPage]=useState<TextPage>("all");
@@ -21,7 +21,7 @@ export default function WebsiteTextEditor({ initialContent }: { initialContent:S
   const owner=site==="main"?null:site;const division=divisions.find(d=>d.slug===owner);
   const owned=content.websiteTexts.filter(row=>contentOwner(row)===owner);
   const rows=owned.filter(row=>row.page===page);
-  const choices=choicesForWebsite(catalog,division,content.heroSlides.filter(slide=>!owner || contentOwner(slide)===owner),owned,content,divisions).filter(choice=>choiceOnPage(choice,page));
+  const choices=choicesForWebsite(catalog,division,content.heroSlides.filter(slide=>!owner || contentOwner(slide)===owner),owned,content,divisions,articleChoices).filter(choice=>choiceOnPage(choice,page));
   const found=choices.filter(choice=>(area==="all" || choice.area===area || choice.areas?.includes(area)) && `${choice.source} ${owned.filter(row=>normalizeWebsiteText(row.source)===choice.source).map(row=>row.replacement).join(' ')}`.toLocaleLowerCase('id').includes(normalizeWebsiteText(query).toLocaleLowerCase('id')));
   function update(next:SiteContent) {setContent(next);setDirty(true);setMessage("");}
   function edit(original:string,value:string) {

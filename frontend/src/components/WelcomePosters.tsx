@@ -54,7 +54,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const details = posterDetails(item, divisions, contacts);
   const ratio = imageRatios[item.image] || 2 / 3;
   return <PublicText><dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
-    style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "170px" } as CSSProperties}
+    style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "200px" } as CSSProperties}
     onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }}
     onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
     <div className="poster-welcome-toolbar"><span className="poster-welcome-accessible">{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>

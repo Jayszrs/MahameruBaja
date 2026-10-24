@@ -1,5 +1,5 @@
 "use client";
-import PublicText from "../components/PublicText";
+import PublicText, { WebsiteTextScope } from "../components/PublicText";
 import Image from "../components/CmsImage";
 
 import type { Article } from '../data/articles';
@@ -17,7 +17,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
   const { ref, visible } = useReveal();
 
   return (
-    <PublicText><div className="article-reading-page" data-static-motion>
+    <WebsiteTextScope ownerDivision={article.ownerDivision || null}><PublicText><div className="article-reading-page" data-static-motion>
       {/* Hero */}
       <section className="article-detail-hero article-editorial-hero" aria-labelledby="article-heading">
         <div className="article-editorial-visual"><Image src={article.image} alt={article.imageAlt || article.title} fill sizes="100vw" loading="eager" fetchPriority="high"/></div>
@@ -91,7 +91,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
             <h2 id="related-articles-heading" className="text-xl font-extrabold text-graphite mb-6">Artikel Lainnya</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {related.map(a => (
-                <Link key={a.id} to={`/informasi/${a.slug}`}
+                <WebsiteTextScope key={a.id} ownerDivision={a.ownerDivision || null}><PublicText><Link to={`/informasi/${a.slug}`}
                   className="group bg-surface border border-rule rounded-md overflow-hidden transition-colors hover:border-graphite/40">
                   <div className="aspect-video overflow-hidden bg-graphite">
                     <Image src={a.image} alt={a.title} width={600} height={338} sizes="(max-width:640px) 100vw, 33vw" className="w-full h-full object-cover" loading="lazy" />
@@ -101,12 +101,12 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
                     <h3 className="text-sm font-bold text-graphite line-clamp-2 group-hover:text-steel transition-colors">{a.title}</h3>
                     <p className="text-xs text-muted mt-1">{formatDate(a.date)}</p>
                   </div>
-                </Link>
+                </Link></PublicText></WebsiteTextScope>
               ))}
             </div>
           </div>
         </section>
       )}
-    </div></PublicText>
+    </div></PublicText></WebsiteTextScope>
   );
 }

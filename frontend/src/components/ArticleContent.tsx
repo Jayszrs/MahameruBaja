@@ -1,11 +1,17 @@
+"use client";
+import { useMemo } from "react";
 import Markdown, { defaultUrlTransform } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { safeArticleImage, safeArticleLink } from "../data/articleCms";
 import { serviceWording } from "../data/serviceWording";
+import { replaceArticleTextNodes, type ArticleTextNode } from "../data/articleWebsiteText";
+import { usePublicTextReplacement } from "./PublicText";
 
 /** The public article and admin preview share this renderer. Raw HTML is never executed. */
 export default function ArticleContent({ content }: { content: string }) {
-  return <div className="article-content"><Markdown remarkPlugins={[remarkGfm]} skipHtml
+  const replace = usePublicTextReplacement();
+  const textPlugin = useMemo(() => () => (tree:ArticleTextNode) => replaceArticleTextNodes(tree, replace), [replace]);
+  return <div className="article-content"><Markdown remarkPlugins={[remarkGfm, textPlugin]} skipHtml
     urlTransform={(url, key) => (key === "src" ? safeArticleImage(url) : safeArticleLink(url)) ? defaultUrlTransform(url) : ""}
     components={{
       table: ({ children }) => <div className="article-table-scroll"><table>{children}</table></div>,

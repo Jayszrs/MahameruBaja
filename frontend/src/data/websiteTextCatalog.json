@@ -1672,8 +1672,7 @@
     "areas": [
       "KontakPage",
       "NotFoundPage",
-      "Navbar",
-      "WelcomePosters"
+      "Navbar"
     ]
   },
   {
@@ -5165,10 +5164,6 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "Berikutnya",
-    "area": "WelcomePosters"
-  },
-  {
     "source": "Chat",
     "area": "WelcomePosters"
   },
@@ -5181,7 +5176,7 @@
     "area": "WelcomePosters"
   },
   {
-    "source": "Hubungi tim kami",
+    "source": "Hubungi",
     "area": "WelcomePosters"
   },
   {
@@ -5193,27 +5188,11 @@
     "area": "WelcomePosters"
   },
   {
-    "source": "Lihat kontak",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Penawaran dari",
-    "area": "WelcomePosters"
-  },
-  {
     "source": "Pratinjau poster",
     "area": "WelcomePosters"
   },
   {
     "source": "Promo & informasi",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Sebelumnya",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Tim Mahameru Baja",
     "area": "WelcomePosters"
   },
   {
