@@ -26,6 +26,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [wide,setWide]=useState(false);
   const [workspace, setWorkspace] = useState<AdminWorkspaceState>(emptyAdminWorkspace);
   const [uploads, setUploads] = useState<CmsUploadActivity[]>([]);
+  const [newOffers, setNewOffers] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => { try { const response = await fetch("/api/admin/requests", { cache: "no-store" }); if (!response.ok) return; const rows = await response.json(); if (active && Array.isArray(rows)) setNewOffers(rows.filter((row: {status?:string;archived?:boolean}) => !row.archived && row.status === "Baru").length); } catch { /* The sidebar remains usable if the count is temporarily unavailable. */ } };
+    void refresh(); const timer = window.setInterval(refresh, 30000); window.addEventListener("focus", refresh);
+    return () => { active = false; window.clearInterval(timer); window.removeEventListener("focus", refresh); };
+  }, []);
   useEffect(() => {
     const update = (event: Event) => {
       const activity = (event as CustomEvent<CmsUploadActivity>).detail;
@@ -116,7 +123,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           <button type="button" className="admin-group-toggle" aria-expanded={Boolean(expanded[category.id])} aria-controls={`admin-group-${category.id}`} onClick={() => setExpanded(current => ({ ...current, [category.id]: !current[category.id] }))}><span className="admin-group-number">{category.number}</span><span>{category.label}</span><svg className={expanded[category.id] ? "expanded" : ""} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></button>
           <div id={`admin-group-${category.id}`} hidden={!expanded[category.id]} className="admin-submenu">{category.items.map(child => {
             const active = group?.id === category.id && item?.href === child.href;
-            return <Link key={child.href} href={child.href} aria-current={active ? "page" : undefined} className={active ? "active" : ""}><span aria-hidden="true" />{child.label}</Link>;
+            return <Link key={child.href} href={child.href} aria-current={active ? "page" : undefined} className={active ? "active" : ""}><span aria-hidden="true" />{child.label}{category.id === "sales" && child.href.includes("view=active") && newOffers > 0 && <b className="admin-nav-notification" aria-label={`${newOffers} penawaran baru`}>{newOffers > 99 ? "99+" : newOffers}</b>}</Link>;
           })}</div>
         </div>)}
         {identity.role === "super_admin" && !restricted && <><p className="admin-nav-caption">ADMINISTRASI</p><Link className={"admin-administration-link"+(pathname === "/admin/akun" ? " active" : "")} href="/admin/akun" aria-current={pathname === "/admin/akun" ? "page" : undefined}><span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 5a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5"/></svg></span>Pengelolaan akun</Link></>}
