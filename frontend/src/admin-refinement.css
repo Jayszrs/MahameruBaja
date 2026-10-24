@@ -157,6 +157,13 @@
 .admin-shell .gallery-editor-albums>button.editor-add { width:100%; min-height:46px; box-sizing:border-box; align-items:center; justify-content:center; text-align:center; }
 .admin-shell .gallery-editor-albums .admin-order-list .editor-list-heading { margin:10px 0 3px; }
 .admin-shell .gallery-editor-albums .admin-order-list>.admin-field-help { margin:2px 0 8px; }
+.admin-shell .division-picker .admin-order-row { display:grid; grid-template-columns:44px 24px 56px minmax(0,1fr); grid-template-rows:auto auto; gap:8px; padding:10px; align-items:center; }
+.admin-shell .division-picker .admin-order-row>.admin-drag-handle { grid-column:1; grid-row:1; }
+.admin-shell .division-picker .admin-order-row>.admin-order-number { grid-column:2; grid-row:1; width:auto; text-align:center; }
+.admin-shell .division-picker .admin-order-row>.admin-order-thumbnail { grid-column:3; grid-row:1; width:56px; height:56px; }
+.admin-shell .division-picker .admin-order-row>.admin-order-select { grid-column:1 / -1; grid-row:2; width:100%; box-sizing:border-box; padding:8px 6px; }
+.admin-shell .division-picker .admin-order-select :is(strong,small) { overflow-wrap:break-word; word-break:normal; }
+.admin-shell .division-picker .admin-order-open { opacity:1; }
 .admin-shell .requests-list { display:flex; flex-direction:column; align-items:stretch; }
 .admin-shell .requests-detail :is(input,select,textarea)[aria-invalid=true] { border-color:#b4232c !important; box-shadow:0 0 0 2px #b4232c22; }
 .admin-shell .request-field-error { display:block; margin-top:5px; color:#a51e29; font-size:13px; line-height:1.5; font-weight:600; }
