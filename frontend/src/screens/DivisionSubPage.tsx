@@ -8,8 +8,7 @@ import type { GalleryProject } from "../data/projectGallery";
 import Link from "next/link";
 import type { Division } from "../data/divisionContent";
 import type { TeamContact } from "../data/siteContent";
-import { stockSummary, type InventoryItem } from "../data/inventory";
-import { products } from "../data/products";
+import { resolvedInventoryProducts, stockSummary, type InventoryItem } from "../data/inventory";
 import ContactDirectory from "../components/ContactDirectory";
 import DivisionLocation from "../components/DivisionLocation";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
@@ -22,7 +21,7 @@ import { unitSections, unitSectionLabels, type UnitSection } from "../data/unitS
 export default function DivisionSubPage({ division, section, contacts, inventory = [], projects = [] }: { division: Division; section: UnitSection; contacts: TeamContact[]; inventory?: InventoryItem[]; projects?: GalleryProject[] }) {
   const base = `/unit/${division.slug}`;
   const copy = {headline:division.aboutHeadline || division.title,values:division.values.length ? division.values : [division.intro]};
-  const catalog = products.filter(p => inventory.some(i => i.division === division.slug && i.productId === p.id && i.listed));
+  const catalog = resolvedInventoryProducts(inventory).filter(p => inventory.some(i => i.division === division.slug && i.productId === p.id && i.listed));
   const title = section === "tentang" ? copy.headline : section === "produk" ? "Cari material untuk pekerjaan Anda." : section === "layanan" ? "Layanan yang membantu pekerjaan Anda." : section === "galeri" ? "Lihat material dan hasil pekerjaan kami." : "Hubungi tim kami.";
   return <PublicText><div className={`unit-subpage unit-theme-${division.slug}`}>
     <section className="unit-sub-hero"><RotatingHeroMedia className="unit-sub-hero-image" images={[division.hero, ...division.images.map(image => image.src)]} /><div className="industrial-container"><nav aria-label="Jejak halaman"><Link href="/">Beranda</Link><span>/</span><Link href={base}>{division.name}</Link><span>/</span><span>{unitSectionLabels[section]}</span></nav><p className="industrial-eyebrow">{unitSectionLabels[section]} / {division.label}</p><h1>{title}</h1><p>{section === "kontak" ? "Tanyakan pilihan produk, harga, pengiriman, atau jasa yang Anda butuhkan. Tim kami siap membantu." : division.intro}</p></div></section>

@@ -4,5 +4,6 @@ export function isPreviewSite() {
 
 export function siteOrigin() {
   if (isPreviewSite() && process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return process.env.NEXT_PUBLIC_SITE_URL || "https://mahamerubaja.com";
+  const configured = process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "https://mahamerubaja.vercel.app");
+  return new URL(configured).origin;
 }

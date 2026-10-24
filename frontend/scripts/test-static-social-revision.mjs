@@ -27,7 +27,7 @@ for(const [key,item] of Object.entries(instagramArchive)){
 assert.equal(originalInstagramMedia({platform:'instagram',url:'https://www.instagram.com/p/unknown/'}),undefined);
 const gallery=await harness('src/components/SocialPhotoGallery.tsx',{photos:archive.photos,title:'Material',url:'https://www.instagram.com/p/Dd5a7EzDk9N/',first:archive.first});
 const selected=()=>gallery.find(node=>node.props?.src?.includes('/images/social/')).props;
-assert(selected().src.endsWith('-07.jpg'));assert.equal(selected().style.width,`${1440/1243*100}%`);
+assert(selected().src.endsWith('-07.jpg'));assert.equal(gallery.find(node=>node.props?.className==='social-photo-crop').props.style.width,`${1440/1243*100}%`);assert.equal(selected().fill,true);assert.equal(selected().style,undefined,'Crop dimensions belong to a wrapper; Next fill images cannot override width or height');
 gallery.find(node=>node.type==='button'&&node.props.children==='Foto berikutnya').props.onClick();assert(selected().src.endsWith('-08.jpg'));
 gallery.find(node=>node.type==='button'&&node.props.children==='Foto sebelumnya').props.onClick();assert(selected().src.endsWith('-07.jpg'));
 const stage=gallery.find(node=>node.props?.className==='social-photo-gallery');

@@ -44,6 +44,7 @@
     "src/main.tsx",
     "src/routes.tsx",
     "src/layouts/RootLayout.tsx",
-    "src/components/PageSEO.tsx"
+    "src/components/PageSEO.tsx",
+    "tmp"
   ]
 }

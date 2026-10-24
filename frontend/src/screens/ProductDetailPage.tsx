@@ -4,10 +4,9 @@ import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState } from 'react';
 import { Link, useParams, Navigate } from 'react-router';
-import { getProductBySlug, getRelatedProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import ProductInventory from '../components/ProductInventory';
-import { stockSummary, type InventoryItem } from '../data/inventory';
+import { resolvedInventoryProducts, stockSummary, type InventoryItem } from '../data/inventory';
 
 import { useReveal } from '../hooks/useReveal';
 import { useQuotation } from '../context/QuotationContext';
@@ -15,7 +14,8 @@ import { useQuotation } from '../context/QuotationContext';
 export default function ProductDetailPage({ inventory = [], selectedDivision }: { inventory?: InventoryItem[]; selectedDivision?: string }) {
   const { divisionWhatsApp } = useDivisionDirectory();
   const { slug } = useParams<{ slug: string }>();
-  const product = getProductBySlug(slug ?? '');
+  const products = resolvedInventoryProducts(inventory);
+  const product = products.find(product => product.slug === slug);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState<'spesifikasi' | 'deskripsi' | 'penggunaan' | 'pengiriman'>('spesifikasi');
   const [qty, setQty] = useState(1);
@@ -28,7 +28,7 @@ export default function ProductDetailPage({ inventory = [], selectedDivision }: 
   const selectedStock = stock.find(i => i.division === selectedDivision) || stock[0];
   const contactDivision = selectedStock?.division || "retail-tambun";
   const waUrl = divisionWhatsApp(contactDivision);
-  const related = getRelatedProducts(product).filter(p => inventory.some(i => i.productId === p.id && i.listed && (!selectedDivision || i.division === selectedDivision)));
+  const related = products.filter(p => p.categorySlug === product.categorySlug && p.id !== product.id && inventory.some(i => i.productId === p.id && i.listed && (!selectedDivision || i.division === selectedDivision))).slice(0, 4);
   const added = hasItem(product.id);
 
   const waMessage = encodeURIComponent(

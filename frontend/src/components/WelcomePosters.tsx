@@ -56,7 +56,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
       <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}><Image src={item.image} alt={item.imageAlt} fill sizes={expanded ? "90vw" : "(max-width:760px) 90vw, 500px"} /><span className="poster-zoom-label">{expanded ? "Kembali ke detail" : "Perbesar poster"}</span></button>
       <section className="poster-welcome-details" hidden={expanded} onFocusCapture={() => setFocused(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setFocused(false);}}>
-        {preview&&<p className="poster-preview-label">Pratinjau admin, belum diterbitkan</p>}
+        {preview&&<p className="poster-preview-label">Pratinjau poster</p>}
         <p className="poster-welcome-category">{item.label}</p>
         <h2 id="welcome-poster-heading">{item.title}</h2><p className="poster-welcome-description">{item.summary}</p>
         <div className="poster-welcome-provider">{details.division?.logo&&<Image src={details.division.logo} alt="" width={56} height={56} transparentLogo/>}<div><span>Penawaran dari</span><strong>{details.division?.name || "Mahameru Baja Indonesia"}</strong>{details.division?.label&&<small>{details.division.label}{details.division.area?` · ${details.division.area}`:""}</small>}</div></div>

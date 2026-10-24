@@ -8,6 +8,7 @@ import { adminRequestOrigin } from '../../../../src/lib/adminRequestOrigin';
 import { inventoryListSchema, mergeInventory } from '../../../../src/data/inventory';
 import { readSiteContent, writeSiteContent } from '../../../../src/lib/siteContentStore';
 import { readJsonBody } from '../../../../src/lib/requestBody';
+import { validateMediaOwnership } from '../../../../src/lib/cmsMedia';
 
 export const runtime = 'nodejs';
 const schema = z.object({ items: inventoryListSchema, base: inventoryListSchema });
@@ -24,17 +25,17 @@ export async function PUT(request: Request) {
   if (!identity) return Response.json({ message: 'Silakan masuk kembali.' }, { status: 401 });
   if (!adminRequestOrigin(request)) return Response.json({ message: 'Asal permintaan tidak valid.' }, { status: 403 });
   let json: unknown;
-  try { json = await readJsonBody(request, 300000); } catch (error) { return apiError(error); }
+  try { json = await readJsonBody(request, 8000000); } catch (error) { return apiError(error); }
   const parsed = schema.safeParse(json);
   if (!parsed.success) return Response.json({ message: parsed.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ') }, { status: 400 });
   const { items, base } = parsed.data;
   if (identity.division && [...items, ...base].some(i => i.division !== identity.division)) return Response.json({ message: 'Stok hanya boleh diubah untuk divisi akun Anda.' }, { status: 403 });
   try {
+    await validateMediaOwnership(items, identity);
     for(const slug of new Set(items.map(i=>i.division))) await ensureDivision(slug);
     const current = await readSiteContent();
-    const scoped = current.inventory.filter(i => !identity.division || i.division === identity.division);
-    const merged = mergeInventory(scoped, items, base);
-    const inventory = identity.division ? [...current.inventory.filter(i => i.division !== identity.division), ...merged] : merged;
+    if (identity.division && items.some(item => item.product && current.inventory.some(other => other.division !== identity.division && other.productId === item.productId && JSON.stringify(other.product) !== JSON.stringify(item.product)))) return Response.json({ message: 'Produk ini digunakan divisi lain. Hubungi Super Admin untuk mengubah informasi produknya.' }, { status: 403 });
+    const inventory = mergeInventory(current.inventory, items, base);
     const saved = await writeSiteContent({ ...current, inventory }, current);
     return Response.json({ items: saved.inventory.filter(i => !identity.division || i.division === identity.division) }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {

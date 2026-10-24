@@ -72,7 +72,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
 
   return (
     <PublicText><section
-      className={`hero-carousel ${paused || userPaused || interacting ? "is-paused" : ""}`}
+      className={`hero-carousel hero-carousel-bright ${paused || userPaused || interacting ? "is-paused" : ""}`}
       aria-roledescription="carousel"
       aria-label={`Layanan utama ${companyName}`}
       onFocusCapture={() => setInteracting(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setInteracting(false); }}
@@ -80,7 +80,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
       <div className="hero-carousel-media" aria-hidden="true">
         {heroSlides.map((slide, index) => (index === activeIndex || index === previousIndex) && (
           <div className={`hero-carousel-layer ${index === activeIndex ? "is-active" : ""}`} key={slide.id}>
-            <div className="hero-carousel-parallax" data-parallax="0.32">
+            <div className="hero-carousel-parallax">
               {failed.has(index) ? <Image unoptimized src={slide.poster || heroSlides.find(s=>s.type === "image")?.media || "/images/laser-cutting-illustration.jpg"} alt="" fill sizes="100vw" /> : slide.type === "video" ? (
                 <video
                   ref={(node) => { videoRefs.current[index] = node; }}
@@ -112,10 +112,8 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
           </div>
         ))}
       </div>
-      <div className="hero-carousel-overlay" aria-hidden="true" />
-
       <div className="home-shell hero-carousel-layout">
-        <div className="hero-carousel-copy-wrap" data-parallax="0.075"><div className="hero-carousel-copy" key={activeSlide.id}>
+        <div className="hero-carousel-copy-wrap"><div className="hero-carousel-copy" key={activeSlide.id}>
           <p className="hero-carousel-eyebrow"><span />{activeSlide.eyebrow}</p>
           <h1 id="home-heading">{activeSlide.title}<br /><em>{activeSlide.accent}</em></h1>
           <p>{activeSlide.description}</p>
@@ -132,6 +130,11 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
             <strong>{googleRating.toFixed(1)} / 5</strong>
             <small>{ratingSourceName} · Google Maps · dicatat {googleRatingObservedAt} ↗</small>
           </a>}
+          {heroSlides.length > 1 && <nav className="hero-slide-selector" aria-label="Pilihan slide beranda">
+            <button type="button" onClick={() => goToSlide((activeIndex - 1 + heroSlides.length) % heroSlides.length)} aria-label="Slide sebelumnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+            <span aria-live={interacting ? "polite" : "off"}>{activeIndex + 1} / {heroSlides.length}</span>
+            <button type="button" onClick={() => goToSlide((activeIndex + 1) % heroSlides.length)} aria-label="Slide berikutnya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg></button>
+          </nav>}
         </div></div>
 
         <div className="hero-carousel-meta" aria-label="Ringkasan perusahaan">

@@ -76,18 +76,9 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [homeNavVisible, setHomeNavVisible] = useState(false);
   const megaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMobileOpen(false); setMegaOpen(false); }, [location.pathname]);
-
-  useEffect(() => {
-    const update = () => setHomeNavVisible(window.matchMedia("(max-width: 760px)").matches || window.scrollY > Math.min(180, window.innerHeight * 0.22));
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => { window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
-  }, [location.pathname]);
 
   useEffect(() => {
     document.body.classList.toggle('no-scroll', mobileOpen);
@@ -134,7 +125,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
         location.pathname.startsWith(href);
 
   const navSolid = true;
-  const homeNavHidden = location.pathname === base && !homeNavVisible && !mobileOpen;
+  const homeNavHidden = false;
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -200,17 +191,6 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
               >
                 <SearchIcon />
               </button>
-
-              {/* WA */}
-              <a
-                href={division ? divisionWhatsApp(division.slug) : divisionWhatsApp("laser-cutting")}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat WhatsApp"
-                className={`hidden sm:flex p-2 rounded-lg transition-colors ${navSolid ? 'text-graphite hover:bg-warm-white' : 'text-white hover:bg-white/10'}`}
-              >
-                <WAIcon />
-              </a>
 
               {/* Penawaran CTA (desktop) */}
               <Link

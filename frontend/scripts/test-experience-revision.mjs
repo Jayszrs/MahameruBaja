@@ -191,7 +191,7 @@ promoEditor.find(node=>node.type==='button'&&node.props.children==='Lihat pratin
 const previewElement=promoEditor.find(node=>Object.hasOwn(node.props || {},'onPreviewClose'));
 assert.equal(previewElement.props.preview.providerDivision,'retail-cibitung');
 assert.equal(previewElement.props.preview.contactId,'contact-1');
-assert.equal(previewElement.props.preview.published,false,'Adding/previewing never automatically publishes');
+assert.equal(previewElement.props.preview.published,true,'New posters are ready to appear after saving, without a separate publish step');
 previewElement.props.onPreviewClose();assert.equal(promoEditor.find(node=>Object.hasOwn(node.props || {},'onPreviewClose')).props.preview,null);
 promoEditor.dispose();
 for(const division of divisions) {
@@ -202,7 +202,7 @@ for(const division of divisions) {
   assert.equal(ownProvider.props.value,division.slug);assert.equal(ownProvider.props.disabled,true);
   assert.ok(ownEditor.absent(node=>node.props?.name==='poster-site'));ownEditor.dispose();
 }
-console.log('PASS: CMS popup creation, provider/contact selection, preview open/close, safe draft defaults and all five division editor controls (adapters)');
+console.log('PASS: CMS popup creation, provider/contact selection, preview open/close, automatic publication on save and all five division editor controls (adapters)');
 function luminance(hex) {const rgb=hex.match(/\w\w/g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];}
 for(const [fg,bg] of [['ffffff','bc2730'],['ffffff','b92330'],['c4cdd0','181d20'],['e1e5e7','181d20']]) {const a=luminance(fg),b=luminance(bg);assert.ok((Math.max(a,b)+.05)/(Math.min(a,b)+.05)>=4.5,`${fg} on ${bg} normal-text contrast`);}
 console.log('PASS: defined popup text/action and announcement colors meet 4.5:1 in numeric checks; rendered surfaces still need browser verification');

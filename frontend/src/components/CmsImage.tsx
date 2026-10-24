@@ -5,6 +5,7 @@ import { corporateLogoFrames, corporateLogoSheet } from "../data/corporateLogos"
 const logoSheetProps = getImageProps({ src: corporateLogoSheet, alt: "", width: 1437, height: 1095 }).props;
 const logoSheetSrc = logoSheetProps.srcSet?.split(",")[0].trim().split(/\s+/)[0] || logoSheetProps.src;
 export default function CmsImage({ transparentLogo = false, ...props }: ImageProps & { transparentLogo?: boolean }) {
+  const imageStyle = props.fill && props.style ? { ...props.style, width: "100%", height: "100%", position: "absolute" as const } : props.style;
   const filterId = `logo-paper-${useId().replace(/:/g, "")}`;
   const logo = typeof props.src === "string" ? corporateLogoFrames[props.src] : undefined;
   if (logo) return <svg xmlns="http://www.w3.org/2000/svg" viewBox={logo.viewBox} preserveAspectRatio="xMidYMid meet"
@@ -24,7 +25,7 @@ export default function CmsImage({ transparentLogo = false, ...props }: ImagePro
     <svg aria-hidden="true" focusable="false" style={{position:"absolute",width:0,height:0,overflow:"hidden"}}>
       <defs><filter id={filterId} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 17" result="paperless"/><feComposite in="paperless" in2="SourceGraphic" operator="in"/></filter></defs>
     </svg>
-    <Image {...props} unoptimized={props.unoptimized || privateOrExternal} style={{...props.style,filter:[props.style?.filter,`url(#${filterId})`].filter(Boolean).join(" "),background:"transparent"}}/>
+    <Image {...props} unoptimized={props.unoptimized || privateOrExternal} style={{...imageStyle,filter:[imageStyle?.filter,`url(#${filterId})`].filter(Boolean).join(" "),background:"transparent"}}/>
   </>;
-  return <Image {...props} unoptimized={props.unoptimized || privateOrExternal} />;
+  return <Image {...props} style={imageStyle} unoptimized={props.unoptimized || privateOrExternal} />;
 }

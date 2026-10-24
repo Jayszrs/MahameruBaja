@@ -14,13 +14,13 @@ export const adminNavigation: AdminNavGroup[] = [
     { label: "Akun sosial", href: "/admin/sosial?tab=accounts" }, { label: "Unggahan sosial", href: "/admin/sosial?tab=posts" },
   ] },
   { id: "home", number: "04", label: "Beranda", path: "/admin/promosi", items: [
-    { label: "Banner & poster", href: "/admin/promosi?view=all" }, { label: "Sedang tayang", href: "/admin/promosi?view=live" }, { label: "Draf", href: "/admin/promosi?view=draft" },
+    { label: "Banner & poster", href: "/admin/promosi?view=all" },
     { label: "Hero beranda", href: "/admin/hero" }, { label: "Galeri & proyek", href: "/admin/galeri" },
     { label: "Teks berjalan", href: "/admin/hero#teks-berjalan" },
     { label: "Poster saat masuk", href: "/admin/promosi?view=popup" },
   ] },
   { id: "articles", number: "05", label: "Artikel", path: "/admin/artikel", items: [
-    { label: "Semua artikel", href: "/admin/artikel?status=all" }, { label: "Draf", href: "/admin/artikel?status=draft" }, { label: "Terbit", href: "/admin/artikel?status=published" },
+    { label: "Semua artikel", href: "/admin/artikel?status=all" },
   ] },
 ];
 export function activeAdminNavigation(pathname: string, search: URLSearchParams) {

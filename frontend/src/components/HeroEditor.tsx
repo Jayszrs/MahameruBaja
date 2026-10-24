@@ -10,6 +10,7 @@ import { heroSlides, heroSlideSchema, type HeroSlide } from "../data/heroSlides"
 import { contentId } from "../data/socialMedia";
 import { useAdminWorkspace } from "./AdminWorkspace";
 import HeroAnnouncementEditor from "./HeroAnnouncementEditor";
+import AdminOrderList, { moveBefore, focusEditorRecord } from "./AdminOrderList";
 import HeroMediaFields from "./HeroMediaFields";
 
 export default function HeroEditor({ initialContent }: { initialContent: SiteContent }) {
@@ -22,7 +23,7 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
   const [dirty, setDirty] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   function change(update: (current: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
-  function update(id: string, patch: Partial<HeroSlide>) { change(current => ({ ...current, heroSlides: current.heroSlides.map(slide => slide.id === id ? { ...slide, ...patch } : slide) })); }
+  function update(id: string, patch: Partial<HeroSlide>) { change(current => ({ ...current, heroSlides: current.heroSlides.map(slide => slide.id === id ? { ...slide, ...patch, published: true } : slide) })); }
   async function upload(id: string, file: File, poster = false) {
     const slide = content.heroSlides.find(row => row.id === id);
     if (!slide || busy) return;
@@ -55,8 +56,10 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
     } catch (error) { setFailed(true); setMessage((error as Error).message); }
     finally { setBusy(false); }
   }
-  function move(index: number, offset: number) {
-    change(current => { const slides = [...current.heroSlides]; [slides[index], slides[index + offset]] = [slides[index + offset], slides[index]]; return { ...current, heroSlides: slides }; });
+  function addSlide() {
+    const id = contentId();
+    change(current => ({ ...current, heroSlides: [{ ...heroSlides[0], media: "", alt: "", poster: undefined, ownerDivision: actor.division, published: true, id }, ...current.heroSlides] }));
+    focusEditorRecord(`hero-${id}`);
   }
   const workspace = useAdminWorkspace({ dirty, busy, label: "Simpan hero", disabled: !dirty, onSave: save });
   return <div className="content-editor">
@@ -64,24 +67,23 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
     <main className="editor-main">
       <header className="editor-topbar"><h1>Hero & teks berjalan</h1><button type="button" className="editor-save" disabled={busy || !dirty} onClick={save}>{busy ? "Memproses…" : "Simpan hero"}</button></header>
       <div className="editor-content">
-        <div className="hero-editor-heading"><div><h2>Hero beranda</h2><p>Tambah slide, pilih gambar atau video, lalu simpan. Gambar berganti setiap 2 detik; video berpindah setelah selesai.</p></div><Link className="admin-secondary" href={actor.division ? `/unit/${actor.division}` : "/"} target="_blank" rel="noopener noreferrer">Buka beranda</Link></div>
+        <div className="hero-editor-heading"><div><h2>Hero beranda</h2><p>Tambah slide, pilih gambar atau video, lalu simpan. Perubahan langsung tampil di website setelah disimpan.</p></div><Link className="admin-secondary" href={actor.division ? `/unit/${actor.division}` : "/"} target="_blank" rel="noopener noreferrer">Buka beranda</Link></div>
         {message && <p className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</p>}
         {busy && <p className="editor-notice" role="status">Sedang memproses. Tunggu sampai selesai sebelum meninggalkan halaman.</p>}
         <fieldset disabled={busy}>
           <HeroAnnouncementEditor content={content} onChange={next => change(() => next)} />
+          <div className="editor-list-heading"><h2>Slide hero</h2><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
+          <AdminOrderList label="Urutan slide" disabled={busy} items={content.heroSlides.map(slide => ({ id: slide.id, title: slide.eyebrow || "Slide baru", image: slide.poster || (slide.type === "image" ? slide.media : undefined) }))} onMove={(from, to) => change(current => ({ ...current, heroSlides: moveBefore(current.heroSlides, from, to) }))} onSelect={id => focusEditorRecord(`hero-${id}`)} />
           {!content.heroSlides.length && <div className="editor-empty"><h3>Belum ada slide hero</h3><p>Tambahkan slide untuk menampilkan gambar atau video pilihan Anda di beranda.</p></div>}
-          {content.heroSlides.map((slide, index) => <section className="editor-panel hero-slide-editor" key={slide.id}>
+          {content.heroSlides.map((slide, index) => <section className="editor-panel hero-slide-editor" id={`hero-${slide.id}`} key={slide.id}>
             <div className="editor-panel-title"><h2>Slide {index + 1} · {slide.eyebrow}</h2><button type="button" onClick={() => setDeleteId(slide.id)}>Hapus slide</button></div>
             <ContentOwnership value={slide} onChange={patch => update(slide.id, patch)} />
-            <label className="admin-checkbox"><input type="checkbox" checked={slide.published ?? true} onChange={event => update(slide.id, { published: event.target.checked })} />Terbit di website</label>
             <HeroMediaFields slide={slide} busy={busy} update={patch => update(slide.id, patch)} upload={(file, poster) => upload(slide.id, file, poster)} />
             <div className="editor-grid">
               {(["eyebrow", "title", "accent", "description"] as const).map(key => <label key={key} className="editor-field">{{ eyebrow: "Label layanan", title: "Judul", accent: "Lanjutan judul", description: "Deskripsi" }[key]}<input name={`hero-${key}-${slide.id}`} value={slide[key]} onChange={event => update(slide.id, { [key]: event.target.value })} /></label>)}
               {(["primaryAction", "secondaryAction"] as const).map(key => <div key={key} className="editor-field"><strong>Tombol {key === "primaryAction" ? "utama" : "kedua"}</strong><label>Label tombol<input aria-label={`Label tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].label} onChange={event => update(slide.id, { [key]: { ...slide[key], label: event.target.value } })} /></label><label>Tujuan tombol<input aria-label={`Tujuan tombol ${key === "primaryAction" ? "utama" : "kedua"}`} value={slide[key].href} onChange={event => update(slide.id, { [key]: { ...slide[key], href: event.target.value } })} /></label></div>)}
             </div>
-            <div className="editor-item-actions"><button type="button" disabled={index === 0} onClick={() => move(index, -1)}>Naik</button><button type="button" disabled={index === content.heroSlides.length - 1} onClick={() => move(index, 1)}>Turun</button></div>
           </section>)}
-          <button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={() => change(current => ({ ...current, heroSlides: [...current.heroSlides, { ...heroSlides[0], ownerDivision: actor.division, published: false, id: contentId() }] }))}>+ Tambah slide</button>
         </fieldset>
       </div>
     </main>

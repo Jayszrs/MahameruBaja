@@ -6,6 +6,8 @@
     "dev": "next dev --turbopack -p 3000",
     "dev:turbo": "next dev --turbopack -p 3000",
     "dev:webpack": "next dev --webpack -p 3000",
+    "texts:catalog": "node scripts/build-website-text-catalog.mjs",
+    "prebuild": "npm run texts:catalog",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

@@ -3,7 +3,7 @@ import PublicText from "./PublicText";
 
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { searchProducts, products } from '../data/products';
+import { resolvedInventoryProducts, type InventoryItem } from '../data/inventory';
 
 const suggestions = ['WF Beam', 'Besi Beton', 'Hollow Galvanis', 'Wiremesh', 'Pipa Besi', 'Plat Besi', 'Baja Ringan', 'Bondek'];
 
@@ -17,16 +17,18 @@ const quickCategories = [
 ];
 
 interface Props {
+  inventory?: InventoryItem[];
   open: boolean;
   onClose: () => void;
 }
 
-export default function SearchOverlay({ open, onClose }: Props) {
+export default function SearchOverlay({ open, onClose, inventory = [] }: Props) {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const results = query.trim().length > 1 ? searchProducts(query).slice(0, 8) : [];
+  const products = resolvedInventoryProducts(inventory).filter(product => inventory.some(item => item.productId === product.id && item.listed));
+  const results = query.trim().length > 1 ? products.filter(product => `${product.name} ${product.category} ${product.shortSpec} ${product.sku} ${product.tags.join(' ')}`.toLowerCase().includes(query.toLowerCase())).slice(0, 8) : [];
   const categoryHits = query.trim().length > 1
     ? [...new Set(products.filter(p => p.category.toLowerCase().includes(query.toLowerCase())).map(p => p.category))].slice(0, 4)
     : [];

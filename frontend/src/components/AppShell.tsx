@@ -12,9 +12,10 @@ import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
 import RouteProgress from "./RouteProgress";
 import HorizontalRibbons from "./HorizontalRibbons";
+import type { InventoryItem } from "../data/inventory";
 
 
-export default function AppShell({ children }: { children: ReactNode }) {
+export default function AppShell({ children, inventory = [] }: { children: ReactNode; inventory?: InventoryItem[] }) {
   const { divisions } = useDivisionDirectory();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -42,7 +43,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <Footer division={division} />
         <WhatsAppButton />
         <QuotationDrawer />
-        <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+        <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} inventory={inventory} />
       </div>
     </QuotationProvider>
   );

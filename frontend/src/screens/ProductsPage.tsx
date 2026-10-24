@@ -4,10 +4,10 @@ import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { products, type Product } from '../data/products';
+import type { Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
 
-import type { InventoryItem } from '../data/inventory';
+import { resolvedInventoryProducts, type InventoryItem } from '../data/inventory';
 
 const categoryFilters = [
   { slug: 'besi-beton', label: 'Besi Beton' },
@@ -35,6 +35,8 @@ const sortOptions = [
 const PAGE_SIZE = 12;
 
 export default function ProductsPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
+  const products = resolvedInventoryProducts(inventory);
+  const categories = [...categoryFilters, ...products.filter(product => !categoryFilters.some(category => category.slug === product.categorySlug)).map(product => ({ slug: product.categorySlug, label: product.category }))].filter((category, index, rows) => rows.findIndex(row => row.slug === category.slug) === index);
   const { divisions } = useDivisionDirectory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -131,7 +133,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
           )}
         </div>
         <div className="space-y-1.5">
-          {categoryFilters.map(cat => (
+          {categories.map(cat => (
             <label key={cat.slug} className="flex items-center gap-2.5 cursor-pointer group">
               <input
                 type="checkbox"
@@ -252,7 +254,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
             {hasFilters && (
               <div className="flex flex-wrap gap-2 mb-5">
                 {activeCategories.map(slug => {
-                  const cat = categoryFilters.find(c => c.slug === slug);
+                  const cat = categories.find(c => c.slug === slug);
                   return (
                     <span key={slug} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand/8 text-brand text-xs font-semibold rounded-full border border-brand/20">
                       {cat?.label ?? slug}

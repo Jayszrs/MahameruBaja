@@ -9,6 +9,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { activeAdminNavigation, adminNavigation } from "../data/adminNavigation";
 import { AdminWorkspaceContext, emptyAdminWorkspace, type AdminWorkspaceState } from "./AdminWorkspace";
+import { cmsUploadEvent, type CmsUploadActivity } from "../lib/cmsUpload";
 
 const preferenceKey = "mahameru.admin.navigation.v1";
 export default function AdminShell({ children }: { children: ReactNode }) {
@@ -24,6 +25,15 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [desktop, setDesktop] = useState(true);
   const [wide,setWide]=useState(false);
   const [workspace, setWorkspace] = useState<AdminWorkspaceState>(emptyAdminWorkspace);
+  const [uploads, setUploads] = useState<CmsUploadActivity[]>([]);
+  useEffect(() => {
+    const update = (event: Event) => {
+      const activity = (event as CustomEvent<CmsUploadActivity>).detail;
+      setUploads(current => activity.active ? [...current.filter(row => row.id !== activity.id), activity] : current.filter(row => row.id !== activity.id));
+    };
+    window.addEventListener(cmsUploadEvent, update);
+    return () => window.removeEventListener(cmsUploadEvent, update);
+  }, []);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const resolver = useRef<((value: boolean) => void) | null>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -115,7 +125,9 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     </aside>
     <div className="admin-stage"><header className="admin-topbar"><div className="admin-location"><button type="button" ref={menuButton} className="admin-menu-button" aria-label={desktop ? wide ? "Tampilkan menu admin" : "Sembunyikan menu admin" : "Buka menu admin"} aria-expanded={desktop ? !wide : drawer} aria-controls="admin-sidebar" onClick={() => desktop ? toggleWide() : setDrawer(value => !value)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg></button><span>{group ? <><small>{group.label}</small><b aria-hidden="true">/</b>{item?.label}</> : pathname === "/admin/akun" ? "Administrasi / Pengelolaan akun" : pathname === "/admin/akun-saya" ? "Akun saya" : "Dashboard"}</span></div>
       <div className="admin-topbar-actions">{workspace.label && <><span className={`admin-save-state${workspace.dirty ? " dirty" : ""}`} role="status">{workspace.busy ? "Sedang diproses…" : workspace.dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span>{workspace.secondaryLabel && <button type="button" className="admin-secondary" disabled={workspace.busy} onClick={workspace.onSecondary}>{workspace.secondaryLabel}</button>}<button type="button" className="admin-primary" disabled={workspace.busy || workspace.disabled} onClick={workspace.onSave}>{workspace.busy ? "Memproses…" : workspace.label}</button></>}</div>
-    </header><main id="admin-main" tabIndex={-1} className="admin-page-content">{children}</main></div>
+    </header>
+    {workspace.busy && <div className="admin-process-notice" role="status" aria-live="polite"><span className="admin-process-spinner" aria-hidden="true" /><div><strong>{uploads.length ? `Mengunggah ${uploads.length} file` : "Sedang menyimpan perubahan"}</strong><p>{uploads.length ? `${uploads.map(row => row.name).join(", ")} — tunggu hingga unggahan selesai, lalu simpan perubahan.` : "Tunggu hingga proses selesai. Hasilnya akan tampil di halaman ini."}</p></div></div>}
+    <main id="admin-main" tabIndex={-1} className="admin-page-content" aria-busy={workspace.busy}>{children}</main></div>
     {confirmOpen && <div className="admin-modal-backdrop"><div className="admin-discard-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="admin-discard-heading"><span className="admin-dialog-icon" aria-hidden="true">!</span><h2 id="admin-discard-heading">Perubahan belum disimpan</h2><p>Perubahan pada ruang kerja ini akan hilang jika kamu melanjutkan. Simpan terlebih dahulu atau tetap di halaman ini.</p><div><button type="button" className="admin-secondary" onClick={() => finishConfirm(false)}>Tetap di halaman</button><button type="button" className="admin-primary" onClick={() => finishConfirm(true)}>Tinggalkan perubahan</button></div></div></div>}
   </div></AdminWorkspaceContext.Provider>;
 }

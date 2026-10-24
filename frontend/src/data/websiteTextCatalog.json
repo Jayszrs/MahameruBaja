@@ -1,7 +1,22 @@
 [
   {
     "source": "Beranda",
-    "area": "AboutMergedPage"
+    "area": "AboutMergedPage",
+    "areas": [
+      "AboutMergedPage",
+      "ArticleDetailPage",
+      "DivisionSubPage",
+      "InformasiPage",
+      "KontakPage",
+      "LaserCuttingPage",
+      "NotFoundPage",
+      "ProductDetailPage",
+      "ProductsPage",
+      "ProjectsPage",
+      "QuotationPage",
+      "SearchPage",
+      "Navbar"
+    ]
   },
   {
     "source": "Buka website divisi ↗",
@@ -21,7 +36,11 @@
   },
   {
     "source": "Hubungi admin",
-    "area": "AboutMergedPage"
+    "area": "AboutMergedPage",
+    "areas": [
+      "AboutMergedPage",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "industri dan konstruksi.",
@@ -40,7 +59,7 @@
     "area": "AboutMergedPage"
   },
   {
-    "source": "Mahameru Group menaungi lima divisi yang melayani kebutuhan material baja, pengadaan proyek, laser cutting, CNC bending, fabrikasi, dan erection.",
+    "source": "Mahameru Group menaungi lima divisi yang melayani kebutuhan material baja, pengadaan proyek, laser cutting, bending, fabrikasi, dan erection.",
     "area": "AboutMergedPage"
   },
   {
@@ -65,7 +84,12 @@
   },
   {
     "source": "VISI MAHAMERU GROUP",
-    "area": "AboutMergedPage"
+    "area": "AboutMergedPage",
+    "areas": [
+      "AboutMergedPage",
+      "DivisionVision",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "&bull;",
@@ -81,7 +105,11 @@
   },
   {
     "source": "Informasi",
-    "area": "ArticleDetailPage"
+    "area": "ArticleDetailPage",
+    "areas": [
+      "ArticleDetailPage",
+      "Promotions"
+    ]
   },
   {
     "source": "Kembali ke Informasi",
@@ -93,15 +121,358 @@
   },
   {
     "source": "Lihat Produk",
-    "area": "ArticleDetailPage"
+    "area": "ArticleDetailPage",
+    "areas": [
+      "ArticleDetailPage",
+      "NotFoundPage"
+    ]
   },
   {
     "source": "Mahameru Baja",
-    "area": "ArticleDetailPage"
+    "area": "ArticleDetailPage",
+    "areas": [
+      "ArticleDetailPage",
+      "HomePage",
+      "business",
+      "divisionContent"
+    ]
   },
   {
     "source": "Tim Mahameru Baja siap membantu Anda mendapatkan material yang tepat sesuai spesifikasi proyek.",
     "area": "ArticleDetailPage"
+  },
+  {
+    "source": "Baja ringan semakin populer sebagai pengganti kayu. Pelajari cara memilih profil, ketebalan, dan merek yang tepat agar rangka atap kuat dan tahan lama.",
+    "area": "articles"
+  },
+  {
+    "source": "Besi beton adalah komponen utama konstruksi. Pelajari perbedaan besi polos dan ulir, cara menghitung kebutuhan, dan standar SNI yang harus diperhatikan.",
+    "area": "articles"
+  },
+  {
+    "source": "Besi hollow hadir dalam dua varian utama: galvanis dan hitam. Keduanya memiliki keunggulan berbeda. Pelajari mana yang sesuai kebutuhan Anda.",
+    "area": "articles"
+  },
+  {
+    "source": "Besi WF adalah profil baja I yang paling banyak digunakan untuk balok dan kolom bangunan bertingkat. Pelajari spesifikasi, fungsi, dan cara memilihnya.",
+    "area": "articles"
+  },
+  {
+    "source": "Cara Memilih Besi Beton yang Tepat untuk Konstruksi Rumah",
+    "area": "articles"
+  },
+  {
+    "source": "Cara Menghitung Kebutuhan Besi untuk Bangunan Rumah Tinggal",
+    "area": "articles"
+  },
+  {
+    "source": "Edukasi Material",
+    "area": "articles"
+  },
+  {
+    "source": "Jenis-Jenis Plat Besi dan Aplikasinya dalam Fabrikasi",
+    "area": "articles"
+  },
+  {
+    "source": "Mengenal Profil Besi WF (Wide Flange) dan Fungsinya dalam Konstruksi",
+    "area": "articles"
+  },
+  {
+    "source": "Menghitung kebutuhan besi sebelum membangun dapat menghemat biaya dan mencegah kekurangan material. Panduan lengkap dengan contoh perhitungan praktis.",
+    "area": "articles"
+  },
+  {
+    "source": "Menyiapkan Gambar untuk Laser Cutting & Bending di Bekasi",
+    "area": "articles"
+  },
+  {
+    "source": "Panduan gambar kerja, material, ketebalan dan jumlah untuk konsultasi laser cutting plat di Bekasi, Tambun dan Cibitung. Harga ditentukan setelah review teknis.",
+    "area": "articles"
+  },
+  {
+    "source": "Panduan Material",
+    "area": "articles"
+  },
+  {
+    "source": "Panduan Teknis",
+    "area": "articles"
+  },
+  {
+    "source": "Perbandingan Material",
+    "area": "articles"
+  },
+  {
+    "source": "Perbedaan Besi Hollow Galvanis dan Hitam: Mana yang Tepat untuk Proyek Anda?",
+    "area": "articles"
+  },
+  {
+    "source": "Plat besi tersedia dalam berbagai jenis dan ketebalan. Dari plat hitam, bordes, hingga strip — pelajari fungsi dan cara memilih yang sesuai kebutuhan fabrikasi Anda.",
+    "area": "articles"
+  },
+  {
+    "source": "Tips Memilih Baja Ringan untuk Rangka Atap yang Kuat dan Ekonomis",
+    "area": "articles"
+  },
+  {
+    "source": "Apakah bisa laser cutting sekaligus bending?",
+    "area": "business"
+  },
+  {
+    "source": "Bagaimana meminta penawaran laser cutting di Bekasi?",
+    "area": "business"
+  },
+  {
+    "source": "Berapa harga dan waktu pengerjaannya?",
+    "area": "business"
+  },
+  {
+    "source": "Cutting / bending / fabrikasi",
+    "area": "business"
+  },
+  {
+    "source": "Dari gambar teknik ke kebutuhan produksi: cutting plat, bending, komponen custom dan fabrikasi.",
+    "area": "business"
+  },
+  {
+    "source": "Diskusikan daftar material, volume, lokasi pengiriman dan jadwal kebutuhan pengadaan proyek.",
+    "area": "business"
+  },
+  {
+    "source": "Fabrikasi & erection",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "Format gambar apa yang dapat disiapkan?",
+    "area": "business"
+  },
+  {
+    "source": "Harga bergantung pada material, panjang potong, kompleksitas, jumlah, bending dan finishing. Tidak ada harga atau estimasi waktu terverifikasi yang dipublikasikan. Penawaran diberikan setelah peninjauan kebutuhan.",
+    "area": "business"
+  },
+  {
+    "source": "Jalur konsultasi material konstruksi untuk kebutuhan retail di Cibitung dan sekitarnya.",
+    "area": "business"
+  },
+  {
+    "source": "Konsultasi gambar struktur, fabrikasi dan pemasangan langsung dengan admin proyek.",
+    "area": "business"
+  },
+  {
+    "source": "Laser cutting & bending",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "MBI Project Fabrikasi & Erection",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "MBI Trading",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent",
+      "products"
+    ]
+  },
+  {
+    "source": "Pengadaan / proyek",
+    "area": "business"
+  },
+  {
+    "source": "Pilih Laser Cutting + Bending dan sertakan detail tekukan serta gambar kerja. Kapasitas mesin, toleransi, ketebalan material dan kelayakan desain harus dikonfirmasi sebelum pekerjaan disetujui.",
+    "area": "business"
+  },
+  {
+    "source": "Retail / toko besi",
+    "area": "business"
+  },
+  {
+    "source": "Retail Cibitung",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "Retail Tambun",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "Sampaikan gambar, jenis material, ketebalan, ukuran dan jumlah melalui formulir. Tim perlu meninjau desain sebelum mengonfirmasi harga dan jadwal produksi. Area kebutuhan dapat mencakup Tambun, Cibitung dan Bekasi; cakupan pengiriman dikonfirmasi saat konsultasi.",
+    "area": "business"
+  },
+  {
+    "source": "Siapkan DWG atau DXF untuk gambar teknik. PDF, AI, CDR, JPG dan PNG dapat digunakan sebagai bahan konsultasi awal. Kesesuaian file untuk produksi perlu ditinjau tim; lampiran dikirim langsung lewat WhatsApp pada versi ini.",
+    "area": "business"
+  },
+  {
+    "source": "Struktur / proyek",
+    "area": "business"
+  },
+  {
+    "source": "Temukan besi beton, hollow, plat, WF, CNP, UNP, siku dan pipa untuk kebutuhan bangunan Anda.",
+    "area": "business"
+  },
+  {
+    "source": "Trading & supply proyek",
+    "area": "business",
+    "areas": [
+      "business",
+      "divisionContent"
+    ]
+  },
+  {
+    "source": "Aksesoris Konstruksi",
+    "area": "categories"
+  },
+  {
+    "source": "Atap seng gelombang dan spandek untuk bangunan industri, gudang, dan rumah.",
+    "area": "categories"
+  },
+  {
+    "source": "Baut, mur, angkur, kawat bendrat, dan aksesoris konstruksi lainnya.",
+    "area": "categories"
+  },
+  {
+    "source": "Besi beton polos dan ulir standar SNI untuk pondasi dan struktur beton bertulang.",
+    "area": "categories"
+  },
+  {
+    "source": "Besi CNP",
+    "area": "categories"
+  },
+  {
+    "source": "Besi siku untuk rangka konstruksi, rak, dan berbagai kebutuhan fabrikasi.",
+    "area": "categories"
+  },
+  {
+    "source": "Besi UNP",
+    "area": "categories"
+  },
+  {
+    "source": "Besi WF / H-Beam",
+    "area": "categories",
+    "areas": [
+      "categories",
+      "products"
+    ]
+  },
+  {
+    "source": "Floordeck baja bergelombang untuk lantai beton komposit dan dak.",
+    "area": "categories"
+  },
+  {
+    "source": "Hollow galvanis dan hitam berbagai ukuran untuk pagar, rangka, dan konstruksi ringan.",
+    "area": "categories"
+  },
+  {
+    "source": "Pipa hitam, galvanis, dan seamless untuk berbagai aplikasi konstruksi dan industri.",
+    "area": "categories"
+  },
+  {
+    "source": "Plat hitam, bordes, dan strip untuk fabrikasi, lantai, dan pelapis struktural.",
+    "area": "categories"
+  },
+  {
+    "source": "Profil kanal C untuk rangka atap, purlin, dan struktur baja ringan.",
+    "area": "categories"
+  },
+  {
+    "source": "Profil kanal U untuk balok, rangka atap, dan struktur baja ringan menengah.",
+    "area": "categories"
+  },
+  {
+    "source": "Profil WF dan H-Beam untuk struktur gedung, jembatan, dan konstruksi berat.",
+    "area": "categories"
+  },
+  {
+    "source": "Rangka baja ringan untuk atap rumah tinggal dan komersial.",
+    "area": "categories"
+  },
+  {
+    "source": "Wiremesh standar SNI untuk cor lantai, dak beton, dan panel dinding.",
+    "area": "categories"
+  },
+  {
+    "source": "Cari besi dan material untuk pekerjaan Anda. Hubungi tim toko untuk informasi terbaru.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Kabar toko",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Konfirmasikan stok, harga, jam layanan, dan jadwal dengan admin sebelum memesan.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Konsultasi laser cutting",
+    "area": "clientPosters",
+    "areas": [
+      "clientPosters",
+      "promotions"
+    ]
+  },
+  {
+    "source": "Konsultasikan laser cutting plat, ornamen, dan komponen sesuai gambar kebutuhan Anda.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Konsultasikan pilihan material dan kebutuhan Anda dengan tim toko.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Material bangunan",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Pilihan besi untuk kebutuhan bangunan. Tanyakan ukuran dan jumlah yang Anda perlukan.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Promo hollow hitam dan galvanis",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Promo Oktober",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Punya desain? Kami bantu potong platnya.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Ring, cakar ayam, dan sloof besi",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Selamat datang di Mahameru Baja",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Tanya penawaran",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Tanyakan pilihan hollow hitam dan galvanis selama periode promo Oktober.",
+    "area": "clientPosters"
   },
   {
     "source": "Anas",
@@ -116,7 +487,7 @@
     "area": "companyIdentity"
   },
   {
-    "source": "Memberikan jasa laser cutting dan bending CNC yang presisi, cepat, dan berkualitas untuk memenuhi kebutuhan industri, kontraktor, dan proyek.",
+    "source": "Memberikan jasa laser cutting dan bending yang presisi, cepat, dan berkualitas untuk memenuhi kebutuhan industri, kontraktor, dan proyek.",
     "area": "companyIdentity"
   },
   {
@@ -157,7 +528,12 @@
   },
   {
     "source": "Chat WhatsApp",
-    "area": "ContactDirectory"
+    "area": "ContactDirectory",
+    "areas": [
+      "ContactDirectory",
+      "Navbar",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Hubungi kami — pilih divisi",
@@ -169,7 +545,12 @@
   },
   {
     "source": "kebutuhan Anda.",
-    "area": "ContactDirectory"
+    "area": "ContactDirectory",
+    "areas": [
+      "ContactDirectory",
+      "DivisionVision",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Kontak perusahaan",
@@ -208,6 +589,18 @@
     "area": "ContactDirectory"
   },
   {
+    "source": "WhatsApp",
+    "area": "ContactDirectory",
+    "areas": [
+      "ContactDirectory",
+      "ShareArticle"
+    ]
+  },
+  {
+    "source": "Cutting, bending, dan fabrikasi dalam satu konsultasi",
+    "area": "divisionAbout"
+  },
+  {
     "source": "Dekat dengan kebutuhan bangunan Anda.",
     "area": "divisionAbout"
   },
@@ -221,6 +614,62 @@
   },
   {
     "source": "Jalur material untuk pekerjaan di Cibitung.",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Konfirmasi proses serta jadwal sebelum produksi",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Konfirmasi stok serta pengiriman langsung dengan tim",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Konsultasi langsung dengan admin proyek",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Konsultasi spesifikasi sebelum membeli",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Koordinasi keselamatan dan jadwal",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Membantu memilih ukuran dan profil material",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Menghubungkan kebutuhan bengkel dan konstruksi",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Mengoordinasikan suplai dengan lokasi pekerjaan",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Meninjau daftar kebutuhan dan volume",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Meninjau ketersediaan sesuai daftar permintaan",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Menyiapkan alur penawaran serta pemesanan",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Pilihan material untuk renovasi dan konstruksi",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Review gambar struktur",
+    "area": "divisionAbout"
+  },
+  {
+    "source": "Review material, ketebalan, dan dimensi",
     "area": "divisionAbout"
   },
   {
@@ -260,6 +709,14 @@
     "area": "divisionContent"
   },
   {
+    "source": "Bending 160 ton",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Besi beton & wiremesh",
+    "area": "divisionContent"
+  },
+  {
     "source": "Bisa diajukan bersama. Kelayakan proses serta biaya dikonfirmasi setelah review gambar.",
     "area": "divisionContent"
   },
@@ -276,7 +733,23 @@
     "area": "divisionContent"
   },
   {
+    "source": "Bondek, spandek & baja ringan",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Cari kategori material",
+    "area": "divisionContent"
+  },
+  {
     "source": "Cari material, kirim ukuran dan jumlah, lalu konfirmasi stok serta harga terbaru bersama tim toko.",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Cutting + bending",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Dapatkan konfirmasi dari tim",
     "area": "divisionContent"
   },
   {
@@ -296,7 +769,11 @@
     "area": "divisionContent"
   },
   {
-    "source": "Fabrikasi & erection",
+    "source": "Erection & pemasangan",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Fabrikasi struktur baja",
     "area": "divisionContent"
   },
   {
@@ -312,6 +789,10 @@
     "area": "divisionContent"
   },
   {
+    "source": "Hollow, pipa & siku",
+    "area": "divisionContent"
+  },
+  {
     "source": "Hubungi admin Andi atau Andra dengan gambar struktur, lokasi proyek, volume, dan target jadwal. Kapasitas serta ruang lingkup dikonfirmasi tim.",
     "area": "divisionContent"
   },
@@ -320,7 +801,7 @@
     "area": "divisionContent"
   },
   {
-    "source": "Ilustrasi CNC bending",
+    "source": "Ilustrasi bending",
     "area": "divisionContent"
   },
   {
@@ -344,7 +825,15 @@
     "area": "divisionContent"
   },
   {
+    "source": "Kirim daftar material dan lokasi",
+    "area": "divisionContent"
+  },
+  {
     "source": "Kirim daftar material, spesifikasi, volume, lokasi, serta target waktu. Tim meninjau permintaan sebelum membuat penawaran.",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Kirim gambar DWG, DXF, atau PDF",
     "area": "divisionContent"
   },
   {
@@ -352,11 +841,31 @@
     "area": "divisionContent"
   },
   {
+    "source": "Kirim ukuran dan jumlah",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Kirim ukuran, jumlah, dan lokasi Cibitung",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Konfirmasi stok, harga, serta pengiriman",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Konsultasi gambar struktur",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Konsultasi kebutuhan material",
+    "area": "divisionContent"
+  },
+  {
     "source": "Konsultasikan kebutuhan besi, plat, dan profil baja untuk pekerjaan di Cibitung melalui divisi retail Garuda Marginal Baja.",
     "area": "divisionContent"
   },
   {
-    "source": "Laser cutting & CNC bending",
+    "source": "Koordinasi pekerjaan lapangan",
     "area": "divisionContent"
   },
   {
@@ -384,11 +893,7 @@
     "area": "divisionContent"
   },
   {
-    "source": "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, CNC bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
-    "area": "divisionContent"
-  },
-  {
-    "source": "MBI Project Fabrikasi & Erection",
+    "source": "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
     "area": "divisionContent"
   },
   {
@@ -396,15 +901,19 @@
     "area": "divisionContent"
   },
   {
-    "source": "MBI Trading",
-    "area": "divisionContent"
-  },
-  {
     "source": "Mulai dari gambar kerja. Tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
     "area": "divisionContent"
   },
   {
+    "source": "Penawaran, produksi, dan pemeriksaan hasil",
+    "area": "divisionContent"
+  },
+  {
     "source": "Pengadaan material proyek dengan alur yang jelas.",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Pilih material dari katalog",
     "area": "divisionContent"
   },
   {
@@ -424,15 +933,39 @@
     "area": "divisionContent"
   },
   {
+    "source": "Plat dan pipa baja",
+    "area": "divisionContent"
+  },
+  {
     "source": "Plat untuk fabrikasi",
     "area": "divisionContent"
   },
   {
-    "source": "Retail Cibitung",
+    "source": "Plat, WF, CNP & UNP",
     "area": "divisionContent"
   },
   {
-    "source": "Retail Tambun",
+    "source": "Profil & besi hollow",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Review gambar dan lokasi",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Review material dan ukuran",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Review stok atau pengadaan",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Sepakati penawaran dan jadwal",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Setujui penawaran dan jadwal",
     "area": "divisionContent"
   },
   {
@@ -444,20 +977,24 @@
     "area": "divisionContent"
   },
   {
-    "source": "Trading & supply proyek",
-    "area": "divisionContent"
-  },
-  {
     "source": "Wiremesh proyek",
     "area": "divisionContent"
   },
   {
     "source": "Buka Google Maps ↗",
-    "area": "DivisionLocation"
+    "area": "DivisionLocation",
+    "areas": [
+      "DivisionLocation",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Dekat. Lengkap.",
-    "area": "DivisionLocation"
+    "area": "DivisionLocation",
+    "areas": [
+      "DivisionLocation",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Hubungi admin ↗",
@@ -473,11 +1010,19 @@
   },
   {
     "source": "LOKASI",
-    "area": "DivisionLocation"
+    "area": "DivisionLocation",
+    "areas": [
+      "DivisionLocation",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Petunjuk arah ↗",
-    "area": "DivisionLocation"
+    "area": "DivisionLocation",
+    "areas": [
+      "DivisionLocation",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Siap melayani Anda.",
@@ -485,7 +1030,11 @@
   },
   {
     "source": "Solusi material untuk setiap proyek.",
-    "area": "DivisionLocation"
+    "area": "DivisionLocation",
+    "areas": [
+      "DivisionLocation",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Tambun Selatan · Kabupaten Bekasi",
@@ -521,7 +1070,11 @@
   },
   {
     "source": "Hubungi tim",
-    "area": "DivisionSubPage"
+    "area": "DivisionSubPage",
+    "areas": [
+      "DivisionSubPage",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Hubungi tim kami.",
@@ -593,7 +1146,11 @@
   },
   {
     "source": "MISI DIVISI",
-    "area": "DivisionVision"
+    "area": "DivisionVision",
+    "areas": [
+      "DivisionVision",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Terintegrasi.",
@@ -644,11 +1201,11 @@
     "area": "Footer"
   },
   {
-    "source": "Butuh material atau",
+    "source": "Cara pemesanan",
     "area": "Footer"
   },
   {
-    "source": "Cara pemesanan",
+    "source": "ditangani tim yang tepat.",
     "area": "Footer"
   },
   {
@@ -656,12 +1213,16 @@
     "area": "Footer"
   },
   {
-    "source": "Hubungi admin divisi ↗",
+    "source": "Hubungi admin divisi",
     "area": "Footer"
   },
   {
     "source": "Hubungi kami",
-    "area": "Footer"
+    "area": "Footer",
+    "areas": [
+      "Footer",
+      "HeroCarousel"
+    ]
   },
   {
     "source": "Jam kunjungan: konfirmasi dengan admin",
@@ -669,10 +1230,6 @@
   },
   {
     "source": "Jasa laser cutting & bending",
-    "area": "Footer"
-  },
-  {
-    "source": "jasa laser cutting?",
     "area": "Footer"
   },
   {
@@ -688,7 +1245,11 @@
     "area": "Footer"
   },
   {
-    "source": "Lokasi & kontak admin ↗",
+    "source": "Kebutuhan Anda,",
+    "area": "Footer"
+  },
+  {
+    "source": "Lokasi & kontak admin",
     "area": "Footer"
   },
   {
@@ -696,11 +1257,7 @@
     "area": "Footer"
   },
   {
-    "source": "MATERIAL & JASA BAJA",
-    "area": "Footer"
-  },
-  {
-    "source": "Minta penawaran ↗",
+    "source": "MATERIAL, CUTTING & PROYEK",
     "area": "Footer"
   },
   {
@@ -712,12 +1269,20 @@
     "area": "Footer"
   },
   {
+    "source": "Pilih admin divisi",
+    "area": "Footer"
+  },
+  {
     "source": "Sampaikan kebutuhan Anda. Tim kami membantu mengecek spesifikasi, menyiapkan penawaran, dan mengatur langkah berikutnya.",
     "area": "Footer"
   },
   {
     "source": "Senin–Sabtu · 07.00–17.00 WIB",
-    "area": "Footer"
+    "area": "Footer",
+    "areas": [
+      "Footer",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Sosial media",
@@ -728,16 +1293,28 @@
     "area": "Footer"
   },
   {
-    "source": "Tambun Selatan, Kabupaten Bekasi 17510",
-    "area": "Footer"
-  },
-  {
     "source": "Tentang kami",
     "area": "Footer"
   },
   {
     "source": "Website divisi",
     "area": "Footer"
+  },
+  {
+    "source": "Admin divisi",
+    "area": "FooterDivisions"
+  },
+  {
+    "source": "Alamat: konfirmasi dengan admin divisi.",
+    "area": "FooterDivisions"
+  },
+  {
+    "source": "Divisi Mahameru Baja",
+    "area": "FooterDivisions"
+  },
+  {
+    "source": "Lihat kontak divisi",
+    "area": "FooterDivisions"
   },
   {
     "source": "· Google Maps · dicatat",
@@ -780,7 +1357,7 @@
     "area": "heroSlides"
   },
   {
-    "source": "Jasa CNC Bending",
+    "source": "Jasa Bending",
     "area": "heroSlides"
   },
   {
@@ -800,7 +1377,7 @@
     "area": "heroSlides"
   },
   {
-    "source": "Konsultasi CNC Bending",
+    "source": "Konsultasi Bending",
     "area": "heroSlides"
   },
   {
@@ -852,6 +1429,14 @@
     "area": "heroSlides"
   },
   {
+    "source": "Visual ilustrasi proses bending",
+    "area": "heroSlides"
+  },
+  {
+    "source": "Visual ilustrasi proses produksi",
+    "area": "heroSlides"
+  },
+  {
     "source": "yang perlu dibuat?",
     "area": "heroSlides"
   },
@@ -861,7 +1446,12 @@
   },
   {
     "source": "Buka website divisi",
-    "area": "HomePage"
+    "area": "HomePage",
+    "areas": [
+      "HomePage",
+      "FooterDivisions",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Cari besi, hollow, pipa, atau plat melalui toko di Cibitung. Tim membantu mengecek pilihan material sesuai kebutuhan Anda.",
@@ -873,7 +1463,13 @@
   },
   {
     "source": "Garuda Marginal Baja",
-    "area": "HomePage"
+    "area": "HomePage",
+    "areas": [
+      "HomePage",
+      "business",
+      "divisionContent",
+      "divisionLocations"
+    ]
   },
   {
     "source": "Jaringan Mahameru Group",
@@ -885,11 +1481,21 @@
   },
   {
     "source": "Mahameru Baja Indonesia",
-    "area": "HomePage"
+    "area": "HomePage",
+    "areas": [
+      "HomePage",
+      "Footer",
+      "WelcomePosters",
+      "socialMedia"
+    ]
   },
   {
     "source": "MBI Laser Cutting",
-    "area": "HomePage"
+    "area": "HomePage",
+    "areas": [
+      "HomePage",
+      "business"
+    ]
   },
   {
     "source": "Mulai dari kebutuhan Anda",
@@ -933,7 +1539,12 @@
   },
   {
     "source": "Artikel",
-    "area": "InformasiPage"
+    "area": "InformasiPage",
+    "areas": [
+      "InformasiPage",
+      "Footer",
+      "Navbar"
+    ]
   },
   {
     "source": "Artikel & Panduan Material",
@@ -977,7 +1588,11 @@
   },
   {
     "source": "Visual ilustrasi material",
-    "area": "InformasiPage"
+    "area": "InformasiPage",
+    "areas": [
+      "InformasiPage",
+      "heroSlides"
+    ]
   },
   {
     "source": "07:00 – 15:00 WIB",
@@ -989,7 +1604,11 @@
   },
   {
     "source": "08xxxxxxxxxx",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "Alamat",
@@ -1001,7 +1620,11 @@
   },
   {
     "source": "email@example.com (opsional)",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "Hubungi Kami",
@@ -1017,7 +1640,11 @@
   },
   {
     "source": "Informasi Kontak",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "Informasi Toko",
@@ -1041,7 +1668,13 @@
   },
   {
     "source": "Kontak",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "NotFoundPage",
+      "Navbar",
+      "WelcomePosters"
+    ]
   },
   {
     "source": "Kontak Mahameru Baja",
@@ -1124,6 +1757,10 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "Bending & tekuk plat",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.",
     "area": "LaserCuttingPage"
   },
@@ -1144,10 +1781,6 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "CNC bending & tekuk plat",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Dari gambar kerja hingga komponen siap pakai. Kami melayani pemotongan, pembentukan plat, dan fabrikasi sesuai spesifikasi kebutuhan Anda. Kirim gambar untuk ditinjau tim sebelum penawaran.",
     "area": "LaserCuttingPage"
   },
@@ -1165,7 +1798,11 @@
   },
   {
     "source": "Divisi tujuan",
-    "area": "LaserCuttingPage"
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "DWG, DXF, PDF, AI, CDR, JPG atau PNG. Setelah mengisi formulir, kirim file tersebut sebagai lampiran WhatsApp.",
@@ -1173,7 +1810,11 @@
   },
   {
     "source": "Fabrikasi & finishing",
-    "area": "LaserCuttingPage"
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "divisionContent"
+    ]
   },
   {
     "source": "File desain dikirim terpisah sebagai lampiran WhatsApp.",
@@ -1193,6 +1834,14 @@
   },
   {
     "source": "Hubungi MBI Trading",
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "promotions"
+    ]
+  },
+  {
+    "source": "jumlah",
     "area": "LaserCuttingPage"
   },
   {
@@ -1209,6 +1858,10 @@
   },
   {
     "source": "Kebutuhan Kontraktor & Perusahaan",
+    "area": "LaserCuttingPage"
+  },
+  {
+    "source": "ketebalan",
     "area": "LaserCuttingPage"
   },
   {
@@ -1236,24 +1889,37 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "kota",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "Kota / lokasi proyek",
     "area": "LaserCuttingPage"
   },
   {
-    "source": "LASER CUTTING / CNC BENDING / FABRIKASI",
+    "source": "LASER CUTTING / BENDING / FABRIKASI",
     "area": "LaserCuttingPage"
+  },
+  {
+    "source": "Laser Cutting & Bending",
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "ProjectsPage",
+      "articles"
+    ]
   },
   {
     "source": "laser cutting & bending.",
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Laser Cutting & CNC Bending",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Laser cutting plat & custom",
-    "area": "LaserCuttingPage"
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "divisionContent"
+    ]
   },
   {
     "source": "Lengkapi kebutuhan rumah, renovasi, dan bengkel lewat toko Mahameru Baja. Konfirmasikan pilihan material dan jumlah yang ingin dibeli.",
@@ -1272,6 +1938,10 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "material",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "Material / produk (jika sudah diketahui)",
     "area": "LaserCuttingPage"
   },
@@ -1281,22 +1951,38 @@
   },
   {
     "source": "Menyimpan permintaan...",
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "QuotationPage"
+    ]
+  },
+  {
+    "source": "nama",
     "area": "LaserCuttingPage"
   },
   {
     "source": "Nama",
-    "area": "LaserCuttingPage"
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "Nomor WhatsApp",
-    "area": "LaserCuttingPage"
+    "area": "LaserCuttingPage",
+    "areas": [
+      "LaserCuttingPage",
+      "QuotationPage"
+    ]
   },
   {
     "source": "Pekerjaan fabrikasi (perakitan dan pengelasan), finishing, hingga erection (pemasangan di lokasi) sesuai kebutuhan proyek.",
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Pembentukan plat dengan mesin CNC bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.",
+    "source": "Pembentukan plat dengan mesin bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.",
     "area": "LaserCuttingPage"
   },
   {
@@ -1317,6 +2003,10 @@
   },
   {
     "source": "Pertanyaan laser cutting & bending.",
+    "area": "LaserCuttingPage"
+  },
+  {
+    "source": "perusahaan",
     "area": "LaserCuttingPage"
   },
   {
@@ -1404,8 +2094,80 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "ukuran",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "Visual ilustrasi proses laser cutting.",
     "area": "LaserCuttingPage"
+  },
+  {
+    "source": "whatsapp",
+    "area": "LaserCuttingPage"
+  },
+  {
+    "source": ". Jika kutipan ulasan ditampilkan di situs, nama dan isi ulasan berasal dari profil publik penulis di Google Maps.",
+    "area": "Legal"
+  },
+  {
+    "source": ". Rating dan kutipan ulasan, apabila ditampilkan, merujuk ke profil publik toko dan penulis di Google Maps.",
+    "area": "Legal"
+  },
+  {
+    "source": "Formulir kontak menyiapkan ringkasan pesan untuk dikirim melalui WhatsApp. Pesan baru diterima tim setelah Anda melanjutkan pengirimannya di WhatsApp. Penggunaan WhatsApp mengikuti kebijakan layanan tersebut.",
+    "area": "Legal"
+  },
+  {
+    "source": "Foto yang Anda lampirkan pada formulir penawaran bersifat opsional dan disimpan bersama permintaan. Lampiran hanya dapat dibuka oleh admin pusat dan admin divisi tujuan, bukan ditampilkan pada galeri publik. Unggah hanya foto yang boleh Anda bagikan untuk pembahasan kebutuhan. Foto tidak otomatis dilampirkan ke WhatsApp.",
+    "area": "Legal"
+  },
+  {
+    "source": "Hubungi kami →",
+    "area": "Legal"
+  },
+  {
+    "source": "Informasi produk dan layanan pada situs Mahameru Baja membantu Anda menyiapkan kebutuhan material atau pekerjaan. Harga, stok, spesifikasi akhir, cakupan pengiriman, dan jadwal pekerjaan dikonfirmasi dalam penawaran dari tim kami.",
+    "area": "Legal"
+  },
+  {
+    "source": "Informasi situs",
+    "area": "Legal"
+  },
+  {
+    "source": "Jika ada pertanyaan mengenai informasi di situs atau permintaan penawaran, hubungi tim melalui halaman kontak.",
+    "area": "Legal"
+  },
+  {
+    "source": "Kebijakan Privasi Google",
+    "area": "Legal"
+  },
+  {
+    "source": "Lokasi yang ditampilkan pada peta Google Maps mengikuti",
+    "area": "Legal"
+  },
+  {
+    "source": "Mahameru Baja menggunakan informasi yang Anda isi pada formulir penawaran dan permintaan laser cutting, seperti nama, nomor WhatsApp, detail material, dan informasi proyek, untuk mencatat dan menindaklanjuti permintaan Anda. Kolom perusahaan dan email bersifat opsional jika ditampilkan demikian pada formulir.",
+    "area": "Legal"
+  },
+  {
+    "source": "Persyaratan Layanan Google Maps",
+    "area": "Legal"
+  },
+  {
+    "source": "Saat mengirim permintaan, berikan informasi material, ukuran, jumlah, lokasi, dan gambar kerja yang sesuai agar tim dapat meninjau kebutuhan dengan tepat. Pengiriman formulir belum berarti pesanan atau pekerjaan disetujui.",
+    "area": "Legal"
+  },
+  {
+    "source": "Situs ini menyediakan tautan dan peta lokasi dari Google Maps. Saat Anda membuka peta, Google dapat memproses data penggunaan sesuai",
+    "area": "Legal"
+  },
+  {
+    "source": "Untuk pertanyaan mengenai data yang Anda kirimkan kepada Mahameru Baja, hubungi kami melalui",
+    "area": "Legal"
+  },
+  {
+    "source": "WhatsApp utama",
+    "area": "Legal"
   },
   {
     "source": "Besi Beton Polos",
@@ -1425,7 +2187,11 @@
   },
   {
     "source": "Daftar Penawaran",
-    "area": "Navbar"
+    "area": "Navbar",
+    "areas": [
+      "Navbar",
+      "QuotationDrawer"
+    ]
   },
   {
     "source": "Galvalum",
@@ -1437,7 +2203,11 @@
   },
   {
     "source": "Hollow",
-    "area": "Navbar"
+    "area": "Navbar",
+    "areas": [
+      "Navbar",
+      "SearchOverlay"
+    ]
   },
   {
     "source": "Hollow & Pipa",
@@ -1485,7 +2255,11 @@
   },
   {
     "source": "WF Beam",
-    "area": "Navbar"
+    "area": "Navbar",
+    "areas": [
+      "Navbar",
+      "SearchOverlay"
+    ]
   },
   {
     "source": "Halaman Tidak Ditemukan",
@@ -1498,6 +2272,22 @@
   {
     "source": "Mungkin halaman ini sudah dipindahkan atau URL yang Anda masukkan tidak sesuai. Gunakan navigasi di bawah untuk kembali ke halaman yang benar.",
     "area": "NotFoundPage"
+  },
+  {
+    "source": "Kebijakan Privasi",
+    "area": "page",
+    "areas": [
+      "page",
+      "Legal"
+    ]
+  },
+  {
+    "source": "Syarat & Ketentuan",
+    "area": "page",
+    "areas": [
+      "page",
+      "Legal"
+    ]
   },
   {
     "source": "GALERI DIVISI",
@@ -1521,11 +2311,19 @@
   },
   {
     "source": "+ Penawaran",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductCard"
+    ]
   },
   {
     "source": "✓ Ditambahkan",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductCard"
+    ]
   },
   {
     "source": "Area Pengiriman",
@@ -1637,7 +2435,15 @@
   },
   {
     "source": "Produk",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductsPage",
+      "ProjectsPage",
+      "QuotationPage",
+      "Navbar",
+      "SearchOverlay"
+    ]
   },
   {
     "source": "Produk ini cocok digunakan untuk:",
@@ -1653,7 +2459,11 @@
   },
   {
     "source": "SKU:",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductCard"
+    ]
   },
   {
     "source": "Spesifikasi",
@@ -1661,11 +2471,19 @@
   },
   {
     "source": "STOK DIKONFIRMASI",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductCard"
+    ]
   },
   {
     "source": "STOK: KONFIRMASI",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "ProductCard"
+    ]
   },
   {
     "source": "Tambah ke Daftar Penawaran",
@@ -1681,11 +2499,1083 @@
   },
   {
     "source": "Tanya via WhatsApp",
-    "area": "ProductDetailPage"
+    "area": "ProductDetailPage",
+    "areas": [
+      "ProductDetailPage",
+      "SearchPage"
+    ]
   },
   {
     "source": "Tim kami siap membantu menentukan spesifikasi yang tepat sesuai kebutuhan proyek Anda.",
     "area": "ProductDetailPage"
+  },
+  {
+    "source": ". Lihat divisi penyedia di bawah.",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Asia/Jakarta",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Belum ada divisi yang mencatat produk ini. Hubungi admin untuk menentukan divisi penyedia; jumlah stok belum dikonfirmasi.",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Dikonfirmasi admin:",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "id-ID",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Lihat katalog divisi",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "PENYEDIA MATERIAL",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Produk ini tidak tercatat di katalog",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Stok adalah informasi terakhir yang dikonfirmasi admin, bukan reservasi. Konfirmasikan kembali jumlah dan harga sebelum memesan.",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Tanya admin",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "Tanyakan produk ke divisi penyedia.",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "WIB",
+    "area": "ProductInventory"
+  },
+  {
+    "source": "± 135 kg",
+    "area": "products"
+  },
+  {
+    "source": "0.35 mm",
+    "area": "products"
+  },
+  {
+    "source": "0.35mm × 76mm pitch × custom | Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "0.5 mm",
+    "area": "products"
+  },
+  {
+    "source": "0.75 mm",
+    "area": "products"
+  },
+  {
+    "source": "0.75mm × 1m × 6m | Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "1 meter",
+    "area": "products"
+  },
+  {
+    "source": "1.2 mm",
+    "area": "products"
+  },
+  {
+    "source": "1.4 mm",
+    "area": "products"
+  },
+  {
+    "source": "1.8 mm",
+    "area": "products"
+  },
+  {
+    "source": "10 mm",
+    "area": "products"
+  },
+  {
+    "source": "100 mm",
+    "area": "products"
+  },
+  {
+    "source": "12 meter",
+    "area": "products"
+  },
+  {
+    "source": "12 mm",
+    "area": "products"
+  },
+  {
+    "source": "1200 × 2400 mm",
+    "area": "products"
+  },
+  {
+    "source": "13 mm (D13)",
+    "area": "products"
+  },
+  {
+    "source": "150 × 150 mm",
+    "area": "products"
+  },
+  {
+    "source": "150 mm",
+    "area": "products"
+  },
+  {
+    "source": "16 mm (D16)",
+    "area": "products"
+  },
+  {
+    "source": "2.1 × 5.4 meter",
+    "area": "products"
+  },
+  {
+    "source": "2.9 mm (medium)",
+    "area": "products"
+  },
+  {
+    "source": "200 mm",
+    "area": "products"
+  },
+  {
+    "source": "3.2 mm (medium)",
+    "area": "products"
+  },
+  {
+    "source": "3.25 mm (medium)",
+    "area": "products"
+  },
+  {
+    "source": "33.4 mm (1\")",
+    "area": "products"
+  },
+  {
+    "source": "35 mm",
+    "area": "products"
+  },
+  {
+    "source": "4 mm",
+    "area": "products"
+  },
+  {
+    "source": "40 × 40 mm",
+    "area": "products"
+  },
+  {
+    "source": "40 × 80 mm",
+    "area": "products"
+  },
+  {
+    "source": "40×40×1.2mm × 6m | Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "40×40×4mm × 6m | Hitam",
+    "area": "products"
+  },
+  {
+    "source": "40×80×1.4mm × 6m | Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "4mm × 1200×2400mm | Bordes",
+    "area": "products"
+  },
+  {
+    "source": "5 mm",
+    "area": "products"
+  },
+  {
+    "source": "5.5 mm",
+    "area": "products"
+  },
+  {
+    "source": "50 × 50 mm",
+    "area": "products"
+  },
+  {
+    "source": "50×50×1.8mm × 6m | Hitam",
+    "area": "products"
+  },
+  {
+    "source": "50×50×5mm × 6m | Hitam",
+    "area": "products"
+  },
+  {
+    "source": "6 meter",
+    "area": "products"
+  },
+  {
+    "source": "6 mm",
+    "area": "products"
+  },
+  {
+    "source": "60.3 mm (2\")",
+    "area": "products"
+  },
+  {
+    "source": "6mm × 1200×2400mm | Hitam",
+    "area": "products"
+  },
+  {
+    "source": "7 mm",
+    "area": "products"
+  },
+  {
+    "source": "75 mm",
+    "area": "products"
+  },
+  {
+    "source": "8 mm",
+    "area": "products"
+  },
+  {
+    "source": "800 mm",
+    "area": "products"
+  },
+  {
+    "source": "88.9 mm (3\")",
+    "area": "products"
+  },
+  {
+    "source": "Atap carport",
+    "area": "products"
+  },
+  {
+    "source": "Atap gudang ringan",
+    "area": "products"
+  },
+  {
+    "source": "Atap rumah",
+    "area": "products"
+  },
+  {
+    "source": "Atap spandek tipis untuk bangunan ringan, gudang semi-permanen, dan atap carport.",
+    "area": "products"
+  },
+  {
+    "source": "AZ 100 Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "AZ 150 Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "Baja Karbon",
+    "area": "products"
+  },
+  {
+    "source": "Baja Karbon (Hitam)",
+    "area": "products"
+  },
+  {
+    "source": "Baja Karbon (Hot Rolled)",
+    "area": "products"
+  },
+  {
+    "source": "Baja Karbon Rendah",
+    "area": "products"
+  },
+  {
+    "source": "Baja Lapis Seng (Galvanis)",
+    "area": "products"
+  },
+  {
+    "source": "Baja Lapis Seng Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "Baja Lapis Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "Baja Ringan Reng 35",
+    "area": "products"
+  },
+  {
+    "source": "Baja Ringan Reng C75",
+    "area": "products"
+  },
+  {
+    "source": "Baja Struktural",
+    "area": "products"
+  },
+  {
+    "source": "Baja Tulangan",
+    "area": "products"
+  },
+  {
+    "source": "Baja Tulangan Las",
+    "area": "products"
+  },
+  {
+    "source": "Baja Zincalume / Galvalume",
+    "area": "products"
+  },
+  {
+    "source": "Balok bangunan",
+    "area": "products"
+  },
+  {
+    "source": "Balok induk",
+    "area": "products"
+  },
+  {
+    "source": "Balok induk gedung",
+    "area": "products"
+  },
+  {
+    "source": "Balok lantai",
+    "area": "products"
+  },
+  {
+    "source": "Bangunan komersial",
+    "area": "products"
+  },
+  {
+    "source": "Batang / Kg",
+    "area": "products"
+  },
+  {
+    "source": "Berat/Lembar",
+    "area": "products"
+  },
+  {
+    "source": "Besi Beton Polos 10mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Beton Polos 12mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi beton polos diameter 12mm untuk kolom, balok, dan sloof bangunan dengan beban menengah.",
+    "area": "products"
+  },
+  {
+    "source": "Besi beton polos standar SNI untuk kebutuhan konstruksi bangunan, sloof, kolom, dan balok. Kualitas terjamin, mudah dibengkokkan dan dirakit di lapangan.",
+    "area": "products"
+  },
+  {
+    "source": "Besi beton ulir / deformed bar D13 untuk konstruksi beton bertulang dengan daya cengkeram lebih tinggi terhadap beton.",
+    "area": "products"
+  },
+  {
+    "source": "Besi Beton Ulir 13mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Beton Ulir 16mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi beton ulir D16 untuk struktur beton bertulang pada gedung bertingkat dan bangunan komersial.",
+    "area": "products"
+  },
+  {
+    "source": "Besi Hollow Galvanis 40×40mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Hollow Hitam 50×50mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Hollow Persegi Panjang 40×80mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Siku 40×40×4mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi Siku 50×50×5mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi siku 50×50×5mm untuk aplikasi yang membutuhkan kekuatan lebih pada konstruksi baja ringan dan menengah.",
+    "area": "products"
+  },
+  {
+    "source": "Besi siku equal leg 40×40×4mm untuk rangka bangunan, rak, dan berbagai aplikasi fabrikasi.",
+    "area": "products"
+  },
+  {
+    "source": "Besi WF 150×75mm",
+    "area": "products"
+  },
+  {
+    "source": "Besi WF 200×100mm",
+    "area": "products"
+  },
+  {
+    "source": "Bondek / Floordeck 0.75mm",
+    "area": "products"
+  },
+  {
+    "source": "Bondek floordeck baja bergelombang untuk lantai beton komposit dan dak yang efisien.",
+    "area": "products"
+  },
+  {
+    "source": "Bracing",
+    "area": "products"
+  },
+  {
+    "source": "Bracing struktur",
+    "area": "products"
+  },
+  {
+    "source": "C-Channel Light Steel",
+    "area": "products"
+  },
+  {
+    "source": "C75 × 0.75mm × 6m | Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "Carport",
+    "area": "products"
+  },
+  {
+    "source": "Carport heavy-duty",
+    "area": "products"
+  },
+  {
+    "source": "Checker Plate (Bordes)",
+    "area": "products"
+  },
+  {
+    "source": "Coating",
+    "area": "products"
+  },
+  {
+    "source": "Composite Floor Deck",
+    "area": "products"
+  },
+  {
+    "source": "Cor lantai rumah",
+    "area": "products"
+  },
+  {
+    "source": "Corrugate / Spandeck",
+    "area": "products"
+  },
+  {
+    "source": "Custom (max 6m)",
+    "area": "products"
+  },
+  {
+    "source": "Custom (sesuai pesanan)",
+    "area": "products"
+  },
+  {
+    "source": "D13mm × 12m | SNI 07-2052",
+    "area": "products"
+  },
+  {
+    "source": "D16mm × 12m | SNI 07-2052",
+    "area": "products"
+  },
+  {
+    "source": "Dak bangunan",
+    "area": "products"
+  },
+  {
+    "source": "Dak beton",
+    "area": "products"
+  },
+  {
+    "source": "Dak gedung komersial",
+    "area": "products"
+  },
+  {
+    "source": "Diameter",
+    "area": "products"
+  },
+  {
+    "source": "Diameter Kawat",
+    "area": "products"
+  },
+  {
+    "source": "Diameter Luar",
+    "area": "products"
+  },
+  {
+    "source": "Diamond / 5-bar pattern",
+    "area": "products"
+  },
+  {
+    "source": "Dinding beton",
+    "area": "products"
+  },
+  {
+    "source": "Divisi",
+    "area": "products"
+  },
+  {
+    "source": "Equal Angle Bar",
+    "area": "products"
+  },
+  {
+    "source": "ERW (Electric Resistance Welded)",
+    "area": "products"
+  },
+  {
+    "source": "Fabrikasi pintu",
+    "area": "products"
+  },
+  {
+    "source": "Fabrikasi tank",
+    "area": "products"
+  },
+  {
+    "source": "Fabrikasi umum",
+    "area": "products"
+  },
+  {
+    "source": "Galvanized Steel Pipe",
+    "area": "products"
+  },
+  {
+    "source": "Gedung bertingkat",
+    "area": "products"
+  },
+  {
+    "source": "Gudang industri",
+    "area": "products"
+  },
+  {
+    "source": "Handrail tangga",
+    "area": "products"
+  },
+  {
+    "source": "Hollow galvanis kotak 40×40 untuk pagar, kanopi, rangka partisi, dan berbagai konstruksi ringan tahan karat.",
+    "area": "products"
+  },
+  {
+    "source": "Hollow hitam ukuran 50×50mm untuk rangka konstruksi bangunan dan kebutuhan fabrikasi umum.",
+    "area": "products"
+  },
+  {
+    "source": "Hollow persegi panjang galvanis untuk rangka khusus, kanopi bertingkat, dan struktur carport.",
+    "area": "products"
+  },
+  {
+    "source": "Hot Rolled Plate",
+    "area": "products"
+  },
+  {
+    "source": "Instalasi air bersih",
+    "area": "products"
+  },
+  {
+    "source": "Instalasi air bertekanan",
+    "area": "products"
+  },
+  {
+    "source": "Jembatan kecil",
+    "area": "products"
+  },
+  {
+    "source": "Jendela besi",
+    "area": "products"
+  },
+  {
+    "source": "JIS G3101 / SNI",
+    "area": "products"
+  },
+  {
+    "source": "Kanopi semi-permanen",
+    "area": "products"
+  },
+  {
+    "source": "Kebutuhan material sesuai spesifikasi pekerjaan",
+    "area": "products"
+  },
+  {
+    "source": "Ketebalan",
+    "area": "products"
+  },
+  {
+    "source": "Kolom bangunan",
+    "area": "products"
+  },
+  {
+    "source": "Kolom bangunan bertingkat",
+    "area": "products"
+  },
+  {
+    "source": "Kolom gedung",
+    "area": "products"
+  },
+  {
+    "source": "Kolom pipa baja",
+    "area": "products"
+  },
+  {
+    "source": "Kolom ringan",
+    "area": "products"
+  },
+  {
+    "source": "Kolom utama",
+    "area": "products"
+  },
+  {
+    "source": "Konfirmasi admin",
+    "area": "products"
+  },
+  {
+    "source": "Konstruksi baja menengah",
+    "area": "products"
+  },
+  {
+    "source": "Kuda-kuda baja ringan",
+    "area": "products"
+  },
+  {
+    "source": "Lantai anti-slip",
+    "area": "products"
+  },
+  {
+    "source": "Lantai beton komposit",
+    "area": "products"
+  },
+  {
+    "source": "Lantai parkir",
+    "area": "products"
+  },
+  {
+    "source": "Lebar Efektif",
+    "area": "products"
+  },
+  {
+    "source": "Lebar Flange",
+    "area": "products"
+  },
+  {
+    "source": "Lembar / Kg",
+    "area": "products"
+  },
+  {
+    "source": "Material",
+    "area": "products"
+  },
+  {
+    "source": "Ø1\" (33.4mm) × 6m | Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "Ø10mm × 12m | SNI 07-2052",
+    "area": "products"
+  },
+  {
+    "source": "Ø12mm × 12m | SNI 07-2052",
+    "area": "products"
+  },
+  {
+    "source": "Ø2\" (60.3mm) × 6m | ERW",
+    "area": "products"
+  },
+  {
+    "source": "Ø3\" (88.9mm) × 6m | ERW",
+    "area": "products"
+  },
+  {
+    "source": "Ø6mm | 150×150mm | 2.1×5.4m",
+    "area": "products"
+  },
+  {
+    "source": "Ø8mm | 150×150mm | 2.1×5.4m",
+    "area": "products"
+  },
+  {
+    "source": "Pagar besi",
+    "area": "products"
+  },
+  {
+    "source": "Panel dinding precast",
+    "area": "products"
+  },
+  {
+    "source": "Panjang",
+    "area": "products"
+  },
+  {
+    "source": "Panjang Standar",
+    "area": "products"
+  },
+  {
+    "source": "Parkiran",
+    "area": "products"
+  },
+  {
+    "source": "Partisi ruangan",
+    "area": "products"
+  },
+  {
+    "source": "Pelapis struktur",
+    "area": "products"
+  },
+  {
+    "source": "Pelat jalan",
+    "area": "products"
+  },
+  {
+    "source": "Pelat jalan berat",
+    "area": "products"
+  },
+  {
+    "source": "Pelat lantai",
+    "area": "products"
+  },
+  {
+    "source": "Penutup dinding",
+    "area": "products"
+  },
+  {
+    "source": "Pergola",
+    "area": "products"
+  },
+  {
+    "source": "Pintu besi",
+    "area": "products"
+  },
+  {
+    "source": "Pipa Besi Hitam 2 Inch",
+    "area": "products"
+  },
+  {
+    "source": "Pipa Besi Hitam 3 Inch",
+    "area": "products"
+  },
+  {
+    "source": "Pipa besi hitam 3 inch untuk instalasi saluran air, tiang dan kolom baja, dan berbagai kebutuhan industri.",
+    "area": "products"
+  },
+  {
+    "source": "Pipa besi hitam medium 2 inch (ERW) untuk instalasi air, tiang pagar, dan konstruksi umum.",
+    "area": "products"
+  },
+  {
+    "source": "Pipa Galvanis 1 Inch",
+    "area": "products"
+  },
+  {
+    "source": "Pipa galvanis 1 inch untuk instalasi air bersih, gas, dan berbagai kebutuhan konstruksi tahan korosi.",
+    "area": "products"
+  },
+  {
+    "source": "Pipa gas",
+    "area": "products"
+  },
+  {
+    "source": "Plat baja hitam tebal 6mm untuk fabrikasi, lantai, pelapis, dan konstruksi umum.",
+    "area": "products"
+  },
+  {
+    "source": "Plat Besi Hitam 6mm",
+    "area": "products"
+  },
+  {
+    "source": "Plat bordes (checker plate) untuk lantai anti-slip, tangga, dan area berbobot.",
+    "area": "products"
+  },
+  {
+    "source": "Plat Bordes 4mm",
+    "area": "products"
+  },
+  {
+    "source": "Platform industri",
+    "area": "products"
+  },
+  {
+    "source": "Pola",
+    "area": "products"
+  },
+  {
+    "source": "Polos / Plain Bar",
+    "area": "products"
+  },
+  {
+    "source": "Pondasi bored pile",
+    "area": "products"
+  },
+  {
+    "source": "Pondasi pile cap",
+    "area": "products"
+  },
+  {
+    "source": "Pondasi ringan",
+    "area": "products"
+  },
+  {
+    "source": "Profil baja ringan C75 untuk rangka kuda-kuda atap rumah tinggal dan bangunan komersial.",
+    "area": "products"
+  },
+  {
+    "source": "Profil Wide Flange 150×75 untuk balok dan kolom bangunan bertingkat rendah hingga menengah.",
+    "area": "products"
+  },
+  {
+    "source": "Purlin atap baja",
+    "area": "products"
+  },
+  {
+    "source": "Rak gudang",
+    "area": "products"
+  },
+  {
+    "source": "Rangka atap konvensional",
+    "area": "products"
+  },
+  {
+    "source": "Rangka atap rumah",
+    "area": "products"
+  },
+  {
+    "source": "Rangka bangunan",
+    "area": "products"
+  },
+  {
+    "source": "Rangka gudang",
+    "area": "products"
+  },
+  {
+    "source": "Rangka kanopi",
+    "area": "products"
+  },
+  {
+    "source": "Rangka rak besi",
+    "area": "products"
+  },
+  {
+    "source": "Rectangular Hollow Section",
+    "area": "products"
+  },
+  {
+    "source": "Reng / batten",
+    "area": "products"
+  },
+  {
+    "source": "Reng / Batten",
+    "area": "products"
+  },
+  {
+    "source": "Reng 35 × 0.5mm × 6m | Zincalume",
+    "area": "products"
+  },
+  {
+    "source": "Reng asbes",
+    "area": "products"
+  },
+  {
+    "source": "Reng baja ringan 35mm sebagai dudukan genteng metal dan penutup atap lainnya.",
+    "area": "products"
+  },
+  {
+    "source": "Reng genteng metal",
+    "area": "products"
+  },
+  {
+    "source": "Reng spandek",
+    "area": "products"
+  },
+  {
+    "source": "Saluran air hujan besar",
+    "area": "products"
+  },
+  {
+    "source": "Scaffolding",
+    "area": "products"
+  },
+  {
+    "source": "Shear wall",
+    "area": "products"
+  },
+  {
+    "source": "Silver / Abu-abu Galvanis",
+    "area": "products"
+  },
+  {
+    "source": "Sloof",
+    "area": "products"
+  },
+  {
+    "source": "Sloof bangunan",
+    "area": "products"
+  },
+  {
+    "source": "SNI 07-0242-2000",
+    "area": "products"
+  },
+  {
+    "source": "SNI 07-0663-1995",
+    "area": "products"
+  },
+  {
+    "source": "SNI 07-2052-2002",
+    "area": "products"
+  },
+  {
+    "source": "Spandek 0.35mm",
+    "area": "products"
+  },
+  {
+    "source": "Spasi",
+    "area": "products"
+  },
+  {
+    "source": "Square Hollow Section",
+    "area": "products"
+  },
+  {
+    "source": "Standar",
+    "area": "products"
+  },
+  {
+    "source": "Struktur penopang ringan",
+    "area": "products"
+  },
+  {
+    "source": "Struktur tahan karat",
+    "area": "products"
+  },
+  {
+    "source": "Support beam",
+    "area": "products"
+  },
+  {
+    "source": "Support sistem",
+    "area": "products"
+  },
+  {
+    "source": "Tangga besi",
+    "area": "products"
+  },
+  {
+    "source": "Tebal Flange",
+    "area": "products"
+  },
+  {
+    "source": "Tebal Web",
+    "area": "products"
+  },
+  {
+    "source": "Tiang canopy besar",
+    "area": "products"
+  },
+  {
+    "source": "Tiang pagar",
+    "area": "products"
+  },
+  {
+    "source": "Tiang pagar galvanis",
+    "area": "products"
+  },
+  {
+    "source": "Tiang terali",
+    "area": "products"
+  },
+  {
+    "source": "Tinggi",
+    "area": "products"
+  },
+  {
+    "source": "Tinggi Profil",
+    "area": "products"
+  },
+  {
+    "source": "Tipe",
+    "area": "products"
+  },
+  {
+    "source": "Truk / trailer",
+    "area": "products"
+  },
+  {
+    "source": "Tutup manhole",
+    "area": "products"
+  },
+  {
+    "source": "Ukuran",
+    "area": "products"
+  },
+  {
+    "source": "Ukuran / varian",
+    "area": "products"
+  },
+  {
+    "source": "Ukuran dan spesifikasi sesuai konfirmasi admin MBI Trading",
+    "area": "products"
+  },
+  {
+    "source": "Ukuran Lembaran",
+    "area": "products"
+  },
+  {
+    "source": "Ukuran Standar",
+    "area": "products"
+  },
+  {
+    "source": "Ulir / Deformed Bar",
+    "area": "products"
+  },
+  {
+    "source": "Warna",
+    "area": "products"
+  },
+  {
+    "source": "Welded Wire Mesh",
+    "area": "products"
+  },
+  {
+    "source": "WF 150×75×5×7mm × 12m",
+    "area": "products"
+  },
+  {
+    "source": "WF 200×100 untuk struktur bangunan komersial, gudang industri, dan konstruksi berat menengah.",
+    "area": "products"
+  },
+  {
+    "source": "WF 200×100×5.5×8mm × 12m",
+    "area": "products"
+  },
+  {
+    "source": "Wide Flange (WF)",
+    "area": "products"
+  },
+  {
+    "source": "Wiremesh M6",
+    "area": "products"
+  },
+  {
+    "source": "Wiremesh M8",
+    "area": "products"
+  },
+  {
+    "source": "Wiremesh M8 untuk cor lantai dan dak dengan beban lebih berat, gedung komersial dan industri.",
+    "area": "products"
+  },
+  {
+    "source": "Wiremesh standar M6 untuk cor lantai rumah, dak beton, dan panel dinding precast.",
+    "area": "products"
+  },
+  {
+    "source": "Zincalume AZ 150",
+    "area": "products"
+  },
+  {
+    "source": "all",
+    "area": "ProductsPage"
   },
   {
     "source": "Atap UPVC",
@@ -1693,23 +3583,55 @@
   },
   {
     "source": "Baja Ringan",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Besi Beton",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "SearchOverlay",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Besi Hollow",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Besi Siku",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Bondek",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "SearchOverlay",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Canal CNP",
@@ -1721,10 +3643,18 @@
   },
   {
     "source": "Cari Produk",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "SearchPage"
+    ]
   },
   {
     "source": "Coba ubah filter atau kata kunci pencarian Anda.",
+    "area": "ProductsPage"
+  },
+  {
+    "source": "default",
     "area": "ProductsPage"
   },
   {
@@ -1757,7 +3687,11 @@
   },
   {
     "source": "Kategori",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "SearchOverlay"
+    ]
   },
   {
     "source": "Ketersediaan",
@@ -1776,12 +3710,32 @@
     "area": "ProductsPage"
   },
   {
-    "source": "Pipa Besi",
+    "source": "name-asc",
     "area": "ProductsPage"
   },
   {
-    "source": "Plat Besi",
+    "source": "name-desc",
     "area": "ProductsPage"
+  },
+  {
+    "source": "Pipa Besi",
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "SearchOverlay",
+      "categories",
+      "products"
+    ]
+  },
+  {
+    "source": "Plat Besi",
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "produk",
@@ -1797,10 +3751,18 @@
   },
   {
     "source": "Produk tidak ditemukan",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "SearchPage"
+    ]
   },
   {
     "source": "produk)",
+    "area": "ProductsPage"
+  },
+  {
+    "source": "ready",
     "area": "ProductsPage"
   },
   {
@@ -1817,7 +3779,13 @@
   },
   {
     "source": "Spandek",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "categories",
+      "products"
+    ]
   },
   {
     "source": "Stok dikonfirmasi",
@@ -1841,7 +3809,15 @@
   },
   {
     "source": "Wiremesh",
-    "area": "ProductsPage"
+    "area": "ProductsPage",
+    "areas": [
+      "ProductsPage",
+      "Navbar",
+      "SearchOverlay",
+      "categories",
+      "divisionContent",
+      "products"
+    ]
   },
   {
     "source": "Dari proses hingga detail.",
@@ -1893,11 +3869,19 @@
   },
   {
     "source": "Besi beton",
-    "area": "ProjectsPage"
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "divisionContent"
+    ]
   },
   {
     "source": "Besi hollow",
-    "area": "ProjectsPage"
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "divisionContent"
+    ]
   },
   {
     "source": "Bondek untuk kebutuhan konstruksi",
@@ -1965,7 +3949,11 @@
   },
   {
     "source": "Galeri",
-    "area": "ProjectsPage"
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "Navbar"
+    ]
   },
   {
     "source": "Galeri Mahameru Baja menampilkan material, aktivitas toko, proses produksi, hingga hasil pekerjaan yang kami kerjakan.",
@@ -1973,6 +3961,10 @@
   },
   {
     "source": "Galeri material & pekerjaan",
+    "area": "ProjectsPage"
+  },
+  {
+    "source": "Ilustrasi",
     "area": "ProjectsPage"
   },
   {
@@ -1984,7 +3976,7 @@
     "area": "ProjectsPage"
   },
   {
-    "source": "Ilustrasi proses CNC bending",
+    "source": "Ilustrasi proses bending",
     "area": "ProjectsPage"
   },
   {
@@ -1993,7 +3985,11 @@
   },
   {
     "source": "Jasa laser cutting",
-    "area": "ProjectsPage"
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "clientPosters"
+    ]
   },
   {
     "source": "Kirim daftar material, volume, lokasi, dan target waktu. Tim kami membantu mengarahkan kebutuhan ke divisi yang tepat.",
@@ -2024,8 +4020,17 @@
     "area": "ProjectsPage"
   },
   {
-    "source": "Minta penawaran",
+    "source": "Mesin",
     "area": "ProjectsPage"
+  },
+  {
+    "source": "Minta penawaran",
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "Footer",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "Minta penawaran →",
@@ -2056,12 +4061,204 @@
     "area": "ProjectsPage"
   },
   {
+    "source": "Retail",
+    "area": "ProjectsPage"
+  },
+  {
     "source": "Toko Mahameru Baja, Tambun Selatan",
     "area": "ProjectsPage"
   },
   {
     "source": "Toko Tambun",
     "area": "ProjectsPage"
+  },
+  {
+    "source": "Warehouse",
+    "area": "ProjectsPage"
+  },
+  {
+    "source": "Banner pengingat kalender, bukan pengumuman acara atau diskon. Jadwal produksi dan harga perlu konfirmasi admin.",
+    "area": "promotions"
+  },
+  {
+    "source": "Belanja lebih banyak, harga lebih ringan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Diskon 5–15% untuk pemesanan 11 lembar atau lebih.",
+    "area": "promotions"
+  },
+  {
+    "source": "Diskon hingga 17% untuk besi hollow, plat hitam, dan besi beton pilihan selama periode promo.",
+    "area": "promotions"
+  },
+  {
+    "source": "Diskon hingga 17% untuk pembelian material pilihan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Gambar kerja Anda. Kami bantu wujudkan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Harga khusus untuk pembelian material proyek mulai 50 batang.",
+    "area": "promotions"
+  },
+  {
+    "source": "Harga khusus untuk pemesanan laser cutting mulai 11 lembar.",
+    "area": "promotions"
+  },
+  {
+    "source": "Harga, kapasitas mesin, ketebalan material, dan jadwal dikonfirmasi setelah review teknis.",
+    "area": "promotions"
+  },
+  {
+    "source": "Ide dekorasi. Wujudkan lewat cutting.",
+    "area": "promotions"
+  },
+  {
+    "source": "Kalender / Halloween",
+    "area": "promotions"
+  },
+  {
+    "source": "Kalender / Ramadan",
+    "area": "promotions"
+  },
+  {
+    "source": "Kirim Gambar",
+    "area": "promotions"
+  },
+  {
+    "source": "Konsultasi daftar material, ukuran, jumlah, dan rencana pengiriman.",
+    "area": "promotions"
+  },
+  {
+    "source": "Konsultasi dekorasi",
+    "area": "promotions"
+  },
+  {
+    "source": "Konsultasikan kebutuhan laser cutting dan bending, dari komponen satuan hingga pekerjaan proyek.",
+    "area": "promotions"
+  },
+  {
+    "source": "Koordinasi daftar material dan rencana pekerjaan bersama admin.",
+    "area": "promotions"
+  },
+  {
+    "source": "Layanan MBI",
+    "area": "promotions"
+  },
+  {
+    "source": "Lihat Material Promo",
+    "area": "promotions"
+  },
+  {
+    "source": "Material & suplai",
+    "area": "promotions"
+  },
+  {
+    "source": "Material yang tepat. Tim yang sesuai.",
+    "area": "promotions"
+  },
+  {
+    "source": "Menuju 31 Oktober: siapkan gambar dan kebutuhan dekorasi custom bersama tim laser cutting.",
+    "area": "promotions"
+  },
+  {
+    "source": "Merdeka belanja besi, lebih hemat!",
+    "area": "promotions"
+  },
+  {
+    "source": "Minta Harga Proyek",
+    "area": "promotions"
+  },
+  {
+    "source": "Periode 1–30 November 2026. 11–25 lembar diskon 5%, 26–50 lembar 10%, 51 lembar atau lebih 15%.",
+    "area": "promotions"
+  },
+  {
+    "source": "Periode 1–30 September 2026. 50 batang potongan 3%, 100 batang 5%, 250 batang 7%, 500 batang atau lebih hubungi tim.",
+    "area": "promotions"
+  },
+  {
+    "source": "Periode 1–31 Agustus 2026. Stok dan harga promo terbatas. Syarat dan ketentuan berlaku.",
+    "area": "promotions"
+  },
+  {
+    "source": "Periode 1–31 Maret 2026. Promo berlaku selama persediaan masih ada.",
+    "area": "promotions"
+  },
+  {
+    "source": "Persiapan Ramadan",
+    "area": "promotions"
+  },
+  {
+    "source": "Pilih kebutuhan retail atau suplai proyek. Konfirmasikan produk dan stok langsung dengan divisinya.",
+    "area": "promotions"
+  },
+  {
+    "source": "Potong plat lebih banyak, biaya per lembar lebih hemat.",
+    "area": "promotions"
+  },
+  {
+    "source": "Potongan 3–7% untuk pembelian 50 batang atau lebih.",
+    "area": "promotions"
+  },
+  {
+    "source": "Potongan harga hingga 15% untuk material pilihan selama Ramadan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Potongan harga hingga 15% untuk material pilihan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Promo Kemerdekaan",
+    "area": "promotions"
+  },
+  {
+    "source": "Promo MBI Laser Cutting",
+    "area": "promotions"
+  },
+  {
+    "source": "Promo Supply Proyek",
+    "area": "promotions"
+  },
+  {
+    "source": "Rencanakan kebutuhan sebelum Ramadan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Rencanakan material",
+    "area": "promotions"
+  },
+  {
+    "source": "Review gambar dan diskusi kebutuhan cutting untuk dekorasi.",
+    "area": "promotions"
+  },
+  {
+    "source": "Review gambar, spesifikasi material, dan kebutuhan produksi sebelum penawaran.",
+    "area": "promotions"
+  },
+  {
+    "source": "Siapkan material dan jadwal produksi lebih awal. Awal Ramadan 1448 H diperkirakan 8 Februari 2027.",
+    "area": "promotions"
+  },
+  {
+    "source": "Siapkan material sebelum proyek berjalan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Stok dan harga dikonfirmasi admin divisi sebelum pemesanan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Tanggal berdasarkan Kalender Hijriah Kemenag 2027; awal Ramadan tetap menunggu penetapan pemerintah. Tidak ada diskon atau acara yang dijanjikan.",
+    "area": "promotions"
+  },
+  {
+    "source": "Tanya Promo",
+    "area": "promotions"
   },
   {
     "source": "Berlaku untuk",
@@ -2092,6 +4289,10 @@
     "area": "Promotions"
   },
   {
+    "source": "Lihat detail penawaran",
+    "area": "Promotions"
+  },
+  {
     "source": "Lihat promo dan penawaran",
     "area": "Promotions"
   },
@@ -2100,8 +4301,20 @@
     "area": "Promotions"
   },
   {
+    "source": "Perbesar poster",
+    "area": "Promotions",
+    "areas": [
+      "Promotions",
+      "WelcomePosters"
+    ]
+  },
+  {
     "source": "Periode",
-    "area": "Promotions"
+    "area": "Promotions",
+    "areas": [
+      "Promotions",
+      "WelcomePosters"
+    ]
   },
   {
     "source": "PROMO & KEGIATAN",
@@ -2109,6 +4322,10 @@
   },
   {
     "source": "Sampai pemberitahuan berikutnya",
+    "area": "Promotions"
+  },
+  {
+    "source": "Tutup",
     "area": "Promotions"
   },
   {
@@ -2161,7 +4378,11 @@
   },
   {
     "source": "Email",
-    "area": "QuotationPage"
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "ContactDirectory"
+    ]
   },
   {
     "source": "Foto & Catatan Tambahan",
@@ -2205,7 +4426,11 @@
   },
   {
     "source": "Minta Penawaran",
-    "area": "QuotationPage"
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "Navbar"
+    ]
   },
   {
     "source": "Minta Penawaran Material",
@@ -2233,7 +4458,11 @@
   },
   {
     "source": "Penawaran",
-    "area": "QuotationPage"
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "UnifiedHomeContent"
+    ]
   },
   {
     "source": "PERMINTAAN TERSIMPAN /",
@@ -2249,7 +4478,11 @@
   },
   {
     "source": "Satuan",
-    "area": "QuotationPage"
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "products"
+    ]
   },
   {
     "source": "Saya menyetujui data kontak dan kebutuhan ini disimpan untuk ditindaklanjuti oleh tim Mahameru Baja.",
@@ -2408,7 +4641,7 @@
     "area": "SearchPage"
   },
   {
-    "source": "Jasa Laser Cutting & CNC Bending",
+    "source": "Jasa Laser Cutting & Bending",
     "area": "SearchPage"
   },
   {
@@ -2488,10 +4721,6 @@
     "area": "ShareArticle"
   },
   {
-    "source": "WhatsApp",
-    "area": "ShareArticle"
-  },
-  {
     "source": "Belum ada unggahan untuk pilihan ini. Kunjungi akun resmi kami di bawah.",
     "area": "SocialHub"
   },
@@ -2540,6 +4769,58 @@
     "area": "SocialHub"
   },
   {
+    "source": "Kabar dari toko dan tim Mahameru Baja.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Kebutuhan besi untuk bangunan",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Kenali layanan laser cutting",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Kenali pilihan material bersama Mahameru Baja.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Lihat layanan pengiriman material melalui unggahan Garuda Marginal Baja Cibitung.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Lihat proses laser cutting melalui unggahan resmi tim MBI.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Material konstruksi dan layanan fabrikasi dari Mahameru Baja.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Pemotongan atap spandek",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Pengiriman material Garuda",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Proses laser cutting",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Proses laser cutting melalui video resmi Mahameru Baja Indonesia.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Proses pemotongan atap spandek pasir 2,5 meter di Garuda Marginal Baja.",
+    "area": "socialMedia"
+  },
+  {
+    "source": "Siap membantu kebutuhan Anda",
+    "area": "socialMedia"
+  },
+  {
     "source": "· dicatat",
     "area": "SocialProof"
   },
@@ -2564,15 +4845,7 @@
     "area": "SocialProof"
   },
   {
-    "source": "Geser untuk melihat pemasok material kami.",
-    "area": "SocialProof"
-  },
-  {
     "source": "GOOGLE MAPS",
-    "area": "SocialProof"
-  },
-  {
-    "source": "Hentikan pergeseran logo",
     "area": "SocialProof"
   },
   {
@@ -2589,10 +4862,6 @@
   },
   {
     "source": "Langsung dari Google Maps.",
-    "area": "SocialProof"
-  },
-  {
-    "source": "Lanjutkan pergeseran logo",
     "area": "SocialProof"
   },
   {
@@ -2760,12 +5029,16 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "LASER CUTTING & CNC BENDING",
+    "source": "LASER CUTTING & BENDING",
     "area": "UnifiedHomeContent"
   },
   {
     "source": "Lihat pilihan material",
-    "area": "UnifiedHomeContent"
+    "area": "UnifiedHomeContent",
+    "areas": [
+      "UnifiedHomeContent",
+      "divisionContent"
+    ]
   },
   {
     "source": "Lima divisi Mahameru Group",
@@ -2784,7 +5057,7 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "Mahameru Group melayani pembelian besi, pengadaan material proyek, laser cutting, CNC bending, fabrikasi, hingga erection. Setiap divisi menangani jenis kebutuhan yang berbeda, sehingga Anda dapat langsung menghubungi tim yang sesuai dengan pekerjaan Anda.",
+    "source": "Mahameru Group melayani pembelian besi, pengadaan material proyek, laser cutting, bending, fabrikasi, hingga erection. Setiap divisi menangani jenis kebutuhan yang berbeda, sehingga Anda dapat langsung menghubungi tim yang sesuai dengan pekerjaan Anda.",
     "area": "UnifiedHomeContent"
   },
   {
@@ -2817,7 +5090,11 @@
   },
   {
     "source": "Pilih divisi",
-    "area": "UnifiedHomeContent"
+    "area": "UnifiedHomeContent",
+    "areas": [
+      "UnifiedHomeContent",
+      "heroSlides"
+    ]
   },
   {
     "source": "Pilih material, suplai proyek, atau pekerjaan custom. Kami arahkan ke tim yang tepat.",
@@ -2888,7 +5165,15 @@
     "area": "UnifiedHomeContent"
   },
   {
+    "source": "Berikutnya",
+    "area": "WelcomePosters"
+  },
+  {
     "source": "Chat",
+    "area": "WelcomePosters"
+  },
+  {
+    "source": "Detail promo & kontak",
     "area": "WelcomePosters"
   },
   {
@@ -2904,6 +5189,10 @@
     "area": "WelcomePosters"
   },
   {
+    "source": "Kembali ke detail",
+    "area": "WelcomePosters"
+  },
+  {
     "source": "Lihat kontak",
     "area": "WelcomePosters"
   },
@@ -2912,7 +5201,15 @@
     "area": "WelcomePosters"
   },
   {
-    "source": "Pratinjau admin, belum diterbitkan",
+    "source": "Pratinjau poster",
+    "area": "WelcomePosters"
+  },
+  {
+    "source": "Promo & informasi",
+    "area": "WelcomePosters"
+  },
+  {
+    "source": "Sebelumnya",
     "area": "WelcomePosters"
   },
   {
@@ -2922,5 +5219,9 @@
   {
     "source": "Untuk kebutuhan",
     "area": "WelcomePosters"
+  },
+  {
+    "source": "Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat.",
+    "area": "WhatsAppButton"
   }
 ]

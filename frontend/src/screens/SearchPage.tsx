@@ -3,15 +3,15 @@ import PublicText from "../components/PublicText";
 
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
-import { searchProducts } from '../data/products';
+import { resolvedInventoryProducts, type InventoryItem } from '../data/inventory';
 import ProductCard from '../components/ProductCard';
 
-export default function SearchPage() {
+export default function SearchPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState(searchParams.get('q') || '');
 
   const q = searchParams.get('q') || '';
-  const results = q.trim().length > 0 ? searchProducts(q) : [];
+  const results = q.trim().length > 0 ? resolvedInventoryProducts(inventory).filter(product => inventory.some(item => item.productId === product.id && item.listed) && `${product.name} ${product.category} ${product.shortSpec} ${product.sku} ${product.tags.join(' ')}`.toLowerCase().includes(q.toLowerCase())) : [];
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();

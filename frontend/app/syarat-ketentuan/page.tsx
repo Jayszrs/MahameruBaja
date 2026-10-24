@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PublicText from "../../src/components/PublicText";
 
-export const metadata = { title: "Syarat & Ketentuan" };
+export const metadata = { title: "Syarat & Ketentuan", alternates: { canonical: "/syarat-ketentuan" } };
 
 export default function TermsPage() {
   return <PublicText><section className="home-section bg-white"><div className="home-shell max-w-4xl">

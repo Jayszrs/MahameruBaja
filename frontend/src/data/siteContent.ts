@@ -47,7 +47,7 @@ export const reviewProfileSchema = z.object({
 export const siteContentSchema = z.object({
   partnerLogos:partnerLogoListSchema.default(defaultPartnerLogos),
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
-  websiteTexts: z.array(websiteTextSchema).max(500).default([]),
+  websiteTexts: z.array(websiteTextSchema).max(2000).default([]),
   clientPosterVersion: z.number().int().nonnegative().default(0),
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),

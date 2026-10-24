@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useDivisionDirectory } from "./DivisionDirectory";
+import PublicText from "./PublicText";
 
 import { internationalPhone, type TeamContact } from '../data/siteContent';
 
@@ -32,7 +33,7 @@ export default function WhatsAppButton() {
   }, [open]);
 
   return (
-    <div className={`whatsapp-floating fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2${productDetail ? " above-product-actions" : ""}`}>
+    <PublicText><div className={`whatsapp-floating fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2${productDetail ? " above-product-actions" : ""}`}>
       {/* Action menu */}
       {open && (
         <div className="wa-admin-menu flex flex-col gap-1.5 mb-1 items-end">
@@ -73,6 +74,6 @@ export default function WhatsAppButton() {
           </svg>
         )}
       </button>
-    </div>
+    </div></PublicText>
   );
 }

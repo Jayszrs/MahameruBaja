@@ -12,6 +12,8 @@ import "../src/client-readability.css";
 import "../src/admin-workspace.css";
 import "../src/admin-management.css";
 import "../src/experience-revision.css";
+import "../src/public-refinement.css";
+import "../src/admin-refinement.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
@@ -54,6 +56,7 @@ export const metadata: Metadata = {
     template: "%s | Mahameru Baja Indonesia",
   },
   description: "Retail besi, supplier material proyek, laser cutting, bending, dan fabrikasi di Tambun, Cibitung, dan Bekasi.",
+  verification: { google: process.env.GOOGLE_SITE_VERIFICATION || "e5pMHAECF9BZQf04S3uJAhmre9xFHY8eTPfEAgap_sA" },
   applicationName: "Mahameru Baja Indonesia",
   icons: {
     icon: "/_next/image?url=%2Fimages%2Fbrand%2Fmbi-favicon-white-v3.png&w=64&q=75",
@@ -66,6 +69,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     images: [{ url: "/images/steel-indonesia/toko-mahameru.jpg", width: 1080, height: 608, alt: "Toko Besi Mahameru Baja" }],
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#D92323" };
@@ -75,7 +79,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const [divisions, content] = await Promise.all([readPublicDivisions(), readPublicSiteContent()]);
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><AdminNavigationProvider><AppShell>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
+      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><AdminNavigationProvider><AppShell inventory={content.inventory}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
     </html>
   );
 }

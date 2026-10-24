@@ -16,7 +16,15 @@ export function useAdminWorkspace(options: AdminWorkspaceState) {
   if (!context) throw new Error("Admin workspace must be inside AdminShell");
   const { register, confirmDiscard } = context;
   const latest = useRef(options); latest.current = options;
-  const onSave = useCallback(() => latest.current.onSave?.(), []);
+  const onSave = useCallback(() => {
+    const invalid = document.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("#admin-main input:invalid:not(:disabled), #admin-main select:invalid:not(:disabled), #admin-main textarea:invalid:not(:disabled)");
+    if (invalid) {
+      let parent = invalid.parentElement;
+      while (parent) { if (parent instanceof HTMLDetailsElement) parent.open = true; parent = parent.parentElement; }
+      invalid.scrollIntoView({ block: "center", behavior: "smooth" }); invalid.focus({ preventScroll: true }); invalid.reportValidity(); return;
+    }
+    latest.current.onSave?.();
+  }, []);
   const onSecondary = useCallback(() => latest.current.onSecondary?.(), []);
   const { dirty, busy, label, disabled, secondaryLabel } = options;
   useLayoutEffect(() => {

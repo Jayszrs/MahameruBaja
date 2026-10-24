@@ -1,0 +1,95 @@
+/* The copy has its own light surface so uploaded media needs no dark overlay. */
+.hero-carousel.hero-carousel-bright {
+  --hero-surface: #f7f7f4;
+  --hero-ink: var(--color-gunmetal, #202427);
+  min-height: 0;
+  background: var(--hero-surface);
+  color: var(--hero-ink);
+}
+.hero-carousel-bright .hero-carousel-media { inset: 108px 0 59px 56%; z-index: 0; background: #e7e9e5; overflow: hidden; }
+.hero-carousel-bright .hero-carousel-parallax { inset: 0; transform: none; will-change: auto; }
+.hero-carousel-bright .hero-carousel-layer { transform: none; }
+.hero-carousel-bright .hero-carousel-layer :is(img, video) { filter: none; }
+.public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { min-height: 770px; padding-block: 168px 60px; flex-direction: column; align-items: start; justify-content: center; }
+.public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: 50%; transform: none; will-change: auto; }
+.public-site .hero-carousel-bright .hero-carousel-copy { max-width: none; }
+.public-site .hero-carousel-bright .hero-carousel-copy h1 { font-size: clamp(38px, 4.1vw, 60px); line-height: 1.1; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.public-site .hero-carousel-bright .hero-carousel-copy h1 em { color: var(--color-brand-dark, #b51f2d); }
+.public-site .hero-carousel-bright .hero-carousel-eyebrow { color: var(--color-brand-dark, #b51f2d); font-family: var(--font-body); font-size: 14px; letter-spacing: .015em; }
+.public-site .hero-carousel-bright .hero-carousel-copy > p:not(.hero-carousel-eyebrow) { max-width: 52ch; color: #454e53; font-size: 17px; line-height: 1.75; }
+.hero-carousel-bright .home-actions { flex-wrap: wrap; gap: 10px; }
+.public-site .hero-carousel-bright .home-button { min-height: 48px; padding: 12px 18px; border-radius: 8px; font-size: 14px; line-height: 1.45; }
+.public-site .hero-carousel-bright .home-button-ghost { color: var(--hero-ink); border: 1px solid #9ba4a8; background: transparent; }
+.public-site .hero-carousel-bright .home-button-ghost:hover { color: var(--color-brand-dark); border-color: var(--color-brand-dark); background: #fff; }
+.public-site .hero-carousel-bright .hero-rating-link { color: var(--hero-ink); margin-top: 24px; gap: 8px 12px; }
+.public-site .hero-carousel-bright .hero-rating-stars { color: #8b9193; font-size: 25px; }
+.hero-carousel-bright .hero-rating-stars > span:last-child { color: #946000; }
+.public-site .hero-carousel-bright .hero-rating-link strong { font-size: 18px; }
+.public-site .hero-carousel-bright .hero-rating-link small { color: #525d62; font-size: 13px; line-height: 1.6; }
+.public-site .hero-carousel-bright .hero-carousel-meta { position: static; width: 50%; max-width: none; margin-top: 18px; padding: 16px 0 0; border: 0; border-top: 1px solid #d5d9d6; text-align: left; }
+.public-site .hero-carousel-bright .hero-carousel-meta :is(span, small) { color: #525d62; font-family: var(--font-body); font-size: 13px; letter-spacing: 0; }
+.public-site .hero-carousel-bright .hero-carousel-meta strong { font-size: 15px; color: var(--hero-ink); }
+.hero-slide-selector { display: flex; align-items: center; gap: 16px; margin-top: 20px; width: fit-content; }
+.hero-slide-selector button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #9ba4a8; border-radius: 50%; cursor: pointer; color: var(--hero-ink); background: #fff; }
+.hero-slide-selector button:hover { color: #fff; background: var(--color-brand-dark); border-color: var(--color-brand-dark); }
+.hero-slide-selector svg { width: 20px; height: 20px; }
+.hero-slide-selector span { min-width: 40px; font-size: 14px; text-align: center; font-variant-numeric: tabular-nums; }
+.hero-carousel-bright :is(a, button):focus-visible { outline: 3px solid var(--color-brand-dark); outline-offset: 4px; }
+.hero-carousel-bright .hero-announcement { position: relative; z-index: 1; }
+
+/* Public dialogs and the CMS preview share the same responsive poster frame. */
+.poster-welcome { color: var(--color-gunmetal, #202427); background: #fff; border-radius: 12px; overflow-wrap: anywhere; }
+.poster-welcome .poster-welcome-toolbar,
+.poster-welcome .poster-welcome-navigation { color: var(--color-gunmetal, #202427); background: #fff; border-color: #d8dddf; }
+.poster-welcome .poster-welcome-toolbar > span { font-size: 15px; }
+.poster-welcome .poster-welcome-layout { min-width: 0; }
+.poster-welcome button.poster-welcome-image { background: #f0f1ee; }
+.poster-welcome .poster-welcome-details { background: #fff; color: var(--color-gunmetal, #202427); }
+.poster-welcome :is(.poster-welcome-category, .poster-welcome-facts dt) { color: var(--color-brand-dark); }
+.poster-welcome :is(.poster-welcome-description, .poster-welcome-provider span, .poster-welcome-provider small, .poster-welcome-contact small, .poster-welcome-terms, .poster-mobile-information, .poster-welcome-navigation p) { color: #454e53; }
+.poster-welcome :is(.poster-welcome-provider, .poster-welcome-more) { border-color: #d8dddf; }
+.poster-welcome .poster-offer-link { color: var(--color-brand-dark); }
+.poster-welcome .poster-preview-label { color: #454e53; background: #f0f1ee; }
+.poster-welcome :is(.poster-welcome-close, .poster-welcome-navigation button) { color: var(--color-gunmetal, #202427); background: #fff; border-color: #9ba4a8; }
+.poster-welcome :is(.poster-welcome-close, .poster-welcome-navigation button):hover { background: #f0f1ee; }
+.poster-welcome :is(button, a, summary):focus-visible { outline: 3px solid var(--color-brand-dark); outline-offset: 2px; }
+.poster-welcome .poster-welcome-layout.is-expanded .poster-welcome-image { height: calc(100dvh - 172px); }
+.promo-preview-dialog { max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); overflow-x: hidden; }
+.promo-preview-layout > * { min-width: 0; }
+.promo-preview-copy { overflow-wrap: anywhere; }
+
+@media (max-width: 1023px) {
+  .hero-carousel-bright .hero-carousel-media { top: 56px; left: 56%; }
+  .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { min-height: 740px; padding-top: 120px; }
+}
+@media (max-width: 760px) {
+  .hero-carousel.hero-carousel-bright { display: flex; flex-direction: column; padding-top: calc(76px + env(safe-area-inset-top, 0px)); }
+  .public-site .hero-carousel.hero-carousel-bright .hero-carousel-layout { order: 1; min-height: 0; padding-block: 32px 28px; gap: 0; }
+  .public-site .hero-carousel-bright .hero-carousel-copy-wrap { width: 100%; }
+  .public-site .hero-carousel-bright .hero-carousel-copy h1 { max-width: 22ch; margin: 16px 0 20px; font-size: clamp(32px, 7.3vw, 48px); line-height: 1.12; letter-spacing: -.03em; }
+  .public-site .hero-carousel-bright .hero-carousel-copy > p:not(.hero-carousel-eyebrow) { font-size: 16px; line-height: 1.7; }
+  .public-site .hero-carousel-bright .hero-carousel-eyebrow { font-size: 13px; }
+  .public-site .hero-carousel-bright .home-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .public-site .hero-carousel-bright .home-button { height: auto; padding: 12px 10px; font-size: 14px; white-space: normal; }
+  .public-site .hero-carousel-bright .hero-rating-link { margin-top: 20px; }
+  .public-site .hero-carousel-bright .hero-rating-link small { font-size: 12px; }
+  .public-site .hero-carousel-bright .hero-carousel-meta { display: none; }
+  .hero-carousel-bright .hero-carousel-media { order: 2; position: relative; inset: auto; z-index: 0; width: 100%; height: clamp(230px, 56vw, 400px); }
+  .hero-carousel-bright .hero-announcement { order: 3; }
+  .poster-welcome[open] { display: flex; flex-direction: column; width: calc(100vw - 24px); max-height: calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); overflow: hidden; }
+  .poster-welcome .poster-welcome-layout { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  .poster-welcome .poster-welcome-image { height: clamp(180px, 45dvh, 400px); }
+  .poster-welcome .poster-welcome-details { padding: 18px 16px 0; }
+  .poster-welcome .poster-welcome-details h2 { font-size: 21px; }
+  .poster-welcome .poster-welcome-navigation button { min-width: 0; padding-inline: 10px; font-size: 14px; }
+  .poster-welcome .poster-welcome-navigation p { font-variant-numeric: tabular-nums; }
+}
+@media (max-width: 380px) {
+  .public-site .hero-carousel-bright .home-actions { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-height: 500px) and (max-width: 760px) {
+  .poster-welcome .poster-welcome-image { height: 60dvh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-carousel-bright .hero-carousel-layer { transition: none; }
+}

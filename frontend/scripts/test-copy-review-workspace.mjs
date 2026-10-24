@@ -10,7 +10,7 @@ const choices=data('websiteTextChoices');const {contentOwner}=data('divisionCms'
 const catalog=JSON.parse(await readFile(new URL('../src/data/websiteTextCatalog.json',import.meta.url),'utf8'));
 const source='Punya gambar struktur atau komponen';assert.ok(catalog.some(row=>row.source===source),'Actual supplied hero phrase is in the editor');
 const slugs=['retail-tambun','retail-cibitung','trading-proyek','laser-cutting','fabrikasi-erection'];
-const divisions=slugs.map(slug=>({slug,name:slug,title:'Judul khusus '+slug,label:'Label',area:'Bekasi',intro:'Pengantar',description:'Profil',mission:'Misi',aboutHeadline:'Tentang',address:'Alamat',values:[],offerings:[],process:[],faq:[],offeringDescriptions:{}}));
+const divisions=slugs.map(slug=>({slug,name:slug,title:'Judul khusus '+slug,label:'Label',area:'Bekasi',intro:'Pengantar',description:'Profil',mission:'Misi',aboutHeadline:'Tentang',address:'Alamat',values:[],offerings:[],process:[],faq:[],offeringDescriptions:{},images:[],primary:{label:'Hubungi tim'}}));
 let actor={role:'super_admin',division:null},workspace,nextId=0,refresh=0;
 const initial={revision:0,websiteTexts:[],heroSlides:[]};
 const options={imports:{
@@ -30,7 +30,7 @@ try {
     const textarea=editor.find(node=>node.type==='textarea'&&node.props.value===source);
     textarea.props.onChange({target:{value:`Judul QA ${slug || 'main'}`}});editor.render();assert.ok(workspace.dirty);
     await workspace.onSave();editor.render();
-    assert.equal(requestBody.websiteTexts[0].ownerDivision,slug);assert.equal(requestBody.websiteTexts[0].page,'home');assert.equal(requestBody.websiteTexts[0].source,source);
+    assert.equal(requestBody.websiteTexts[0].ownerDivision,slug);assert.equal(requestBody.websiteTexts[0].page,'all');assert.equal(requestBody.websiteTexts[0].source,source);
     assert.ok(!workspace.dirty);assert.equal(editor.find(node=>node.props?.name==='copy-site').props.disabled,Boolean(slug));
     editor.find(node=>node.type==='textarea'&&node.props.value.startsWith('Judul QA')).props.onChange({target:{value:'Perubahan belum disimpan'}});
     deny=true;await workspace.onSave();editor.render();assert.ok(workspace.dirty);assert.ok(editor.find(node=>node.props?.role==='alert'));deny=false;

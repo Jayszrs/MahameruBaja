@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PublicText from "../../src/components/PublicText";
 
-export const metadata = { title: "Kebijakan Privasi" };
+export const metadata = { title: "Kebijakan Privasi", alternates: { canonical: "/kebijakan-privasi" } };
 
 export default function PrivacyPage() {
   return <PublicText><section className="home-section bg-white"><div className="home-shell max-w-4xl">

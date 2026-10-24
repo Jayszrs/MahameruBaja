@@ -102,7 +102,7 @@ export async function saveAccount(actor: AdminIdentity, input: unknown, id?: str
 }
 export async function resetAccount(actor: AdminIdentity, id: string, revision: number, chosenPassword?: string) {
   assertSuper(actor);
-  const manualPassword = chosenPassword === undefined ? undefined : z.string().min(12, "Password minimal 12 karakter.").max(128).parse(chosenPassword);
+  const manualPassword = chosenPassword === undefined ? undefined : z.string().min(8, "Password minimal 8 karakter.").max(128).parse(chosenPassword);
   const temporaryPassword = manualPassword ?? randomBytes(18).toString("base64url");
   const passwordHash = await hashPassword(temporaryPassword);
   return store.mutate(current => {
@@ -114,7 +114,7 @@ export async function resetAccount(actor: AdminIdentity, id: string, revision: n
     return { value: { ...current, accounts: current.accounts.map(a => a.id === id ? saved : a) }, result: { account: publicAccount(saved), ...(manualPassword === undefined ? { temporaryPassword } : {}) } };
   });
 }
-export const passwordChangeSchema = z.object({ currentPassword: z.string().min(1).max(1024), newPassword: z.string().min(12, "Password minimal 12 karakter.").max(128) }).refine(v => v.currentPassword !== v.newPassword, "Gunakan password baru yang berbeda.");
+export const passwordChangeSchema = z.object({ currentPassword: z.string().min(1).max(1024), newPassword: z.string().min(8, "Password minimal 8 karakter.").max(128) }).refine(v => v.currentPassword !== v.newPassword, "Gunakan password baru yang berbeda.");
 export async function changePassword(actor: AdminIdentity, input: unknown, expectedSessionVersion: number) {
   const parsed = passwordChangeSchema.parse(input);
   const snapshot = (await readAccounts()).find(a => a.id === actor.id && a.active);
