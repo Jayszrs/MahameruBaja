@@ -22,11 +22,19 @@ try {
     await page.getByRole("button", { name: "Hubungi via WhatsApp", exact: true }).waitFor();
     const popup = page.locator(".poster-welcome[open]");
     if (await popup.waitFor({ timeout: 2000 }).then(() => true, () => false)) {
-      const bounds = await popup.boundingBox();
+      // The image load updates the dialog's natural aspect ratio in React.
+      await page.waitForFunction(() => {
+        const node = document.querySelector('.poster-welcome[open]');
+        const image = node?.querySelector('.poster-welcome-image img');
+        return image?.naturalHeight && Math.abs(parseFloat(node.style.getPropertyValue('--poster-ratio')) - image.naturalWidth / image.naturalHeight) < .001;
+      });
+      const { bounds, artwork } = await popup.evaluate(node => ({
+        bounds: node.getBoundingClientRect().toJSON(),
+        artwork: node.querySelector('.poster-welcome-image').getBoundingClientRect().toJSON(),
+      }));
       assert(bounds && bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= width + 1 && bounds.y + bounds.height <= height + 1, `Poster fits ${width}px viewport`);
       assert(await popup.evaluate(node => node.scrollWidth <= node.clientWidth + 1), "Poster does not overflow horizontally");
-      const artwork = await popup.locator('.poster-welcome-image').boundingBox();
-      assert(artwork && artwork.width >= bounds.width - 4, 'The artwork fills the popup width instead of a split information card');
+      assert(artwork && artwork.width >= bounds.width - 4, `The artwork fills the popup width at ${width}px (${artwork.width}/${bounds.width})`);
       assert.equal(await popup.locator('.poster-welcome-image img').evaluate(node => getComputedStyle(node).objectFit), 'contain', 'Show the complete poster');
       if (artifacts) await page.screenshot({ path: path.join(artifacts, `poster-${width}.png`) });
       await page.getByRole("button", { name: "Tutup poster", exact: true }).click();
@@ -58,7 +66,7 @@ try {
       assert.notEqual(await counter.innerText(), before, "Manual hero navigation changes slide");
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), "Next slide fits viewport");
     }
-    await page.locator('.hero-carousel-layer.is-active img').evaluateAll(images => Promise.race([Promise.all(images.map(image => image.decode().catch(() => {}))), new Promise(resolve => setTimeout(resolve, 2000))]));
+    await page.waitForFunction(() => [...document.querySelectorAll('.hero-carousel-layer.is-active img')].every(image => image.complete && image.naturalWidth > 0));
     if (artifacts) await page.screenshot({ path: path.join(artifacts, `home-${width}.png`) });
     results.push(`homepage/poster ${width}x${height}`);
   }

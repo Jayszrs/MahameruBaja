@@ -101,7 +101,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
                   fill
                   priority={index === 0}
                   fetchPriority={index === 0 ? "high" : "auto"}
-                  loading={index === 0 ? "eager" : "lazy"}
+                  loading="eager"
                   decoding="async"
                   sizes="100vw"
                   style={{ objectPosition: slide.objectPosition }}

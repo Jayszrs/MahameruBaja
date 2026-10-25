@@ -1,8 +1,8 @@
 # Website publik dan SEO — 24 Oktober 2026
 
-Hero beranda memakai satu foto/video sebagai latar penuh dengan tulisan di atasnya, mengikuti klarifikasi pengguna. Lapisan terang menjaga kontras teks tanpa bayangan hitam di kiri. Di desktop dan mobile, media tetap menyatu dengan tulisan, bukan dipisah menjadi kolom atau gambar di bawah konten. Navigasi slide tetap tersedia. Header tetap terlihat dan WhatsApp di sebelah tombol penawaran dihapus; tombol WhatsApp mengambang tetap tersedia.
+Hero beranda memakai satu foto/video sebagai latar penuh dengan tulisan di atasnya, mengikuti klarifikasi pengguna. Revisi 25 Oktober meningkatkan kecerahan foto sambil mempertahankan warnanya; lapisan putih tebal dan gradasi hitam di kiri dihapus. Teks putih memiliki bayangan untuk kontras. Di desktop dan mobile, media tetap menyatu dengan tulisan. Navigasi slide tetap tersedia. Header tetap terlihat dan WhatsApp di sebelah tombol penawaran dihapus; tombol WhatsApp mengambang tetap tersedia.
 
-Poster yang dibuka pengunjung dan pratinjau CMS menggunakan komponen yang sama, dengan gambar utuh, bidang informasi terang, tombol berukuran sentuh, dan tinggi dialog mengikuti viewport. Error Next Image pada foto sosial diperbaiki dengan memindahkan dimensi crop ke pembungkus gambar. Gambar `fill` tetap menggunakan ukuran 100% sesuai kontrak Next.js.
+Poster yang dibuka pengunjung dan pratinjau CMS menggunakan komponen yang sama: gambar utuh mengisi lebar popup, tombol tutup mengambang, dan caption gelap yang ringkas di bawah gambar. Detail kontak/ketentuan dibuka sesuai kebutuhan. Ukuran dialog mengikuti rasio asli gambar dan viewport. Error Next Image pada foto sosial diperbaiki dengan memindahkan dimensi crop ke pembungkus gambar. Gambar `fill` tetap menggunakan ukuran 100% sesuai kontrak Next.js.
 
 ## Hasil pemeriksaan domain yang sedang aktif
 
@@ -11,7 +11,7 @@ Pemeriksaan HTTP publik pada `https://mahamerubaja.vercel.app` tanggal 24 Oktobe
 - Beranda, `robots.txt`, dan `sitemap.xml` menjawab HTTP 200.
 - Canonical dan sitemap menggunakan domain Vercel tersebut.
 - Tidak ditemukan header `X-Robots-Tag: noindex` pada ketiga respons.
-- Meta verifikasi Google belum ada pada deployment yang diperiksa. Perubahan kode lokal menambahkan token yang diberikan pengguna.
+- Meta verifikasi Google belum ada pada pemeriksaan 24 Oktober. Pemeriksaan ulang 25 Oktober menemukan token `e5pMHAECF9BZQf04S3uJAhmre9xFHY8eTPfEAgap_sA` pada HTML publik. Beranda, robots, dan sitemap tetap menjawab 200; sitemap memuat 73 URL. Ini membuktikan tag tersedia, bukan bahwa verifikasi kepemilikan atau pengindeksan di akun Google sudah selesai.
 
 Kode sekarang memberi judul beranda yang memuat Mahameru Baja, toko besi, dan jasa laser cutting Bekasi. Metadata halaman artikel/penawaran, canonical halaman hukum, Twitter card, dan sitemap produk CMS diselaraskan. Sitemap hanya menyertakan produk yang tampil pada setidaknya satu divisi, termasuk produk baru dari CMS.
 
@@ -23,7 +23,7 @@ Untuk subdomain Vercel saat ini:
 
 1. Tambahkan properti **URL-prefix** `https://mahamerubaja.vercel.app/`.
 2. Pilih metode **HTML tag**. Cocokkan nilai `content` dengan token pada konfigurasi `GOOGLE_SITE_VERIFICATION`. Token DNS yang diberikan sudah dipasang sebagai nilai awal, tetapi token metode HTML harus dipastikan dari Search Console; kode tidak dapat menjamin bahwa token dari metode DNS diterima oleh metode HTML.
-3. Setelah perubahan ini dideploy, buka source HTML beranda dan pastikan meta `google-site-verification` sesuai. Lanjutkan **Verifikasi** di Search Console.
+3. Meta `google-site-verification` sudah teramati pada HTML publik tanggal 25 Oktober. Pastikan token cocok dengan metode HTML tag pada properti yang benar, lalu lanjutkan **Verifikasi** di Search Console.
 4. Kirim `https://mahamerubaja.vercel.app/sitemap.xml`, lalu gunakan Inspeksi URL untuk meminta pengindeksan beranda, produk, dan jasa.
 
 Properti **Domain** memerlukan verifikasi DNS. Menaruh string TXT dalam HTML atau membuat file `.txt` pada website tidak memasang record DNS. Referensi resmi: [metode verifikasi Search Console](https://support.google.com/webmasters/answer/9008080?hl=en).
@@ -42,4 +42,4 @@ Tidak ada deployment, perubahan DNS, atau tindakan pada akun Search Console dala
 
 `test-static-social-revision.mjs` beserta pemeriksaan adapter carousel/poster/ticker yang diimpornya lulus. Assertion crop diperbarui untuk memastikan ukuran berada pada pembungkus, sedangkan gambar tetap `fill`, sehingga penyebab crash sebelumnya tidak diperkenalkan kembali. Typecheck frontend lulus dan pemeriksaan mekanis Impeccable tidak menemukan masalah pada perubahan publik.
 
-Viewport tersebut adalah emulasi Chromium. Pengujian ini tidak mengklaim hasil perangkat fisik Android/iPhone atau Safari. Metadata lokal belum tersedia di domain publik sampai perubahan dideploy; status verifikasi dan indeks Google belum dikonfirmasi melalui akun Search Console.
+Viewport tersebut adalah emulasi Chromium. Pengujian ini tidak mengklaim hasil perangkat fisik Android/iPhone atau Safari. Token meta sudah teramati pada domain publik tanggal 25 Oktober; status verifikasi dan indeks Google belum dikonfirmasi melalui akun Search Console. Revisi visual dan CMS terbaru dalam pekerjaan ini belum dideploy oleh agen.
