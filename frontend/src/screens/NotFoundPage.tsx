@@ -1,10 +1,11 @@
 "use client";
 
 import { Link } from 'react-router';
+import PublicText from '../components/PublicText';
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface px-6">
+    <PublicText><div className="min-h-screen flex items-center justify-center bg-surface px-6">
       <div className="text-center max-w-md">
         {/* Decorative */}
         <div className="font-extrabold text-[120px] lg:text-[160px] leading-none text-graphite/10 select-none mb-0" aria-hidden="true">
@@ -35,6 +36,6 @@ export default function NotFoundPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </div></PublicText>
   );
 }

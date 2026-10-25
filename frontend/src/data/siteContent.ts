@@ -46,6 +46,7 @@ export const reviewProfileSchema = z.object({
 });
 export const siteContentSchema = z.object({
   partnerLogos:partnerLogoListSchema.default(defaultPartnerLogos),
+  supplierLogosHomeVisible: z.boolean().default(true),
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
   websiteTexts: z.array(websiteTextSchema).max(2000).default([]),
   clientPosterVersion: z.number().int().nonnegative().default(0),
@@ -90,6 +91,7 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
   partnerLogos:defaultPartnerLogos,
+  supplierLogosHomeVisible:true,
   heroAnnouncements:[],
   websiteTexts: [],
   clientPosterVersion: 1,

@@ -26,6 +26,34 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [wide,setWide]=useState(false);
   const [workspace, setWorkspace] = useState<AdminWorkspaceState>(emptyAdminWorkspace);
   const [uploads, setUploads] = useState<CmsUploadActivity[]>([]);
+  const [newOffers, setNewOffers] = useState(0);
+  const [offerToastCount, setOfferToastCount] = useState(0);
+  const seenOfferIds = useRef<Set<string> | null>(null);
+  const offerToastTimer = useRef<number | null>(null);
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => { try {
+      const response = await fetch("/api/admin/requests", { cache: "no-store" }); if (!response.ok) return;
+      const rows: { id?: string; status?: string; archived?: boolean; source?: string }[] = await response.json(); if (!active || !Array.isArray(rows)) return;
+      const pending = rows.filter(row => !row.archived && row.status === "Baru" && row.source !== "ADMIN" && row.id);
+      setNewOffers(pending.length);
+      if (!seenOfferIds.current) {
+        try { const stored = JSON.parse(sessionStorage.getItem("mahameru.admin.seen-new-offers.v1") || "[]"); seenOfferIds.current = new Set(Array.isArray(stored) ? stored.filter((id): id is string => typeof id === "string") : []); }
+        catch { seenOfferIds.current = new Set(); }
+      }
+      const seen = seenOfferIds.current;
+      const unseen = pending.filter(row => !seen.has(row.id!));
+      if (unseen.length) {
+        unseen.forEach(row => seen.add(row.id!));
+        try { sessionStorage.setItem("mahameru.admin.seen-new-offers.v1", JSON.stringify([...seen].slice(-500))); } catch { /* Notification is still shown for this session. */ }
+        setOfferToastCount(unseen.length);
+        if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current);
+        offerToastTimer.current = window.setTimeout(() => setOfferToastCount(0), 12000);
+      }
+    } catch { /* The sidebar remains usable if the count is temporarily unavailable. */ } };
+    void refresh(); const timer = window.setInterval(refresh, 30000); window.addEventListener("focus", refresh);
+    return () => { active = false; window.clearInterval(timer); window.removeEventListener("focus", refresh); if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current); };
+  }, []);
   useEffect(() => {
     const update = (event: Event) => {
       const activity = (event as CustomEvent<CmsUploadActivity>).detail;
@@ -116,7 +144,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           <button type="button" className="admin-group-toggle" aria-expanded={Boolean(expanded[category.id])} aria-controls={`admin-group-${category.id}`} onClick={() => setExpanded(current => ({ ...current, [category.id]: !current[category.id] }))}><span className="admin-group-number">{category.number}</span><span>{category.label}</span><svg className={expanded[category.id] ? "expanded" : ""} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></button>
           <div id={`admin-group-${category.id}`} hidden={!expanded[category.id]} className="admin-submenu">{category.items.map(child => {
             const active = group?.id === category.id && item?.href === child.href;
-            return <Link key={child.href} href={child.href} aria-current={active ? "page" : undefined} className={active ? "active" : ""}><span aria-hidden="true" />{child.label}</Link>;
+            return <Link key={child.href} href={child.href} aria-current={active ? "page" : undefined} className={active ? "active" : ""}><span aria-hidden="true" />{child.label}{category.id === "sales" && child.href.includes("view=active") && newOffers > 0 && <b className="admin-nav-notification" aria-label={`${newOffers} penawaran baru`}>{newOffers > 99 ? "99+" : newOffers}</b>}</Link>;
           })}</div>
         </div>)}
         {identity.role === "super_admin" && !restricted && <><p className="admin-nav-caption">ADMINISTRASI</p><Link className={"admin-administration-link"+(pathname === "/admin/akun" ? " active" : "")} href="/admin/akun" aria-current={pathname === "/admin/akun" ? "page" : undefined}><span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M17 5a3 3 0 0 1 0 6M21 21v-3a6 6 0 0 0-3-5"/></svg></span>Pengelolaan akun</Link></>}
@@ -127,6 +155,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <div className="admin-topbar-actions">{workspace.label && <><span className={`admin-save-state${workspace.dirty ? " dirty" : ""}`} role="status">{workspace.busy ? "Sedang diproses…" : workspace.dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span>{workspace.secondaryLabel && <button type="button" className="admin-secondary" disabled={workspace.busy} onClick={workspace.onSecondary}>{workspace.secondaryLabel}</button>}<button type="button" className="admin-primary" disabled={workspace.busy || workspace.disabled} onClick={workspace.onSave}>{workspace.busy ? "Memproses…" : workspace.label}</button></>}</div>
     </header>
     {workspace.busy && <div className="admin-process-notice" role="status" aria-live="polite"><span className="admin-process-spinner" aria-hidden="true" /><div><strong>{uploads.length ? `Mengunggah ${uploads.length} file` : "Sedang menyimpan perubahan"}</strong><p>{uploads.length ? `${uploads.map(row => row.name).join(", ")} — tunggu hingga unggahan selesai, lalu simpan perubahan.` : "Tunggu hingga proses selesai. Hasilnya akan tampil di halaman ini."}</p></div></div>}
+    {offerToastCount > 0 && <aside className="admin-offer-toast" role="status" aria-live="polite"><span className="admin-offer-toast-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/></svg></span><div><strong>{offerToastCount} penawaran perlu ditinjau</strong><p>Permintaan dari formulir website tersimpan di server.</p><Link href="/admin/permintaan?view=active" onClick={() => setOfferToastCount(0)}>Buka permintaan</Link></div><button type="button" aria-label="Tutup notifikasi" onClick={() => setOfferToastCount(0)}>×</button></aside>}
     <main id="admin-main" tabIndex={-1} className="admin-page-content" aria-busy={workspace.busy}>{children}</main></div>
     {confirmOpen && <div className="admin-modal-backdrop"><div className="admin-discard-dialog" ref={dialog} role="dialog" aria-modal="true" aria-labelledby="admin-discard-heading"><span className="admin-dialog-icon" aria-hidden="true">!</span><h2 id="admin-discard-heading">Perubahan belum disimpan</h2><p>Perubahan pada ruang kerja ini akan hilang jika kamu melanjutkan. Simpan terlebih dahulu atau tetap di halaman ini.</p><div><button type="button" className="admin-secondary" onClick={() => finishConfirm(false)}>Tetap di halaman</button><button type="button" className="admin-primary" onClick={() => finishConfirm(true)}>Tinggalkan perubahan</button></div></div></div>}
   </div></AdminWorkspaceContext.Provider>;

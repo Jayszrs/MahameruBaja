@@ -22,7 +22,7 @@ export default function HeroAnnouncementEditor({ content, onChange }: { content:
     const next={id:existing?.id || contentId(),ownerDivision:owner,published:true,messages,...patch};
     onChange({...content,heroAnnouncements:existing?rows.map(row=>row.id===existing.id?next:row):[...rows,next]});
   }
-  return <section className="editor-panel hero-announcement-editor" id="teks-berjalan"><div className="editor-panel-title"><div><h2>Teks berjalan di bawah hero</h2><p>Info material, layanan, atau promo singkat. Teks bergerak ke kanan dalam satu baris, termasuk di HP.</p></div></div>
+  return <section className="editor-panel hero-announcement-editor" id="teks-berjalan"><div className="editor-panel-title"><div><span className="hero-step-label">Langkah 1</span><h2>Teks berjalan di bawah hero</h2><p>Info material, layanan, atau promo singkat. Teks bergerak ke kanan dalam satu baris, termasuk di HP.</p></div></div>
     <label className="editor-field">Website<select name="announcement-site" value={site} disabled={Boolean(actor.division)} onChange={event=>setSite(event.target.value)}>{!actor.division&&<option value="main">Website utama</option>}{divisions.filter(d=>!actor.division || d.slug===actor.division).map(d=><option value={d.slug} key={d.slug}>{d.name}</option>)}</select></label>
     <p className="admin-field-help">Contoh: “Sedia pilihan besi untuk bangunan, tanya stok hari ini” atau informasi promo yang sudah disetujui. Jangan menjanjikan stok atau diskon yang belum dikonfirmasi.</p>
     <button type="button" className="admin-secondary" disabled={messages.length>=12} onClick={()=>{update({messages:["",...messages]});focusEditorRecord("announcement-messages");}}>+ Tambah tulisan</button>

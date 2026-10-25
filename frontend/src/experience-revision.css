@@ -265,19 +265,41 @@
 .hero-editor-heading p,.hero-media-heading p { color:#565e62; line-height:1.7; max-width:750px; margin-top:10px; }
 .hero-editor-heading>a { flex:none; }
 .hero-media-fields { background:#f6f6f4; border:1px solid #dedfdb; padding:24px; margin-block:22px; min-width:0; }
+.hero-step-label { display:block; margin-bottom:5px; color:#9f2029; font-size:12px; font-weight:750; line-height:1.4; letter-spacing:.04em; text-transform:uppercase; }
+.hero-slide-list-heading>div { min-width:0; }
+.hero-slide-list-heading h2 { margin:0; }
 .hero-media-heading h3 { font-size:18px; font-weight:700; }
-.hero-media-options { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; margin-block:22px; }
+.hero-upload-guidance { margin:16px 0 0; padding:12px 14px; border:1px solid #dedfdb; border-radius:6px; background:#fff; color:#40484b; font-size:13px; line-height:1.65; }
+.hero-media-options { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:auto auto; gap:16px 28px; margin-block:22px; align-items:start; }
 .hero-media-options>* { min-width:0; }
-.hero-upload-field input[type=file] { background:#fff; min-height:64px; cursor:pointer; }
-.hero-upload-field input::file-selector-button { background:#b91f2d; color:#fff; border:0; border-radius:4px; padding:12px 16px; min-height:44px; margin-right:12px; cursor:pointer; }
-.hero-link-fields { display:grid; align-content:start; gap:16px; }
+.hero-media-options>.hero-upload-guidance { grid-column:1; grid-row:1; width:auto; max-width:none; align-self:stretch; box-sizing:border-box; margin:0; }
+.hero-media-options>.hero-upload-field { grid-column:1; grid-row:2; }
+.admin-shell .editor-content .hero-upload-field { display:grid; align-content:start; gap:8px; margin:0; }
+.admin-shell .editor-content .hero-upload-field input[type=file] { box-sizing:border-box; display:block; width:100%; height:58px; min-height:58px; margin:0; padding:7px; border:1px solid #c9cfcb; border-radius:6px; background:#fff; color:#46504d; font-size:13px; line-height:1.4; cursor:pointer; }
+.admin-shell .editor-content .hero-upload-field input::file-selector-button { background:#f5f4f0; color:#303734; border:1px solid #c9cfcb; border-radius:5px; padding:7px 12px; min-height:40px; margin-right:12px; cursor:pointer; font:inherit; font-weight:650; }
+.admin-shell .editor-content .hero-upload-field input::file-selector-button:hover { border-color:#b91f2d; color:#a21d28; }
+.hero-link-fields { display:contents; }
+.hero-link-fields .editor-field { display:grid; align-content:start; gap:8px; margin:0; }
+.hero-link-fields .editor-field :is(input,select) { box-sizing:border-box; margin:0; }
+.hero-link-fields .editor-field small { display:block; margin:0; color:#505957; font-size:13px; line-height:1.55; max-width:66ch; }
+.hero-link-fields .hero-kind-field { grid-column:2; grid-row:1; }
+.hero-link-fields .hero-url-field { grid-column:2; grid-row:2; }
+.hero-upload-guidance { max-width:78ch; }
 .hero-poster-fields { border-top:1px solid #d7dad6; padding-top:22px; }
 .hero-media-preview { display:grid; place-items:center; background:#202427; color:#fff; min-height:140px; margin-block:18px; overflow:hidden; }
 .hero-media-preview :is(img,video) { width:100%; max-height:340px; object-fit:contain; }
 .hero-media-preview p { padding:28px; text-align:center; line-height:1.7; }
 .hero-media-fields>.admin-field-help { margin-top:12px; }
+.hero-action-field { align-self:start; }
+.hero-action-field>label { display:block; margin-top:12px; }
+.hero-destination-preview { display:grid; gap:2px; margin-top:10px; color:#92202a; font-size:13px; font-weight:650; text-decoration:underline; text-underline-offset:3px; }
+.hero-destination-preview span { color:#586064; font-size:12px; font-weight:400; overflow-wrap:anywhere; }
+.admin-shell .hero-slide-list-heading>button.admin-primary { border:1px solid #b91f2d; background:#b91f2d; color:#fff; }
+.admin-shell .hero-slide-list-heading>button.admin-primary:hover:not(:disabled) { background:#991b25; border-color:#991b25; }
+.admin-shell .hero-slide-list-heading>button.admin-primary:disabled { opacity:.55; }
 @media(max-width:800px) {
-  .hero-media-options { grid-template-columns:minmax(0,1fr); gap:18px; }
+  .hero-media-options { grid-template-columns:minmax(0,1fr); grid-template-rows:auto; gap:16px; }
+  .hero-media-options>.hero-upload-guidance,.hero-media-options>.hero-upload-field,.hero-link-fields .editor-field { grid-column:1; grid-row:auto; }
   .hero-media-fields { padding:18px; }
   .hero-editor-heading { flex-direction:column; gap:16px; }
 }

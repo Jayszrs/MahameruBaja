@@ -4,20 +4,19 @@ export const adminNavigation: AdminNavGroup[] = [
   { id: "sales", number: "01", label: "Pesanan pelanggan", path: "/admin/permintaan", items: [
     { label: "Permintaan aktif", href: "/admin/permintaan?view=active" }, { label: "Arsip", href: "/admin/permintaan?view=archived" },
   ] },
-  { id: "content", number: "02", label: "Isi website", path: "/admin/konten", items: [
+  { id: "home", number: "02", label: "Beranda", path: "/admin/promosi", items: [
+    { label: "Banner & poster", href: "/admin/promosi?view=all" },
+    { label: "Hero beranda", href: "/admin/hero" }, { label: "Galeri & proyek", href: "/admin/galeri" },
+    { label: "Poster saat masuk", href: "/admin/promosi?view=popup" },
+  ] },
+  { id: "content", number: "03", label: "Isi website", path: "/admin/konten", items: [
     { label: "Profil divisi", href: "/admin/divisi" }, { label: "Kontak & divisi", href: "/admin/konten?tab=contacts" }, { label: "Ulasan Google", href: "/admin/konten?tab=reviews" },
     { label: "Produk & stok", href: "/admin/produk" },
     { label: "Teks website", href: "/admin/teks" },
     { label: "Logo supplier", href: "/admin/mitra?tab=suppliers" }, { label: "Logo perusahaan rekanan", href: "/admin/mitra?tab=clients" },
   ] },
-  { id: "social", number: "03", label: "Sosial media", path: "/admin/sosial", items: [
+  { id: "social", number: "04", label: "Sosial media", path: "/admin/sosial", items: [
     { label: "Akun sosial", href: "/admin/sosial?tab=accounts" }, { label: "Unggahan sosial", href: "/admin/sosial?tab=posts" },
-  ] },
-  { id: "home", number: "04", label: "Beranda", path: "/admin/promosi", items: [
-    { label: "Banner & poster", href: "/admin/promosi?view=all" },
-    { label: "Hero beranda", href: "/admin/hero" }, { label: "Galeri & proyek", href: "/admin/galeri" },
-    { label: "Teks berjalan", href: "/admin/hero#teks-berjalan" },
-    { label: "Poster saat masuk", href: "/admin/promosi?view=popup" },
   ] },
   { id: "articles", number: "05", label: "Artikel", path: "/admin/artikel", items: [
     { label: "Semua artikel", href: "/admin/artikel?status=all" },

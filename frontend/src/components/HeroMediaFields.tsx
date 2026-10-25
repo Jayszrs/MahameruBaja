@@ -14,19 +14,19 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
   return <section className="hero-media-fields" aria-label={`Media ${slide.eyebrow}`} aria-busy={busy}>
     <div className="hero-media-heading"><h3>Gambar atau video hero</h3><p>Unggah dari perangkat, atau tempel link file yang sudah tersedia. Cukup pilih salah satu.</p></div>
     <div className="hero-media-options">
+      <p className="hero-upload-guidance">{imageUploadHelp} {videoUploadHelp} Jenis media mengikuti file yang dipilih.</p>
       <label className="editor-field hero-upload-field">Unggah gambar atau video
         <input name={`hero-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp,video/mp4" disabled={busy} onChange={event => {
           const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
           if (file) { setPreviewError(""); void upload(file); }
         }} />
-        <small>{imageUploadHelp} {videoUploadHelp} Jenis media mengikuti file yang dipilih.</small>
       </label>
       <div className="hero-link-fields">
-        <label className="editor-field">Jenis media dari link<select name={`hero-kind-${slide.id}`} value={slide.type} disabled={busy} onChange={event => {
+        <label className="editor-field hero-kind-field">Jenis media dari link<select name={`hero-kind-${slide.id}`} value={slide.type} disabled={busy} onChange={event => {
           const type = event.target.value as HeroSlide["type"];
           if (type !== slide.type) change({ type, media: "", poster: undefined });
         }}><option value="image">Gambar</option><option value="video">Video MP4</option></select></label>
-        <label className="editor-field">Link gambar atau video<input name={`hero-url-${slide.id}`} value={slide.media} maxLength={1000} disabled={busy} placeholder="https://… atau /media/…" onChange={event => change({ media: event.target.value.trim() })} />
+        <label className="editor-field hero-url-field">Link gambar atau video<input name={`hero-url-${slide.id}`} value={slide.media} maxLength={1000} disabled={busy} placeholder="https://… atau /media/…" onChange={event => change({ media: event.target.value.trim() })} />
           <small>Gunakan link HTTPS ke file langsung. Link halaman YouTube, Instagram, atau Google Drive bukan file video. Video besar bisa memakai link MP4 dari penyimpanan Anda.</small>
         </label>
       </div>
