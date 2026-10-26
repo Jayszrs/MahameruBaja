@@ -197,9 +197,12 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
             <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-brand">Katalog Material</span>
           </div>
           <h1 id="products-hero" className="text-3xl sm:text-4xl font-extrabold text-white font-[family-name:var(--font-display)]">
-            Katalog Produk Mahameru Baja
+            Toko Besi & Baja Bekasi
           </h1>
-          <p className="text-white/50 mt-1 text-sm">
+          <p className="text-white/80 mt-2 text-sm max-w-2xl">
+            Katalog Mahameru Baja untuk kebutuhan material di Tambun dan Cibitung. Pilih besi beton, hollow, pipa, plat, atau profil baja lalu konfirmasikan stok dan harga dengan admin toko.
+          </p>
+          <p className="text-white/80 mt-2 text-sm">
             {products.length} produk tersedia — besi beton, WF, hollow, pipa, plat, dan lebih.
           </p>
         </div>

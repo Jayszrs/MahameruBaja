@@ -1732,6 +1732,10 @@
     "area": "KontakPage"
   },
   {
+    "source": "& bending plat.",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "01 / RUANG LINGKUP",
     "area": "LaserCuttingPage"
   },
@@ -1777,10 +1781,6 @@
   },
   {
     "source": "Ceritakan kebutuhan material atau jasa Anda.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Dari gambar kerja hingga komponen siap pakai. Kami melayani pemotongan, pembentukan plat, dan fabrikasi sesuai spesifikasi kebutuhan Anda. Kirim gambar untuk ditinjau tim sebelum penawaran.",
     "area": "LaserCuttingPage"
   },
   {
@@ -1840,15 +1840,15 @@
     ]
   },
   {
+    "source": "Jasa laser cutting Bekasi",
+    "area": "LaserCuttingPage"
+  },
+  {
     "source": "jumlah",
     "area": "LaserCuttingPage"
   },
   {
     "source": "Jumlah kebutuhan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Kami menyediakan jasa",
     "area": "LaserCuttingPage"
   },
   {
@@ -1909,10 +1909,6 @@
     ]
   },
   {
-    "source": "laser cutting & bending.",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Laser cutting plat & custom",
     "area": "LaserCuttingPage",
     "areas": [
@@ -1946,6 +1942,10 @@
   },
   {
     "source": "Material untuk Proyek",
+    "area": "LaserCuttingPage"
+  },
+  {
+    "source": "MBI Laser Cutting & Bending di Tambun Selatan, Kabupaten Bekasi, melayani potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.",
     "area": "LaserCuttingPage"
   },
   {
@@ -3677,11 +3677,11 @@
     "area": "ProductsPage"
   },
   {
-    "source": "Katalog Material",
+    "source": "Katalog Mahameru Baja untuk kebutuhan material di Tambun dan Cibitung. Pilih besi beton, hollow, pipa, plat, atau profil baja lalu konfirmasikan stok dan harga dengan admin toko.",
     "area": "ProductsPage"
   },
   {
-    "source": "Katalog Produk Mahameru Baja",
+    "source": "Katalog Material",
     "area": "ProductsPage"
   },
   {
@@ -3792,6 +3792,10 @@
   },
   {
     "source": "Terapkan Filter (",
+    "area": "ProductsPage"
+  },
+  {
+    "source": "Toko Besi & Baja Bekasi",
     "area": "ProductsPage"
   },
   {

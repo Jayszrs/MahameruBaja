@@ -210,7 +210,7 @@ try{
   assert.ok(!jasaHtml.includes('class="laser-page-grid"'));
   const mainHtml=await (await call("/")).text();
   assert.ok(mainHtml.includes("MAHAMERU BAJA") && mainHtml.includes("company-logo.jpeg") && mainHtml.includes("mbi-favicon-white-v3.png"), "Main site uses ordinary MBI identity while retaining its white-background favicon");
-  assert.ok(mainHtml.includes("promos-restored") && mainHtml.includes("promo-preview-dialog"));
+  assert.ok(mainHtml.includes("promos-restored") && !mainHtml.includes("promo-preview-dialog"), "Promo banners render without downloading unopened dialog images");
   assert.equal((await call("/images/brand/mbi-favicon-white-v3.png")).status,200);
   assert.ok(base.promotions.filter(p => p.published).length >= 4, "Multiple real service/calendar banners");
   assert.ok(mainHtml.includes("event-countdown") && mainHtml.includes("Menuju Halloween") && mainHtml.includes("Perkiraan menuju Ramadan"));

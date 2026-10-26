@@ -20,13 +20,11 @@ export default function SmoothImage({ src, alt, sizes, eager = false, className 
   return (
     <Image
       src={src}
-      unoptimized={src.startsWith("https://")}
       alt={alt}
       fill
       sizes={sizes}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
-      priority={eager}
       fetchPriority={eager ? "high" : "auto"}
       className={className}
     />

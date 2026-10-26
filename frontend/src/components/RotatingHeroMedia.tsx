@@ -18,7 +18,7 @@ export default function RotatingHeroMedia({ images, className = "" }: { images: 
     return () => window.clearTimeout(timer);
   }, [active, paused, hidden, sources.length]);
   return <div className={`rotating-hero-media ${className}`}>
-    <div aria-hidden="true">{sources.length > 0 && <Image key={sources[active % sources.length]} src={sources[active % sources.length]} alt="" fill sizes="100vw" loading="eager" className="is-active" />}</div>
+    <div aria-hidden="true">{sources.length > 0 && <Image key={sources[active % sources.length]} src={sources[active % sources.length]} alt="" fill sizes="100vw" loading="eager" fetchPriority={active === 0 ? "high" : "auto"} className="is-active" />}</div>
     {sources.length > 1 && <button type="button" className="carousel-keyboard-control" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan pergantian gambar" : "Hentikan pergantian gambar"}</button>}
   </div>;
 }

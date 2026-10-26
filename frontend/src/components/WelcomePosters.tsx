@@ -17,7 +17,6 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const [reading, setReading] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
-  const seen = useRef(new Set<string>());
   const slug = /^\/unit\/([^/]+)/.exec(path)?.[1];
   const today = jakartaDate();
   const live = preview ? [preview] : livePopupPosters(promotions, today, slug);
@@ -31,29 +30,24 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     }, 5000);
     return () => window.clearInterval(timer);
   }, [open, preview, paused, expanded, signature, live.length, index]);
-  const sessionKey = `mahameru.poster.v1:${slug || "main"}:${signature}`;
   useEffect(() => {
-    if (preview || path.startsWith("/admin") || !signature) return;
-    if (seen.current.has(sessionKey)) return;
-    const timer = window.setTimeout(() => { setIndex(0); setFocused(false); setReading(false); setExpanded(false); setOpen(true); }, 700);
-    return () => clearTimeout(timer);
-  }, [sessionKey, signature, path, preview]);
+    setOpen(false); setIndex(0); setFocused(false); setReading(false); setExpanded(false);
+  }, [path]);
   useEffect(() => { if (preview) { setIndex(0); setFocused(false); setReading(false); setExpanded(false); setOpen(true); } }, [preview]);
   useEffect(() => {
     if (!open || !preview && path.startsWith("/admin")) return;
     const node = dialog.current; const focused = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
     node?.showModal(); document.body.style.overflow = "hidden";
-    if (!preview) seen.current.add(sessionKey);
     return () => { node?.close(); document.body.style.overflow = overflow; focused?.focus(); };
-  }, [open, sessionKey, path, Boolean(preview)]);
+  }, [open, path, Boolean(preview)]);
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => { setReading(false); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
   const ratio = imageRatios[item.image] || 2 / 3;
-  return <PublicText><dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
+  return <PublicText>{!preview && <button type="button" className="poster-promo-launcher" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open}>Promo & informasi<span>{live.length}</span></button>}{open && <dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
     style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "200px" } as CSSProperties}
     onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }}
     onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
@@ -92,5 +86,5 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
       <p aria-live={paused ? "polite" : "off"}>{index % live.length + 1} / {live.length}</p>
       {live.length > 1 && <button type="button" onClick={() => step(1)} aria-label="Poster berikutnya"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m10 6 6 6-6 6"/></svg></button>}
     </nav>
-  </dialog></PublicText>;
+  </dialog>}</PublicText>;
 }

@@ -105,8 +105,8 @@ export default function LaserCuttingPage() {
         <RotatingHeroMedia className="company-about-background" images={[laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
         <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
           <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
-          <h1>Kami menyediakan jasa<br /><em>laser cutting & bending.</em></h1>
-          <p>Dari gambar kerja hingga komponen siap pakai. Kami melayani pemotongan, pembentukan plat, dan fabrikasi sesuai spesifikasi kebutuhan Anda. Kirim gambar untuk ditinjau tim sebelum penawaran.</p>
+          <h1>Jasa laser cutting Bekasi<br /><em>& bending plat.</em></h1>
+          <p>MBI Laser Cutting & Bending di Tambun Selatan, Kabupaten Bekasi, melayani potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.</p>
           <a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a>
           <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>

@@ -57,3 +57,7 @@ dialog.poster-welcome.poster-lightbox::backdrop { background: rgb(5 8 10 / .78);
   .poster-lightbox .poster-welcome-toolbar .poster-welcome-close,.poster-lightbox .poster-welcome-navigation button { width: 44px; min-width: 44px; height: 44px; min-height: 44px; }
   .poster-lightbox .poster-welcome-more > summary,.poster-lightbox .poster-lightbox-actions .poster-contact-button { min-height: 44px; }
 }
+.poster-promo-launcher { position: fixed; inset: auto auto 18px 18px; z-index: 45; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 9px 14px; border: 1px solid var(--color-light-steel); border-radius: 6px; background: var(--color-warm-white); color: var(--color-graphite); font-size: 13px; font-weight: 700; cursor: pointer; }
+.poster-promo-launcher span { color: var(--color-brand-dark); }
+.poster-promo-launcher:hover { background: var(--color-surface-2); }
+.poster-promo-launcher:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }

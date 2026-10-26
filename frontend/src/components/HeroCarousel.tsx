@@ -96,10 +96,8 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
               ) : (
                 <Image
                   src={slide.media}
-                  unoptimized={slide.media.startsWith("https://")}
                   alt=""
                   fill
-                  priority={index === 0}
                   fetchPriority={index === 0 ? "high" : "auto"}
                   loading="eager"
                   decoding="async"
