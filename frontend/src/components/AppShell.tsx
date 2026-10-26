@@ -3,10 +3,10 @@ import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import WhatsAppButton from "./WhatsAppButton";
-import SearchOverlay from "./SearchOverlay";
 import QuotationDrawer from "./QuotationDrawer";
 import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
@@ -14,6 +14,10 @@ import RouteProgress from "./RouteProgress";
 import HorizontalRibbons from "./HorizontalRibbons";
 import type { InventoryItem } from "../data/inventory";
 
+const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
+  ssr: false,
+  loading: () => <p className="search-loading-status" role="status">Membuka pencarian…</p>,
+});
 
 export default function AppShell({ children, inventory = [] }: { children: ReactNode; inventory?: InventoryItem[] }) {
   const { divisions } = useDivisionDirectory();
@@ -43,7 +47,7 @@ export default function AppShell({ children, inventory = [] }: { children: React
         <Footer division={division} />
         <WhatsAppButton />
         <QuotationDrawer />
-        <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} inventory={inventory} />
+        {searchOpen && <SearchOverlay open onClose={() => setSearchOpen(false)} inventory={inventory} />}
       </div>
     </QuotationProvider>
   );

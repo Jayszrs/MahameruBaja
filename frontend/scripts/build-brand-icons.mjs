@@ -3,9 +3,12 @@ import { fileURLToPath } from "node:url";
 import sharp from "sharp";
 
 // Package the existing website logo at browser icon sizes without redrawing it.
-const source = fileURLToPath(new URL("../public/images/steel-indonesia/company-logo.jpeg", import.meta.url));
+const source = fileURLToPath(new URL("../public/images/brand/client-corporate-trio.png", import.meta.url));
 const output = name => fileURLToPath(new URL(`../public/${name}`, import.meta.url));
-const raster = size => sharp(source).resize(size, size, { fit: "contain", background: "#ffffff" }).ensureAlpha().png({ compressionLevel: 9 }).toBuffer();
+// Match the MBI frame used by CmsImage, excluding the two other company marks.
+const mask = Buffer.from('<svg width="525" height="530"><polygon points="142,0 372,0 525,80 525,530 0,530 0,80" fill="white"/></svg>');
+const artwork = await sharp(source).extract({ left: 458, top: 520, width: 525, height: 530 }).composite([{ input: mask, blend: "dest-in" }]).png().toBuffer();
+const raster = size => sharp(artwork).flatten({ background: "#ffffff" }).resize(size, size, { fit: "contain", background: "#ffffff" }).ensureAlpha().png({ compressionLevel: 9 }).toBuffer();
 await writeFile(output("favicon.png"), await raster(96));
 await writeFile(output("apple-touch-icon.png"), await raster(180));
 const sizes = [16, 32, 48, 64];

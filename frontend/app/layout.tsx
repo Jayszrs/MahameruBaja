@@ -9,13 +9,11 @@ import "../src/revision.css";
 import "../src/project-gallery.css";
 import "../src/unified-home.css";
 import "../src/client-readability.css";
-import "../src/admin-workspace.css";
-import "../src/admin-management.css";
 import "../src/experience-revision.css";
 import "../src/public-refinement.css";
-import "../src/admin-refinement.css";
 import "../src/poster-lightbox.css";
 import "../src/local-business.css";
+import "../src/loading-accessibility.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
@@ -32,14 +30,14 @@ const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
   display: "swap",
-  preload: false,
+  preload: true,
 });
 
 const archivo = Archivo({
   subsets: ["latin"],
   variable: "--font-archivo",
   display: "swap",
-  preload: false,
+  preload: true,
 });
 
 const plexMono = IBM_Plex_Mono({

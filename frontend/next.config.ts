@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   // Public limits mirror the server target; no secrets are exposed here.
   env: { NEXT_PUBLIC_CMS_VIDEO_MAX_BYTES: process.env.VERCEL === "1" ? "4000000" : "30000000" },
   images: {
+    qualities: [60, 75],
+    deviceSizes: [384, 480, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     // Private CMS proxies must never enter the optimizer's shared cache.
     localPatterns: [{ pathname: "/images/**" }, { pathname: "/mbi-mark.svg" }],
     remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com" }],

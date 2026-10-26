@@ -29,7 +29,7 @@ export async function harness(filename, props, reduced = false, options = {}) {
       }
     },
   };
-  const doc = { hidden: false, activeElement: null, body:{style:{overflow:""}}, addEventListener: (name, fn) => listeners.set(name, fn), removeEventListener: name => listeners.delete(name) };
+  const doc = { hidden: false, modalOpen: false, querySelector: () => doc.modalOpen ? {} : null, activeElement: null, body:{style:{overflow:""}}, addEventListener: (name, fn) => listeners.set(name, fn), removeEventListener: name => listeners.delete(name) };
   const timer = (fn, delay, repeat) => { const key = ++id; timers.set(key, { fn, delay, repeat, due: clock + delay }); return key; };
   const win = { matchMedia: () => ({ matches: reduced }), innerHeight: 900, addEventListener: (name, fn) => listeners.set(`window:${name}`, fn), removeEventListener: name => listeners.delete(`window:${name}`), dispatchEvent: event => { listeners.get(`window:${event.type}`)?.(event); return true; }, setTimeout: (fn, delay) => timer(fn, delay, false), clearTimeout: key => timers.delete(key), setInterval: (fn, delay) => timer(fn, delay, true), clearInterval: key => timers.delete(key) };
   const module = { exports: {} };
@@ -44,6 +44,7 @@ export async function harness(filename, props, reduced = false, options = {}) {
     absent: predicate => { render(); return !walk(tree, predicate); },
     advance(ms) { clock += ms; for (const [key, current] of [...timers]) if (current.due <= clock && timers.has(key)) { if (current.repeat) current.due = clock + current.delay; else timers.delete(key); current.fn(); } render(); },
     hidden(value) { doc.hidden = value; listeners.get("visibilitychange")?.(); render(); },
+    modal(value) { doc.modalOpen = value; listeners.get("toggle")?.(); render(); },
     dispose() { for (const slot of slots) slot?.cleanup?.(); timers.clear(); },
   };
 }
@@ -63,6 +64,8 @@ const control = () => hero.find(node => node.props?.className === "carousel-keyb
 control().props.onClick(); hero.render(); hero.advance(5000); assert.equal(title(hero), "Tiga");
 control().props.onClick(); hero.render(); hero.advance(5000); assert.equal(title(hero), "Satu");
 hero.hidden(true); hero.advance(5000); assert.equal(title(hero), "Satu"); hero.hidden(false); hero.advance(5000); assert.equal(title(hero), "Dua");
+hero.modal(true); hero.advance(10000); assert.equal(title(hero), "Dua", "A covering dialog pauses background slide downloads and rotation");
+hero.modal(false); hero.advance(5000); assert.equal(title(hero), "Tiga", "Rotation resumes after the dialog closes");
 hero.dispose();
 const reducedHero = await harness("src/components/HeroCarousel.tsx", heroProps, true); reducedHero.advance(8000); assert.equal(title(reducedHero), "Satu"); reducedHero.dispose();
 const videoHero = await harness("src/components/HeroCarousel.tsx", { ...heroProps, slides: [{ ...slides[0], type: "video" }, slides[1]] });

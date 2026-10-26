@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { getImageProps } from "next/image";
 import Image from "./CmsImage";
 import { livePopupPosters, posterDetails, posterPeriod } from "../data/popupPosters";
 import type { Promotion } from "../data/promotions";
@@ -9,6 +10,9 @@ import type { Division } from "../data/divisionCms";
 import type { TeamContact } from "../data/siteContent";
 import { jakartaDate } from "../lib/jakartaDate";
 import PublicText from "./PublicText";
+import { isPublicBlobUrl } from "../data/safeUrls";
+
+const posterSizes = "(max-width:760px) 96vw, 760px";
 
 export default function WelcomePosters({ promotions, divisions = [], contacts = [], preview, onPreviewClose }: { promotions: Promotion[]; divisions?: Division[]; contacts?: TeamContact[]; preview?: Promotion | null; onPreviewClose?: () => void }) {
   const path = usePathname(); const dialog = useRef<HTMLDialogElement>(null);
@@ -51,18 +55,21 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   }, [open, path, sessionKey, Boolean(preview)]);
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
+  const firstImage = live[0].image;
+  const { props: firstPoster } = getImageProps({ src: firstImage, alt: "", fill: true, sizes: posterSizes,
+    unoptimized: !firstImage.startsWith("/images/") && !isPublicBlobUrl(firstImage) });
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => { setReading(false); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
   const ratio = imageRatios[item.image] || 2 / 3;
-  return <PublicText>{!preview && <button type="button" className="poster-promo-launcher" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open}>Promo & informasi<span>{live.length}</span></button>}{open && <dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
+  return <PublicText>{!preview && <><link rel="preload" as="image" href={firstPoster.src} imageSrcSet={firstPoster.srcSet} imageSizes={firstPoster.sizes} fetchPriority="high" /><button type="button" className="poster-promo-launcher" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open}>Promo & informasi<span>{live.length}</span></button></>}{open && <dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
     style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "200px" } as CSSProperties}
     onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }}
     onKeyDown={event => { if (event.key === "ArrowRight") { event.preventDefault(); step(1); } if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); } }}>
     <div className="poster-welcome-toolbar"><span className="poster-welcome-accessible">{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
     <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
       <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}>
-        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 96vw, 760px" loading="eager" fetchPriority="high" onLoad={event => {
+        <Image src={item.image} alt={item.imageAlt} fill sizes={posterSizes} loading="eager" fetchPriority="high" onLoad={event => {
           const image = event.currentTarget;
           if (image.naturalWidth && image.naturalHeight) {
             const next = image.naturalWidth / image.naturalHeight;

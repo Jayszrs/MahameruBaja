@@ -42,9 +42,14 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   }
 
   useEffect(() => {
-    const handleVisibility = () => setPaused(document.hidden);
+    const handleVisibility = () => setPaused(document.hidden || Boolean(document.querySelector("dialog[open]")));
+    handleVisibility();
     document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
+    document.addEventListener("toggle", handleVisibility, true);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      document.removeEventListener("toggle", handleVisibility, true);
+    };
   }, []);
 
   useEffect(() => {
@@ -98,8 +103,8 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
                   src={slide.media}
                   alt=""
                   fill
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                  loading="eager"
+                  preload={index === 0}
+                  loading={index === 0 ? undefined : "eager"}
                   decoding="async"
                   sizes="100vw"
                   style={{ objectPosition: slide.objectPosition }}

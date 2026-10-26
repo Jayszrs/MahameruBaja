@@ -9,6 +9,7 @@ type SmoothImageProps = {
   /** True untuk gambar LCP (hero pertama): eager + prioritas tinggi. */
   eager?: boolean;
   className?: string;
+  quality?: number;
 };
 
 /**
@@ -16,13 +17,14 @@ type SmoothImageProps = {
  * gambar tampil apa adanya begitu siap, tanpa blur atau latar gelap.
  * Parent harus position: relative/absolute.
  */
-export default function SmoothImage({ src, alt, sizes, eager = false, className }: SmoothImageProps) {
+export default function SmoothImage({ src, alt, sizes, eager = false, className, quality }: SmoothImageProps) {
   return (
     <Image
       src={src}
       alt={alt}
       fill
       sizes={sizes}
+      quality={quality}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
       fetchPriority={eager ? "high" : "auto"}

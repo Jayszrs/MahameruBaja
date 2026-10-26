@@ -1,0 +1,33 @@
+/* Keep offscreen home sections in the HTML while deferring their layout/paint. */
+.unified-home > :is([data-home-section="intro"], [data-home-section="feature"], [data-home-section="order"], [data-home-section="proof"], [data-home-section="gallery"], [data-home-section="social"]) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 850px;
+}
+
+.public-site .quote-card small { color: #62696d; }
+.public-site .quote-card.quote-tone-1 small { color: #c3c9cd; }
+.public-site .home-reviews > .home-shell > small,
+.public-site .social-heading > div > p:not(.industrial-eyebrow),
+.public-site .social-post-source small,
+.public-site .directory-heading > p,
+.public-site .directory-links a > span { color: #5c6366; }
+.public-site .home-eyebrow.text-brand { color: #b51e24; }
+.public-site .home-routes .home-eyebrow.text-brand { color: #ffb9b9; }
+
+/* Background decoration has no work to do while a modal covers the page. */
+body:has(dialog[open]) .public-site :is(.hero-announcement-track, .logo-marquee-track) {
+  animation-play-state: paused;
+}
+.search-loading-status {
+  position: fixed;
+  inset: 90px 16px auto;
+  z-index: 60;
+  margin: auto;
+  width: fit-content;
+  padding: 14px 20px;
+  color: var(--color-graphite);
+  background: var(--color-warm-white);
+  border: 1px solid var(--color-light-steel);
+  border-radius: 6px;
+}
+.poster-lightbox .poster-welcome-navigation { position: sticky; bottom: 0; z-index: 3; }
