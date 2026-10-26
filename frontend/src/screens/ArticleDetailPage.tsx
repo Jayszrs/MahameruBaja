@@ -8,6 +8,7 @@ import { Link } from 'react-router';
 
 import { useReveal } from '../hooks/useReveal';
 import ShareArticle from '../components/ShareArticle';
+import { useDivisionDirectory } from '../components/DivisionDirectory';
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
@@ -15,6 +16,8 @@ function formatDate(dateStr: string) {
 
 export default function ArticleDetailPage({ article, related }: { article: Article; related: Article[] }) {
   const { ref, visible } = useReveal();
+  const { divisionWhatsApp } = useDivisionDirectory();
+  const laser = /laser|bending/i.test(`${article.title} ${article.category}`);
 
   return (
     <WebsiteTextScope ownerDivision={article.ownerDivision || null}><PublicText><div className="article-reading-page" data-static-motion>
@@ -58,19 +61,19 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
 
           {/* CTA card */}
           <div ref={ref} className={`bg-navy rounded-md p-6 mb-10 reveal ${visible ? 'visible' : ''}`}>
-            <h3 className="text-lg font-extrabold text-white mb-2">Butuh material yang dibahas di artikel ini?</h3>
-            <p className="text-white/60 text-sm mb-4">Tim Mahameru Baja siap membantu Anda mendapatkan material yang tepat sesuai spesifikasi proyek.</p>
+            <h3 className="text-lg font-extrabold text-white mb-2">{laser ? "Butuh potong atau tekuk plat sesuai gambar?" : "Butuh material yang dibahas di artikel ini?"}</h3>
+            <p className="text-white/80 text-sm mb-4">{laser ? "Kirim gambar, jenis bahan, ketebalan, dan jumlah ke tim laser cutting untuk pengecekan serta penawaran." : "Tim Mahameru Baja siap membantu Anda mendapatkan material yang tepat sesuai spesifikasi proyek."}</p>
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20membaca%20artikel%20di%20website%20dan%20ingin%20berkonsultasi%20tentang%20material."
+                href={laser ? divisionWhatsApp("laser-cutting") : "https://wa.me/6281218052017?text=Halo%20Mahameru%20Baja%2C%20saya%20membaca%20artikel%20di%20website%20dan%20ingin%20berkonsultasi%20tentang%20material."}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-4 py-2 bg-accent hover:bg-accent-dark text-white font-bold text-sm rounded-lg transition-colors"
               >
                 Konsultasi via WhatsApp
               </a>
-              <Link to="/produk" className="px-4 py-2 border border-white/30 text-white font-bold text-sm rounded-lg hover:bg-white/10 transition-colors">
-                Lihat Produk
+              <Link to={laser ? "/jasa" : "/produk"} className="px-4 py-2 border border-white/30 text-white font-bold text-sm rounded-lg hover:bg-white/10 transition-colors">
+                {laser ? "Jasa laser cutting Bekasi" : "Lihat Produk"}
               </Link>
             </div>
           </div>

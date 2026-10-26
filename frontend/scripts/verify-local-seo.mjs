@@ -13,6 +13,7 @@ const results = [];
 try {
   const crawler = await browser.newContext({ javaScriptEnabled: false });
   const page = await crawler.newPage();
+  let guideArticle;
   for (const route of ["/", "/jasa", "/produk", "/unit/retail-tambun", "/unit/retail-cibitung", "/unit/laser-cutting", "/unit/trading-proyek", "/unit/fabrikasi-erection"]) {
     const response = await page.goto(`${base}${route}`, { waitUntil: "load" });
     assert.equal(response.status(), 200, route);
@@ -29,6 +30,7 @@ try {
         return data["@graph"] || [data];
       }),
       localText: document.querySelector(".local-business-details")?.textContent,
+      guide: document.querySelector(".laser-service-guide")?.textContent,
       text: document.body.textContent,
     }));
     assert.equal(new URL(data.canonical).href, new URL(route, canonicalOrigin).href, route);
@@ -48,6 +50,8 @@ try {
       assert.match(data.headings[0], /laser cutting Bekasi/i);
       assert(data.graph.some(node => node["@type"] === "Service"));
       assert.match(data.localText, /DWG.*DXF/s);
+      assert.match(data.guide, /cutting laser.*gambar kerja/is);
+      guideArticle = await page.locator('.laser-guide-reading a').first().getAttribute('href').catch(() => null);
     }
     if (route === "/produk") {
       assert.match(data.headings[0], /besi.*baja Bekasi/i);
@@ -55,6 +59,14 @@ try {
       assert.match(data.localText, /Cibitung/);
     }
     results.push({ route, title: data.title, serverRendered: true, businesses: businesses.length });
+  }
+  if (guideArticle) {
+    const response = await page.goto(`${base}${guideArticle}`, { waitUntil: "load" });
+    assert.equal(response.status(), 200);
+    const graph = await page.locator('script[type="application/ld+json"]').evaluateAll(nodes => nodes.flatMap(node => JSON.parse(node.textContent)["@graph"] || []));
+    assert(graph.some(node => node["@type"] === "Article" && node.datePublished), "Published guide has Article data without JavaScript");
+    assert(await page.locator('a[href="/jasa"]').count(), "Guide links back to laser cutting service");
+    results.push({ route: guideArticle, articleSchema: true, serverRendered: true });
   }
   await crawler.close();
 
@@ -82,10 +94,19 @@ try {
     for (const route of ["/jasa", "/produk", "/"]) {
       await ui.goto(`${base}${route}`, { waitUntil: "load" });
       await ui.waitForTimeout(1200);
-      assert.equal(await ui.locator(".poster-welcome[open]").count(), 0, "No automatic interstitial");
       assert(await ui.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${route} fits ${width}px`);
       const launcher = ui.getByRole("button", { name: /^Promo & informasi/ });
       if (await launcher.count()) {
+        const popup = ui.locator(".poster-welcome[open]");
+        await popup.waitFor();
+        await ui.waitForFunction(() => document.querySelector('.poster-welcome-image img')?.naturalWidth > 0);
+        const posterBounds = await popup.boundingBox();
+        assert(posterBounds.x >= 0 && posterBounds.y >= 0 && posterBounds.x + posterBounds.width <= width + 1 && posterBounds.y + posterBounds.height <= height + 1, "Automatic poster fits viewport");
+        if (width === 390 && route === "/") await ui.screenshot({ path: `${artifacts}/automatic-poster-390.png` });
+        await ui.keyboard.press("Escape");
+        await popup.waitFor({ state: "detached" });
+        await ui.waitForTimeout(900);
+        assert.equal(await popup.count(), 0, "Closing the automatic poster keeps it dismissed");
         const rect = await launcher.boundingBox();
         assert(rect.width < width * .7 && rect.height < height * .12, "Compact promo control");
         await launcher.click();
@@ -96,6 +117,7 @@ try {
         assert(await launcher.evaluate(node => node === document.activeElement), "Restore focus to promo launcher");
       }
       if (route !== "/" && [390, 1440].includes(width)) {
+        if (route === "/jasa") await ui.locator('.laser-service-guide').screenshot({ path: `${artifacts}/laser-guide-${width}.png` });
         await ui.locator(".local-business-details").screenshot({ path: `${artifacts}/${route.slice(1)}-local-${width}.png` });
         await ui.evaluate(() => window.scrollTo(0, 0));
         await ui.screenshot({ path: `${artifacts}/${route.slice(1)}-hero-${width}.png` });
@@ -110,6 +132,9 @@ try {
     await ui.locator(".promo-preview-dialog").waitFor({ state: "detached" });
     assert.equal(await ui.evaluate(() => document.body.style.overflow), "");
   }
+  await ui.locator('.site-navbar a[href="/jasa"]').first().click();
+  await ui.waitForTimeout(1000);
+  assert.equal(await ui.locator('.poster-welcome[open]').count(), 0, "Client navigation does not reopen a dismissed poster");
   assert.deepEqual(errors, [], "No browser runtime errors");
   console.log(JSON.stringify({ passed: true, pages: results, sitemapUrls: urls.length, widths: [320, 390, 768, 1440], artifacts }, null, 2));
 } finally { await browser.close(); }

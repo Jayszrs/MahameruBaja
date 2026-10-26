@@ -104,6 +104,10 @@
     "area": "ArticleDetailPage"
   },
   {
+    "source": "Butuh potong atau tekuk plat sesuai gambar?",
+    "area": "ArticleDetailPage"
+  },
+  {
     "source": "Informasi",
     "area": "ArticleDetailPage",
     "areas": [
@@ -112,7 +116,19 @@
     ]
   },
   {
+    "source": "Jasa laser cutting Bekasi",
+    "area": "ArticleDetailPage",
+    "areas": [
+      "ArticleDetailPage",
+      "LaserCuttingPage"
+    ]
+  },
+  {
     "source": "Kembali ke Informasi",
+    "area": "ArticleDetailPage"
+  },
+  {
+    "source": "Kirim gambar, jenis bahan, ketebalan, dan jumlah ke tim laser cutting untuk pengecekan serta penawaran.",
     "area": "ArticleDetailPage"
   },
   {
@@ -1838,10 +1854,6 @@
       "LaserCuttingPage",
       "promotions"
     ]
-  },
-  {
-    "source": "Jasa laser cutting Bekasi",
-    "area": "LaserCuttingPage"
   },
   {
     "source": "jumlah",
@@ -4952,10 +4964,6 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "Butuh plat dipotong atau ditekuk sesuai gambar?",
-    "area": "UnifiedHomeContent"
-  },
-  {
     "source": "Cantumkan jenis material atau gambar kerja, ukuran, jumlah, lokasi, dan target waktu pengiriman atau pengerjaan.",
     "area": "UnifiedHomeContent"
   },
@@ -4981,6 +4989,10 @@
   },
   {
     "source": "Informasi promo divisi akan ditampilkan setelah diterbitkan. Untuk kebutuhan saat ini, hubungi tim kami.",
+    "area": "UnifiedHomeContent"
+  },
+  {
+    "source": "Jasa laser cutting & bending plat di Bekasi",
     "area": "UnifiedHomeContent"
   },
   {
@@ -5033,6 +5045,10 @@
   },
   {
     "source": "LASER CUTTING & BENDING",
+    "area": "UnifiedHomeContent"
+  },
+  {
+    "source": "Lihat jasa cutting laser Bekasi",
     "area": "UnifiedHomeContent"
   },
   {

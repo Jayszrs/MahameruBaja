@@ -4,7 +4,7 @@ import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import Image from "../components/CmsImage"
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead, type CreateLeadInput } from "../lib/api"
@@ -37,7 +37,7 @@ const servicePaths: { title: string; detail: string; href: string; action: strin
   { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
 ]
 
-export default function LaserCuttingPage() {
+export default function LaserCuttingPage({ children }: { children?: ReactNode }) {
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
   const [file, setFile] = useState<File | null>(null)
@@ -111,6 +111,7 @@ export default function LaserCuttingPage() {
           <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>
       </section>
+      {children}
       <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
             const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action}</strong></div></>;
             if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;

@@ -17,10 +17,12 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const [reading, setReading] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
+  const seen = useRef(new Set<string>());
   const slug = /^\/unit\/([^/]+)/.exec(path)?.[1];
   const today = jakartaDate();
   const live = preview ? [preview] : livePopupPosters(promotions, today, slug);
   const signature = live.map(item => item.id).join(":");
+  const sessionKey = `${slug || "main"}:${signature}`;
   const paused = focused || reading;
   useEffect(() => {
     if (!open || preview || paused || expanded || live.length < 2) return;
@@ -33,14 +35,20 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   useEffect(() => {
     setOpen(false); setIndex(0); setFocused(false); setReading(false); setExpanded(false);
   }, [path]);
+  useEffect(() => {
+    if (preview || path.startsWith("/admin") || !signature || seen.current.has(sessionKey)) return;
+    const timer = window.setTimeout(() => { if (!seen.current.has(sessionKey)) setOpen(true); }, 700);
+    return () => window.clearTimeout(timer);
+  }, [path, preview, signature, sessionKey]);
   useEffect(() => { if (preview) { setIndex(0); setFocused(false); setReading(false); setExpanded(false); setOpen(true); } }, [preview]);
   useEffect(() => {
     if (!open || !preview && path.startsWith("/admin")) return;
     const node = dialog.current; const focused = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
     node?.showModal(); document.body.style.overflow = "hidden";
+    if (!preview) seen.current.add(sessionKey);
     return () => { node?.close(); document.body.style.overflow = overflow; focused?.focus(); };
-  }, [open, path, Boolean(preview)]);
+  }, [open, path, sessionKey, Boolean(preview)]);
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
   const close = () => { setOpen(false); onPreviewClose?.(); };
@@ -54,7 +62,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     <div className="poster-welcome-toolbar"><span className="poster-welcome-accessible">{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
     <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
       <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}>
-        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 96vw, 760px" onLoad={event => {
+        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width:760px) 96vw, 760px" loading="eager" fetchPriority="high" onLoad={event => {
           const image = event.currentTarget;
           if (image.naturalWidth && image.naturalHeight) {
             const next = image.naturalWidth / image.naturalHeight;
