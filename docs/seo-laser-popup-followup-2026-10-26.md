@@ -24,3 +24,11 @@ Pengiriman sitemap dan jumlah URL ditemukan bukan bukti semua URL sudah diindeks
 Delivery gate perubahan ini: Hard PASS (fakta sesuai data dan empat viewport lulus); Purpose PASS (konten membantu memilih proses dan mengirim kebutuhan); Liveliness PASS (identitas yang ada dipertahankan, ENERGY 2 / RHYTHM 2 / MOTION 1); Craftsmanship PASS (SSR, link, dialog, keyboard dan browser diverifikasi).
 
 Rilis melalui push ke `main` agar integrasi Git Vercel membaca konfigurasi `frontend/vercel.json` dan region `sin1`. Tidak ada perubahan DNS, pengaturan perlindungan deployment, data CMS, iklan, atau Google Business Profile.
+
+## Hasil rilis dan permintaan indeks
+
+Implementasi commit `6428d53` sudah dipush ke `origin/main`. Build Git Vercel `dpl_AetaNG5sFEzMDeBbByPMnEoUzD2i`, URL `mahamerubaja-iw9fxgevg-jaelanisurya8-7843.vercel.app`, selesai READY dalam 36 detik, fungsi `sin1`. Domain `mahamerubaja.vercel.app` sudah memakai versi tersebut. Pengujian `verify-local-seo.mjs` diulang di domain produksi dan lulus, termasuk sembilan URL SSR, schema artikel, empat viewport, popup otomatis, penutupan/pembukaan ulang, dan navigasi tanpa popup berulang. Bukti render berada di `tmp/seo-followup-production/`.
+
+Inspeksi Search Console untuk `/jasa` menampilkan **“URL tidak ada di Google” dan “URL tidak dikenali oleh Google”** sebelum pengajuan indeks. Sesudah rilis, tombol Minta Pengindeksan dijalankan. Google menolak dengan **“Kuota Terlampaui”**, menyatakan kuota harian terlampaui dan meminta dicoba besok. Permintaan ini **belum berhasil diajukan**. Tidak dilakukan retry berulang, penggunaan akun lain, atau upaya melewati batas Google. Bukti: `tmp/seo-followup/indexing-quota-exceeded.png`.
+
+Sitemap yang benar tetap sudah berhasil diproses dengan 73 URL ditemukan. Ini berbeda dari keberhasilan permintaan indeks manual maupun status indeks masing-masing halaman. Tindak lanjut yang masih tersisa adalah mengajukan `/jasa` lagi setelah kuota tersedia, mulai 27 Oktober 2026, dan memantau laporan indeks/performa. Tidak ada tugas terjadwal otomatis yang dibuat.
