@@ -31,7 +31,7 @@ try {
       localText: document.querySelector(".local-business-details")?.textContent,
       text: document.body.textContent,
     }));
-    assert.equal(data.canonical, new URL(route, canonicalOrigin).href, route);
+    assert.equal(new URL(data.canonical).href, new URL(route, canonicalOrigin).href, route);
     assert(data.og, `${route} has its own Open Graph URL`);
     assert.equal(new URL(data.og).href, new URL(route, canonicalOrigin).href, `${route} share URL`);
     assert.equal(data.headings.length, 1, `${route} has one server-rendered h1`);
