@@ -116,11 +116,11 @@
     ]
   },
   {
-    "source": "Jasa laser cutting Bekasi",
+    "source": "Jasa cutting laser Tambun & Bekasi",
     "area": "ArticleDetailPage",
     "areas": [
       "ArticleDetailPage",
-      "LaserCuttingPage"
+      "UnifiedHomeContent"
     ]
   },
   {
@@ -234,7 +234,7 @@
     "area": "business"
   },
   {
-    "source": "Bagaimana meminta penawaran laser cutting di Bekasi?",
+    "source": "Bagaimana memesan jasa cutting laser di Tambun dan Bekasi?",
     "area": "business"
   },
   {
@@ -1854,6 +1854,10 @@
       "LaserCuttingPage",
       "promotions"
     ]
+  },
+  {
+    "source": "Jasa laser cutting Bekasi",
+    "area": "LaserCuttingPage"
   },
   {
     "source": "jumlah",
@@ -4992,7 +4996,7 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "Jasa laser cutting & bending plat di Bekasi",
+    "source": "Jasa laser cutting & bending plat di Tambun dan Bekasi",
     "area": "UnifiedHomeContent"
   },
   {
@@ -5045,10 +5049,6 @@
   },
   {
     "source": "LASER CUTTING & BENDING",
-    "area": "UnifiedHomeContent"
-  },
-  {
-    "source": "Lihat jasa cutting laser Bekasi",
     "area": "UnifiedHomeContent"
   },
   {

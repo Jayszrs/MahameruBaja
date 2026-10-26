@@ -8,8 +8,8 @@ import LaserServiceGuide from "../../src/components/LaserServiceGuide";
 import { readPublishedArticles } from "../../src/lib/articleStore";
 import { contentOwner, visibleInDivision } from "../../src/data/divisionCms";
 
-const title = "Jasa Cutting Laser Bekasi & Bending Plat | Mahameru Baja";
-const description = "Jasa cutting laser (laser cutting) dan bending plat di Tambun, Bekasi. Konsultasikan gambar, bahan, ketebalan, dan jumlah ke MBI untuk penawaran.";
+const title = "Jasa Cutting Laser Tambun & Bekasi | Mahameru Baja";
+const description = "Jasa cutting laser Tambun dan Bekasi untuk potong dan bending plat sesuai gambar. Kirim desain, bahan, ketebalan, dan jumlah ke MBI untuk penawaran.";
 export const metadata: Metadata = {
   title: { absolute: title },
   description,
@@ -28,8 +28,8 @@ export default async function Page() {
     ...divisions.map(division => divisionBusinessSchema(division, base)),
     ...divisions.map(division => ({
       "@type": "Service", "@id": `${base}/jasa#service`,
-      name: "Jasa laser cutting dan bending plat Bekasi", url: `${base}/jasa`,
-      alternateName: "Jasa cutting laser plat Bekasi",
+      name: "Jasa laser cutting dan bending plat Tambun, Bekasi", url: `${base}/jasa`,
+      alternateName: "Jasa cutting laser Tambun dan Bekasi",
       serviceType: "Laser cutting dan bending plat", description,
       areaServed: division.area,
       provider: { "@id": `${base}/unit/${division.slug}#business` },

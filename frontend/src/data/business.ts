@@ -51,7 +51,7 @@ export const laserServices = [
 ]
 export const laserFAQs = [
   {
-    question: "Bagaimana meminta penawaran laser cutting di Bekasi?",
+    question: "Bagaimana memesan jasa cutting laser di Tambun dan Bekasi?",
     answer:
       "Sampaikan gambar, jenis material, ketebalan, ukuran dan jumlah melalui formulir. Tim perlu meninjau desain sebelum mengonfirmasi harga dan jadwal produksi. Area kebutuhan dapat mencakup Tambun, Cibitung dan Bekasi; cakupan pengiriman dikonfirmasi saat konsultasi.",
   },

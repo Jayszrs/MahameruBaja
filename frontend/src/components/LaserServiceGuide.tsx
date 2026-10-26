@@ -4,7 +4,7 @@ import type { Article } from "../data/articles";
 export default function LaserServiceGuide({ articles }: { articles: Article[] }) {
   return <section className="home-section laser-service-guide" aria-labelledby="laser-guide-heading">
     <div className="home-shell">
-      <h2 id="laser-guide-heading">Jasa cutting laser plat sesuai gambar kerja</h2>
+      <h2 id="laser-guide-heading">Cutting laser Tambun untuk plat sesuai gambar kerja</h2>
       <p>Cutting laser dan laser cutting merujuk pada proses pemotongan dengan laser. MBI Laser Cutting & Bending melayani kebutuhan plat di Tambun Selatan, Bekasi, mulai dari ornamen pagar dan panel hingga komponen custom. Jenis bahan, ketebalan, ukuran, serta jumlah diperiksa bersama gambar sebelum pekerjaan disepakati.</p>
       <div className="local-business-columns">
         <div>

@@ -73,7 +73,7 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
                 Konsultasi via WhatsApp
               </a>
               <Link to={laser ? "/jasa" : "/produk"} className="px-4 py-2 border border-white/30 text-white font-bold text-sm rounded-lg hover:bg-white/10 transition-colors">
-                {laser ? "Jasa laser cutting Bekasi" : "Lihat Produk"}
+                {laser ? "Jasa cutting laser Tambun & Bekasi" : "Lihat Produk"}
               </Link>
             </div>
           </div>

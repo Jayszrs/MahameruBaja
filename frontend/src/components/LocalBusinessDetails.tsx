@@ -5,7 +5,7 @@ export default function LocalBusinessDetails({ divisions, service = false }: { d
   if (!divisions.length) return null;
   return <section className="home-section local-business-details" aria-labelledby="local-business-heading">
     <div className="home-shell">
-      <h2 id="local-business-heading">{service ? "Konsultasi laser cutting di Bekasi" : "Toko besi dan baja di Tambun & Cibitung, Bekasi"}</h2>
+      <h2 id="local-business-heading">{service ? "Konsultasi cutting laser Bekasi" : "Toko besi dan baja di Tambun & Cibitung, Bekasi"}</h2>
       <p>{service
         ? "Kirim gambar kerja untuk kebutuhan ornamen pagar, panel, atau komponen plat. Tim MBI Laser Cutting & Bending meninjau jenis bahan, ketebalan, ukuran, dan jumlah sebelum mengonfirmasi proses produksi."
         : "Cari besi beton, hollow, pipa, plat, WF, UNP, CNP, wiremesh, atau baja ringan melalui katalog Mahameru Baja. Untuk pembelian di Tambun dan Cibitung, pilih toko yang ingin dihubungi lalu konfirmasikan spesifikasi, stok, dan harga terbaru."}</p>

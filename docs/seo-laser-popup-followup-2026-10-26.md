@@ -32,3 +32,7 @@ Implementasi commit `6428d53` sudah dipush ke `origin/main`. Build Git Vercel `d
 Inspeksi Search Console untuk `/jasa` menampilkan **“URL tidak ada di Google” dan “URL tidak dikenali oleh Google”** sebelum pengajuan indeks. Sesudah rilis, tombol Minta Pengindeksan dijalankan. Google menolak dengan **“Kuota Terlampaui”**, menyatakan kuota harian terlampaui dan meminta dicoba besok. Permintaan ini **belum berhasil diajukan**. Tidak dilakukan retry berulang, penggunaan akun lain, atau upaya melewati batas Google. Bukti: `tmp/seo-followup/indexing-quota-exceeded.png`.
 
 Sitemap yang benar tetap sudah berhasil diproses dengan 73 URL ditemukan. Ini berbeda dari keberhasilan permintaan indeks manual maupun status indeks masing-masing halaman. Tindak lanjut yang masih tersisa adalah mengajukan `/jasa` lagi setelah kuota tersedia, mulai 27 Oktober 2026, dan memantau laporan indeks/performa. Tidak ada tugas terjadwal otomatis yang dibuat.
+
+## Tambahan kata kunci sesuai permintaan pengguna
+
+Target **cutting laser Tambun**, **cutting laser Bekasi**, dan **jasa cutting laser** ditambahkan secara alami pada title/deskripsi `/jasa`, heading panduan dan kontak, FAQ, tautan beranda/artikel, serta nama layanan pada schema. URL canonical tetap `/jasa`; istilah laser cutting yang sudah digunakan tetap ada. Tidak dibuat halaman kota duplikat atau meta keywords tersembunyi. Pemeriksaan SSR pada `verify-local-seo.mjs` kini memastikan ketiga frasa muncul pada teks halaman yang terbaca tanpa JavaScript.

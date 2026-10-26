@@ -51,6 +51,9 @@ try {
       assert(data.graph.some(node => node["@type"] === "Service"));
       assert.match(data.localText, /DWG.*DXF/s);
       assert.match(data.guide, /cutting laser.*gambar kerja/is);
+      for (const keyword of ["cutting laser tambun", "cutting laser bekasi", "jasa cutting laser"]) {
+        assert(data.text.toLowerCase().includes(keyword), `${route}: requested phrase is visible without JavaScript: ${keyword}`);
+      }
       guideArticle = await page.locator('.laser-guide-reading a').first().getAttribute('href').catch(() => null);
     }
     if (route === "/produk") {
