@@ -57,12 +57,16 @@ export const metadata: Metadata = {
     default: "Mahameru Baja Indonesia | Material, Laser Cutting & Fabrikasi",
     template: "%s | Mahameru Baja Indonesia",
   },
-  description: "Retail besi, supplier material proyek, laser cutting, bending, dan fabrikasi di Tambun, Cibitung, dan Bekasi.",
+  description: "Retail besi, supplier material proyek, laser cutting, bending, fabrikasi, dan erection di Tambun, Cibitung, dan Bekasi.",
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION || "e5pMHAECF9BZQf04S3uJAhmre9xFHY8eTPfEAgap_sA" },
   applicationName: "Mahameru Baja Indonesia",
   icons: {
-    icon: "/_next/image?url=%2Fimages%2Fbrand%2Fmbi-favicon-white-v3.png&w=64&q=75",
-    apple: "/_next/image?url=%2Fimages%2Fbrand%2Fmbi-favicon-white-v3.png&w=256&q=75",
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
+      { url: "/favicon.png", sizes: "96x96", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     type: "website",

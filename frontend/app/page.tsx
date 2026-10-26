@@ -7,9 +7,9 @@ import { divisionBusinessSchema, jsonLd, organizationSchema } from "../src/lib/s
 
 export const metadata = {
   title: { absolute: "Mahameru Baja | Toko Besi & Jasa Laser Cutting Bekasi" },
-  description: "MBI melayani jasa laser cutting plat, bending, fabrikasi, dan supply besi proyek di Bekasi, Tambun, serta Cibitung. Kirim gambar kerja atau cari material dan minta penawaran.",
+  description: "Mahameru Baja di Bekasi melayani toko besi Tambun dan Cibitung, supplier baja proyek, jasa cutting laser, bending plat, fabrikasi, serta erection.",
   alternates: { canonical: "/" },
-  openGraph: { url: "/", title: "Mahameru Baja | Toko Besi & Jasa Laser Cutting Bekasi", description: "Laser cutting plat, bending, fabrikasi, dan material konstruksi dalam lima divisi Mahameru Baja.", images: [{ url: "/images/laser-cutting-illustration.jpg", width: 1800, height: 1013, alt: "MBI Laser Cutting — ilustrasi proses produksi" }] },
+  openGraph: { siteName: "Mahameru Baja Indonesia", url: "/", title: "Mahameru Baja | Toko Besi & Jasa Laser Cutting Bekasi", description: "Laser cutting plat, bending, fabrikasi, dan material konstruksi dalam lima divisi Mahameru Baja.", images: [{ url: "/images/laser-cutting-illustration.jpg", width: 1800, height: 1013, alt: "MBI Laser Cutting — ilustrasi proses produksi" }] },
 };
 
 export default async function Page() {

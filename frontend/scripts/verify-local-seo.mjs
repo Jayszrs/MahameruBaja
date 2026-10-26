@@ -14,7 +14,7 @@ try {
   const crawler = await browser.newContext({ javaScriptEnabled: false });
   const page = await crawler.newPage();
   let guideArticle;
-  for (const route of ["/", "/jasa", "/produk", "/unit/retail-tambun", "/unit/retail-cibitung", "/unit/laser-cutting", "/unit/trading-proyek", "/unit/fabrikasi-erection"]) {
+  for (const route of ["/", "/jasa", "/produk", "/unit/retail-tambun", "/unit/retail-cibitung", "/unit/laser-cutting", "/unit/trading-proyek", "/unit/fabrikasi-erection", "/unit/laser-cutting/layanan", "/unit/fabrikasi-erection/layanan", "/unit/trading-proyek/produk"]) {
     const response = await page.goto(`${base}${route}`, { waitUntil: "load" });
     assert.equal(response.status(), 200, route);
     assert(!/noindex/i.test(response.headers()["x-robots-tag"] || ""), route);
@@ -25,6 +25,9 @@ try {
       description: document.querySelector('meta[name="description"]')?.content,
       og: document.querySelector('meta[property="og:url"]')?.content,
       robots: document.querySelector('meta[name="robots"]')?.content || "",
+      siteName: document.querySelector('meta[property="og:site_name"]')?.content,
+      icons: [...document.querySelectorAll('link[rel="icon"]')].map(node => new URL(node.href).pathname),
+      serviceLinks: [...document.querySelectorAll('.footer-local-services a')].map(node => ({ href: node.getAttribute('href'), text: node.textContent })),
       graph: [...document.querySelectorAll('script[type="application/ld+json"]')].flatMap(node => {
         const data = JSON.parse(node.textContent);
         return data["@graph"] || [data];
@@ -39,6 +42,10 @@ try {
     assert.equal(data.headings.length, 1, `${route} has one server-rendered h1`);
     assert(data.description && data.graph.length > 0, `${route} metadata and JSON-LD`);
     assert(!/noindex/i.test(data.robots), `${route} indexable`);
+    assert.equal(data.siteName, "Mahameru Baja Indonesia", `${route} uses the business site name`);
+    assert(data.icons.includes('/favicon.ico') && data.icons.includes('/favicon.png'), `${route} static brand favicons`);
+    assert(data.serviceLinks.length >= 8 && data.serviceLinks.every(link => /bekasi/i.test(link.text)), `${route} useful Bekasi service links`);
+    if (route.startsWith('/unit/')) assert.match(data.title, /bekasi/i, `${route} local title`);
     const businesses = data.graph.filter(node => ["HardwareStore", "LocalBusiness"].includes(node["@type"]));
     assert(businesses.length, `${route} business identity`);
     for (const business of businesses) {
@@ -78,6 +85,17 @@ try {
   const robotsText = await robots.text();
   assert(robotsText.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`));
   assert(!/^Disallow: \/\s*$/m.test(robotsText));
+  for (const [file, size] of [['favicon.png', 96], ['apple-touch-icon.png', 180]]) {
+    const response = await fetch(`${base}/${file}`);
+    assert.equal(response.status, 200, file);
+    assert.match(response.headers.get('content-type'), /image\/png/);
+    const metadata = await require('sharp')(Buffer.from(await response.arrayBuffer())).metadata();
+    assert.equal(metadata.width, size); assert.equal(metadata.height, size);
+  }
+  const icon = await fetch(`${base}/favicon.ico`);
+  assert.equal(icon.status, 200);
+  const iconBytes = Buffer.from(await icon.arrayBuffer());
+  assert.equal(iconBytes.readUInt16LE(2), 1, 'Valid ICO resource');
   const sitemap = await fetch(`${base}/sitemap.xml`);
   assert.equal(sitemap.status, 200);
   const urls = [...(await sitemap.text()).matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
@@ -120,6 +138,7 @@ try {
         assert(await launcher.evaluate(node => node === document.activeElement), "Restore focus to promo launcher");
       }
       if (route !== "/" && [390, 1440].includes(width)) {
+        if (route === "/jasa") await ui.locator('.footer-local-services').screenshot({ path: `${artifacts}/footer-services-${width}.png` });
         if (route === "/jasa") await ui.locator('.laser-service-guide').screenshot({ path: `${artifacts}/laser-guide-${width}.png` });
         await ui.locator(".local-business-details").screenshot({ path: `${artifacts}/${route.slice(1)}-local-${width}.png` });
         await ui.evaluate(() => window.scrollTo(0, 0));

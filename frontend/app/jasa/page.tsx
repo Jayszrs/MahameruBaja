@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: { absolute: title },
   description,
   alternates: { canonical: "/jasa" },
-  openGraph: { title, description, url: "/jasa", images: [{ url: "/images/laser-cutting-illustration.jpg", alt: "Ilustrasi proses laser cutting plat" }] },
+  openGraph: { siteName: "Mahameru Baja Indonesia", title, description, url: "/jasa", images: [{ url: "/images/laser-cutting-illustration.jpg", alt: "Ilustrasi proses laser cutting plat" }] },
   twitter: { card: "summary_large_image", title, description },
 };
 

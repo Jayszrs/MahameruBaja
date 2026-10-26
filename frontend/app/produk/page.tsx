@@ -11,7 +11,7 @@ const title = "Toko Besi & Baja Bekasi, Tambun, Cibitung | Mahameru Baja";
 const description = "Katalog toko besi dan baja Bekasi: besi beton, hollow, pipa, plat, WF, wiremesh, dan baja ringan. Hubungi toko Tambun atau Cibitung untuk cek stok dan harga.";
 export const metadata: Metadata = {
   title: { absolute: title }, description, alternates: { canonical: "/produk" },
-  openGraph: { title, description, url: "/produk", images: [{ url: "/images/steel-indonesia/toko-mahameru.jpg", alt: "Toko besi Mahameru Baja di Tambun, Bekasi" }] },
+  openGraph: { siteName: "Mahameru Baja Indonesia", title, description, url: "/produk", images: [{ url: "/images/steel-indonesia/toko-mahameru.jpg", alt: "Toko besi Mahameru Baja di Tambun, Bekasi" }] },
   twitter: { card: "summary_large_image", title, description },
 };
 export default async function Page() {

@@ -8,19 +8,15 @@ import { connection } from "next/server";
 import { readPublicSiteContent } from "../../../src/lib/siteContentStore";
 import { siteOrigin } from "../../../src/lib/siteOrigin";
 import { divisionBusinessSchema, jsonLd, organizationSchema } from "../../../src/lib/structuredData";
+import { divisionSearchTitle, divisionSearchDescription } from "../../../src/data/divisionSeo";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const unit = (await readPublicDivisions()).find((item) => item.slug === slug);
-  const titles: Record<string, string> = {
-    "retail-tambun": "Toko Besi Tambun | Mahameru Baja",
-    "retail-cibitung": "Toko Besi Cibitung | Garuda Marginal Baja",
-    "trading-proyek": "Supply Baja Proyek | Mahameru Baja Indonesia",
-    "laser-cutting": "Laser Cutting & Bending Bekasi | MBI",
-    "fabrikasi-erection": "Fabrikasi & Erection Bekasi | MBI Project",
-  };
-  const title = unit ? titles[slug] || unit.name + " | Mahameru Baja" : "";
-  return unit ? { title: { absolute: title }, description: unit.description, alternates: { canonical: `/unit/${slug}` }, openGraph: { title, description: unit.description, url: `/unit/${slug}`, images: unit.hero ? [{ url: unit.hero, alt: unit.name }] : [] } } : {};
+  if (!unit) return {};
+  const title = divisionSearchTitle(unit);
+  const description = divisionSearchDescription(unit);
+  return { title: { absolute: title }, description, alternates: { canonical: `/unit/${slug}` }, openGraph: { siteName: "Mahameru Baja Indonesia", title, description, url: `/unit/${slug}`, images: unit.hero ? [{ url: unit.hero, alt: unit.name }] : [] }, twitter: { card: "summary_large_image", title, description } };
 }
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   await connection();

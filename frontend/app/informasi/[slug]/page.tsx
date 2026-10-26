@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     description: article.excerpt,
     alternates: { canonical: `/informasi/${article.slug}` },
     openGraph: {
+      siteName: "Mahameru Baja Indonesia",
       title: article.title,
       description: article.excerpt,
       type: "article",
