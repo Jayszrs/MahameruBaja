@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import LocalBusinessDetails from "../../src/components/LocalBusinessDetails";
 import { readPublicDivisions } from "../../src/lib/divisionStore";
 import { siteOrigin } from "../../src/lib/siteOrigin";
-import { breadcrumbSchema, divisionBusinessSchema, jsonLd, organizationSchema } from "../../src/lib/structuredData";
+import { breadcrumbSchema, divisionBusinessSchema, faqSchema, jsonLd, organizationSchema } from "../../src/lib/structuredData";
 import LaserServiceGuide from "../../src/components/LaserServiceGuide";
 import { readPublishedArticles } from "../../src/lib/articleStore";
+import { laserFAQs } from "../../src/data/business";
 import { contentOwner, visibleInDivision } from "../../src/data/divisionCms";
 
 const title = "Jasa Cutting Laser Tambun & Bekasi | Mahameru Baja";
@@ -29,12 +30,13 @@ export default async function Page() {
     ...divisions.map(division => ({
       "@type": "Service", "@id": `${base}/jasa#service`,
       name: "Jasa laser cutting dan bending plat Tambun, Bekasi", url: `${base}/jasa`,
-      alternateName: "Jasa cutting laser Tambun dan Bekasi",
+      alternateName: ["Jasa cutting laser Tambun", "Jasa cutting laser Bekasi", "Jasa cutting laser plat"],
       serviceType: "Laser cutting dan bending plat", description,
       areaServed: division.area,
       provider: { "@id": `${base}/unit/${division.slug}#business` },
     })),
-    breadcrumbSchema(base, "/jasa", "Jasa laser cutting Bekasi"),
+    faqSchema(base, "/jasa", laserFAQs),
+    breadcrumbSchema(base, "/jasa", "Jasa Cutting Laser Bekasi & Tambun"),
   ] };
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage><LaserServiceGuide articles={articles} /></LaserCuttingPage><LocalBusinessDetails divisions={divisions} service /></>;
 }

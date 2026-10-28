@@ -33,6 +33,18 @@ export function divisionBusinessSchema(division: Division, base: string) {
   };
 }
 
+export function faqSchema(base: string, path: string, faqs: { question: string; answer: string }[]) {
+  return {
+    "@type": "FAQPage",
+    "@id": `${base}${path}#faq`,
+    mainEntity: faqs.map(faq => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
+}
+
 export function breadcrumbSchema(base: string, path: string, name: string) {
   return {
     "@type": "BreadcrumbList",

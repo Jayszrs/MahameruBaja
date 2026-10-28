@@ -250,6 +250,10 @@
     "area": "business"
   },
   {
+    "source": "Di mana jasa cutting laser terdekat di Bekasi dan Tambun?",
+    "area": "business"
+  },
+  {
     "source": "Diskusikan daftar material, volume, lokasi pengiriman dan jadwal kebutuhan pengadaan proyek.",
     "area": "business"
   },
@@ -284,6 +288,10 @@
       "business",
       "divisionContent"
     ]
+  },
+  {
+    "source": "MBI Laser Cutting & Bending berada di Tambun Selatan, Kabupaten Bekasi, dan melayani jasa cutting laser untuk area Bekasi, Tambun, Cibitung, dan sekitarnya. Kirim gambar kerja serta kebutuhan Anda melalui formulir atau WhatsApp untuk ditinjau tim.",
+    "area": "business"
   },
   {
     "source": "MBI Project Fabrikasi & Erection",
@@ -1365,6 +1373,10 @@
     "area": "heroSlides"
   },
   {
+    "source": "di Bekasi & Tambun.",
+    "area": "heroSlides"
+  },
+  {
     "source": "Diskusikan gambar, spesifikasi material, volume pekerjaan, lokasi, dan jadwal yang direncanakan bersama tim MBI Project.",
     "area": "heroSlides"
   },
@@ -1377,7 +1389,11 @@
     "area": "heroSlides"
   },
   {
-    "source": "Jasa Laser Cutting Plat",
+    "source": "Jasa Cutting Laser",
+    "area": "heroSlides"
+  },
+  {
+    "source": "Jasa Cutting Laser Plat",
     "area": "heroSlides"
   },
   {
@@ -1389,7 +1405,7 @@
     "area": "heroSlides"
   },
   {
-    "source": "Kirim gambar kerja, jenis dan ketebalan plat, serta jumlah yang dibutuhkan. Tim MBI akan meninjau spesifikasi dan menyiapkan penawaran.",
+    "source": "Kirim gambar kerja, jenis dan ketebalan plat, serta jumlah yang dibutuhkan. Tim MBI di Tambun Selatan, Bekasi, akan meninjau spesifikasi dan menyiapkan penawaran.",
     "area": "heroSlides"
   },
   {
@@ -1417,10 +1433,6 @@
     "area": "heroSlides"
   },
   {
-    "source": "Plat perlu dipotong",
-    "area": "heroSlides"
-  },
-  {
     "source": "Punya gambar struktur atau komponen",
     "area": "heroSlides"
   },
@@ -1430,10 +1442,6 @@
   },
   {
     "source": "Sampaikan ukuran, ketebalan material, sudut tekukan, dan gambar kerja Anda. Tim MBI akan memeriksa kebutuhan pengerjaan sebelum memberikan penawaran.",
-    "area": "heroSlides"
-  },
-  {
-    "source": "sesuai gambar?",
     "area": "heroSlides"
   },
   {
@@ -1748,10 +1756,6 @@
     "area": "KontakPage"
   },
   {
-    "source": "& bending plat.",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "01 / RUANG LINGKUP",
     "area": "LaserCuttingPage"
   },
@@ -1856,7 +1860,7 @@
     ]
   },
   {
-    "source": "Jasa laser cutting Bekasi",
+    "source": "Jasa Cutting Laser Bekasi &amp; Tambun",
     "area": "LaserCuttingPage"
   },
   {
@@ -1961,7 +1965,7 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "MBI Laser Cutting & Bending di Tambun Selatan, Kabupaten Bekasi, melayani potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.",
+    "source": "MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.",
     "area": "LaserCuttingPage"
   },
   {
@@ -2034,6 +2038,10 @@
   },
   {
     "source": "Plat dipotong, ditekuk, dan dirakit sesuai gambar dan spesifikasi.",
+    "area": "LaserCuttingPage"
+  },
+  {
+    "source": "plat, bending &amp; fabrikasi.",
     "area": "LaserCuttingPage"
   },
   {
@@ -5220,7 +5228,27 @@
     "area": "WelcomePosters"
   },
   {
+    "source": "24 Jam",
+    "area": "WhatsAppButton"
+  },
+  {
     "source": "Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat.",
+    "area": "WhatsAppButton"
+  },
+  {
+    "source": "Sales Laser Cutting",
+    "area": "WhatsAppButton"
+  },
+  {
+    "source": "Sales Proyek Fabrikasi",
+    "area": "WhatsAppButton"
+  },
+  {
+    "source": "Sales Retail Garuda",
+    "area": "WhatsAppButton"
+  },
+  {
+    "source": "Sales Retail Mahameru",
     "area": "WhatsAppButton"
   }
 ]

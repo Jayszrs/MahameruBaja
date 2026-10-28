@@ -70,4 +70,9 @@ export const laserFAQs = [
     answer:
       "Harga bergantung pada material, panjang potong, kompleksitas, jumlah, bending dan finishing. Tidak ada harga atau estimasi waktu terverifikasi yang dipublikasikan. Penawaran diberikan setelah peninjauan kebutuhan.",
   },
+  {
+    question: "Di mana jasa cutting laser terdekat di Bekasi dan Tambun?",
+    answer:
+      "MBI Laser Cutting & Bending berada di Tambun Selatan, Kabupaten Bekasi, dan melayani jasa cutting laser untuk area Bekasi, Tambun, Cibitung, dan sekitarnya. Kirim gambar kerja serta kebutuhan Anda melalui formulir atau WhatsApp untuk ditinjau tim.",
+  },
 ]
