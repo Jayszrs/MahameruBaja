@@ -59,9 +59,9 @@ export const divisions = [
   },
   {
     slug: "laser-cutting", name: "MBI Laser Cutting & Bending", label: "Laser cutting & bending", area: "Tambun Selatan, Bekasi",
-    title: "Jasa laser cutting plat dari gambar ke komponen.",
-    intro: "Mulai dari gambar kerja. Tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
-    description: "MBI Laser Cutting melayani konsultasi jasa laser cutting plat, bending, komponen custom, panel, ornamen, dan fabrikasi di area Bekasi. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
+    title: "Jasa cutting laser plat dari gambar ke komponen.",
+    intro: "Mulai dari gambar kerja. Jasa cutting laser dan bending plat di Tambun Selatan, Bekasi — tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
+    description: "MBI Laser Cutting melayani jasa cutting laser untuk plat, bending, komponen custom, panel, ornamen, dan fabrikasi di area Tambun, Bekasi, dan sekitarnya. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",
     hero: "/images/laser-cutting-illustration.jpg",
     images: [
       { src: "/images/laser-cutting-illustration.jpg", title: "Ilustrasi laser cutting" },
@@ -73,6 +73,7 @@ export const divisions = [
     faq: [
       { question: "Format desain apa yang bisa dikirim?", answer: "DWG dan DXF cocok untuk gambar teknik. PDF, AI, CDR, JPG, atau PNG dapat menjadi bahan konsultasi awal. File produksi ditinjau tim." },
       { question: "Apakah bisa cutting sekaligus bending?", answer: "Bisa diajukan bersama. Kelayakan proses serta biaya dikonfirmasi setelah review gambar." },
+      { question: "Melayani jasa cutting laser area Tambun dan Bekasi?", answer: "Ya. Workshop kami di Tambun Selatan, Kabupaten Bekasi, melayani jasa cutting laser untuk area Tambun, Bekasi, Cibitung, dan sekitarnya." },
     ],
     primary: { label: "Lihat jasa laser cutting", href: "/jasa#laser-cutting" }, quote: "/jasa#request",
   },
