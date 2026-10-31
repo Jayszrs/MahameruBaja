@@ -28,11 +28,11 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
   const [failed, setFailed] = useState(false);
   const project = content.galleryProjects.find(p => p.id === selected);
   function change(update: (value: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
-  function updateProject(update: Partial<GalleryProject>) { change(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === selected ? { ...p, ...update, published: true } : p) })); }
+  function updateProject(update: Partial<GalleryProject>) { change(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === selected ? { ...p, ...update } : p) })); }
   function addProject() {
     if (content.galleryProjects.length >= 80) return;
     const id = contentId();
-    change(c => ({ ...c, galleryProjects: [{ id, title: "Proyek baru", category: "Fabrikasi & erection", division: actor.division || divisions[0]?.slug || "fabrikasi-erection", ownerDivision:actor.division, description: "", location: "", year: "", photos: [], coverId: "", published: true }, ...c.galleryProjects] }));
+    change(c => ({ ...c, galleryProjects: [{ id, title: "Album baru", kind: "portfolio", category: "Fabrikasi & erection", division: actor.division || divisions[0]?.slug || "fabrikasi-erection", ownerDivision:actor.division, description: "", location: "", year: "", photos: [], coverId: "", published: false }, ...c.galleryProjects] }));
     setSelected(id); focusEditorRecord("gallery-project-form");
   }
   async function upload(files: FileList | null) {
@@ -49,7 +49,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
         const url = await uploadCmsFile(file, "image", project.ownerDivision || null);
         const id = contentId();
         const photo = { id, src: url, alt: `${project.title} — ${file.name.replace(/\.[^.]+$/, "").slice(0, 30)}`.slice(0, 200), caption: "" };
-        setContent(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === uploadedTo ? { ...p, photos: [photo, ...p.photos], coverId: p.coverId || id, published: true } : p) }));
+        setContent(c => ({ ...c, galleryProjects: c.galleryProjects.map(p => p.id === uploadedTo ? { ...p, photos: [photo, ...p.photos], coverId: p.coverId || id } : p) }));
         setDirty(true); count++;
       }
       setMessage(`${count} foto diunggah. Simpan perubahan untuk menampilkan album di website.`);
@@ -76,7 +76,7 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
   function removePhoto(id: string) {
     if (!project || !window.confirm("Hapus foto dari album ini? Berkas unggahan tidak dihapus dari storage.")) return;
     const photos = project.photos.filter(p => p.id !== id);
-    updateProject({ photos, coverId: project.coverId === id ? photos[0]?.id || "" : project.coverId, published: true });
+    updateProject({ photos, coverId: project.coverId === id ? photos[0]?.id || "" : project.coverId });
   }
   function removeProject() {
     if (!project || !window.confirm(`Hapus album ${project.title}? Foto di storage tetap disimpan.`)) return;
@@ -96,9 +96,9 @@ export default function GalleryEditor({ initialContent }: { initialContent: Site
       {busy && <p className="editor-notice" role="status">Sedang mengunggah atau menyimpan album. Tunggu hingga selesai.</p>}
       <fieldset className="editor-fields" disabled={busy}><div className="gallery-editor-layout"><nav className="gallery-editor-albums" aria-label="Daftar album"><button type="button" className="editor-add" onClick={addProject} disabled={content.galleryProjects.length >= 80}>+ Tambah proyek</button><AdminOrderList label="Urutan album" disabled={busy} selected={selected} items={content.galleryProjects.map(p => ({ id: p.id, title: p.title, detail: `${p.photos.length} foto`, image: p.photos.find(photo => photo.id === p.coverId)?.src || p.photos[0]?.src }))} onSelect={selectProject} onMove={(from, to) => change(c => ({ ...c, galleryProjects: moveBefore(c.galleryProjects, from, to) }))} /></nav>
         {project ? <section className="editor-panel gallery-editor-project" id="gallery-project-form"><div className="editor-panel-title"><h2>{project.title}</h2><span>{project.photos.length} / 40 foto</span></div><ContentOwnership value={project} onChange={updateProject}/><div className="editor-grid">
-          <label className="editor-field">Nama proyek<input maxLength={160} value={project.title} onChange={e => updateProject({ title: e.target.value })} /></label>
+          <label className="editor-field">Jenis album<select aria-label="Jenis album" value={project.kind || "portfolio"} onChange={e => updateProject({ kind: e.target.value as GalleryProject["kind"] })}><option value="portfolio">Portofolio — hasil pekerjaan / proyek nyata</option><option value="design">Album desain — referensi jasa</option><option value="activity">Galeri — kegiatan perusahaan</option></select></label><label className="editor-checkbox"><input type="checkbox" checked={project.published} onChange={e => updateProject({ published: e.target.checked })} />Terbitkan album</label><label className="editor-field">Nama album<input maxLength={160} value={project.title} onChange={e => updateProject({ title: e.target.value })} /></label>
           <label className="editor-field">Kategori<input maxLength={80} value={project.category} onChange={e => updateProject({ category: e.target.value })} /></label>
-          <label className="editor-field">Divisi<select value={project.division} onChange={e => updateProject({ division: e.target.value as GalleryProject["division"] })}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
+          <label className="editor-field">Divisi<select aria-label="Divisi" value={project.division} onChange={e => updateProject({ division: e.target.value as GalleryProject["division"] })}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
           <label className="editor-field">Lokasi (opsional)<input maxLength={160} value={project.location} onChange={e => updateProject({ location: e.target.value })} /></label>
           <label className="editor-field">Tahun / periode (opsional)<input maxLength={30} value={project.year} onChange={e => updateProject({ year: e.target.value })} /></label>
         </div><label className="editor-field">Deskripsi proyek<textarea maxLength={2000} rows={4} value={project.description} onChange={e => updateProject({ description: e.target.value })} /></label>

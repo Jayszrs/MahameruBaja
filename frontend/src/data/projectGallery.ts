@@ -9,6 +9,7 @@ const asset = z.string().trim().max(1000).refine(value => {
 const photoSchema = z.object({ id: z.string().trim().min(1).max(100), src: asset, alt: z.string().trim().min(1).max(200), caption: z.string().trim().max(400) });
 export const galleryProjectSchema = z.object({ ...ownershipFields,
   id: z.string().trim().min(1).max(100), title: z.string().trim().min(1).max(160),
+  kind: z.enum(["portfolio", "design", "activity"]).optional(),
   category: z.string().trim().min(1).max(80),
   division: divisionSlugSchema,
   description: z.string().trim().max(2000), location: z.string().trim().max(160), year: z.string().trim().max(30),

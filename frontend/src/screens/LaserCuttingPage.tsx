@@ -1,4 +1,7 @@
 "use client";
+import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
+import type { GalleryProject } from "../data/projectGallery";
+import ServiceAlbums from "../components/ServiceAlbums";
 import PublicText from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
@@ -12,12 +15,7 @@ import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 
-const scopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
-  { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
-  { name: "Bending & tekuk plat", description: "Pembentukan plat dengan mesin bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
-  { name: "Fabrikasi & finishing", description: "Pekerjaan fabrikasi (perakitan dan pengelasan), finishing, hingga erection (pemasangan di lokasi) sesuai kebutuhan proyek.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
-  { name: "Produksi & pekerjaan proyek", description: "Pengerjaan produksi dalam jumlah tertentu, termasuk kebutuhan custom dan pekerjaan proyek sesuai gambar, spesifikasi, dan jadwal.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
-]
+const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
 const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
   { title: "Kirim gambar & kebutuhan", desc: "Kirim gambar kerja, foto, atau daftar barang yang Anda punya. Tidak harus rapi.", icon: "drawing" },
@@ -37,7 +35,8 @@ const servicePaths: { title: string; detail: string; href: string; action: strin
   { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
 ]
 
-export default function LaserCuttingPage({ children }: { children?: ReactNode }) {
+export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
+  const cards = appearanceForSite(appearance).services;
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
   const [file, setFile] = useState<File | null>(null)
@@ -107,7 +106,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
           <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Jasa Cutting Laser Bekasi &amp; Tambun<br /><em>plat, bending &amp; fabrikasi.</em></h1>
           <p>MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.</p>
-          <a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a>
+          <div className="home-actions"><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
           <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>
       </section>
@@ -127,13 +126,13 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
             </div>
           </div>
           <div className="business-grid laser-scope-grid">
-            {scopeCards.map((card, index) => (
-              <article className="business-card laser-scope-card" data-reveal key={card.name}>
-                <div className="laser-scope-media"><img src={card.image} alt="" loading="lazy" /><small>{card.note}</small></div>
-                <div className="laser-scope-card-top"><span className="industrial-eyebrow">0{index + 1}</span><span className="laser-scope-icon"><IndustryIcon name={card.icon} size={28} /></span></div>
-                <h3>{card.name}</h3>
-                <p>{card.description}</p>
-                <a className="business-link" href="#request">
+            {cards.map((card, index) => (
+              <article className="business-card laser-scope-card" data-reveal key={card.id}>
+                {card.image && <div className="laser-scope-media"><Image src={card.image} alt={card.alt || card.title} fill sizes="(max-width:650px) 90vw, 25vw" /><small>{card.alt}</small></div>}
+                <div className="laser-scope-card-top"><span className="industrial-eyebrow">0{index + 1}</span><span className="laser-scope-icon"><IndustryIcon name={scopeIcons[index] || "weld"} size={28} /></span></div>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+                <a className="business-link" href={card.href || "#request"}>
                   Request penawaran ↗
                 </a>
               </article>
@@ -142,6 +141,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
           <p className="verification-note">Tim mengecek jenis bahan, ukuran, ketebalan, dan kemampuan mesin sebelum memberikan harga serta jadwal pengerjaan.</p>
         </div>
       </section>
+      <ServiceAlbums projects={projects} />
       <section className="laser-process">
         <div className="industrial-container">
           <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
@@ -281,7 +281,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
             <button className="industrial-button form-full" type="submit" disabled={submitting}>
               {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
             </button>
-            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} /><p className="text-sm">File desain dikirim terpisah sebagai lampiran WhatsApp.</p></div>}
+            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} /></div>}
 
           </form>
         </div>
@@ -289,7 +289,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
       <section className="laser-faq business-section">
         <div className="industrial-container">
           <h2>Pertanyaan laser cutting & bending.</h2>
-          {laserFAQs.map((item) => (
+          {faqs.map((item) => (
             <details key={item.question}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>

@@ -11,6 +11,7 @@ import { internationalPhone, type TeamContact } from '../data/siteContent';
 const salesRoles = [
   { label: "Sales Retail Mahameru", slug: "retail-tambun" },
   { label: "Sales Retail Garuda", slug: "retail-cibitung" },
+  { label: "Sales WF dan Plat", slug: "trading-proyek" },
   { label: "Sales Laser Cutting", slug: "laser-cutting" },
   { label: "Sales Proyek Fabrikasi", slug: "fabrikasi-erection" },
 ] as const;
@@ -27,15 +28,16 @@ export default function WhatsAppButton() {
   const productDetail = /\/produk\/[^/]+/.test(pathname);
   const { divisions, divisionIdentity } = useDivisionDirectory();
   const [open, setOpen] = useState(false);
-  const [liveNumbers, setLiveNumbers] = useState<Record<string, string>>({});
+  const [liveNumbers, setLiveNumbers] = useState<Record<string, { name: string; phone: string; role?: string }[]> | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
+  useEffect(() => { setOpen(false); setSelected(null); }, [pathname]);
   useEffect(() => {
     if (!open) return;
     const controller = new AbortController();
-    void fetch('/api/contacts', { signal: controller.signal }).then(r => { if (!r.ok) throw new Error(); return r.json(); }).then((contacts: Array<Pick<TeamContact, 'id' | 'name' | 'whatsapp' | 'divisions'>>) => {
-      const numbers: Record<string, string> = {};
+    void fetch('/api/contacts', { signal: controller.signal }).then(r => { if (!r.ok) throw new Error(); return r.json(); }).then((contacts: Array<Pick<TeamContact, 'id' | 'name' | 'role' | 'whatsapp' | 'divisions'>>) => {
+      const numbers: Record<string, { name: string; phone: string; role?: string }[]> = {};
       for (const role of salesRoles) {
-        const contact = contacts.find(c => c.whatsapp && c.divisions.includes(role.slug));
-        if (contact) numbers[role.slug] = contact.whatsapp;
+        numbers[role.slug] = contacts.filter(c => c.whatsapp && c.divisions.includes(role.slug)).map(c => ({ name: c.name, phone: c.whatsapp, role: c.role }));
       }
       setLiveNumbers(numbers);
     }).catch(() => { /* Keep Excel defaults if the CMS is temporarily unavailable. */ });
@@ -43,12 +45,12 @@ export default function WhatsAppButton() {
   }, [open]);
 
   const mainHref = waLink(mainWhatsAppNumber, "Halo, saya ingin konsultasi kebutuhan Mahameru Baja Indonesia.");
-  const actions = salesRoles.map(role => {
+  const actions = salesRoles.filter(role => divisions.some(d => d.slug === role.slug)).map(role => {
     const division = divisions.find(d => d.slug === role.slug);
-    const phone = liveNumbers[role.slug] || divisionIdentity[role.slug]?.admins[0]?.phone || mainWhatsAppNumber;
+    const contacts: { name: string; phone: string; role?: string }[] = liveNumbers?.[role.slug] ?? divisionIdentity[role.slug]?.admins ?? [];
     return {
-      label: role.label,
-      href: waLink(phone, `Halo ${role.label}, saya ingin konsultasi kebutuhan ${division?.label || "Mahameru Baja"}.`),
+      ...role,
+      contacts: contacts.filter((contact, index, all) => contact.phone && all.findIndex(c => internationalPhone(c.phone) === internationalPhone(contact.phone)) === index).map(contact => ({ ...contact, href: waLink(contact.phone, `Halo ${role.label}, saya ingin konsultasi kebutuhan ${division?.label || "Mahameru Baja"}.`) })),
     };
   });
 
@@ -58,19 +60,10 @@ export default function WhatsAppButton() {
       {open && (
         <div className="wa-admin-menu flex flex-col gap-1.5 mb-1 items-end">
           <p className="max-w-80 p-3 text-xs bg-white rounded-lg shadow-lg text-graphite">Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat.</p>
-          {actions.map(action => (
-            <a
-              key={action.label}
-              href={action.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3.5 py-2 bg-white text-graphite text-sm font-semibold rounded-xl shadow-lg hover:bg-[#1A7A3E] hover:text-white transition-colors text-left border border-light-steel"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#1A7A3E]" />
-              {action.label}
-            </a>
-          ))}
+          {actions.map(action => <div className="wa-sales-group" key={action.slug}>
+            <button type="button" aria-expanded={selected === action.slug} aria-controls={`wa-${action.slug}`} onClick={() => setSelected(value => value === action.slug ? null : action.slug)}><span className="wa-sales-dot" />{action.label}<span aria-hidden="true">{selected === action.slug ? "−" : "+"}</span></button>
+            {selected === action.slug && <div id={`wa-${action.slug}`} className="wa-contact-options">{action.contacts.length ? action.contacts.map(contact => <a key={contact.phone} href={contact.href} target="_blank" rel="noopener noreferrer" onClick={() => { setOpen(false); setSelected(null); }}><strong>WhatsApp {contact.name}</strong><small>{contact.role || action.label} · {contact.phone}</small><span aria-hidden="true">↗</span></a>) : <a href={`/unit/${action.slug}/kontak`}>Lihat kontak divisi ↗</a>}</div>}
+          </div>)}
         </div>
       )}
 

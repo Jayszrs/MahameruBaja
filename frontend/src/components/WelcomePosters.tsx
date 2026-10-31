@@ -20,6 +20,8 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   const [focused, setFocused] = useState(false);
   const [reading, setReading] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [desktop, setDesktop] = useState(false);
+  useEffect(() => { const query = window.matchMedia("(min-width: 761px)"); const sync = () => setDesktop(query.matches); sync(); query.addEventListener("change", sync); return () => query.removeEventListener("change", sync); }, []);
   const [imageRatios, setImageRatios] = useState<Record<string, number>>({});
   const seen = useRef(new Set<string>());
   const slug = /^\/unit\/([^/]+)/.exec(path)?.[1];
@@ -55,13 +57,14 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   }, [open, path, sessionKey, Boolean(preview)]);
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
-  const firstImage = live[0].image;
+  const firstImage = (desktop ? live[0].imageDesktop : live[0].imageMobile) || live[0].image;
   const { props: firstPoster } = getImageProps({ src: firstImage, alt: "", fill: true, sizes: posterSizes,
     unoptimized: !firstImage.startsWith("/images/") && !isPublicBlobUrl(firstImage) });
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => { setReading(false); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
-  const ratio = imageRatios[item.image] || 2 / 3;
+  const selectedImage = (desktop ? item.imageDesktop : item.imageMobile) || item.image;
+  const ratio = imageRatios[selectedImage] || 2 / 3;
   return <PublicText>{!preview && <><link rel="preload" as="image" href={firstPoster.src} imageSrcSet={firstPoster.srcSet} imageSizes={firstPoster.sizes} fetchPriority="high" /><button type="button" className="poster-promo-launcher" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open}>Promo & informasi<span>{live.length}</span></button></>}{open && <dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
     style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "200px" } as CSSProperties}
     onCancel={close} onClose={close} onClick={event => { if (event.target === event.currentTarget) close(); }}
@@ -69,11 +72,11 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     <div className="poster-welcome-toolbar"><span className="poster-welcome-accessible">{preview ? "Pratinjau poster" : "Promo & informasi"}</span><button className="poster-welcome-close" type="button" autoFocus aria-label="Tutup poster" onClick={close}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
     <div className={`poster-welcome-layout${expanded ? " is-expanded" : ""}`}>
       <button type="button" className="poster-welcome-image" onClick={() => setExpanded(value => !value)} aria-label={expanded ? "Kembali ke detail poster" : "Perbesar poster"} aria-pressed={expanded}>
-        <Image src={item.image} alt={item.imageAlt} fill sizes={posterSizes} loading="eager" fetchPriority="high" onLoad={event => {
+        <Image src={selectedImage} alt={item.imageAlt} fill sizes={posterSizes} loading="eager" fetchPriority="high" onLoad={event => {
           const image = event.currentTarget;
           if (image.naturalWidth && image.naturalHeight) {
             const next = image.naturalWidth / image.naturalHeight;
-            setImageRatios(current => current[item.image] === next ? current : { ...current, [item.image]: next });
+            setImageRatios(current => current[selectedImage] === next ? current : { ...current, [selectedImage]: next });
           }
         }}/><span className="poster-welcome-accessible">{expanded ? "Kembali ke detail" : "Perbesar poster"}</span>
       </button>

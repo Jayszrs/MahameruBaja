@@ -5,5 +5,5 @@ export const metadata = { title: "Galeri Proyek, Material Baja & Fabrikasi", des
 export default async function Page() {
   await connection();
   const content = await readPublicSiteContent();
-  return <ProjectsPage projects={content.galleryProjects.filter(p => p.published && p.photos.length)} />;
+  return <ProjectsPage projects={content.galleryProjects.filter(p => p.published && p.kind !== "design" && p.kind !== "activity" && p.photos.length)} />;
 }

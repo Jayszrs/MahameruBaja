@@ -1,3 +1,4 @@
+import { readPublicSiteContent } from "../../src/lib/siteContentStore";
 import LaserCuttingPage from "../../src/screens/LaserCuttingPage";
 import type { Metadata } from "next";
 import LocalBusinessDetails from "../../src/components/LocalBusinessDetails";
@@ -20,8 +21,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const [allDivisions, published] = await Promise.all([readPublicDivisions(), readPublishedArticles()]);
+  const [allDivisions, published, content] = await Promise.all([readPublicDivisions(), readPublishedArticles(), readPublicSiteContent()]);
   const divisions = allDivisions.filter(division => division.slug === "laser-cutting");
+  const faqs = divisions[0]?.faq ?? laserFAQs;
   const articles = published.filter(article => visibleInDivision(article, "laser-cutting") || !contentOwner(article) && article.audience === undefined && /laser|bending/i.test(`${article.title} ${article.category}`)).slice(0, 3);
   const base = siteOrigin();
   const schema = { "@context": "https://schema.org", "@graph": [
@@ -35,8 +37,8 @@ export default async function Page() {
       areaServed: division.area,
       provider: { "@id": `${base}/unit/${division.slug}#business` },
     })),
-    faqSchema(base, "/jasa", laserFAQs),
+    faqSchema(base, "/jasa", faqs),
     breadcrumbSchema(base, "/jasa", "Jasa Cutting Laser Bekasi & Tambun"),
   ] };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage><LaserServiceGuide articles={articles} /></LaserCuttingPage><LocalBusinessDetails divisions={divisions} service /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage><LocalBusinessDetails divisions={divisions} service /></>;
 }

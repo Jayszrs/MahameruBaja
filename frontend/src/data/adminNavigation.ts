@@ -7,6 +7,7 @@ export const adminNavigation: AdminNavGroup[] = [
   { id: "home", number: "02", label: "Beranda", path: "/admin/promosi", items: [
     { label: "Banner & poster", href: "/admin/promosi?view=all" },
     { label: "Hero beranda", href: "/admin/hero" }, { label: "Galeri & proyek", href: "/admin/galeri" },
+    { label: "Tampilan website & quote", href: "/admin/tampilan" },
     { label: "Poster saat masuk", href: "/admin/promosi?view=popup" },
   ] },
   { id: "content", number: "03", label: "Isi website", path: "/admin/konten", items: [

@@ -13,13 +13,14 @@ import MotionController from "./MotionController";
 import RouteProgress from "./RouteProgress";
 import HorizontalRibbons from "./HorizontalRibbons";
 import type { InventoryItem } from "../data/inventory";
+import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
 
 const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
   ssr: false,
   loading: () => <p className="search-loading-status" role="status">Membuka pencarian…</p>,
 });
 
-export default function AppShell({ children, inventory = [] }: { children: ReactNode; inventory?: InventoryItem[] }) {
+export default function AppShell({ children, inventory = [], appearance = [] }: { children: ReactNode; inventory?: InventoryItem[]; appearance?: WebsiteAppearance[] }) {
   const { divisions } = useDivisionDirectory();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -38,7 +39,7 @@ export default function AppShell({ children, inventory = [] }: { children: React
       <div className="public-site min-h-screen flex flex-col">
         <RouteProgress />
         <HorizontalRibbons />
-        <Navbar division={division} onSearchOpen={() => setSearchOpen(true)} />
+        <Navbar division={division} memberships={appearanceForSite(appearance, division?.slug).memberships} onSearchOpen={() => setSearchOpen(true)} />
         <main className={`flex-1 page-enter ${pathname === "/" || pathname === `/unit/${division?.slug}` ? "pt-0" : "site-main"}`}>
           {!productPage && !articlePage && <MotionController key={pathname} />}
           {children}

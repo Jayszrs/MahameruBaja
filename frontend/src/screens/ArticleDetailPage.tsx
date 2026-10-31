@@ -20,11 +20,9 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
   const laser = /laser|bending/i.test(`${article.title} ${article.category}`);
 
   return (
-    <WebsiteTextScope ownerDivision={article.ownerDivision || null}><PublicText><div className="article-reading-page" data-static-motion>
+    <WebsiteTextScope ownerDivision={article.ownerDivision || null}><PublicText><div className="article-reading-page article-news-page" data-static-motion>
       {/* Hero */}
       <section className="article-detail-hero article-editorial-hero" aria-labelledby="article-heading">
-        <div className="article-editorial-visual"><Image src={article.image} alt={article.imageAlt || article.title} fill sizes="100vw" loading="eager" fetchPriority="high"/></div>
-        <div className="article-editorial-shade" aria-hidden="true"/>
         <div className="article-editorial-heading">
           <nav aria-label="Breadcrumb" className="article-detail-breadcrumb">
             <Link to="/" className="hover:text-white transition-colors">Beranda</Link>
@@ -50,10 +48,11 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
         </div>
       </section>
 
-      {/* Content */}
+      <figure className="article-news-photo"><Image src={article.image} alt={article.imageAlt || article.title} width={1200} height={675} sizes="(max-width:800px) 100vw, 1100px" loading="eager" fetchPriority="high" /><figcaption>{article.imageAlt || article.title}</figcaption></figure>
+            {/* Content */}
       <div className="bg-surface py-16">
-        <div className="max-w-[800px] mx-auto px-6">
-          <article className="article-reading-body bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
+        <div className="article-news-content">
+          <div className="article-news-main"><article className="article-reading-body bg-white rounded-md p-6 lg:p-10 border border-rule mb-10">
             <p className="text-base text-muted leading-relaxed mb-6 font-medium">{article.excerpt}</p>
             <hr className="border-rule mb-6" />
             <ArticleContent content={article.content} />
@@ -83,7 +82,8 @@ export default function ArticleDetailPage({ article, related }: { article: Artic
           <Link to="/informasi" className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-graphite transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
             Kembali ke Informasi
-          </Link>
+          </Link></div>
+          <aside className="article-news-sidebar" aria-label="Baca juga"><h2>Baca juga</h2>{related.map(item => <Link to={`/informasi/${item.slug}`} key={item.id}><Image src={item.image} alt="" width={160} height={100} sizes="120px" /><span><small>{item.category}</small><strong>{item.title}</strong></span></Link>)}<Link to={laser ? "/jasa#album-desain" : "/produk"}>{laser ? "Jelajahi album desain" : "Cari material untuk proyek Anda"} ↗</Link></aside>
         </div>
       </div>
 

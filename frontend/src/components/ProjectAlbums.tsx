@@ -3,10 +3,11 @@ import PublicText from "./PublicText";
 
 import Image from "./CmsImage";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useId } from "react";
 import { projectCover, type GalleryProject } from "../data/projectGallery";
 
-export default function ProjectAlbums({ projects, layout = "grid", galleryHref = "/proyek" }: { projects: GalleryProject[]; layout?: "grid" | "ribbon"; galleryHref?: string }) {
+export default function ProjectAlbums({ projects, layout = "grid", galleryHref = "/proyek", title, description, sectionId }: { projects: GalleryProject[]; layout?: "grid" | "ribbon"; galleryHref?: string; title?: string; description?: string; sectionId?: string }) {
+  const headingId = useId();
   const [filter, setFilter] = useState("Semua");
   const [selected, setSelected] = useState<GalleryProject | null>(null);
   const [index, setIndex] = useState(0);
@@ -27,13 +28,13 @@ export default function ProjectAlbums({ projects, layout = "grid", galleryHref =
     return () => { element?.close(); document.body.style.overflow = previousOverflow; opener.current?.focus(); };
   }, [selected]);
   function step(direction: number) { if (selected) setIndex(i => (i + direction + selected.photos.length) % selected.photos.length); }
-  return <PublicText><section className={`project-albums ${layout === "ribbon" ? "home-project-experience" : ""}`} id="pengalaman-proyek" aria-labelledby="albums-heading"><div className="home-shell">
-    <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Project experience</p><h2 id="albums-heading">{layout === "ribbon" ? <>Proyek yang<br /><em>telah kami kerjakan.</em></> : <>Pengalaman proyek kami.<br /><em>Dari proses hingga detail.</em></>}</h2></div><div><p>Satu proyek, beragam perspektif. Buka album untuk melihat rangkaian dokumentasi pekerjaan Mahameru Baja Indonesia.</p>{layout === "ribbon" && <Link className="project-gallery-link" href={galleryHref}>Semua proyek ↗</Link>}</div></div>
+  return <PublicText><section className={`project-albums ${layout === "ribbon" ? "home-project-experience" : ""}`} id={sectionId || "pengalaman-proyek"} aria-labelledby={headingId}><div className="home-shell">
+    <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />{title ? "Album Mahameru" : "Project experience"}</p><h2 id={headingId}>{title || (layout === "ribbon" ? <>Proyek yang<br /><em>telah kami kerjakan.</em></> : <>Pengalaman proyek kami.<br /><em>Dari proses hingga detail.</em></>)}</h2></div><div><p>{description || "Satu proyek, beragam perspektif. Buka album untuk melihat rangkaian dokumentasi pekerjaan Mahameru Baja Indonesia."}</p>{layout === "ribbon" && <Link className="project-gallery-link" href={galleryHref}>Semua proyek ↗</Link>}</div></div>
     {layout === "grid" && <div className="projects-filters" aria-label="Kategori pengalaman proyek">{categories.map(category => <button type="button" key={category} aria-pressed={filter === category} className={filter === category ? "is-active" : ""} onClick={() => setFilter(category)}>{category}</button>)}</div>}
     <div className={`project-album-grid ${layout === "ribbon" ? "project-album-ribbon" : ""}`} {...(layout === "ribbon" ? { tabIndex: 0, role: "region", "aria-label": "Album proyek, geser ke samping untuk melihat lainnya" } : {})}>{visible.map(project => { const cover = projectCover(project); return <article key={project.id}><button type="button" onClick={e => open(project, e.currentTarget)} aria-label={`Buka album ${project.title}, ${project.photos.length} foto`}>
       <div className="project-album-cover"><Image src={cover.src} alt={cover.alt} fill sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw" /><span>{project.photos.length} foto</span></div><div className="project-album-copy"><small>{project.category}{project.location ? ` / ${project.location}` : ""}</small><h3>{project.title}</h3><p>{project.description}</p><span>Lihat dokumentasi <b aria-hidden="true">↗</b></span></div>
     </button></article>; })}</div>
-    {!visible.length && <p className="project-album-empty">Dokumentasi proyek untuk kategori ini belum tersedia.</p>}
+    {!visible.length && <p className="project-album-empty">{sectionId === "album-desain" ? "Album referensi sedang disiapkan. Anda dapat mengirim desain sendiri melalui form konsultasi." : "Foto untuk kategori ini belum diterbitkan."}</p>}
   </div>
   {selected && photo && <dialog ref={dialog} className="project-album-dialog" aria-labelledby="album-dialog-title" onCancel={() => setSelected(null)} onClose={() => setSelected(null)} onClick={event => { if (event.target === event.currentTarget) setSelected(null); }} onKeyDown={event => { if (event.target instanceof HTMLElement && /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName)) return; if (event.key === "ArrowRight") {event.preventDefault(); step(1);} if (event.key === "ArrowLeft") {event.preventDefault(); step(-1);} }}>
     <header><div><small>{selected.category}</small><h3 id="album-dialog-title">{selected.title}</h3></div><button type="button" autoFocus onClick={() => setSelected(null)} aria-label="Tutup album">×</button></header>

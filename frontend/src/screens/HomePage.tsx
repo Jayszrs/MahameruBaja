@@ -4,6 +4,7 @@ import { useDivisionDirectory } from "../components/DivisionDirectory";
 import Image from "../components/CmsImage";
 import Link from "next/link";
 import DivisionCardMedia from "../components/DivisionCardMedia";
+import { appearanceForSite } from "../data/websiteAppearance";
 import type { SiteContent } from "../data/siteContent";
 import { type Division } from "../data/divisionContent";
 import UnifiedHomeContent from "../components/UnifiedHomeContent";
@@ -27,13 +28,14 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   );
 }
 
-function BusinessRoutes() {
+function BusinessRoutes({ content, division }: { content: SiteContent; division?: Division }) {
+  const appearance = appearanceForSite(content.websiteAppearance, division?.slug);
   const { divisions, divisionIdentity } = useDivisionDirectory();
   return (
     <PublicText><section className="home-section home-routes" id="pilih-divisi" data-static-motion aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading">
-          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">{divisions.length} divisi.<br />Satu Mahameru, satu solusi.</h2></div>
+          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">Segala kebutuhan baja.<br />Dalam satu tempat.</h2></div>
           <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
         </div>
         <div className="home-route-list">
@@ -53,11 +55,7 @@ function BusinessRoutes() {
         <div className="home-needs" aria-label="Pilih berdasarkan kebutuhan">
           <p>Mulai dari kebutuhan Anda</p>
           <div>
-            {divisions.some(d=>d.slug==="retail-tambun") && <Link href="/unit/retail-tambun">Saya mau beli besi satuan di Tambun <Arrow diagonal /></Link>}
-            {divisions.some(d=>d.slug==="retail-cibitung") && <Link href="/unit/retail-cibitung">Saya cari hollow, pipa, atau plat di Cibitung <Arrow diagonal /></Link>}
-{divisions.some(d=>d.slug === "trading-proyek") && <Link href="/unit/trading-proyek">Saya butuh material untuk proyek <Arrow diagonal /></Link>}
-{divisions.some(d=>d.slug === "laser-cutting") && <Link href="/unit/laser-cutting">Saya mau potong atau tekuk plat sesuai gambar <Arrow diagonal /></Link>}
-{divisions.some(d=>d.slug === "fabrikasi-erection") && <Link href="/unit/fabrikasi-erection/kontak">Saya ingin konsultasi fabrikasi dan erection <Arrow diagonal /></Link>}
+            {appearance.needs.map(item => <Link key={item.id} href={item.href || "/kontak"}>{item.image && <Image src={item.image} alt={item.alt || ""} width={48} height={48} />}<span>{item.title}{item.text && <small>{item.text}</small>}</span><Arrow diagonal /></Link>)}
           </div>
         </div>
       </div>
@@ -66,5 +64,5 @@ function BusinessRoutes() {
 }
 
 export default function HomePage({ content, division }: { content: SiteContent; division?: Division }) {
-  return <UnifiedHomeContent content={content} division={division}><BusinessRoutes /></UnifiedHomeContent>;
+  return <UnifiedHomeContent content={content} division={division}><BusinessRoutes content={content} division={division} /></UnifiedHomeContent>;
 }

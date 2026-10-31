@@ -1,7 +1,8 @@
 import type { CreateLeadInput } from "./api";
 import type { Division } from "../data/divisionCms";
+import type { PDFImage } from "pdf-lib";
 
-export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString(), divisions: Division[] = []) {
+export async function createRequestPdf(input: CreateLeadInput, id: string, fontBytes?: Uint8Array, createdAt = new Date().toISOString(), divisions: Division[] = [], logoBytes?: Uint8Array) {
   const [{ PDFDocument, rgb }, { default: fontkit }] = await Promise.all([import("pdf-lib"), import("@pdf-lib/fontkit")]);
   const pdf = await PDFDocument.create(); pdf.registerFontkit(fontkit);
   let bytes = fontBytes;
@@ -11,6 +12,11 @@ export async function createRequestPdf(input: CreateLeadInput, id: string, fontB
     bytes = new Uint8Array((await response.arrayBuffer()) as ArrayBuffer);
   }
   const font = await pdf.embedFont(bytes, { subset: true });
+  let logo: PDFImage | undefined;
+  try {
+    const logoData = logoBytes || (!fontBytes ? new Uint8Array(await (await fetch("/apple-touch-icon.png")).arrayBuffer()) : undefined);
+    if (logoData) logo = await pdf.embedPng(logoData);
+  } catch { /* A missing logo must not block the customer's document. */ }
   const supported = new Set(font.getCharacterSet());
   const ink = rgb(.12,.16,.15), muted = rgb(.42,.46,.43), red = rgb(.72,.13,.17), rule = rgb(.85,.87,.83);
   const unit = divisions.find(d => d.slug === input.businessUnitSlug);
@@ -36,14 +42,16 @@ export async function createRequestPdf(input: CreateLeadInput, id: string, fontB
   }
   function header(first: boolean) {
     page.drawRectangle({ x:0,y:826,width:595.28,height:16,color:red });
-    draw("MAHAMERU BAJA",44,786,17); draw("INDONESIA / REQUEST DESK",44,769,8,muted);
-    draw(id,355,786,8,red);
-    draw(new Date(createdAt).toLocaleDateString("id-ID", { timeZone:"Asia/Jakarta", day:"numeric", month:"long", year:"numeric" }),355,770,8,muted);
-    page.drawLine({ start:{x:44,y:750},end:{x:551,y:750},thickness:1,color:rule });
-    y = 719;
+    draw("PT. MAHAMERU BAJA INDONESIA",44,786,13);
+    draw("Jl. Permata Regency Blok K1 No. 38–39, Sumber Jaya",44,768,8,muted);
+    draw("Tambun Selatan, Kab. Bekasi 17510 | Tel. 021-8830194",44,754,8,muted);
+    if (logo) page.drawImage(logo, { x:475,y:749,width:70,height:70 });
+    page.drawLine({ start:{x:44,y:737},end:{x:551,y:737},thickness:1,color:ink });
+    y = 707;
     if (first) {
-      draw("PERMINTAAN PENAWARAN",44,y,22); y-=26;
-      draw("Ringkasan kebutuhan pelanggan",44,y,11,muted); y-=33;
+      draw("PERMINTAAN PENAWARAN",44,y,20); y-=25;
+      draw(`No. ${id}`,44,y,9,red); y-=17;
+      draw(new Date(createdAt).toLocaleDateString("id-ID", { timeZone:"Asia/Jakarta", day:"numeric", month:"long", year:"numeric" }),44,y,9,muted); y-=30;
     } else { draw("PERMINTAAN PENAWARAN / LANJUTAN",44,y,10,red); y-=28; }
   }
   header(true);
@@ -56,7 +64,7 @@ export async function createRequestPdf(input: CreateLeadInput, id: string, fontB
   field("Pemohon / Perusahaan",`${input.name}${input.company ? ` / ${input.company}` : ""}`);
   field("Kontak",`${input.whatsapp}${input.email ? ` | ${input.email}` : ""}`);
   if (input.city) field("Lokasi kebutuhan",input.city);
-  const tableHeader = () => { space(48);page.drawRectangle({x:44,y:y-25,width:507,height:29,color:ink});draw("NO",54,y-15,8,rgb(1,1,1));draw("MATERIAL / SPESIFIKASI",85,y-15,8,rgb(1,1,1));draw("JUMLAH",450,y-15,8,rgb(1,1,1));y-=44; };
+  const tableHeader = () => { space(48);page.drawRectangle({x:44,y:y-25,width:507,height:29,color:red});draw("NO",54,y-15,8,rgb(1,1,1));draw("NAMA BARANG / UKURAN",85,y-15,8,rgb(1,1,1));draw("QTY / UNIT",450,y-15,8,rgb(1,1,1));y-=44; };
   if (input.items?.length) {
     tableHeader();
     for (const [index,item] of input.items.entries()) {

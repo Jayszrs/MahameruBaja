@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteOrigin();
   const [articles, divisions, content] = await Promise.all([readPublishedArticles(), readPublicDivisions(), readPublicSiteContent()]);
   const products = resolvedInventoryProducts(content.inventory).filter(product => content.inventory.some(item => item.productId === product.id && item.listed));
-  const staticPaths = ["", "/tentang-kami", "/produk", "/jasa", "/proyek", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media", "/kebijakan-privasi", "/syarat-ketentuan"];
+  const staticPaths = ["", "/tentang-kami", "/produk", "/jasa", "/proyek", "/galeri", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media", "/kebijakan-privasi", "/syarat-ketentuan"];
   return [
     ...staticPaths.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),
     ...divisions.map((division) => ({ url: `${base}/unit/${division.slug}`, changeFrequency: "monthly" as const, priority: 0.85 })),

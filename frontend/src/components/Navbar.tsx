@@ -1,5 +1,8 @@
 "use client";
 import PublicText from "./PublicText";
+import MembershipMarks from "./MembershipMarks";
+import LanguageMenu from "./LanguageMenu";
+import type { AppearanceItem } from "../data/websiteAppearance";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Image from "./CmsImage";
@@ -12,6 +15,7 @@ import { useQuotation } from '../context/QuotationContext';
 import { mainLogo } from '../data/companyIdentity';
 
 interface NavbarProps {
+  memberships?: AppearanceItem[];
   division?: Division;
   onSearchOpen: () => void;
 }
@@ -21,7 +25,8 @@ const mainBottomLinks = [
   { label: 'Tentang Kami', href: '/tentang-kami', hasMega: false },
   { label: 'Produk', href: '/produk', hasMega: true },
   { label: 'Jasa', href: '/jasa', hasMega: false },
-  { label: 'Galeri', href: '/proyek', hasMega: false },
+  { label: 'Proyek', href: '/proyek', hasMega: false },
+  { label: 'Galeri', href: '/galeri', hasMega: false },
   { label: 'Artikel', href: '/informasi', hasMega: false },
   { label: 'Kontak', href: '/kontak', hasMega: false },
   { label: 'Sosial Media', href: '/sosial-media', hasMega: false },
@@ -64,7 +69,7 @@ const megaMenuCols = [
   },
 ];
 
-export default function Navbar({ onSearchOpen, division }: NavbarProps) {
+export default function Navbar({ onSearchOpen, division, memberships = [] }: NavbarProps) {
   const { divisionWhatsApp } = useDivisionDirectory();
   const location = useLocation();
   const base = division ? `/unit/${division.slug}` : "/";
@@ -182,7 +187,9 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
             </form>
 
             {/* Right actions */}
+            <MembershipMarks items={memberships} />
             <div className="flex items-center gap-1 ml-auto lg:ml-0">
+              <LanguageMenu />
               {/* Mobile search */}
               <button
                 onClick={onSearchOpen}
@@ -363,6 +370,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
               </div>
             </nav>
             <div className="mobile-menu-actions px-4 pb-6 pt-2 border-t border-light-steel space-y-2">
+              <div className="flex items-center justify-between py-2"><span className="text-sm text-graphite">Bahasa / Language</span><LanguageMenu /></div>
               <button
                 onClick={() => { setQuotationOpen(true); setMobileOpen(false); }}
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-light-steel text-graphite text-sm font-bold rounded-xl hover:bg-warm-white transition-colors"

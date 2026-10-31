@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import type { CreateLeadInput } from "../lib/api";
 
-export default function RequestHandoff({ input, id, phone = "" }: { input: CreateLeadInput; id: string; phone?: string }) {
+export default function RequestHandoff({ input, id, phone = "", attachment }: { input: CreateLeadInput; id: string; phone?: string; attachment?: File | null }) {
   const { divisionWhatsApp, divisions } = useDivisionDirectory();
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState("");
@@ -27,10 +27,10 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
       objectUrl = URL.createObjectURL(document);
       setFile(document);
       setUrl(objectUrl);
-      setCanShare(Boolean(navigator.canShare?.({ files: [document] })));
+      setCanShare(Boolean(navigator.canShare?.({ files: attachment ? [document, attachment] : [document] })));
     }).catch(() => { if (!stopped) setError("PDF belum dapat dibuat. Coba lagi, atau hubungi tim tanpa berkas."); });
     return () => { stopped = true; if (objectUrl) URL.revokeObjectURL(objectUrl); };
-  }, [input, id, retry, divisions]);
+  }, [input, id, retry, divisions, attachment]);
 
   phone ||= divisionWhatsApp(input.businessUnitSlug || "laser-cutting").split("/").at(-1)!;
   const details = input.items?.map(item => `- ${item.productName}: ${item.quantity ?? "konfirmasi"} ${item.unit || ""}`).join("\n") || input.request || "Mohon tindak lanjut penawaran.";
@@ -50,7 +50,7 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
     if (!file || sharing) return;
     setSharing(true);
     setError("");
-    try { await navigator.share({ files: [file], title: `Permintaan ${id}`, text: message }); }
+    try { await navigator.share({ files: attachment ? [file, attachment] : [file], title: `Permintaan ${id}`, text: message }); }
     catch (cause) { if ((cause as Error).name !== "AbortError") setError("Perangkat tidak dapat membagikan berkas. Unduh PDF lalu lampirkan sebagai Dokumen di WhatsApp."); }
     finally { setSharing(false); }
   }
@@ -59,11 +59,12 @@ export default function RequestHandoff({ input, id, phone = "" }: { input: Creat
     <div className="request-document-icon" aria-hidden="true">PDF</div>
     <div className="request-handoff-copy"><p className="industrial-eyebrow">PERMINTAAN / {id}</p><h3>Dokumen siap untuk tim.</h3><p role="status">{file ? `${file.name} sudah dibuat.` : error ? "Pembuatan PDF perlu diulang." : "Menyiapkan PDF secara otomatis..."}</p><small>Dokumen ini merangkum kebutuhan Anda. Harga dan jadwal dikonfirmasi oleh tim.</small></div>
     <div className="request-handoff-actions">
-      {canShare && <button type="button" disabled={sharing || !file} onClick={share}>{sharing ? "Membuka menu berbagi..." : "Bagikan PDF dari perangkat"}</button>}
+      {canShare && <button type="button" disabled={sharing || !file} onClick={share}>{sharing ? "Membuka menu berbagi..." : attachment ? "Bagikan PDF & desain ke WhatsApp" : "Bagikan PDF dari perangkat"}</button>}
       {file ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" onClick={download}>Unduh PDF & buka WhatsApp ↗</a> : error ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(fallbackMessage)}`} target="_blank" rel="noopener noreferrer">Chat WhatsApp tanpa PDF ↗</a> : <button type="button" disabled>Menyiapkan PDF...</button>}
       {url && <a href={url} download={file!.name} className="handoff-secondary">Unduh PDF saja</a>}
       {error && <button type="button" className="handoff-secondary" onClick={() => setRetry(value => value + 1)}>Coba buat PDF lagi</button>}
     </div>
+    {attachment && <p className="handoff-note">Desain dipilih: <strong>{attachment.name}</strong>. Berkas disimpan sementara di halaman ini. {canShare ? "Pilih WhatsApp untuk membagikan PDF dan desain bersamaan." : "Lampirkan berkas desain asli sebagai Dokumen saat WhatsApp terbuka."}</p>}
     <p className="handoff-note">{canShare ? "Pilih WhatsApp pada menu berbagi untuk mengirim berkas secara langsung." : "Setelah WhatsApp terbuka, pilih lampiran Dokumen dan sertakan PDF yang sudah diunduh."} Pesan dan berkas baru terkirim setelah Anda menekan Kirim.</p>
   </section></PublicText>;
 }
