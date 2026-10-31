@@ -1551,6 +1551,10 @@
     "area": "heroSlides"
   },
   {
+    "source": "Visual ilustrasi material",
+    "area": "heroSlides"
+  },
+  {
     "source": "Visual ilustrasi proses bending",
     "area": "heroSlides"
   },
@@ -1649,10 +1653,6 @@
     ]
   },
   {
-    "source": "Artikel & Panduan Material",
-    "area": "InformasiPage"
-  },
-  {
     "source": "Baca Selengkapnya",
     "area": "InformasiPage"
   },
@@ -1677,24 +1677,8 @@
     "area": "InformasiPage"
   },
   {
-    "source": "Panduan & Edukasi",
-    "area": "InformasiPage"
-  },
-  {
     "source": "Panduan material akan tersedia di sini.",
     "area": "InformasiPage"
-  },
-  {
-    "source": "Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.",
-    "area": "InformasiPage"
-  },
-  {
-    "source": "Visual ilustrasi material",
-    "area": "InformasiPage",
-    "areas": [
-      "InformasiPage",
-      "heroSlides"
-    ]
   },
   {
     "source": "07:00 – 15:00 WIB",
