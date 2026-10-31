@@ -17,28 +17,9 @@ import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
-const serviceIllustrations = ["laser-bending", "material-sales", "material-consultation", "project-supply", "material-delivery", "renovation-workshop", "contractor-supply"];
-
-const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
-  { title: "Kirim gambar & kebutuhan", desc: "Kirim gambar kerja, foto, atau daftar barang yang Anda punya. Tidak harus rapi.", icon: "drawing" },
-  { title: "Terima penawaran", desc: "Tim mengecek kebutuhan Anda, lalu mengirim harga dan perkiraan waktu pengerjaan.", icon: "quote" },
-  { title: "Setuju & atur jadwal", desc: "Sudah cocok? Pesanan dicatat dan jadwal pengerjaan disiapkan.", icon: "calendar" },
-  { title: "Barang diproses", desc: "Plat dipotong, ditekuk, dan dirakit sesuai gambar dan spesifikasi.", icon: "machine" },
-  { title: "Cek & terima hasil", desc: "Hasil pekerjaan diperiksa sebelum dikirim atau diambil sesuai jadwal.", icon: "quality" },
-]
-
-const servicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
-  { title: "Laser Cutting & Bending", detail: "Potong dan tekuk plat sesuai desain, bahan, dan ukuran Anda.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
-  { title: "Penjualan Material", detail: "Besi beton, hollow, pipa, plat, dan profil baja untuk kebutuhan Anda.", href: "/produk", action: "Cari material" },
-  { title: "Bantu Pilih Material", detail: "Bahas pilihan jenis, ukuran, dan jumlah material bersama tim.", href: "/kontak", action: "Tanya tim toko" },
-  { title: "Material untuk Proyek", detail: "Pengadaan WF, plat, dan material sesuai daftar serta jadwal proyek.", href: "/unit/trading-proyek", action: "Diskusikan suplai proyek" },
-  { title: "Pengiriman Material", detail: "Atur pengiriman ke lokasi sesuai pesanan dan jadwal yang disepakati.", href: "/minta-penawaran", action: "Tanya pengiriman" },
-  { title: "Belanja untuk Renovasi & Bengkel", detail: "Lengkapi material untuk rumah, renovasi, dan bengkel melalui tim toko.", href: "/unit/retail-tambun", action: "Lihat toko" },
-  { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Diskusikan suplai berkala atau pengadaan besar untuk perusahaan Anda.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
-]
-
 export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
-  const cards = appearanceForSite(appearance).services;
+  const config = appearanceForSite(appearance);
+  const cards = config.services;
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
   const [file, setFile] = useState<File | null>(null)
@@ -105,7 +86,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
   return (
     <PublicText>
       <section className="company-about-hero jasa-hero">
-        <RotatingHeroMedia className="company-about-background" images={[laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
+        <RotatingHeroMedia className="company-about-background" images={config.serviceHeroImage ? [config.serviceHeroImage] : [laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
         <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
           <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Jasa Cutting Laser Bekasi &amp; Tambun<br /><em>plat, bending &amp; fabrikasi.</em></h1>
@@ -115,11 +96,10 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
         </div>
       </section>
       {children}
-      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
-            const inner = <><div className="jasa-path-illustration"><Image src={`/images/services/${serviceIllustrations[index]}.svg`} alt={`Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" /></div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action} <b aria-hidden="true">&#8599;</b></strong></div></>;
-            if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;
-            if (path.href.startsWith("#")) return <a href={path.href} key={path.title}>{inner}</a>;
-            return <Link to={path.href} key={path.title}>{inner}</Link>;
+      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
+            const inner = <><div className="jasa-path-illustration">{path.image && <Image src={path.image} alt={path.alt || `Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" />}</div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.text}</p><strong>{path.ctaLabel || "Lihat pilihan"} <b aria-hidden="true">&#8599;</b></strong></div></>;
+            if (path.href.startsWith("#")) return <a href={path.href || "/kontak"} key={path.title}>{inner}</a>;
+            return <Link to={path.href || "/kontak"} key={path.title}>{inner}</Link>;
           })}</div></div></section>
       <section id="laser-cutting" className="business-section">
         <div className="industrial-container">
@@ -137,7 +117,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
                 <h3>{card.title}</h3>
                 <p>{card.text}</p>
                 <a className="business-link" href={card.href || "#request"}>
-                  Request penawaran ↗
+                  {card.ctaLabel || "Request penawaran"} ↗
                 </a>
               </article>
             ))}
@@ -150,12 +130,12 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
         <div className="industrial-container">
           <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
           <div className="process-grid">
-            {workflowSteps.map((step, index) => (
+            {config.serviceWorkflow.map((step, index) => (
               <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
-                <div className="laser-process-icon"><IndustryIcon name={step.icon} size={42} /></div>
+                <div className="laser-process-icon">{step.image ? <Image src={step.image} alt={step.alt || step.title} width={180} height={110} /> : <IndustryIcon name="drawing" size={42} />}</div>
                 <h3>{step.title}</h3>
-                <p>{step.desc}</p>
+                <p>{step.text}</p>
               </div>
             ))}
           </div>

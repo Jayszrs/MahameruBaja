@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ownershipFields } from "./divisionCms";
-export const textPages = { all: "Semua halaman", home: "Beranda", about: "Tentang kami", products: "Produk", services: "Layanan", gallery: "Galeri", contact: "Kontak", social: "Sosial media", articles: "Artikel", quotation: "Permintaan penawaran", search: "Pencarian", legal: "Privasi & ketentuan", notfound: "404 · Halaman tidak ditemukan" } as const;
+export const textPages = { all: "Semua halaman", home: "Beranda", about: "Tentang kami", products: "Produk", services: "Jasa / Layanan divisi", gallery: "Galeri / Proyek", contact: "Kontak", social: "Sosial media", articles: "Artikel", quotation: "Permintaan penawaran", search: "Pencarian", legal: "Privasi & ketentuan", notfound: "404 · Halaman tidak ditemukan" } as const;
 export type TextPage = keyof typeof textPages;
 export const websiteTextSchema = z.object({ ...ownershipFields, id: z.string().min(1).max(80), page: z.enum(Object.keys(textPages) as [TextPage, ...TextPage[]]), source: z.string().trim().min(1).max(5000), replacement: z.string().trim().min(1).max(5000), published: z.boolean().default(true) });
 export type WebsiteText = z.infer<typeof websiteTextSchema>;

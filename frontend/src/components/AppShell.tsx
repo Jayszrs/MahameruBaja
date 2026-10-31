@@ -12,15 +12,17 @@ import { QuotationProvider } from "../context/QuotationContext";
 import MotionController from "./MotionController";
 import RouteProgress from "./RouteProgress";
 import HorizontalRibbons from "./HorizontalRibbons";
+import PageSectionVisibility from "./PageSectionVisibility";
 import type { InventoryItem } from "../data/inventory";
 import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
+import type { TeamContact } from "../data/siteContent";
 
 const SearchOverlay = dynamic(() => import("./SearchOverlay"), {
   ssr: false,
   loading: () => <p className="search-loading-status" role="status">Membuka pencarian…</p>,
 });
 
-export default function AppShell({ children, inventory = [], appearance = [] }: { children: ReactNode; inventory?: InventoryItem[]; appearance?: WebsiteAppearance[] }) {
+export default function AppShell({ children, inventory = [], appearance = [], contacts = [] }: { children: ReactNode; inventory?: InventoryItem[]; appearance?: WebsiteAppearance[]; contacts?:TeamContact[] }) {
   const { divisions } = useDivisionDirectory();
   const pathname = usePathname();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -37,16 +39,17 @@ export default function AppShell({ children, inventory = [], appearance = [] }: 
   return (
     <QuotationProvider>
       <div className="public-site min-h-screen flex flex-col">
+        <PageSectionVisibility appearance={appearanceForSite(appearance,division?.slug)} page={pathname === "/" || pathname === `/unit/${division?.slug}` ? "home" : pathname === "/jasa" ? "services" : null} />
         <RouteProgress />
         <HorizontalRibbons />
-        <Navbar division={division} memberships={appearanceForSite(appearance, division?.slug).memberships} onSearchOpen={() => setSearchOpen(true)} />
+        <Navbar division={division} brandLogo={appearanceForSite(appearance,division?.slug).brandLogo} memberships={appearanceForSite(appearance, division?.slug).memberships} onSearchOpen={() => setSearchOpen(true)} />
         <main className={`flex-1 page-enter ${pathname === "/" || pathname === `/unit/${division?.slug}` ? "pt-0" : "site-main"}`}>
           {!productPage && !articlePage && <MotionController key={pathname} />}
           {children}
         </main>
         {!productPage && !articlePage && <div className="page-scroll-progress" aria-hidden="true" />}
-        <Footer division={division} />
-        <WhatsAppButton />
+        <Footer division={division} backgroundImage={appearanceForSite(appearance,division?.slug).footerImage} />
+        <WhatsAppButton contacts={contacts} />
         <QuotationDrawer />
         {searchOpen && <SearchOverlay open onClose={() => setSearchOpen(false)} inventory={inventory} />}
       </div>

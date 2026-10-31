@@ -8,14 +8,16 @@ import { reviewContent, type SiteContent } from "../data/siteContent";
 import SocialProof from "../components/SocialProof";
 import DivisionCollage from "../components/DivisionCollage";
 import PublicText from "../components/PublicText";
+import { appearanceForSite } from "../data/websiteAppearance";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { partnerLogosForSite } from "../data/partnerLogos";
 
 export default function AboutMergedPage({ content }: { content: SiteContent }) {
+  const appearance=appearanceForSite(content.websiteAppearance);
   const { divisions, divisionIdentity, divisionWhatsApp } = useDivisionDirectory();
   return <PublicText><div className="company-about">
     <section className="company-about-hero">
-      <RotatingHeroMedia className="company-about-background" images={["/images/steel-indonesia/toko-mahameru.jpg", "/images/laser-cutting-illustration.jpg", "/images/cnc-bending-visual-v1.png"]} />
+      <RotatingHeroMedia className="company-about-background" images={appearance.aboutHeroImage ? [appearance.aboutHeroImage] : ["/images/steel-indonesia/toko-mahameru.jpg", "/images/laser-cutting-illustration.jpg", "/images/cnc-bending-visual-v1.png"]} />
       <div className="home-shell"><nav aria-label="Breadcrumb"><Link href="/">Beranda</Link><span>/ Tentang Kami</span></nav><p className="industrial-eyebrow">MAHAMERU GROUP / BEKASI</p><h1>Dari material<br />hingga <em>hasil kerja.</em></h1><p>Segala kebutuhan baja dalam satu tempat: material, pengadaan proyek, laser cutting, bending, fabrikasi, dan erection.</p><a href="#divisi" className="home-button home-button-primary">Kenali divisi kami ↗</a></div>
     </section>
     <section className="company-vision home-shell" aria-labelledby="vision-heading"><p className="industrial-eyebrow">VISI MAHAMERU GROUP</p><h2 id="vision-heading">Tumbuh bersama kebutuhan<br /><em>industri dan konstruksi.</em></h2><p>{groupVision}</p></section>

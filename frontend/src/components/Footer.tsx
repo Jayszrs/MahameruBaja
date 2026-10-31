@@ -11,7 +11,7 @@ import { divisionNavigation } from "./DivisionChrome";
 import FooterDivisions from "./FooterDivisions";
 import FooterLocalServices from "./FooterLocalServices";
 
-export default function Footer({ division }: { division?: Division }) {
+export default function Footer({ division,backgroundImage="" }: { division?: Division;backgroundImage?:string }) {
   const { divisions, divisionWhatsApp, divisionIdentity } = useDivisionDirectory();
   const base = division ? `/unit/${division.slug}` : "/";
   const contactHref = division ? `${base}/kontak` : "/kontak";
@@ -20,7 +20,7 @@ export default function Footer({ division }: { division?: Division }) {
   const quote = division?.quote || "/minta-penawaran";
   const adminSlug = division?.slug || "laser-cutting";
   return <PublicText><footer className="company-footer">
-    <div className="company-footer-photo" aria-hidden="true"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="" fill sizes="100vw" /></div>
+    <div className="company-footer-photo" aria-hidden="true"><Image src={backgroundImage || "/images/steel-indonesia/toko-mahameru.jpg"} alt="" fill sizes="100vw" /></div>
     <div className="home-shell">
     <section className="company-footer-cta"><div><p className="industrial-eyebrow">MATERIAL, CUTTING & PROYEK</p><h2>{division ? <>Bicarakan kebutuhan<br />{division.label.toLowerCase()} Anda.</> : <>Kebutuhan Anda,<br />ditangani tim yang tepat.</>}</h2><p>Sampaikan kebutuhan Anda. Tim kami membantu mengecek spesifikasi, menyiapkan penawaran, dan mengatur langkah berikutnya.</p></div><div><Link className="home-button home-button-primary" href={quote}>Minta penawaran</Link>{division?<a className="footer-contact-link" href={divisionWhatsApp(adminSlug)} target="_blank" rel="noopener noreferrer">Hubungi admin divisi</a>:<a className="footer-contact-link" href="#footer-divisi">Pilih admin divisi</a>}</div></section>
     {!division&&<><p className="company-footer-motto footer-group-motto">{groupMotto}</p><FooterDivisions divisions={divisions}/></>}

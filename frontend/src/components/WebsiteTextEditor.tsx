@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import type { SiteContent } from "../data/siteContent";
 import { textPages, normalizeWebsiteText, type TextPage } from "../data/websiteTexts";
@@ -12,9 +13,10 @@ import { useAdminWorkspace } from "./AdminWorkspace";
 import { contentOwner } from "../data/divisionCms";
 
 export default function WebsiteTextEditor({ initialContent, articleChoices=[] }: { initialContent:SiteContent; articleChoices?:OwnedWebsiteTextChoice[] }) {
+  const params=useSearchParams();
   const actor=useAdminIdentity();const {divisions}=useDivisionDirectory();
   const [content,setContent]=useState(initialContent);const base=useRef(initialContent);
-  const [site,setSite]=useState(actor.division || "main");const [page,setPage]=useState<TextPage>("all");
+  const [site,setSite]=useState(actor.division || "main");const [page,setPage]=useState<TextPage>(Object.hasOwn(textPages,params.get("page") || "") ? params.get("page") as TextPage : "all");
   const [query,setQuery]=useState("");const [area,setArea]=useState("all");const [limit,setLimit]=useState(24);
   const [source,setSource]=useState("");const [replacement,setReplacement]=useState("");
   const [dirty,setDirty]=useState(false);const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");const [failed,setFailed]=useState(false);

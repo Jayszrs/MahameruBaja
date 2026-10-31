@@ -122,3 +122,46 @@
  .site-navbar .navbar-wordmark { max-width:65px; }
 }
 @media(prefers-reduced-motion:reduce) { .website-photo-frame img { transition:none; } }
+.cms-section-list { list-style:none; padding:0; margin:28px 0; border-top:1px solid var(--color-light-steel); }
+.cms-section-list > li { display:grid; grid-template-columns:32px minmax(0,1fr) auto; align-items:center; gap:20px; padding:24px 0; border-bottom:1px solid var(--color-light-steel); }
+.cms-section-list > li > span { color:var(--color-steel-grey); font-size:13px; }
+.cms-section-list h2 { font-size:18px; line-height:1.4; margin-bottom:6px; }
+.cms-section-list p { color:var(--color-steel-grey); font-size:13px; max-width:65ch; line-height:1.65; }
+.cms-page-quicklinks { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0; }
+.cms-page-quicklinks a { padding:10px 14px; border:1px solid var(--color-light-steel); background:white; border-radius:4px; font-size:13px; font-weight:650; min-height:44px; }
+.cms-page-quicklinks a:hover { border-color:var(--color-brand-dark); color:var(--color-brand-dark); }
+.language-visible-label { font-size:11px; line-height:1.2; max-width:52px; margin-right:6px; color:var(--color-graphite); }
+.mobile-language-row { display:none; }
+.public-site .home-order-steps li > div > p { font-size:14px; line-height:1.6; min-height:0; max-width:25ch; }
+.public-site .home-order-steps .order-step-illustration { margin-bottom:14px; aspect-ratio:1.5; }
+.public-site .home-order-steps h3 { font-size:23px; margin-bottom:8px; }
+.public-site .home-order-steps li { gap:12px; }
+.laser-process-icon img { width:160px; height:100px; object-fit:contain; }
+.cms-section-visibility { display:flex; align-items:center; gap:12px; min-height:44px; padding:10px 0; border-bottom:1px solid var(--color-light-steel); }
+.site-navbar form { min-width:0; }
+@media(min-width:761px) {
+ .poster-welcome.poster-lightbox .poster-welcome-layout { display:block; }
+ .poster-welcome.poster-lightbox button.poster-welcome-image { width:100%; height:auto; aspect-ratio:16/9; max-height:57dvh; background:var(--color-surface-2); }
+ .poster-welcome.poster-lightbox .poster-welcome-details { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:8px 28px; padding:20px 28px; }
+ .poster-welcome.poster-lightbox .poster-welcome-details[hidden] { display:none; }
+ .poster-welcome.poster-lightbox .poster-welcome-details h2 { font-size:25px; grid-column:1; }
+ .poster-welcome.poster-lightbox .poster-offer-eyebrow { grid-column:1; margin:0; }
+ .poster-welcome.poster-lightbox .poster-offer-summary { grid-column:1; margin:0; font-size:13px; line-height:1.5; }
+ .poster-welcome.poster-lightbox .poster-offer-provider { display:none; }
+ .poster-welcome.poster-lightbox .poster-lightbox-actions { grid-column:2; grid-row:1/4; margin:0; align-self:center; }
+ .poster-welcome.poster-lightbox .poster-welcome-more { grid-column:1/-1; }
+ .poster-welcome.poster-lightbox .poster-welcome-navigation { padding-block:5px; }
+}
+@media(max-width:1023px) {
+ .site-navbar .mobile-language-row { display:flex; justify-content:flex-end; padding:3px 16px; border-top:1px solid var(--color-light-steel); background:white; }
+ .site-navbar .mobile-language-row .site-language { display:inline-flex; gap:8px; }
+ .mobile-language-row .language-visible-label { max-width:none; font-size:11px; }
+ .mobile-language-row .site-language select { min-height:32px; }
+ .site-navbar > div:first-child .site-language { display:none; }
+ .public-site .site-main { padding-top:110px; }
+}
+@media(max-width:760px) {
+ .cms-section-list > li { grid-template-columns:22px minmax(0,1fr); gap:12px; }
+ .cms-section-list > li > a { grid-column:2; justify-self:start; white-space:normal; }
+ .public-site .home-order-steps .order-step-illustration { max-width:230px; }
+}

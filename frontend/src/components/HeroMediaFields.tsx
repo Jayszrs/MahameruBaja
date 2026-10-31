@@ -15,7 +15,7 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
     <div className="hero-media-heading"><h3>Gambar atau video hero</h3><p>Unggah dari perangkat, atau tempel link file yang sudah tersedia. Cukup pilih salah satu.</p></div>
     <div className="hero-media-options">
       <p className="hero-upload-guidance">{imageUploadHelp} {videoUploadHelp} Jenis media mengikuti file yang dipilih.</p>
-      <label className="editor-field hero-upload-field">Unggah gambar atau video
+      <label className="editor-field hero-upload-field">Beranda › Hero › {slide.title} — unggah gambar atau video
         <input name={`hero-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp,video/mp4" disabled={busy} onChange={event => {
           const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
           if (file) { setPreviewError(""); void upload(file); }
@@ -32,7 +32,7 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
       </div>
     </div>
     {slide.type === "video" && <div className="hero-media-options hero-poster-fields">
-      <label className="editor-field">Unggah gambar sampul video<input name={`hero-poster-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={event => {
+      <label className="editor-field">Beranda › Hero › {slide.title} — unggah sampul video<input name={`hero-poster-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={event => {
         const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
         if (file) { setPreviewError(""); void upload(file, true); }
       }} /><small>{imageUploadHelp} Sampul terlihat sebelum video diputar.</small></label>

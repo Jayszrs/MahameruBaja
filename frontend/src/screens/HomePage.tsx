@@ -35,8 +35,8 @@ function BusinessRoutes({ content, division }: { content: SiteContent; division?
     <PublicText><section className="home-section home-routes" id="pilih-divisi" data-static-motion aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading">
-          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">Segala kebutuhan baja.<br />Dalam satu tempat.</h2></div>
-          <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
+          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">5 layanan kebutuhan baja.<br />Satu Mahameru.</h2></div>
+          <p>Beli besi, suplai proyek, potong, tekuk, hingga fabrikasi. Pilih kebutuhan Anda, langsung temui tim yang menanganinya.</p>
         </div>
         <div className="home-route-list">
           {divisions.map((division, index) => {
@@ -52,8 +52,8 @@ function BusinessRoutes({ content, division }: { content: SiteContent; division?
             </Link>
           ); })}
         </div>
-        <div className="home-needs" aria-label="Pilih berdasarkan kebutuhan">
-          <p>Mulai dari kebutuhan Anda</p>
+        <div className="home-needs" data-home-section="needs" aria-label="Pilih berdasarkan kebutuhan">
+          <p>Quick FAQ — Mulai dari kebutuhan Anda</p>
           <div>
             {appearance.needs.map(item => <Link key={item.id} href={item.href || "/kontak"}>{item.image && <Image src={item.image} alt={item.alt || ""} width={48} height={48} />}<span>{item.title}{item.text && <small>{item.text}</small>}</span><Arrow diagonal /></Link>)}
           </div>

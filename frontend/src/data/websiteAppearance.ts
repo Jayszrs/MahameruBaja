@@ -1,25 +1,33 @@
 import { z } from "zod";
 import { contentOwner, ownershipFields } from "./divisionCms";
 import { safeInternalLink, safeHttpsUrl, safeLocalAsset } from "./safeUrls";
+import { defaultServicePaths, defaultServiceWorkflow } from "./serviceContent";
+import { homeSections, serviceSections } from "./pageVisibility";
 
 const image = z.string().trim().max(1000).refine(value => !value || safeLocalAsset(value, ["images", "media", "api/cms/media"]) || safeHttpsUrl(value), "Pilih gambar atau URL HTTPS.");
 const link = z.string().trim().max(500).refine(value => !value || safeInternalLink(value), "Gunakan tautan halaman website, misalnya /jasa#request.");
-const item = z.object({ id: z.string().min(1).max(100), title: z.string().trim().min(1).max(160), text: z.string().trim().max(500), image, alt: z.string().trim().max(200), href: link });
+const item = z.object({ id: z.string().min(1).max(100), title: z.string().trim().min(1).max(160), text: z.string().trim().max(500), image, alt: z.string().trim().max(200), href: link, ctaLabel:z.string().trim().max(80).optional() });
 export const websiteAppearanceSchema = z.object({
   ...ownershipFields, id: z.string().min(1).max(100), published: z.boolean(),
   featureImage: image, calloutImage: image,
+  brandLogo:image.default(""),footerImage:image.default(""),aboutHeroImage:image.default(""),
+  serviceHeroImage:image.default(""),
+  servicePaths:z.array(item).max(16).default(defaultServicePaths),
+  serviceWorkflow:z.array(item).max(12).default(defaultServiceWorkflow),
+  hiddenHomeSections:z.array(z.enum(homeSections.map(section=>section.id) as [string,...string[]])).max(20).default([]),
+  hiddenServiceSections:z.array(z.enum(serviceSections.map(section=>section.id) as [string,...string[]])).max(12).default([]),
   orderSteps: z.array(item).max(8), needs: z.array(item).max(12),
   quotes: z.array(item).max(36), services: z.array(item).max(12),
   memberships: z.array(item).max(6),
 }).superRefine((row, ctx) => {
-  for (const key of ["orderSteps", "needs", "quotes", "services", "memberships"] as const) {
+  for (const key of ["orderSteps", "needs", "quotes", "services", "memberships", "servicePaths", "serviceWorkflow"] as const) {
     if (new Set(row[key].map(item => item.id)).size !== row[key].length) ctx.addIssue({ code: "custom", path: [key], message: "ID harus unik." });
   }
   row.needs.forEach((item, index) => { if (!item.href) ctx.addIssue({ code: "custom", path: ["needs", index, "href"], message: `Isi tautan tujuan untuk pertanyaan “${item.title}”.` }); });
 });
 export type WebsiteAppearance = z.infer<typeof websiteAppearanceSchema>;
 export type AppearanceItem = WebsiteAppearance["orderSteps"][number];
-export type AppearanceList = "orderSteps" | "needs" | "quotes" | "services" | "memberships";
+export type AppearanceList = "orderSteps" | "needs" | "quotes" | "services" | "memberships" | "servicePaths" | "serviceWorkflow";
 const entry = (id: string, title: string, text = "", image = "", href = "", alt = ""): AppearanceItem => ({ id, title, text, image, href, alt });
 
 export function defaultAppearance(owner: string | null = null): WebsiteAppearance {
@@ -27,11 +35,14 @@ export function defaultAppearance(owner: string | null = null): WebsiteAppearanc
   return {
     id: `appearance-${owner || "main"}`, ownerDivision: owner, published: true,
     featureImage: "", calloutImage: "",
+    brandLogo:"",footerImage:"",aboutHeroImage:"",
+    serviceHeroImage:"", servicePaths:structuredClone(defaultServicePaths), serviceWorkflow:structuredClone(defaultServiceWorkflow),
+    hiddenHomeSections:[],hiddenServiceSections:[],
     orderSteps: [
-      entry("choose", "Pilih kebutuhan", "Material atau jasa? Pilih tim yang sesuai.", "/images/order/choose.svg", owner ? `/unit/${owner}/kontak` : "/#pilih-divisi", "Ilustrasi pilihan material dan jasa"),
-      entry("send", "Kirim daftar atau desain", "Sertakan ukuran, bahan, jumlah, dan lokasi.", "/images/order/send.svg", quote, "Ilustrasi gambar kerja dan daftar kebutuhan"),
-      entry("review", "Cek penawaran", "Periksa spesifikasi, harga, dan jadwal bersama tim.", "/images/order/review.svg", quote, "Ilustrasi pemeriksaan penawaran"),
-      entry("confirm", "Konfirmasi pesanan", "Sepakati pesanan, lalu atur pengerjaan atau pengiriman.", "/images/order/confirm.svg", quote, "Ilustrasi pengiriman material"),
+      entry("choose", "Pilih kebutuhan", "Mau beli besi atau pakai jasa?", "/images/order/choose.svg", owner ? `/unit/${owner}/kontak` : "/#pilih-divisi", "Ilustrasi pilihan material dan jasa"),
+      entry("send", "Kirim daftar / desain", "Kirim ukuran, bahan, dan jumlahnya.", "/images/order/send.svg", quote, "Ilustrasi gambar kerja dan daftar kebutuhan"),
+      entry("review", "Cek harganya", "Cocokkan harga dan jadwal dengan tim.", "/images/order/review.svg", quote, "Ilustrasi pemeriksaan penawaran"),
+      entry("confirm", "Oke? Kami proses.", "Sepakat, lalu dikerjakan atau dikirim.", "/images/order/confirm.svg", quote, "Ilustrasi pengiriman material"),
     ],
     needs: owner ? [entry("consult", "Saya ingin konsultasi kebutuhan", "", "", `/unit/${owner}/kontak`), entry("request", "Saya sudah punya daftar atau gambar", "", "", quote)] : [
       entry("retail", "Saya mau beli besi satuan di Tambun", "", "", "/unit/retail-tambun"),

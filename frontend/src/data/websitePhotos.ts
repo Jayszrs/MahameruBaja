@@ -40,6 +40,7 @@ export function collectWebsitePhotos(content: SiteContent, divisions: Division[]
   const appearances = [appearanceForSite(content.websiteAppearance), ...divisions.map(division => appearanceForSite(content.websiteAppearance, division.slug))];
   for (const row of appearances) {
     const href = row.ownerDivision ? `/unit/${row.ownerDivision}` : "/";
+    add(row.brandLogo,"Logo Mahameru","Logo & identitas",href); add(row.footerImage,"Foto latar footer","Beranda",href); add(row.aboutHeroImage,"Profil Mahameru","Divisi & lokasi","/tentang-kami");
     add(row.featureImage, "Layanan Mahameru", "Beranda", href);
     add(row.calloutImage, "Hubungi Mahameru", "Beranda", href);
     for (const item of [...row.orderSteps, ...row.needs, ...row.quotes, ...row.services]) add(item.image, item.title, row.services.includes(item) ? "Layanan" : "Beranda", item.href || href, item.alt || item.title);

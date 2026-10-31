@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useDivisionDirectory } from "./DivisionDirectory";
 import PublicText from "./PublicText";
 
-import { internationalPhone, type TeamContact } from '../data/siteContent';
+import { contactVisibleInDivision, internationalPhone, type TeamContact } from '../data/siteContent';
 
 // Label peran tanpa nama personal, sesuai arahan klien (Oktober 2026).
 const salesRoles = [
@@ -16,14 +16,11 @@ const salesRoles = [
   { label: "Sales Proyek Fabrikasi", slug: "fabrikasi-erection" },
 ] as const;
 
-// Nomor utama aktif 24 jam: tombol logo WA menyambung langsung ke sini.
-const mainWhatsAppNumber = "6281218052017";
-
 function waLink(number: string, text: string) {
   return `https://wa.me/${internationalPhone(number)}?text=${encodeURIComponent(text)}`;
 }
 
-export default function WhatsAppButton() {
+export default function WhatsAppButton({ contacts = [] }: { contacts?:TeamContact[] }) {
   const pathname = usePathname();
   const productDetail = /\/produk\/[^/]+/.test(pathname);
   const { divisions, divisionIdentity } = useDivisionDirectory();
@@ -44,7 +41,8 @@ export default function WhatsAppButton() {
     return () => controller.abort();
   }, [open]);
 
-  const mainHref = waLink(mainWhatsAppNumber, "Halo, saya ingin konsultasi kebutuhan Mahameru Baja Indonesia.");
+  const mainContact = contacts.find(contact=>contact.published && contact.whatsapp && contactVisibleInDivision(contact,"retail-tambun")) || contacts.find(contact=>contact.published && contact.whatsapp);
+  const mainHref = mainContact ? waLink(mainContact.whatsapp, "Halo, saya ingin konsultasi kebutuhan Mahameru Baja Indonesia.") : "/kontak";
   const actions = salesRoles.filter(role => divisions.some(d => d.slug === role.slug)).map(role => {
     const division = divisions.find(d => d.slug === role.slug);
     const contacts: { name: string; phone: string; role?: string }[] = liveNumbers?.[role.slug] ?? divisionIdentity[role.slug]?.admins ?? [];
