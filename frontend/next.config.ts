@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   output: process.env.NODE_ENV === "production" && process.env.VERCEL !== "1" ? "standalone" : undefined,
   poweredByHeader: false,
+  outputFileTracingIncludes: { "/api/requests/**": ["./public/fonts/NotoSans-Regular.ttf", "./public/apple-touch-icon.png"] },
   reactStrictMode: true,
   experimental: { cpus: 2 },
   devIndicators: false,

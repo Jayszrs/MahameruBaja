@@ -1,10 +1,10 @@
 "use client";
-import { PublicSection } from "../components/PublicText";
 import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 import Image from "../components/CmsImage";
 import Link from "next/link";
 import DivisionCardMedia from "../components/DivisionCardMedia";
+import { appearanceForSite } from "../data/websiteAppearance";
 import type { SiteContent } from "../data/siteContent";
 import { type Division } from "../data/divisionContent";
 import UnifiedHomeContent from "../components/UnifiedHomeContent";
@@ -28,20 +28,21 @@ function Arrow({ diagonal = false }: { diagonal?: boolean }) {
   );
 }
 
-function BusinessRoutes({ links, title }: { links: SiteContent["homeQuickLinks"]; title: string }) {
+function BusinessRoutes({ content, division }: { content: SiteContent; division?: Division }) {
+  const appearance = appearanceForSite(content.websiteAppearance, division?.slug);
   const { divisions, divisionIdentity } = useDivisionDirectory();
   return (
-    <PublicText><PublicSection section="network"><section className="home-section home-routes" id="pilih-divisi" data-static-motion aria-labelledby="routes-heading">
+    <PublicText><section className="home-section home-routes" id="pilih-divisi" data-static-motion aria-labelledby="routes-heading">
       <div className="home-shell">
         <div className="home-section-heading">
-          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">{divisions.length} divisi.<br />Satu Mahameru, satu solusi.</h2></div>
-          <p>Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.</p>
+          <div><p className="home-eyebrow text-brand"><span />Jaringan Mahameru Group</p><h2 id="routes-heading">5 layanan kebutuhan baja.<br />Satu Mahameru.</h2></div>
+          <p>Beli besi, suplai proyek, potong, tekuk, hingga fabrikasi. Pilih kebutuhan Anda, langsung temui tim yang menanganinya.</p>
         </div>
         <div className="home-route-list">
           {divisions.map((division, index) => {
             const route = { index: String(index+1).padStart(2,"0"), tag:division.label, title:division.name, text:division.intro, href:`/unit/${division.slug}`, image:division.hero, imageAlt:division.name };
             return (
-            <Link href={route.href} prefetch={false} data-cms-owned="divisions" className="home-route-card" key={route.index}>
+            <Link href={route.href} prefetch={false} className="home-route-card" key={route.index}>
               <DivisionCardMedia key={division.routeMedia?.media||route.image} media={division.routeMedia} fallback={route.image} alt={route.imageAlt}/>
               <span className="home-route-shade" aria-hidden="true" />
               <span className="home-route-number">{route.index}</span>
@@ -51,17 +52,17 @@ function BusinessRoutes({ links, title }: { links: SiteContent["homeQuickLinks"]
             </Link>
           ); })}
         </div>
-        <PublicSection section="needs"><div className="home-needs" id="mulai-kebutuhan" aria-label="Pilih berdasarkan kebutuhan">
-          <p>{title}</p>
+        <div className="home-needs" data-home-section="needs" aria-label="Pilih berdasarkan kebutuhan">
+          <p>Quick FAQ — Mulai dari kebutuhan Anda</p>
           <div>
-            {links.filter(link => { const slug = /^\/unit\/([^/#?]+)/.exec(link.href)?.[1]; return !slug || divisions.some(division => division.slug === slug); }).map(link => <Link key={link.id} href={link.href}>{link.label} <Arrow diagonal /></Link>)}
+            {appearance.needs.map(item => <Link key={item.id} href={item.href || "/kontak"}>{item.image && <Image src={item.image} alt={item.alt || ""} width={48} height={48} />}<span>{item.title}{item.text && <small>{item.text}</small>}</span><Arrow diagonal /></Link>)}
           </div>
-        </div></PublicSection>
+        </div>
       </div>
-    </section></PublicSection></PublicText>
+    </section></PublicText>
   );
 }
 
 export default function HomePage({ content, division }: { content: SiteContent; division?: Division }) {
-  return <UnifiedHomeContent content={content} division={division}><BusinessRoutes links={content.homeQuickLinks} title={content.homeQuickLinksTitle} /></UnifiedHomeContent>;
+  return <UnifiedHomeContent content={content} division={division}><BusinessRoutes content={content} division={division} /></UnifiedHomeContent>;
 }

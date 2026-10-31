@@ -1,5 +1,6 @@
 import { sectionListSchema } from "./sectionLists";
 import { sectionEditSchema } from "./sectionEdits";
+import { websiteAppearanceSchema } from "./websiteAppearance";
 import { contentOwner, divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 import { safeHttpsUrl, safeLocalAsset, safeInternalLink } from "./safeUrls";
@@ -48,6 +49,7 @@ export const reviewProfileSchema = z.object({
 });
 export const defaultArticleIntro = { eyebrow: "Panduan & Edukasi", title: "Artikel & Panduan Material", description: "Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.", image: "/images/steel-indonesia/toko-mahameru.jpg", visualNote: "Visual ilustrasi material" };
 export const siteContentSchema = z.object({
+  websiteAppearance: z.array(websiteAppearanceSchema).max(100).default([]),
   companyVision: text(2000).default(groupVision),
   companyMission: text(2000).default("Retail, pengadaan material, laser cutting, bending, fabrikasi, dan erection. Pilih tim yang sesuai dengan kebutuhan Anda."),
   companyMotto: text(2000).default(groupMotto),
@@ -67,6 +69,8 @@ export const siteContentSchema = z.object({
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
   websiteTexts: z.array(websiteTextSchema).max(2000).default([]),
   clientPosterVersion: z.number().int().nonnegative().default(0),
+  referenceAlbumVersion: z.number().int().nonnegative().default(0),
+  customerJourneyVersion: z.number().int().nonnegative().default(0),
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),
   showcaseVersion: z.number().int().min(0).default(0),
@@ -107,6 +111,7 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  websiteAppearance: [],
   companyVision: groupVision,
   companyMission: "Retail, pengadaan material, laser cutting, bending, fabrikasi, dan erection. Pilih tim yang sesuai dengan kebutuhan Anda.",
   companyMotto: groupMotto,
@@ -126,6 +131,8 @@ export const defaultSiteContent: SiteContent = {
   heroAnnouncements:[],
   websiteTexts: [],
   clientPosterVersion: 1,
+  referenceAlbumVersion: 1,
+  customerJourneyVersion: 1,
   divisionReviews: {},
   garudaReviews: defaultGarudaReviews,
   inventory: defaultInventory,

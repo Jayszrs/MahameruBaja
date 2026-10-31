@@ -14,6 +14,8 @@ import "../src/public-refinement.css";
 import "../src/poster-lightbox.css";
 import "../src/local-business.css";
 import "../src/loading-accessibility.css";
+import "../src/customer-revision.css";
+import "../src/website-gallery.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
@@ -83,7 +85,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const [divisions, content] = await Promise.all([readPublicDivisions(), readPublicSiteContent()]);
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts} sectionEdits={content.sectionEdits} sectionLists={content.sectionLists} companyVision={content.companyVision} companyMotto={content.companyMotto}><AdminNavigationProvider><AppShell inventory={content.inventory}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
+      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><AdminNavigationProvider><AppShell inventory={content.inventory} appearance={content.websiteAppearance} contacts={content.contacts}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
     </html>
   );
 }

@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import ts from 'typescript';
+import {PDFDocument} from 'pdf-lib';
+const require=createRequire(import.meta.url);
+const frontend=path.resolve(import.meta.dirname,'..');
+const output=path.resolve(process.argv[2] || path.join(frontend,'../artifacts/revision-oct31'));
+fs.mkdirSync(output,{recursive:true});
+const module={exports:{}};
+const code=ts.transpileModule(fs.readFileSync(path.join(frontend,'src/lib/requestPdf.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;
+new Function('require','module','exports',code)(require,module,module.exports);
+const input={kind:'QUOTATION',businessUnitSlug:'retail-tambun',name:'Pelanggan Percobaan',company:'Contoh Proyek',whatsapp:'081234567890',city:'Bekasi',consent:true,
+  items:[{productName:'Besi WF 200 × 100 mm',specification:'Tebal 5,5 × 8 mm · panjang 12 m',quantity:3,unit:'batang'},{productName:'Plat baja',specification:'Ketebalan 6 mm · ukuran dikonfirmasi',quantity:4,unit:'lembar'}],request:'Mohon konfirmasi spesifikasi, stok, harga, dan jadwal pengiriman.'};
+const font=fs.readFileSync(path.join(frontend,'public/fonts/NotoSans-Regular.ttf'));
+const logo=fs.readFileSync(path.join(frontend,'public/apple-touch-icon.png'));
+const divisions=[{slug:'retail-tambun',name:'Mahameru Baja Retail Tambun'}];
+const bytes=await module.exports.createRequestPdf(input,'MBI-QA-20261031',font,'2026-10-31T03:00:00.000Z',divisions,logo);
+fs.writeFileSync(path.join(output,'request-example.pdf'),bytes);
+const document=await PDFDocument.load(bytes);assert.equal(document.getPageCount(),1);assert.equal(document.getAuthor(),'Mahameru Baja Indonesia');
+const long={...input,items:Array.from({length:50},(_,index)=>({productName:`Material ${index+1} — ${'spesifikasi panjang '.repeat(6)}`,specification:'X'.repeat(900),quantity:index+1,unit:'lembar'})),request:'Catatan akhir tetap harus terbaca.'};
+const more=await module.exports.createRequestPdf(long,'MBI-QA-PAGINATION',font,'2026-10-31T03:00:00.000Z',divisions,logo);fs.writeFileSync(path.join(output,'request-pagination.pdf'),more);assert((await PDFDocument.load(more)).getPageCount()>1);
+console.log(`Request PDF: single-page example and 50-item pagination passed; files in ${output}`);

@@ -25,8 +25,13 @@ function generateId() {
 }
 
 export default function QuotationPage() {
+  const { ready } = useQuotation();
+  return ready ? <QuotationForm /> : <div className="industrial-container quote-cart-loading" role="status">Menyiapkan daftar produk…</div>;
+}
+function QuotationForm() {
   const { businessUnits } = useDivisionDirectory();
   const { items } = useQuotation();
+  const fromProducts = items.length > 0;
   const [params] = useSearchParams();
   const [unit, setUnit] = useState(businessUnits.some(item => item.slug === params.get('unit')) ? params.get('unit')! : businessUnits[0]?.slug || '');
   const [formData, setFormData] = useState({
@@ -41,6 +46,7 @@ export default function QuotationPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [leadId, setLeadId] = useState('');
+  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null);
   const [photos, setPhotos] = useState<File[]>([]);
   const [savedPhotoCount, setSavedPhotoCount] = useState(0);
@@ -116,6 +122,7 @@ export default function QuotationPage() {
         })),
       };
       const result = await createLead(input, photos);
+      setPdfUrl(result.pdfUrl);
       setSavedPhotoCount(result.photoCount || 0);
       setRequestInput(input);
       setLeadId(result.id);
@@ -133,7 +140,7 @@ export default function QuotationPage() {
     }`;
 
   if (submitted && requestInput) {
-    return <div className="quote-success industrial-container"><p className="industrial-eyebrow">PERMINTAAN TERSIMPAN / {leadId}</p><h1>Satu langkah lagi.<br /><em>Kirim ke tim kami.</em></h1>{savedPhotoCount > 0 && <p role="status">{savedPhotoCount} foto sudah tersimpan dan dapat dilihat admin divisi tujuan.</p>}<RequestHandoff input={requestInput} id={leadId} /><div className="industrial-actions"><button type="button" className="industrial-button" onClick={() => setSubmitted(false)}>Ubah rincian / buat permintaan baru</button><Link to="/produk" className="editorial-link">Kembali ke katalog</Link></div></div>;
+    return <div className="quote-success industrial-container"><p className="industrial-eyebrow">PERMINTAAN TERSIMPAN / {leadId}</p><h1>Satu langkah lagi.<br /><em>Kirim ke tim kami.</em></h1>{savedPhotoCount > 0 && <p role="status">{savedPhotoCount} foto sudah tersimpan dan dapat dilihat admin divisi tujuan.</p>}<RequestHandoff input={requestInput} id={leadId} pdfUrl={pdfUrl} /><div className="industrial-actions"><button type="button" className="industrial-button" onClick={() => setSubmitted(false)}>Ubah rincian / buat permintaan baru</button><Link to="/produk" className="editorial-link">Kembali ke katalog</Link></div></div>;
   }
 
   return (
@@ -284,8 +291,8 @@ export default function QuotationPage() {
 
             {/* Notes */}
             <div className="bg-white rounded-2xl border border-rule p-6 mb-6">
-              <h2 className="text-lg font-extrabold text-graphite mb-4">Foto & Catatan Tambahan</h2>
-              <RequestPhotoInput photos={photos} onChange={setPhotos} disabled={submitting} />
+              <h2 className="text-lg font-extrabold text-graphite mb-4">{fromProducts ? "PDF daftar produk" : "Foto & Catatan Tambahan"}</h2>
+              {fromProducts ? <div className="quote-auto-pdf"><strong>{rows.filter(row => row.produk.trim()).length} produk masuk ke PDF otomatis</strong><p>Nama produk, spesifikasi, jumlah, dan catatan sudah diambil dari daftar Anda. Lengkapi kontak, lalu lanjut ke WhatsApp. Tidak perlu memilih atau mengunggah file.</p></div> : <details className="quote-optional-photos"><summary>Tambahkan foto kebutuhan (opsional)</summary><RequestPhotoInput photos={photos} onChange={setPhotos} disabled={submitting} /></details>}
               <label htmlFor="catatan" className="block text-sm font-semibold text-graphite mb-2">Catatan tambahan (opsional)</label>
               <textarea
                 id="catatan" rows={4} value={formData.catatan}
@@ -305,7 +312,7 @@ export default function QuotationPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               <button type="submit" disabled={submitting}
                 className="flex-1 py-4 bg-accent hover:bg-accent-dark text-white font-extrabold text-sm rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-lg">
-                {submitting ? 'Menyimpan permintaan...' : 'Kirim Permintaan Penawaran'}
+                {submitting ? 'Menyimpan permintaan...' : fromProducts ? 'Buat PDF & lanjut WhatsApp' : 'Kirim Permintaan Penawaran'}
               </button>
               <p className="text-xs text-muted self-center">Setelah tersimpan, PDF siap diunduh dan WhatsApp terbuka dari satu tombol.</p>
             </div>

@@ -1,6 +1,7 @@
 "use client";
-import { useSectionList, sectionListAttributes } from "../components/PublicText";
-import { PublicSection } from "../components/PublicText";
+import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
+import type { GalleryProject } from "../data/projectGallery";
+import ServiceAlbums from "../components/ServiceAlbums";
 import PublicText from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
@@ -8,42 +9,17 @@ import { useDivisionDirectory } from "../components/DivisionDirectory";
 import Image from "../components/CmsImage"
 import { useState, type ReactNode } from "react"
 import { Link } from "react-router"
-import { laserImage, laserServices, laserFAQs as defaultLaserFAQs } from "../data/business"
+import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead, type CreateLeadInput } from "../lib/api"
 import RequestHandoff from "../components/RequestHandoff"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 
-const defaultScopeCards: { name: string; description: string; image: string; icon: IconName; note: string }[] = [
-  { name: "Laser cutting plat & custom", description: "Pemotongan plat dengan laser berdasarkan gambar CAD (gambar kerja digital) untuk ornamen, panel, dan komponen custom.", image: "/images/laser-cutting-illustration.jpg", icon: "laser", note: "Visual ilustrasi" },
-  { name: "Bending & tekuk plat", description: "Pembentukan plat dengan mesin bending (tekuk plat sesuai ukuran dan sudut) berdasarkan gambar kerja.", image: "/images/cnc-bending-visual-v1.png", icon: "bend", note: "Visual ilustrasi" },
-  { name: "Fabrikasi & finishing", description: "Pekerjaan fabrikasi (perakitan dan pengelasan), finishing, hingga erection (pemasangan di lokasi) sesuai kebutuhan proyek.", image: "/images/steel-indonesia/plat-hitam.jpg", icon: "weld", note: "Foto material" },
-  { name: "Produksi & pekerjaan proyek", description: "Pengerjaan produksi dalam jumlah tertentu, termasuk kebutuhan custom dan pekerjaan proyek sesuai gambar, spesifikasi, dan jadwal.", image: "/images/hero-steel-logistics-v1.png", icon: "building", note: "Visual ilustrasi" },
-]
+const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
-const defaultWorkflowSteps: { title: string; desc: string; icon: IconName }[] = [
-  { title: "Kirim gambar & kebutuhan", desc: "Kirim gambar kerja, foto, atau daftar barang yang Anda punya. Tidak harus rapi.", icon: "drawing" },
-  { title: "Terima penawaran", desc: "Tim mengecek kebutuhan Anda, lalu mengirim harga dan perkiraan waktu pengerjaan.", icon: "quote" },
-  { title: "Setuju & atur jadwal", desc: "Sudah cocok? Pesanan dicatat dan jadwal pengerjaan disiapkan.", icon: "calendar" },
-  { title: "Barang diproses", desc: "Plat dipotong, ditekuk, dan dirakit sesuai gambar dan spesifikasi.", icon: "machine" },
-  { title: "Cek & terima hasil", desc: "Hasil pekerjaan diperiksa sebelum dikirim atau diambil sesuai jadwal.", icon: "quality" },
-]
-
-const defaultServicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
-  { title: "Laser Cutting & Bending", detail: "Potong dan tekuk plat sesuai gambar Anda. Kirim desain, ukuran, bahan, dan jumlah agar tim bisa mengecek pengerjaan serta menyiapkan harga.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
-  { title: "Penjualan Material", detail: "Cari besi beton, hollow, pipa, plat, dan material bangunan lainnya. Tanyakan ukuran, stok, dan harga terbaru langsung kepada tim toko.", href: "/produk", action: "Cari material" },
-  { title: "Bantu Pilih Material", detail: "Masih bingung memilih besi? Ceritakan rencana pekerjaan Anda. Tim membantu mengecek pilihan jenis, ukuran, dan jumlah yang dibutuhkan.", href: "/kontak", action: "Tanya tim toko" },
-  { title: "Material untuk Proyek", detail: "Kirim daftar material, jumlah, lokasi, dan rencana pengiriman. Tim MBI Trading membantu menyiapkan penawaran untuk kebutuhan proyek Anda.", href: "/unit/trading-proyek", action: "Hubungi MBI Trading" },
-  { title: "Pengiriman Material", detail: "Tanyakan pengiriman ke lokasi Anda di Bekasi dan sekitarnya. Biaya, jangkauan, dan jadwal disepakati bersama admin sesuai pesanan.", href: "/minta-penawaran", action: "Tanya pengiriman" },
-  { title: "Belanja untuk Renovasi & Bengkel", detail: "Lengkapi kebutuhan rumah, renovasi, dan bengkel lewat toko Mahameru Baja. Konfirmasikan pilihan material dan jumlah yang ingin dibeli.", href: "/unit/retail-tambun", action: "Lihat toko" },
-  { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
-]
-
-export default function LaserCuttingPage({ children }: { children?: ReactNode }) {
-  const servicePaths=useSectionList("servicePaths",defaultServicePaths,"services");
-  const scopeCards=useSectionList("scopeCards",defaultScopeCards,"technical");
-  const workflowSteps=useSectionList("workflowSteps",defaultWorkflowSteps,"process");
-  const laserFAQs=useSectionList("laserFAQs",defaultLaserFAQs,"faq");
+export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
+  const config = appearanceForSite(appearance);
+  const cards = config.services;
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
   const [file, setFile] = useState<File | null>(null)
@@ -52,6 +28,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
   const [submitError, setSubmitError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [leadId, setLeadId] = useState("")
+  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
   const [divisionSlug, setDivisionSlug] = useState(divisions.find(d=>d.slug === "laser-cutting")?.slug || divisions[0]?.slug || "")
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -94,6 +71,7 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
         },
       }
       const result = await createLead(input)
+      setPdfUrl(result.pdfUrl);
       setRequestInput(input)
       setLeadId(result.id)
       setMessage(
@@ -107,24 +85,23 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
   }
   return (
     <PublicText>
-      <PublicSection section="opening"><section className="company-about-hero jasa-hero" id="jasa-pembuka">
-        <RotatingHeroMedia className="company-about-background" images={[laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
+      <section className="company-about-hero jasa-hero">
+        <RotatingHeroMedia className="company-about-background" images={config.serviceHeroImage ? [config.serviceHeroImage] : [laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
         <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
           <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Jasa Cutting Laser Bekasi &amp; Tambun<br /><em>plat, bending &amp; fabrikasi.</em></h1>
           <p>MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.</p>
-          <a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a>
+          <div className="home-actions"><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
           <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>
-      </section></PublicSection>
+      </section>
       {children}
-      <PublicSection section="services"><section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths" {...sectionListAttributes("servicePaths",servicePaths)}>{servicePaths.map((path, index) => {
-            const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action}</strong></div></>;
-            if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;
-            if (path.href.startsWith("#")) return <a href={path.href} key={path.title}>{inner}</a>;
-            return <Link to={path.href} key={path.title}>{inner}</Link>;
-          })}</div></div></section></PublicSection>
-      <PublicSection section="technical"><section id="laser-cutting" className="business-section">
+      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
+            const inner = <><div className="jasa-path-illustration">{path.image && <Image src={path.image} alt={path.alt || `Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" />}</div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.text}</p><strong>{path.ctaLabel || "Lihat pilihan"} <b aria-hidden="true">&#8599;</b></strong></div></>;
+            if (path.href.startsWith("#")) return <a href={path.href || "/kontak"} key={path.title}>{inner}</a>;
+            return <Link to={path.href || "/kontak"} key={path.title}>{inner}</Link>;
+          })}</div></div></section>
+      <section id="laser-cutting" className="business-section">
         <div className="industrial-container">
           <div className="section-heading">
             <div>
@@ -132,39 +109,40 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
               <h2>Detail jasa laser cutting, bending, dan fabrikasi.</h2>
             </div>
           </div>
-          <div className="business-grid laser-scope-grid" {...sectionListAttributes("scopeCards",scopeCards)}>
-            {scopeCards.map((card, index) => (
-              <article className="business-card laser-scope-card" data-reveal key={card.name}>
-                <div className="laser-scope-media"><img src={card.image} alt="" loading="lazy" /><small>{card.note}</small></div>
-                <div className="laser-scope-card-top"><span className="industrial-eyebrow">0{index + 1}</span><span className="laser-scope-icon"><IndustryIcon name={card.icon} size={28} /></span></div>
-                <h3>{card.name}</h3>
-                <p>{card.description}</p>
-                <a className="business-link" href="#request">
-                  Request penawaran ↗
+          <div className="business-grid laser-scope-grid">
+            {cards.map((card, index) => (
+              <article className="business-card laser-scope-card" data-reveal key={card.id}>
+                {card.image && <div className="laser-scope-media"><Image src={card.image} alt={card.alt || card.title} fill sizes="(max-width:650px) 90vw, 25vw" /><small>{card.alt}</small></div>}
+                <div className="laser-scope-card-top"><span className="industrial-eyebrow">0{index + 1}</span><span className="laser-scope-icon"><IndustryIcon name={scopeIcons[index] || "weld"} size={28} /></span></div>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+                <a className="business-link" href={card.href || "#request"}>
+                  {card.ctaLabel || "Request penawaran"} ↗
                 </a>
               </article>
             ))}
           </div>
           <p className="verification-note">Tim mengecek jenis bahan, ukuran, ketebalan, dan kemampuan mesin sebelum memberikan harga serta jadwal pengerjaan.</p>
         </div>
-      </section></PublicSection>
-      <PublicSection section="process"><section className="laser-process" id="jasa-proses">
+      </section>
+      <ServiceAlbums projects={projects} />
+      <section className="laser-process">
         <div className="industrial-container">
           <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
-          <div className="process-grid" {...sectionListAttributes("workflowSteps",workflowSteps)}>
-            {workflowSteps.map((step, index) => (
+          <div className="process-grid">
+            {config.serviceWorkflow.map((step, index) => (
               <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
-                <div className="laser-process-icon"><IndustryIcon name={step.icon} size={42} /></div>
+                <div className="laser-process-icon">{step.image ? <Image src={step.image} alt={step.alt || step.title} width={180} height={110} /> : <IndustryIcon name="drawing" size={42} />}</div>
                 <h3>{step.title}</h3>
-                <p>{step.desc}</p>
+                <p>{step.text}</p>
               </div>
             ))}
           </div>
           <p><strong>Kirim dalam format yang Anda punya.</strong> File DWG, DXF, PDF, foto, atau daftar kebutuhan juga bisa. Tim akan mengecek kebutuhan Anda sebelum memberikan penawaran.</p>
         </div>
-      </section></PublicSection>
-      <PublicSection section="request"><section id="request" className="business-section">
+      </section>
+      <section id="request" className="business-section">
         <div className="industrial-container request-grid">
           <div>
             <h2>Ceritakan kebutuhan material atau jasa Anda.</h2>
@@ -287,22 +265,22 @@ export default function LaserCuttingPage({ children }: { children?: ReactNode })
             <button className="industrial-button form-full" type="submit" disabled={submitting}>
               {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
             </button>
-            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} /><p className="text-sm">File desain dikirim terpisah sebagai lampiran WhatsApp.</p></div>}
+            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} pdfUrl={pdfUrl} /></div>}
 
           </form>
         </div>
-      </section></PublicSection>
-      <PublicSection section="faq"><section className="laser-faq business-section" id="jasa-faq" {...sectionListAttributes("laserFAQs",laserFAQs)}>
+      </section>
+      <section className="laser-faq business-section">
         <div className="industrial-container">
           <h2>Pertanyaan laser cutting & bending.</h2>
-          {laserFAQs.map((item) => (
+          {faqs.map((item) => (
             <details key={item.question}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
             </details>
           ))}
         </div>
-      </section></PublicSection>
+      </section>
     </PublicText>
   )
 }

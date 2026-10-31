@@ -1,6 +1,8 @@
 // Display-only wording policy. Stored CMS text, identifiers and asset URLs stay intact.
 export function serviceWording(value: string) {
-  return value.replace(/\bCNC[ \t]+/gi, "").replace(/[ \t]+CNC\b/gi, "").replace(/^CNC$/i, "");
+  return value.replace(/\bCNC[ \t]+/gi, "").replace(/[ \t]+CNC\b/gi, "").replace(/^CNC$/i, "")
+    .replace(/MBI Trading/gi, "Distributor Besi Baja MBI")
+    .replace(/Trading & supply proyek/gi, "Distributor besi baja & suplai proyek");
 }
 const textKeys = new Set(["name", "title", "label", "category", "description", "summary", "excerpt", "caption", "intro", "mission", "aboutHeadline", "values", "process", "eyebrow", "accent", "alt", "imageAlt", "visualNote", "benefit", "appliesTo", "terms", "ctaLabel", "content", "question", "answer", "offerings", "messages"]);
 export function publicServiceWording<T>(value: T, key = ""): T {

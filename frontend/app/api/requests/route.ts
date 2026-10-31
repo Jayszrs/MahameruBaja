@@ -8,10 +8,12 @@ import { adminRequestOrigin } from "../../../src/lib/adminRequestOrigin";
 import { CmsError } from "../../../src/lib/cmsError";
 import { apiError } from "../../../src/lib/adminApi";
 import { readJsonBody, readFormBody } from "../../../src/lib/requestBody";
+import { requestPdfLink } from "../../../src/lib/requestPdfShare";
 export const runtime = "nodejs";
 const attempts = new Map<string, { count: number; until: number }>();
 export async function POST(request: Request) {
-  if (!adminRequestOrigin(request)) return Response.json({ message: "Asal permintaan tidak valid." }, { status: 403 });
+  const origin = adminRequestOrigin(request);
+  if (!origin) return Response.json({ message: "Asal permintaan tidak valid." }, { status: 403 });
   const key = request.headers.get("x-forwarded-for")?.split(",")[0] || "local";
   const now = Date.now();
   for (const [ip, value] of attempts) if (value.until < now) attempts.delete(ip);
@@ -41,7 +43,7 @@ export async function POST(request: Request) {
     if (files.length) await ensureDivision(result.data.businessUnitSlug, true);
     if (idempotencyKey && files.length) {
       const existing = (await readRequests()).find(record => record.idempotencyKey === idempotencyKey);
-      if (existing) return Response.json({ data: { id: existing.id, status: existing.status, photoCount: existing.photos.length } }, { status: 201, headers: { "Cache-Control": "no-store" } });
+      if (existing) return Response.json({ data: { id: existing.id, status: existing.status, photoCount: existing.photos.length, pdfUrl: requestPdfLink(existing, origin) } }, { status: 201, headers: { "Cache-Control": "no-store" } });
     }
     const prepared = await prepareRequestPhotos(files);
     for (const { photo, bytes } of prepared) {
@@ -52,7 +54,7 @@ export async function POST(request: Request) {
     commitStarted = true;
     const saved = await createRequest(result.data, idempotencyKey, photos);
     await removeRequestPhotos(photos.filter(photo => !saved.photos.some(savedPhoto => savedPhoto.filename === photo.filename)));
-    return Response.json({ data: { id: saved.id, status: saved.status, photoCount: saved.photos.length } }, { status: 201, headers: { "Cache-Control": "no-store" } });
+    return Response.json({ data: { id: saved.id, status: saved.status, photoCount: saved.photos.length, pdfUrl: requestPdfLink(saved, origin) } }, { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     // A failed response can hide a successful or still-running metadata write.
     // Retain attachments after any uncertain commit instead of risking loss.

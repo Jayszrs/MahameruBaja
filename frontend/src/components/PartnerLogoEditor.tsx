@@ -60,7 +60,7 @@ export default function PartnerLogoEditor({initialContent}:{initialContent:SiteC
         <ContentOwnership value={item} onChange={patch=>update(item.id,patch)}/>
         <div className="partner-editor-fields"><LogoPreview key={item.logo} item={item}/><div>
           <label className="editor-field">Nama {kind==="supplier"?"supplier":"perusahaan"}<input name={`partner-name-${item.id}`} value={item.name} maxLength={160} placeholder="Nama sesuai identitas perusahaan" onChange={event=>update(item.id,{name:event.target.value})}/></label>
-          <label className="editor-field">Unggah logo<input type="file" name={`partner-upload-${item.id}`} accept="image/jpeg,image/png,image/webp" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value="";if(file)void upload(item,file);}}/><small>{imageUploadHelp} PNG atau WebP transparan disarankan.</small></label>
+          <label className="editor-field">Beranda › Logo rekanan / supplier › {item.name} — unggah logo<input type="file" name={`partner-upload-${item.id}`} accept="image/jpeg,image/png,image/webp" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value="";if(file)void upload(item,file);}}/><small>{imageUploadHelp} PNG atau WebP transparan disarankan.</small></label>
           <label className="editor-field">Alamat gambar (opsional jika sudah unggah)<input name={`partner-url-${item.id}`} value={item.logo} maxLength={2000} placeholder="https://... atau /images/..." onChange={event=>update(item.id,{logo:event.target.value.trim()})}/><small>Gunakan alamat gambar langsung, bukan halaman website perusahaan.</small></label>
         </div></div>
         <div className="editor-item-actions">

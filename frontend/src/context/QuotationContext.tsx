@@ -1,6 +1,8 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
+import { z } from 'zod';
+import { safeHttpsUrl, safeLocalAsset } from '../data/safeUrls';
 
 export interface QuotationItem {
   id: string;
@@ -15,6 +17,7 @@ export interface QuotationItem {
 }
 
 interface QuotationCtx {
+  ready: boolean;
   items: QuotationItem[];
   isOpen: boolean;
   addItem: (item: Omit<QuotationItem, 'qty' | 'unit' | 'notes'>) => void;
@@ -28,10 +31,22 @@ interface QuotationCtx {
 }
 
 const QuotationContext = createContext<QuotationCtx | null>(null);
+const storageKey = 'mahameru:quotation:v1';
+const savedItems = z.array(z.object({
+  id: z.string().min(1).max(100), slug: z.string().min(1).max(200), name: z.string().min(1).max(200),
+  sku: z.string().max(100), shortSpec: z.string().max(1000), image: z.string().max(2000).refine(value => safeHttpsUrl(value) || safeLocalAsset(value, ['images', 'media', 'api/cms/media'])),
+  qty: z.number().int().min(1).max(100000000), unit: z.string().max(32), notes: z.string().max(500),
+})).max(50);
 
 export function QuotationProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<QuotationItem[]>([]);
+  const [ready, setReady] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  useEffect(() => {
+    try { const value = localStorage.getItem(storageKey); if (value) { const parsed = savedItems.safeParse(JSON.parse(value)); if (parsed.success) setItems(parsed.data); } } catch { /* The cart still works when browser storage is unavailable. */ }
+    setReady(true);
+  }, []);
+  useEffect(() => { if (ready) { try { localStorage.setItem(storageKey, JSON.stringify(items)); } catch { /* Keep the active cart usable. */ } } }, [items, ready]);
 
   const addItem = useCallback((item: Omit<QuotationItem, 'qty' | 'unit' | 'notes'>) => {
     setItems(prev => {
@@ -39,7 +54,8 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
       if (exists) {
         return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i);
       }
-      return [...prev, { ...item, qty: 1, unit: 'batang', notes: '' }];
+      if (prev.length >= 50) return prev;
+      return [...prev, { ...item, qty: 1, unit: /plat|lembar|wiremesh|bondek|spandek|upvc/i.test(`${item.name} ${item.shortSpec}`) ? 'lembar' : 'batang', notes: '' }];
     });
     setOpen(true);
   }, []);
@@ -63,7 +79,7 @@ export function QuotationProvider({ children }: { children: ReactNode }) {
 
   return (
     <QuotationContext.Provider value={{
-      items, isOpen, addItem, removeItem, updateQty, updateNotes,
+      items, ready, isOpen, addItem, removeItem, updateQty, updateNotes,
       clearItems, setOpen, count: items.length, hasItem,
     }}>
       {children}

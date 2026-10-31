@@ -1,5 +1,8 @@
 "use client";
 import PublicText from "./PublicText";
+import MembershipMarks from "./MembershipMarks";
+import LanguageMenu from "./LanguageMenu";
+import type { AppearanceItem } from "../data/websiteAppearance";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import Image from "./CmsImage";
@@ -12,6 +15,8 @@ import { useQuotation } from '../context/QuotationContext';
 import { mainLogo } from '../data/companyIdentity';
 
 interface NavbarProps {
+  brandLogo?:string;
+  memberships?: AppearanceItem[];
   division?: Division;
   onSearchOpen: () => void;
 }
@@ -21,7 +26,8 @@ const mainBottomLinks = [
   { label: 'Tentang Kami', href: '/tentang-kami', hasMega: false },
   { label: 'Produk', href: '/produk', hasMega: true },
   { label: 'Jasa', href: '/jasa', hasMega: false },
-  { label: 'Galeri', href: '/proyek', hasMega: false },
+  { label: 'Proyek', href: '/proyek', hasMega: false },
+  { label: 'Galeri', href: '/galeri', hasMega: false },
   { label: 'Artikel', href: '/informasi', hasMega: false },
   { label: 'Kontak', href: '/kontak', hasMega: false },
   { label: 'Sosial Media', href: '/sosial-media', hasMega: false },
@@ -64,7 +70,7 @@ const megaMenuCols = [
   },
 ];
 
-export default function Navbar({ onSearchOpen, division }: NavbarProps) {
+export default function Navbar({ onSearchOpen, division, memberships = [], brandLogo = "" }: NavbarProps) {
   const { divisionWhatsApp } = useDivisionDirectory();
   const location = useLocation();
   const base = division ? `/unit/${division.slug}` : "/";
@@ -153,7 +159,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
               className="flex items-center gap-2.5 shrink-0"
               aria-label={`${brandName} - Beranda`}
             >
-              <LogoMark division={division} />
+              <LogoMark division={division} brandLogo={brandLogo} />
               <div className="navbar-wordmark leading-tight">
                 <div className={`font-extrabold text-[13px] tracking-tight font-[family-name:var(--font-display)] ${navSolid ? 'text-gunmetal' : 'text-white'}`}>{brandName}</div>
                 <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">{brandLabel}</div>
@@ -182,7 +188,9 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
             </form>
 
             {/* Right actions */}
+            <MembershipMarks items={memberships} />
             <div className="flex items-center gap-1 ml-auto lg:ml-0">
+              <LanguageMenu />
               {/* Mobile search */}
               <button
                 onClick={onSearchOpen}
@@ -213,6 +221,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
           </div>
         </div>
 
+        <div className="mobile-language-row"><LanguageMenu /></div>
         {/* BOTTOM NAV (desktop only) */}
         <div className={`hidden lg:block border-t ${navSolid ? 'border-light-steel/60' : 'border-white/10'}`}>
           <div className="max-w-[1280px] mx-auto px-4 lg:px-8">
@@ -316,7 +325,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
           <div className="absolute top-0 right-0 bottom-0 w-[min(340px,100vw)] bg-white shadow-xl flex flex-col">
             <div className="flex items-center justify-between px-5 h-16 border-b border-light-steel">
               <Link to={base} className="flex items-center gap-2.5" onClick={() => setMobileOpen(false)}>
-                <LogoMark division={division} />
+                <LogoMark division={division} brandLogo={brandLogo} />
                 <div className="navbar-wordmark leading-tight">
                   <div className="font-extrabold text-[13px] text-gunmetal tracking-tight font-[family-name:var(--font-display)]">{brandName}</div>
                   <div className="font-semibold text-[8px] text-brand tracking-[0.16em] uppercase">{brandLabel}</div>
@@ -363,6 +372,7 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
               </div>
             </nav>
             <div className="mobile-menu-actions px-4 pb-6 pt-2 border-t border-light-steel space-y-2">
+              <div className="flex items-center justify-between py-2"><span className="text-sm text-graphite">Bahasa / Language</span><LanguageMenu /></div>
               <button
                 onClick={() => { setQuotationOpen(true); setMobileOpen(false); }}
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 border border-light-steel text-graphite text-sm font-bold rounded-xl hover:bg-warm-white transition-colors"
@@ -394,9 +404,9 @@ export default function Navbar({ onSearchOpen, division }: NavbarProps) {
   );
 }
 
-function LogoMark({ division }: { division?: Division }) {
+function LogoMark({ division,brandLogo="" }: { division?: Division;brandLogo?:string }) {
   const { divisionIdentity } = useDivisionDirectory();
-  const src = division ? divisionIdentity[division.slug]?.logo || mainLogo : mainLogo;
+  const src = brandLogo || (division ? divisionIdentity[division.slug]?.logo || mainLogo : mainLogo);
   return (
     <span className="navbar-symbol relative block h-12 w-16 shrink-0 bg-white" aria-hidden="true">
       <Image src={src} alt="" fill sizes="64px" className="object-contain" />

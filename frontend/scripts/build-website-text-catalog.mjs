@@ -15,14 +15,14 @@ function add(source, area) {
   if (!existing) rows.set(source, { source, area });
   else if(existing.area!==area)existing.areas=[...new Set([...(existing.areas || [existing.area]),area])];
 }
-const dataFiles=new Set(['heroSlides.ts','divisionContent.ts','divisionAbout.ts','companyIdentity.ts','serviceDescriptions.ts','divisionLocations.ts','products.ts','categories.ts','business.ts','articles.ts','clientPosters.ts','promotions.ts','projectGallery.ts','socialMedia.ts','unitSections.ts']);
+const dataFiles=new Set(['heroSlides.ts','divisionContent.ts','divisionAbout.ts','companyIdentity.ts','serviceDescriptions.ts','divisionLocations.ts','products.ts','categories.ts','business.ts','articles.ts','clientPosters.ts','promotions.ts','projectGallery.ts','serviceContent.ts','socialMedia.ts','unitSections.ts']);
 const displayFields=new Set(['title','accent','eyebrow','intro','description','mission','headline','aboutHeadline','desc','detail','text','action','label','name','question','answer','shortSpec','summary','excerpt','caption','benefit','terms','ctaLabel','values','offerings','process','usages','messages','category','value','visualNote']);
-for (const directory of ['screens','components','data','../app/kebijakan-privasi','../app/syarat-ketentuan']) {
+for (const directory of ['screens','components','data','../app/kebijakan-privasi','../app/syarat-ketentuan','../app/galeri']) {
   for (const file of await fs.readdir(path.join(frontend, 'src', directory))) {
     if (directory==='data' ? !dataFiles.has(file) : !file.endsWith('.tsx') || directory === 'components' && !publicComponents.has(file.slice(0,-4)) || ['OperationsDemoPage.tsx','AboutPage.tsx','ServicesPage.tsx'].includes(file)) continue;
     const source = ts.createSourceFile(file, await fs.readFile(path.join(frontend,'src',directory,file),'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     function visit(node) {
-      if (ts.isJsxText(node)) add(node.text, directory.startsWith('../app/') ? 'Legal' : file.slice(0,-4));
+      if (ts.isJsxText(node)) add(node.text, directory === '../app/galeri' ? 'GalleryPage' : directory.startsWith('../app/') ? 'Legal' : file.slice(0,-4));
       if (ts.isStringLiteral(node)) {
         let parent = node.parent;
         const attribute = ts.isJsxAttribute(parent) ? parent.name.getText(source) : '';
