@@ -24,7 +24,7 @@ const heroDestinations = [
   { label: "Kontak", href: "/kontak" },
 ];
 
-export default function HeroEditor({ initialContent }: { initialContent: SiteContent }) {
+export default function HeroEditor({ initialContent, embedded = false }: { initialContent: SiteContent; embedded?: boolean }) {
   const actor = useAdminIdentity();
   const [content, setContent] = useState(initialContent);
   const base = useRef(initialContent);
@@ -72,22 +72,22 @@ export default function HeroEditor({ initialContent }: { initialContent: SiteCon
     change(current => ({ ...current, heroSlides: [{ ...heroSlides[0], media: "", alt: "", poster: undefined, ownerDivision: actor.division, published: true, id }, ...current.heroSlides] }));
     focusEditorRecord(`hero-${id}`);
   }
-  const workspace = useAdminWorkspace({ dirty, busy, label: "Simpan hero", disabled: !dirty, onSave: save });
-  return <div className="content-editor">
-    <aside className="editor-sidebar"><Link href="/admin">Dashboard</Link><h2>Hero beranda</h2><p>Kelola gambar, video, dan teks berjalan.</p></aside>
+  const workspace = useAdminWorkspace({ dirty, busy, label: embedded ? "Simpan section" : "Simpan hero", disabled: !dirty, onSave: save });
+  return <div className={`content-editor${embedded ? " hero-editor-embedded" : ""}`}>
+    {!embedded && <aside className="editor-sidebar"><Link href="/admin">Dashboard</Link><h2>Hero beranda</h2><p>Kelola gambar, video, dan teks berjalan.</p></aside>}
     <main className="editor-main">
-      <header className="editor-topbar"><h1>Hero & teks berjalan</h1><button type="button" className="editor-save" disabled={busy || !dirty} onClick={save}>{busy ? "Memproses…" : "Simpan hero"}</button></header>
+      {!embedded && <header className="editor-topbar"><h1>Hero & teks berjalan</h1><button type="button" className="editor-save" disabled={busy || !dirty} onClick={save}>{busy ? "Memproses…" : "Simpan hero"}</button></header>}
       <div className="editor-content">
-        <div className="hero-editor-heading"><div><h2>Hero beranda</h2><p>Tambah slide, pilih gambar atau video, lalu simpan. Perubahan langsung tampil di website setelah disimpan.</p></div><Link className="admin-secondary" href={actor.division ? `/unit/${actor.division}` : "/"} target="_blank" rel="noopener noreferrer">Buka beranda</Link></div>
-        {message && <p className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</p>}
-        {busy && <p className="editor-notice" role="status">Sedang memproses. Tunggu sampai selesai sebelum meninggalkan halaman.</p>}
+        {!embedded && <div className="hero-editor-heading"><div><h2>Hero beranda</h2><p>Tambah slide, pilih gambar atau video, lalu simpan. Perubahan langsung tampil di website setelah disimpan.</p></div><Link className="admin-secondary" href={actor.division ? `/unit/${actor.division}` : "/"} target="_blank" rel="noopener noreferrer">Buka beranda</Link></div>}
+        {message && (!embedded || failed) && <p className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</p>}
+        {busy && !embedded && <p className="editor-notice" role="status">Sedang memproses. Tunggu sampai selesai sebelum meninggalkan halaman.</p>}
         <fieldset disabled={busy}>
           <HeroAnnouncementEditor content={content} onChange={next => change(() => next)} />
           <div className="editor-list-heading hero-slide-list-heading"><div><span className="hero-step-label">Langkah 2</span><h2>Slide hero</h2></div><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
           <AdminOrderList label="Urutan slide" disabled={busy} items={content.heroSlides.map(slide => ({ id: slide.id, title: slide.eyebrow || "Slide baru", image: slide.poster || (slide.type === "image" ? slide.media : undefined) }))} onMove={(from, to) => change(current => ({ ...current, heroSlides: moveBefore(current.heroSlides, from, to) }))} onSelect={id => focusEditorRecord(`hero-${id}`)} />
           {!content.heroSlides.length && <div className="editor-empty"><h3>Belum ada slide hero</h3><p>Tambahkan slide untuk menampilkan gambar atau video pilihan Anda di beranda.</p></div>}
           {content.heroSlides.map((slide, index) => <section className="editor-panel hero-slide-editor" id={`hero-${slide.id}`} key={slide.id}>
-            <div className="editor-panel-title"><h2>Slide {index + 1} · {slide.eyebrow}</h2><button type="button" onClick={() => setDeleteId(slide.id)}>Hapus slide</button></div>
+            <div className="editor-panel-title"><h2>Slide {index + 1} · {slide.eyebrow}</h2><div className="hero-slide-header-actions"><Link className="hero-slide-preview-link" href={`${slide.ownerDivision ? `/unit/${slide.ownerDivision}` : "/"}?cms-preview=1&heroSlide=${encodeURIComponent(slide.id)}#hero-beranda`} target="_blank" rel="noopener noreferrer">Buka pratinjau slide ↗</Link><button type="button" onClick={() => setDeleteId(slide.id)}>Hapus slide</button></div></div>
             <ContentOwnership value={slide} onChange={patch => update(slide.id, patch)} />
             <HeroMediaFields slide={slide} busy={busy} update={patch => update(slide.id, patch)} upload={(file, poster) => upload(slide.id, file, poster)} />
             <div className="editor-grid">

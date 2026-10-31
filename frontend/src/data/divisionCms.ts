@@ -6,7 +6,7 @@ const text = (max: number) => z.string().trim().max(max);
 export const divisionSchema = z.object({
   id: z.string().min(1), slug: divisionSlugSchema, revision: z.number().int().nonnegative(), status: z.enum(["draft", "active", "archived"]),
   sortOrder: z.number().int().safe().optional(),
-  useCentralReviews: z.boolean().default(false), name: text(160).min(1), label: text(100).min(1), kind: z.enum(["material", "service"]), area: text(200),
+  useCentralReviews: z.boolean().default(false), name: text(160).min(1), label: text(100).min(1), kind: z.enum(["material", "service"]), area: text(200), footerHref:text(250).refine(v=>!v||safeInternalLink(v),"Gunakan tautan halaman website yang valid.").default(""),
   logo: assetUrl, title: text(250), intro: text(1000), description: text(5000), mission: text(2000),
   aboutHeadline: text(250), values: z.array(text(500)).max(12), hero: assetUrl,
   routeMedia: z.object({type:z.enum(["image","video"]),media:assetUrl,poster:assetUrl.optional()}).nullable().default(null),

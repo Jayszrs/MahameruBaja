@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
 import type { GalleryProject } from "../data/projectGallery";
 import ServiceAlbums from "../components/ServiceAlbums";
-import PublicText from "../components/PublicText";
+import PublicText, { PublicSection } from "../components/PublicText";
+import { useSectionList, sectionListAttributes } from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
@@ -19,6 +20,7 @@ const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
 export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
   const config = appearanceForSite(appearance);
+  const managedFaqs = useSectionList("laserFAQs", faqs, "faq");
   const cards = config.services;
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
@@ -85,23 +87,23 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
   }
   return (
     <PublicText>
-      <section className="company-about-hero jasa-hero">
+      <PublicSection section="opening"><section id="jasa-pembuka" className="company-about-hero jasa-hero">
         <RotatingHeroMedia className="company-about-background" images={config.serviceHeroImage ? [config.serviceHeroImage] : [laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
-        <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
-          <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
+        <div className="home-shell"><nav aria-label="Breadcrumb" data-cms-static><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
+          <p className="industrial-eyebrow" data-cms-static>LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Jasa Cutting Laser Bekasi &amp; Tambun<br /><em>plat, bending &amp; fabrikasi.</em></h1>
           <p>MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.</p>
-          <div className="home-actions"><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
-          <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
+          <div className="home-actions" data-cms-static><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
+          <small className="jasa-hero-caption" data-cms-static>Visual ilustrasi proses laser cutting.</small>
         </div>
-      </section>
+      </section></PublicSection>
       {children}
-      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
+      <PublicSection section="services"><section id="jasa-overview" className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
             const inner = <><div className="jasa-path-illustration">{path.image && <Image src={path.image} alt={path.alt || `Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" />}</div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.text}</p><strong>{path.ctaLabel || "Lihat pilihan"} <b aria-hidden="true">&#8599;</b></strong></div></>;
             if (path.href.startsWith("#")) return <a href={path.href || "/kontak"} key={path.title}>{inner}</a>;
             return <Link to={path.href || "/kontak"} key={path.title}>{inner}</Link>;
-          })}</div></div></section>
-      <section id="laser-cutting" className="business-section">
+          })}</div></div></section></PublicSection>
+      <PublicSection section="technical"><section id="laser-cutting" className="business-section">
         <div className="industrial-container">
           <div className="section-heading">
             <div>
@@ -109,7 +111,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
               <h2>Detail jasa laser cutting, bending, dan fabrikasi.</h2>
             </div>
           </div>
-          <div className="business-grid laser-scope-grid">
+          <div className="business-grid laser-scope-grid" data-cms-static>
             {cards.map((card, index) => (
               <article className="business-card laser-scope-card" data-reveal key={card.id}>
                 {card.image && <div className="laser-scope-media"><Image src={card.image} alt={card.alt || card.title} fill sizes="(max-width:650px) 90vw, 25vw" /><small>{card.alt}</small></div>}
@@ -124,12 +126,12 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           </div>
           <p className="verification-note">Tim mengecek jenis bahan, ukuran, ketebalan, dan kemampuan mesin sebelum memberikan harga serta jadwal pengerjaan.</p>
         </div>
-      </section>
+      </section></PublicSection>
       <ServiceAlbums projects={projects} />
-      <section className="laser-process">
+      <PublicSection section="process"><section id="jasa-proses" className="laser-process">
         <div className="industrial-container">
           <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
-          <div className="process-grid">
+          <div className="process-grid" data-cms-owned>
             {config.serviceWorkflow.map((step, index) => (
               <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
@@ -141,7 +143,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           </div>
           <p><strong>Kirim dalam format yang Anda punya.</strong> File DWG, DXF, PDF, foto, atau daftar kebutuhan juga bisa. Tim akan mengecek kebutuhan Anda sebelum memberikan penawaran.</p>
         </div>
-      </section>
+      </section></PublicSection>
       <section id="request" className="business-section">
         <div className="industrial-container request-grid">
           <div>
@@ -270,17 +272,17 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           </form>
         </div>
       </section>
-      <section className="laser-faq business-section">
+      <PublicSection section="faq"><section id="jasa-faq" className="laser-faq business-section">
         <div className="industrial-container">
           <h2>Pertanyaan laser cutting & bending.</h2>
-          {faqs.map((item) => (
+          <div {...sectionListAttributes("laserFAQs", managedFaqs)}>{managedFaqs.map((item) => (
             <details key={item.question}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
             </details>
-          ))}
+          ))}</div>
         </div>
-      </section>
+      </section></PublicSection>
     </PublicText>
   )
 }

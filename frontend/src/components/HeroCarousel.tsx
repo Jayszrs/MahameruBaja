@@ -4,6 +4,7 @@ import PublicText from "./PublicText";
 
 import Image from "./CmsImage";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { HeroSlide } from "../data/heroSlides";
 import HeroAnnouncementTicker from "./HeroAnnouncementTicker";
@@ -11,7 +12,11 @@ import HeroAnnouncementTicker from "./HeroAnnouncementTicker";
 const ROTATION_INTERVAL = 5000;
 
 export default function HeroCarousel({ slides: heroSlides, rating: googleRating, ratingDate: googleRatingObservedAt, mapsUrl: googleMapsUrl, companyName = "Mahameru Baja", area = "Bekasi / Jawa Barat", servicesLabel = "Retail • Trading • Production", ratingSourceName = "Mahameru Baja", serviceItems = ["Retail besi", "Supply proyek", "Laser cutting", "bending", "Fabrikasi"] }: { slides: HeroSlide[]; rating: number; ratingDate: string; mapsUrl: string; companyName?: string; area?: string; servicesLabel?: string; ratingSourceName?: string; serviceItems?: string[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const searchParams = useSearchParams();
+  const requestedSlideId = searchParams.get("heroSlide");
+  const requestedSlideIndex = requestedSlideId ? heroSlides.findIndex(slide => slide.id === requestedSlideId) : -1;
+  const directPreview = searchParams.get("cms-preview") === "1" && requestedSlideIndex >= 0;
+  const [activeIndex, setActiveIndex] = useState(directPreview ? requestedSlideIndex : 0);
   const [paused, setPaused] = useState(false);
   const [userPaused, setUserPaused] = useState(false);
   const [interacting, setInteracting] = useState(false);
@@ -62,13 +67,13 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   }, [activeIndex, paused, userPaused, interacting]);
 
   useEffect(() => {
-    if (paused || userPaused || interacting || nextIndex === activeIndex || activeSlide.type === "video" && !failed.has(activeIndex) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (directPreview || paused || userPaused || interacting || nextIndex === activeIndex || activeSlide.type === "video" && !failed.has(activeIndex) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setTimeout(() => {
       setPreviousIndex(activeIndex);
       setActiveIndex(nextIndex);
     }, ROTATION_INTERVAL);
     return () => window.clearTimeout(timer);
-  }, [activeIndex, nextIndex, paused, userPaused, interacting, activeSlide.type, failed]);
+  }, [activeIndex, nextIndex, paused, userPaused, interacting, activeSlide.type, failed, directPreview]);
 
   useEffect(() => {
     if (previousIndex === null) return;

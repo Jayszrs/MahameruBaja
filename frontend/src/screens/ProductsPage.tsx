@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import type { Product } from '../data/products';
 import ProductCard from '../components/ProductCard';
+import Image from 'next/image';
 
 import { resolvedInventoryProducts, type InventoryItem } from '../data/inventory';
 
@@ -36,7 +37,7 @@ const sortOptions = [
 
 const PAGE_SIZE = 12;
 
-export default function ProductsPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
+export default function ProductsPage({ inventory = [], heroImage = "" }: { inventory?: InventoryItem[]; heroImage?: string }) {
   const products = resolvedInventoryProducts(inventory);
   const editableCategories=useSectionList("productCategoryFilters",categoryFilters,"catalog");
   const categories = [...editableCategories, ...products.filter(product => !editableCategories.some(category => category.slug === product.categorySlug)).map(product => ({ slug: product.categorySlug, label: product.category }))].filter((category, index, rows) => rows.findIndex(row => row.slug === category.slug) === index);
@@ -188,6 +189,8 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
     <PublicText>
       {/* Hero */}
       <PublicSection section="opening"><section className="bg-graphite pt-4 pb-10 relative overflow-hidden" aria-labelledby="products-hero">
+        {heroImage && <Image src={heroImage} alt="" fill sizes="100vw" className="pointer-events-none object-cover opacity-40" />}
+        {heroImage && <div className="absolute inset-0 bg-graphite/50" aria-hidden="true" />}
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-4">
@@ -205,7 +208,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
           <p className="text-white/80 mt-2 text-sm max-w-2xl">
             Katalog Mahameru Baja untuk kebutuhan material di Tambun dan Cibitung. Pilih besi beton, hollow, pipa, plat, atau profil baja lalu konfirmasikan stok dan harga dengan admin toko.
           </p>
-          <p className="text-white/80 mt-2 text-sm">
+          <p data-cms-static className="text-white/80 mt-2 text-sm">
             {products.length} produk tersedia — besi beton, WF, hollow, pipa, plat, dan lebih.
           </p>
         </div>

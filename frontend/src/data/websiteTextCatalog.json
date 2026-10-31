@@ -1583,8 +1583,7 @@
     "area": "HomePage",
     "areas": [
       "HomePage",
-      "FooterDivisions",
-      "UnifiedHomeContent"
+      "FooterDivisions"
     ]
   },
   {
@@ -5182,7 +5181,7 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "Konsultasikan",
+    "source": "Konsultasikan ↗",
     "area": "UnifiedHomeContent"
   },
   {
@@ -5214,10 +5213,6 @@
     "area": "UnifiedHomeContent"
   },
   {
-    "source": "LIMA JALUR LAYANAN",
-    "area": "UnifiedHomeContent"
-  },
-  {
     "source": "Mahameru",
     "area": "UnifiedHomeContent"
   },
@@ -5243,10 +5238,6 @@
   },
   {
     "source": "Pilih kebutuhan",
-    "area": "UnifiedHomeContent"
-  },
-  {
-    "source": "Pilih material, suplai proyek, atau pekerjaan custom. Kami arahkan ke tim yang tepat.",
     "area": "UnifiedHomeContent"
   },
   {

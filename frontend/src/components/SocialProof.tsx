@@ -1,5 +1,5 @@
 "use client";
-import PublicText from "./PublicText";
+import PublicText, { PublicSection } from "./PublicText";
 
 import Image from "./CmsImage";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
@@ -134,7 +134,7 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
   if (published.length < 3) slides.push({ kind: "summary" }, { kind: "invite" });
   const copies = [0, 1, 2];
   const marquee = useMarquee(slides.length, 30);
-  return <PublicText><section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
+  return <PublicText><PublicSection section="reviews"><section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
     <div className="home-shell">
       <div className="home-section-heading proof-heading" data-reveal>
         <div><p className="home-eyebrow text-brand"><span />{includeImported ? "Cerita & kepercayaan" : `Ulasan pelanggan ${companyName}`}</p><h2 id="reviews-heading">{includeImported ? <>Setiap kebutuhan,<br /><em>punya ceritanya.</em></> : <>Pengalaman pelanggan.<br /><em>Langsung dari Google Maps.</em></>}</h2></div>
@@ -158,25 +158,25 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
       </article>))}
     </div></div>
     <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><span>{published.length} kutipan pelanggan</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
-  </section></PublicText>;
+  </section></PublicSection></PublicText>;
 }
 
 function Clients({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><section className="home-clients" data-static-motion id="klien" aria-labelledby="clients-heading">
+  return <PublicText><PublicSection section="partners"><section className="home-clients" data-static-motion id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
       <div className="proof-client-heading"><div><h2 id="clients-heading">Kepercayaan yang tumbuh<br /><em>melalui kerja sama.</em></h2><p className="partnership-intro">Perusahaan yang telah bekerja sama dengan Mahameru Baja Indonesia dalam memenuhi kebutuhan material dan pekerjaan proyek.</p></div></div>
       <LogoMarquee logos={logos} kind="client"/>
     </div>
-  </section></PublicText>;
+  </section></PublicSection></PublicText>;
 }
 
 function Suppliers({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><section className="home-suppliers" data-static-motion id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
+  return <PublicText><PublicSection section="suppliers"><section className="home-suppliers" data-static-motion id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
     <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Mahameru Baja bekerja dengan jaringan pemasok material baja dan produk turunannya untuk mendukung kebutuhan toko, fabrikasi, serta pengadaan proyek.</p></div>
     <LogoMarquee logos={logos} kind="supplier"/>
-  </div></section></PublicText>;
+  </div></section></PublicSection></PublicText>;
 }
 
 export default function SocialProof({ content, partnerLogos = [], companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: ReviewContent; partnerLogos?:PartnerLogo[]; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {

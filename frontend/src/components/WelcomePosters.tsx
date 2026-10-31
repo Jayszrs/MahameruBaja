@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -42,7 +42,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     setOpen(false); setIndex(0); setFocused(false); setReading(false); setExpanded(false);
   }, [path]);
   useEffect(() => {
-    if (preview || path.startsWith("/admin") || new URLSearchParams(window.location.search).has("cms-preview") || !signature || seen.current.has(sessionKey)) return;
+    if (preview || path.startsWith("/admin") || new URLSearchParams(window.location.search).has("cms-preview") || document.referrer.includes("/admin") || !signature || seen.current.has(sessionKey)) return;
     const timer = window.setTimeout(() => { if (!seen.current.has(sessionKey)) setOpen(true); }, 700);
     return () => window.clearTimeout(timer);
   }, [path, preview, signature, sessionKey]);
@@ -57,13 +57,14 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
   }, [open, path, sessionKey, Boolean(preview)]);
   const item = live[index % live.length];
   if (!item || !preview && path.startsWith("/admin")) return null;
-  const firstImage = (desktop ? live[0].imageDesktop : live[0].imageMobile) || live[0].image;
+  const posterImage = (promotion: Promotion) => promotion.image || (desktop ? promotion.imageDesktop : promotion.imageMobile) || promotion.imageDesktop || promotion.imageMobile || "";
+  const firstImage = posterImage(live[0]);
   const { props: firstPoster } = getImageProps({ src: firstImage, alt: "", fill: true, sizes: posterSizes,
     unoptimized: !firstImage.startsWith("/images/") && !isPublicBlobUrl(firstImage) });
   const close = () => { setOpen(false); onPreviewClose?.(); };
   const step = (by: number) => { setReading(false); setIndex(current => (current + by + live.length) % live.length); };
   const details = posterDetails(item, divisions, contacts);
-  const selectedImage = (desktop ? item.imageDesktop : item.imageMobile) || item.image;
+  const selectedImage = posterImage(item);
   const ratio = imageRatios[selectedImage] || 2 / 3;
   return <PublicText>{!preview && <><link rel="preload" as="image" href={firstPoster.src} imageSrcSet={firstPoster.srcSet} imageSizes={firstPoster.sizes} fetchPriority="high" /><button type="button" className="poster-promo-launcher" onClick={() => setOpen(true)} aria-haspopup="dialog" aria-expanded={open}>Promo & informasi<span>{live.length}</span></button></>}{open && <dialog className="poster-welcome poster-lightbox" ref={dialog} aria-labelledby="welcome-poster-heading"
     style={{ "--poster-ratio": ratio, "--poster-caption-space": expanded ? "72px" : "200px" } as CSSProperties}

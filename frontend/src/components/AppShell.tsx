@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { useDivisionDirectory } from "./DivisionDirectory";
 
 import { useEffect, useState, type ReactNode } from "react";
@@ -31,6 +31,14 @@ export default function AppShell({ children, inventory = [], appearance = [], co
   const articlePage = pathname.split("/").includes("informasi");
 
   useEffect(() => {
+    if (window.location.hash) {
+      const id = window.location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [pathname]);
 

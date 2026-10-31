@@ -12,7 +12,7 @@ import Image from "./CmsImage";
 import DivisionCardMediaFields from "./DivisionCardMediaFields";
 import { serviceDescription } from "../data/serviceDescriptions";
 type Draft = Omit<Division,"id"|"revision"|"createdAt"|"updatedAt"|"admins">;
-const blank = (): Draft => ({ useCentralReviews:false, slug:"",name:"",label:"",kind:"material",status:"active",area:"",logo:"",title:"",intro:"",description:"",mission:"",aboutHeadline:"",values:[],hero:"",routeMedia:null,images:[],offerings:[],offeringDescriptions:{},process:[],faq:[],address:"",mapsUrl:"",mapEmbed:"",primary:{label:"",href:""},quote:"" });
+const blank = (): Draft => ({ useCentralReviews:false, slug:"",name:"",label:"",kind:"material",status:"active",area:"",footerHref:"",logo:"",title:"",intro:"",description:"",mission:"",aboutHeadline:"",values:[],hero:"",routeMedia:null,images:[],offerings:[],offeringDescriptions:{},process:[],faq:[],address:"",mapsUrl:"",mapEmbed:"",primary:{label:"",href:""},quote:"" });
 const statusLabel = { draft:"Draf",active:"Aktif",archived:"Diarsipkan" };
 const profileSections = [
   { id:"identity", label:"Identitas", hint:"Nama & area layanan" },
@@ -34,9 +34,10 @@ const requiredProfileFields = [
   { key: "address", label: "alamat lengkap", tab: "contact" },
 ] as const;
 function draftOf(d:Division):Draft { const {id:_id,revision:_revision,createdAt:_createdAt,updatedAt:_updatedAt,admins:_admins,...draft}=d;return draft; }
-export default function DivisionEditor({ initialDivisions }: { initialDivisions:Division[] }) {
+export default function DivisionEditor({ initialDivisions, initialSlug, initialTab }: { initialDivisions:Division[]; initialSlug?:string; initialTab?:string }) {
   const actor=useAdminIdentity();const superAdmin=actor.role==="super_admin";const own=actor.division?initialDivisions.find(d=>d.slug===actor.division):undefined;
-  const [records,setRecords]=useState(initialDivisions);const [selected,setSelected]=useState<string|null>(own?.id||null);const [draft,setDraft]=useState<Draft>(()=>own?draftOf(own):blank());const [editing,setEditing]=useState(Boolean(own));const [query,setQuery]=useState("");const [filter,setFilter]=useState("all");const [tab,setTab]=useState("identity");const [dirty,setDirty]=useState(false);const [orderDirty,setOrderDirty]=useState(false);const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");const [failed,setFailed]=useState(false);const [action,setAction]=useState<"archive"|"delete"|null>(null);const [fields,setFields]=useState<Record<string,string[]>>({});
+  const initialRecord=own||initialDivisions.find(d=>d.slug===initialSlug);
+  const [records,setRecords]=useState(initialDivisions);const [selected,setSelected]=useState<string|null>(initialRecord?.id||null);const [draft,setDraft]=useState<Draft>(()=>initialRecord?draftOf(initialRecord):blank());const [editing,setEditing]=useState(Boolean(initialRecord));const [query,setQuery]=useState("");const [filter,setFilter]=useState("all");const [tab,setTab]=useState(initialTab&&profileSections.some(item=>item.id===initialTab)?initialTab:"identity");const [dirty,setDirty]=useState(false);const [orderDirty,setOrderDirty]=useState(false);const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");const [failed,setFailed]=useState(false);const [action,setAction]=useState<"archive"|"delete"|null>(null);const [fields,setFields]=useState<Record<string,string[]>>({});
   const current=records.find(d=>d.id===selected);
   function change(patch:Partial<Draft>) {setDraft(d=>({...d,...patch}));setDirty(true);setMessage("");setFields({});}
   async function select(record?:Division) {if(dirty&&!await workspace.confirmDiscard())return;setSelected(record?.id||null);setDraft(record?draftOf(record):blank());setDirty(false);setEditing(true);setMessage("");setFields({});setTab("identity");if(!record)focusEditorRecord("division-form");}

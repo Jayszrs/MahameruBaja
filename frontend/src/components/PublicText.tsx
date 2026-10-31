@@ -26,7 +26,7 @@ export function useSectionEdit() {
   return useCallback((kind:SectionEdit["kind"], source:string) => {
     if (!scope || path.startsWith("/admin")) return undefined;
     const slug = owner === undefined ? /^\/unit\/([^/]+)/.exec(path)?.[1] || null : owner;
-    return edits.find(row => row.published && row.section === scope.section && row.page === (scope.page || websitePage(path)) && contentOwner(row) === slug && row.kind === kind && (kind === "text" ? normalizeWebsiteText(row.source) === normalizeWebsiteText(source) : row.source === source))?.replacement;
+    return [...edits].reverse().find(row => row.published && row.section === scope.section && row.page === (scope.page || websitePage(path)) && contentOwner(row) === slug && row.kind === kind && (kind === "text" ? normalizeWebsiteText(row.source) === normalizeWebsiteText(source) : row.source === source))?.replacement;
   }, [edits, scope, owner, path]);
 }
 export function useSectionList<T extends object>(key:string, fallback:T[], section?:string, page?:TextPage):T[] {

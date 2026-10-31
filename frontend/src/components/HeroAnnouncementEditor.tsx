@@ -28,7 +28,7 @@ export default function HeroAnnouncementEditor({ content, onChange }: { content:
     <button type="button" className="admin-secondary" disabled={messages.length>=12} onClick={()=>{update({messages:["",...messages]});focusEditorRecord("announcement-messages");}}>+ Tambah tulisan</button>
     <ol className="announcement-editor-list" id="announcement-messages">{messages.map((message,index)=><li key={index}><label className="editor-field">Informasi {index+1}<input name={`announcement-${index}`} maxLength={160} value={message} onChange={event=>update({messages:messages.map((text,n)=>n===index?event.target.value:text)})}/></label><button type="button" className="admin-secondary" aria-label={`Hapus informasi ${index+1}`} onClick={()=>update({messages:messages.filter((_,n)=>n!==index)})}>Hapus</button></li>)}</ol>
 
-    <p className="admin-field-help">Maksimal 12 informasi, 160 karakter per informasi. Isi atau hapus setiap baris kosong, lalu klik Simpan hero.</p>
+    <p className="admin-field-help">Maksimal 12 informasi, 160 karakter per informasi. Isi atau hapus setiap baris kosong, lalu klik Simpan section.</p>
     <AdminOrderList label="Urutan informasi" items={messages.map((text,index)=>({id:String(index),title:text || "Informasi baru"}))} onMove={(from,to)=>update({messages:moveBefore(messages.map((text,index)=>({id:String(index),text})),from,to).map(row=>row.text)})}/>
     <h3>Pratinjau strip</h3><HeroAnnouncementTicker messages={messages}/>
   </section>;

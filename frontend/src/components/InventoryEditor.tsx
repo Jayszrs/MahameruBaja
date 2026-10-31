@@ -8,7 +8,7 @@ import { useAdminWorkspace } from "./AdminWorkspace";
 import AdminDialog from "./AdminDialog";
 import AdminOrderList, { focusEditorRecord, moveBefore } from "./AdminOrderList";
 
-export default function InventoryEditor({ initialItems, division }: { initialItems: InventoryItem[]; division: string | null }) {
+export default function InventoryEditor({ initialItems, division, hideActions = false }: { initialItems: InventoryItem[]; division: string | null; hideActions?: boolean }) {
   const { divisions, inventoryDivisionName } = useDivisionDirectory();
   const [items, setItems] = useState(initialItems);
   const base = useRef(initialItems);
@@ -67,7 +67,7 @@ export default function InventoryEditor({ initialItems, division }: { initialIte
     } catch (error) { setFailed(true); setMessage((error as Error).message); }
     finally { setSaving(false); }
   }
-  const workspace = useAdminWorkspace({ dirty, busy, label: 'Simpan produk & stok', disabled: !dirty, onSave: save });
+  const workspace = useAdminWorkspace({ dirty, busy, label: hideActions ? 'Simpan section' : 'Simpan produk & stok', disabled: !dirty, onSave: save });
   const shown = items.filter(item => item.division === scope && (!query || `${allProducts.find(product => product.id === item.productId)?.name || ''} ${item.product?.sku || ''}`.toLowerCase().includes(query.toLowerCase())));
   function reorder(from: string, to: string) {
     setItems(rows => {
@@ -107,7 +107,7 @@ export default function InventoryEditor({ initialItems, division }: { initialIte
       })}
       <datalist id="product-categories">{[...new Set(allProducts.map(product => product.category).filter(Boolean))].map(category => <option key={category} value={category} />)}</datalist>
       {!shown.length && <div className="editor-empty"><h2>{query ? 'Produk tidak ditemukan' : 'Belum ada produk di divisi ini'}</h2><p>{query ? 'Coba nama produk lain atau kosongkan pencarian.' : 'Gunakan Tambah produk baru untuk membuat produk pertama.'}</p></div>}
-      <div className="admin-form-actions"><p>{dirty ? 'Simpan agar perubahan langsung tampil di website.' : 'Semua perubahan tersimpan.'}</p><button type="button" className="admin-primary" disabled={!dirty} onClick={() => void save()}>Simpan produk & stok</button></div>
+      {!hideActions && <div className="admin-form-actions"><p>{dirty ? 'Simpan agar perubahan langsung tampil di website.' : 'Semua perubahan tersimpan.'}</p><button type="button" className="admin-primary" disabled={!dirty} onClick={() => void save()}>Simpan produk & stok</button></div>}
     </fieldset>
     {deleteKey && <AdminDialog title="Hapus produk dari divisi?" onClose={() => setDeleteKey(null)}><p>Produk dan catatan stok akan dihapus dari katalog divisi setelah perubahan disimpan.</p><div className="admin-dialog-actions"><button type="button" className="admin-secondary" onClick={() => setDeleteKey(null)}>Batal</button><button type="button" className="admin-danger" onClick={() => { setItems(rows => rows.filter(row => inventoryKey(row) !== deleteKey)); setDirty(true); setMessage(''); setDeleteKey(null); }}>Hapus dari divisi</button></div></AdminDialog>}
   </div>;

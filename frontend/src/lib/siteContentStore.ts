@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 import type { AdminIdentity } from "../data/adminAccount";
 import { normalizeOwnership, mergeScopedContent, scopeContent, collectionKeys, publicOwned } from "./contentScope";
 import { readDivisions } from "./divisionStore";
@@ -13,7 +13,7 @@ import { mergeInventory } from "../data/inventory";
 import { verifiedInstagramPosts, verifiedYouTubePosts, verifiedGarudaYouTubePosts, defaultSocialAccounts } from "../data/socialMedia";
 import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 import { cache } from "react";
-import { cachedPublicCms } from "./publicCmsCache";
+import { cachedPublicCms, invalidatePublicCms } from "./publicCmsCache";
 import { publicServiceWording } from "../data/serviceWording";
 import { referenceAlbums } from "../data/referenceAlbums";
 import { defaultAppearance } from "../data/websiteAppearance";
@@ -36,7 +36,7 @@ function legacyIdentity(content: SiteContent): SiteContent {
     const missing = referenceAlbums.filter(row => !ids.has(row.id));
     content = { ...content, referenceAlbumVersion: 1,
       galleryProjects: [...content.galleryProjects, ...missing].slice(0, 80),
-      websiteAppearance: content.websiteAppearance.map(row => ({ ...row, memberships: row.memberships.map(item => item.id === "api" && item.title === "Member of API" && !item.image ? { ...item, title: "Member of APPI", text: "Asosiasi Pengusaha Pengelasan Indonesia", image: "/images/partners/appi.webp", alt: "Logo APPI — Asosiasi Pengusaha Pengelasan Indonesia" } : item) })),
+      websiteAppearance: content.websiteAppearance.map(row => ({ ...row, memberships: row.memberships.map(item => item.id === "api" && item.title === "Member of API" && !item.image ? { ...item, title: "Member of APPI", text: "Asosiasi Pengusaha Pengelasan Indonesia", image: "/images/partners/appi.webp", alt: "Logo APPI - Asosiasi Pengusaha Pengelasan Indonesia" } : item) })),
     };
   }
   if (content.clientPosterVersion < 1) {
@@ -96,7 +96,36 @@ function mergeContent(current: SiteContent, input: SiteContent, base?: SiteConte
   }
   return { ...merged, revision: current.revision + 1 };
 }
-function updatedIdentity(content: SiteContent) { return siteContentSchema.parse(normalizeOwnership(legacyIdentity(content))); }
+function deduplicateCollections(content: SiteContent): SiteContent {
+  const seenEdits = new Set<string>();
+  const sectionEdits = content.sectionEdits.slice().reverse().filter(item => {
+    const key = `${item.page}:${item.section}:${item.ownerDivision || 'null'}:${item.kind}:${item.source.trim().replace(/\s+/g, ' ')}`;
+    if (seenEdits.has(key)) return false;
+    seenEdits.add(key);
+    return true;
+  }).reverse();
+
+  const seenLists = new Set<string>();
+  const sectionLists = content.sectionLists.slice().reverse().filter(item => {
+    const key = `${item.page}:${item.section}:${item.ownerDivision || 'null'}:${item.key}`;
+    if (seenLists.has(key)) return false;
+    seenLists.add(key);
+    return true;
+  }).reverse();
+
+  const seenTexts = new Set<string>();
+  const websiteTexts = (content.websiteTexts || []).slice().reverse().filter(item => {
+    const key = `${item.page}:${item.ownerDivision || 'null'}:${item.source.trim().replace(/\s+/g, ' ')}`;
+    if (seenTexts.has(key)) return false;
+    seenTexts.add(key);
+    return true;
+  }).reverse();
+
+  return { ...content, sectionEdits, sectionLists, websiteTexts };
+}
+
+function updatedIdentity(content: SiteContent) {
+  content = deduplicateCollections(content); return siteContentSchema.parse(normalizeOwnership(legacyIdentity(content))); }
 export async function readSiteContent(): Promise<SiteContent> {
   if (usingPreviewBlob()) return updatedIdentity((await readPreviewBlob("site-content", siteContentSchema, defaultSiteContent)).value);
   try { return updatedIdentity(siteContentSchema.parse(JSON.parse(await readFile(file, "utf8")))); }
@@ -126,6 +155,7 @@ export async function writeSiteContent(input: SiteContent, base?: SiteContent, a
     const existing = updatedIdentity(current.value);
     const saved = siteContentSchema.parse(actor ? { ...await mergeScopedContent(existing, input, base, actor), revision: existing.revision + 1 } : mergeContent(existing, input, base));
     if (!await writePreviewBlob("site-content", current, saved)) throw new Error("CMS_CONFLICT");
+    invalidatePublicCms("site-content");
     return actor ? scopeContent(saved, actor) : saved;
   }
   return withCmsFileLock(file, async () => {
@@ -135,6 +165,7 @@ export async function writeSiteContent(input: SiteContent, base?: SiteContent, a
       const saved = siteContentSchema.parse(actor ? { ...await mergeScopedContent(current, input, base, actor), revision: current.revision + 1 } : mergeContent(current, input, base));
       await writeFile(temp, JSON.stringify(saved, null, 2), "utf8");
       await replaceCmsFile(temp, file);
+      invalidatePublicCms("site-content");
       return actor ? scopeContent(saved, actor) : saved;
     } finally { await unlink(temp).catch(() => {}); }
   });

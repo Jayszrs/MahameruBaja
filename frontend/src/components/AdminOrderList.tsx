@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 
 type OrderItem = { id: string; title: string; detail?: string; image?: string };
 export function moveBefore<T extends { id: string }>(items: T[], fromId: string, toId: string): T[] {
@@ -10,9 +10,9 @@ export function moveBefore<T extends { id: string }>(items: T[], fromId: string,
 export function focusEditorRecord(id: string) {
   requestAnimationFrame(() => {
     const record = document.getElementById(id);
-    if (record instanceof HTMLDetailsElement) record.open = true;
+    if (record instanceof HTMLDetailsElement) record.open = !record.open;
     record?.scrollIntoView({ block: "start", behavior: "instant" });
-    record?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
+    if (!(record instanceof HTMLDetailsElement) || record.open) record?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
   });
 }
 export default function AdminOrderList({ items, label, onMove, onSelect, selected, disabled, children }: {
@@ -22,6 +22,30 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
   const listId = useId();
   const [drag, setDrag] = useState<{ from: string; to: string; x: number; y: number; left: number; top: number; width: number; height: number; offsetX: number; offsetY: number } | null>(null);
   const [notice, setNotice] = useState("");
+  const [openDetails, setOpenDetails] = useState<string | null>(null);
+  const itemIds = items.map(item => item.id).join("|");
+  function disclosureFor(id: string) {
+    return Array.from(document.querySelectorAll<HTMLDetailsElement>("details[id]")).find(node => node.id === id || node.id.endsWith(`-${id}`)) || null;
+  }
+  useEffect(() => {
+    const disclosures = items.map(item => ({ id: item.id, node: disclosureFor(item.id) })).filter((entry): entry is { id: string; node: HTMLDetailsElement } => Boolean(entry.node));
+    const listeners = disclosures.map(({ id, node }) => {
+      const handle = () => setOpenDetails(current => node.open ? id : current === id ? null : current);
+      node.addEventListener("toggle", handle);
+      return () => node.removeEventListener("toggle", handle);
+    });
+    return () => listeners.forEach(remove => remove());
+  }, [itemIds]);
+  function selectItem(id: string) {
+    const disclosure = disclosureFor(id);
+    if (!disclosure) { onSelect?.(id); return; }
+    disclosure.open = !disclosure.open;
+    setOpenDetails(disclosure.open ? id : null);
+    if (disclosure.open) {
+      disclosure.scrollIntoView({ block: "start", behavior: "instant" });
+      disclosure.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
+    }
+  }
   function move(from: string, to: string) {
     if (disabled || from === to) return;
     onMove(from, to);
@@ -45,7 +69,7 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
       </button>
       <span className="admin-order-number">{index + 1}</span>
       {item.image && <img src={item.image} alt="" className="admin-order-thumbnail"/>}
-      {onSelect ? <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id} aria-label={`Buka rincian ${item.title}`} onClick={() => onSelect(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}<span className="admin-order-open" aria-hidden="true">Buka rincian ↗</span></button> : <div className="admin-order-copy"><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}</div>}
+      {onSelect ? <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id || openDetails === item.id} aria-expanded={openDetails === item.id} aria-label={`${openDetails === item.id ? "Tutup" : "Buka"} rincian ${item.title}`} onClick={() => selectItem(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}<span className="admin-order-open">{openDetails === item.id ? "Tutup rincian" : "Buka rincian"} {openDetails === item.id ? "⌃" : "↗"}</span></button> : <div className="admin-order-copy"><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}</div>}
     </div></div>;})}</div><p className="admin-order-status" role="status" aria-live="polite">{notice}</p>
   </section>;
 }

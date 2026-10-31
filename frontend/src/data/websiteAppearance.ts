@@ -11,6 +11,7 @@ export const websiteAppearanceSchema = z.object({
   ...ownershipFields, id: z.string().min(1).max(100), published: z.boolean(),
   featureImage: image, calloutImage: image,
   brandLogo:image.default(""),footerImage:image.default(""),aboutHeroImage:image.default(""),
+  productHeroImage:image.default(""),
   serviceHeroImage:image.default(""),
   servicePaths:z.array(item).max(16).default(defaultServicePaths),
   serviceWorkflow:z.array(item).max(12).default(defaultServiceWorkflow),
@@ -35,7 +36,7 @@ export function defaultAppearance(owner: string | null = null): WebsiteAppearanc
   return {
     id: `appearance-${owner || "main"}`, ownerDivision: owner, published: true,
     featureImage: "", calloutImage: "",
-    brandLogo:"",footerImage:"",aboutHeroImage:"",
+    brandLogo:"",footerImage:"",aboutHeroImage:"",productHeroImage:"",
     serviceHeroImage:"", servicePaths:structuredClone(defaultServicePaths), serviceWorkflow:structuredClone(defaultServiceWorkflow),
     hiddenHomeSections:[],hiddenServiceSections:[],
     orderSteps: [

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { uploadCmsFile } from "../lib/cmsUpload";
 
 import AdminOrderList, { focusEditorRecord, moveBefore } from "./AdminOrderList";
@@ -143,7 +143,7 @@ export default function ArticleEditor({ initialArticles }: { initialArticles: Ar
   return <div className="content-editor article-editor">
     <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><Image src={mainLogo} alt="MBI Laser Cutting" width={64} height={58} sizes="64px" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link>
       <p>WEBSITE</p><Link className="editor-sidebar-link" href="/admin/konten">01 · Kontak & ulasan</Link><Link className="editor-sidebar-link" href="/admin/sosial">02 · Sosial media</Link><Link className="editor-sidebar-link" href="/admin/promosi">03 · Banner & promo</Link><span className="editor-sidebar-link active">04 · Artikel</span><Link className="editor-sidebar-link" href="/admin/permintaan">05 · Permintaan pelanggan ↗</Link>
-      <div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/informasi" target="_blank" rel="noopener noreferrer">Lihat artikel di website ↗</a><form action="/api/admin/logout" method="post" onSubmit={event => { if (dirty && !window.confirm("Perubahan belum disimpan. Keluar?")) event.preventDefault(); }}><button type="submit">Keluar</button></form></div>
+      <div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/informasi?cms-preview=1" target="_blank" rel="noopener noreferrer">Lihat artikel di website ↗</a><form action="/api/admin/logout" method="post" onSubmit={event => { if (dirty && !window.confirm("Perubahan belum disimpan. Keluar?")) event.preventDefault(); }}><button type="submit">Keluar</button></form></div>
     </aside>
     <main className="editor-main"><header className="editor-topbar"><span>Workspace / Artikel</span><div><span className={`editor-save-state ${dirty || orderDirty ? "is-dirty" : ""}`}>{uploading ? "Mengunggah gambar…" : dirty || orderDirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span><button type="button" className="editor-save" disabled={busy || (!dirty && !orderDirty && Boolean(current))} onClick={() => save()}>{saving ? "Menyimpan…" : "Simpan artikel"}</button></div></header>
       <div className="editor-content"><div className="editor-title"><h1>Artikel & panduan</h1><p>Tulis panduan, unggah gambar, lalu periksa pratinjau. Artikel langsung tampil di website setelah disimpan.</p></div>

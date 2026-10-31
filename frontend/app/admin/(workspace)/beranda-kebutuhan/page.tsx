@@ -1,4 +1,5 @@
-import HomeQuickLinksEditor from "../../../../src/components/HomeQuickLinksEditor";
-import { readAdminContent } from "../../../../src/lib/adminWorkspaceData";
-export const metadata = { title: "Pilihan kebutuhan beranda | CMS" };
-export default async function Page() { return <HomeQuickLinksEditor initialContent={await readAdminContent()} />; }
+import { redirect } from "next/navigation";
+
+export default function Page() {
+  redirect("/admin/website/beranda?section=needs");
+}
