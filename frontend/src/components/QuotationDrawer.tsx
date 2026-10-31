@@ -118,7 +118,7 @@ export default function QuotationDrawer() {
         {/* Footer */}
         {items.length > 0 && (
           <div className="border-t border-light-steel p-4 space-y-2 bg-warm-white">
-            <Link to="/minta-penawaran" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 w-full py-3 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-colors">Buat PDF & lanjut WhatsApp</Link>
+            <Link to="/minta-penawaran?sumber=produk" onClick={() => setOpen(false)} className="flex items-center justify-center gap-2 w-full py-3 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-xl transition-colors">Buat PDF & lanjut WhatsApp</Link>
             <p className="text-xs text-steel-grey">Lengkapi kontak. PDF dibuat otomatis dari daftar material Anda.</p>
             <button
               onClick={clearItems}

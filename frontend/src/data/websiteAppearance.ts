@@ -42,7 +42,7 @@ export function defaultAppearance(owner: string | null = null): WebsiteAppearanc
       entry("upvc", "Saya ingin tanya atap UPVC Atlas", "", "", "/produk?kategori=atap-upvc"),
     ],
     quotes: [entry("mahameru", "Satu Mahameru, satu solusi.", "Mahameru Baja Indonesia")],
-    memberships: [entry("issc", "Member of ISSC", "Indonesian Society of Steel Construction", "/images/partners/issc.webp"), entry("api", "Member of API")],
+    memberships: [entry("issc", "Member of ISSC", "Indonesian Society of Steel Construction", "/images/partners/issc.webp"), entry("api", "Member of APPI", "Asosiasi Pengusaha Pengelasan Indonesia", "/images/partners/appi.webp", "", "Logo APPI — Asosiasi Pengusaha Pengelasan Indonesia")],
     services: [
       entry("laser", "Laser cutting plat & custom", "Potong plat sesuai gambar kerja untuk ornamen, panel, dan komponen custom.", "/images/laser-cutting-illustration.jpg", "/jasa#request", "Ilustrasi laser cutting plat"),
       entry("bending", "Bending & tekuk plat", "Tekuk plat sesuai ukuran dan sudut pada gambar kerja.", "/images/cnc-bending-visual-v1.png", "/jasa#request", "Ilustrasi proses bending"),

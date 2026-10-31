@@ -41,5 +41,5 @@ export async function createLead(input: CreateLeadInput, photos: File[] = []) {
   if (!response.ok) {
     throw new Error(result?.message ?? "Permintaan belum dapat disimpan. Silakan coba kembali.");
   }
-  return result.data as { id: string; status: string; photoCount?: number };
+  return result.data as { id: string; status: string; photoCount?: number; pdfUrl?: string };
 }

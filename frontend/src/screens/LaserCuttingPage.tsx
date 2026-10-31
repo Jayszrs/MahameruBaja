@@ -17,6 +17,8 @@ import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
+const serviceIllustrations = ["laser-bending", "material-sales", "material-consultation", "project-supply", "material-delivery", "renovation-workshop", "contractor-supply"];
+
 const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
   { title: "Kirim gambar & kebutuhan", desc: "Kirim gambar kerja, foto, atau daftar barang yang Anda punya. Tidak harus rapi.", icon: "drawing" },
   { title: "Terima penawaran", desc: "Tim mengecek kebutuhan Anda, lalu mengirim harga dan perkiraan waktu pengerjaan.", icon: "quote" },
@@ -26,13 +28,13 @@ const workflowSteps: { title: string; desc: string; icon: IconName }[] = [
 ]
 
 const servicePaths: { title: string; detail: string; href: string; action: string; external?: boolean }[] = [
-  { title: "Laser Cutting & Bending", detail: "Potong dan tekuk plat sesuai gambar Anda. Kirim desain, ukuran, bahan, dan jumlah agar tim bisa mengecek pengerjaan serta menyiapkan harga.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
-  { title: "Penjualan Material", detail: "Cari besi beton, hollow, pipa, plat, dan material bangunan lainnya. Tanyakan ukuran, stok, dan harga terbaru langsung kepada tim toko.", href: "/produk", action: "Cari material" },
-  { title: "Bantu Pilih Material", detail: "Masih bingung memilih besi? Ceritakan rencana pekerjaan Anda. Tim membantu mengecek pilihan jenis, ukuran, dan jumlah yang dibutuhkan.", href: "/kontak", action: "Tanya tim toko" },
-  { title: "Material untuk Proyek", detail: "Kirim daftar material, jumlah, lokasi, dan rencana pengiriman. Tim MBI Trading membantu menyiapkan penawaran untuk kebutuhan proyek Anda.", href: "/unit/trading-proyek", action: "Hubungi MBI Trading" },
-  { title: "Pengiriman Material", detail: "Tanyakan pengiriman ke lokasi Anda di Bekasi dan sekitarnya. Biaya, jangkauan, dan jadwal disepakati bersama admin sesuai pesanan.", href: "/minta-penawaran", action: "Tanya pengiriman" },
-  { title: "Belanja untuk Renovasi & Bengkel", detail: "Lengkapi kebutuhan rumah, renovasi, dan bengkel lewat toko Mahameru Baja. Konfirmasikan pilihan material dan jumlah yang ingin dibeli.", href: "/unit/retail-tambun", action: "Lihat toko" },
-  { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Butuh material secara rutin atau dalam jumlah besar? Diskusikan daftar kebutuhan, dokumen pemesanan, dan rencana pengiriman dengan tim kami.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
+  { title: "Laser Cutting & Bending", detail: "Potong dan tekuk plat sesuai desain, bahan, dan ukuran Anda.", href: "#laser-cutting", action: "Lihat jasa potong & tekuk" },
+  { title: "Penjualan Material", detail: "Besi beton, hollow, pipa, plat, dan profil baja untuk kebutuhan Anda.", href: "/produk", action: "Cari material" },
+  { title: "Bantu Pilih Material", detail: "Bahas pilihan jenis, ukuran, dan jumlah material bersama tim.", href: "/kontak", action: "Tanya tim toko" },
+  { title: "Material untuk Proyek", detail: "Pengadaan WF, plat, dan material sesuai daftar serta jadwal proyek.", href: "/unit/trading-proyek", action: "Diskusikan suplai proyek" },
+  { title: "Pengiriman Material", detail: "Atur pengiriman ke lokasi sesuai pesanan dan jadwal yang disepakati.", href: "/minta-penawaran", action: "Tanya pengiriman" },
+  { title: "Belanja untuk Renovasi & Bengkel", detail: "Lengkapi material untuk rumah, renovasi, dan bengkel melalui tim toko.", href: "/unit/retail-tambun", action: "Lihat toko" },
+  { title: "Kebutuhan Kontraktor & Perusahaan", detail: "Diskusikan suplai berkala atau pengadaan besar untuk perusahaan Anda.", href: "/unit/trading-proyek", action: "Tanyakan kebutuhan perusahaan" },
 ]
 
 export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
@@ -45,6 +47,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
   const [submitError, setSubmitError] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [leadId, setLeadId] = useState("")
+  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
   const [divisionSlug, setDivisionSlug] = useState(divisions.find(d=>d.slug === "laser-cutting")?.slug || divisions[0]?.slug || "")
   const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -87,6 +90,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
         },
       }
       const result = await createLead(input)
+      setPdfUrl(result.pdfUrl);
       setRequestInput(input)
       setLeadId(result.id)
       setMessage(
@@ -112,7 +116,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
       </section>
       {children}
       <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{servicePaths.map((path, index) => {
-            const inner = <><span>0{index + 1}</span><div><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action}</strong></div></>;
+            const inner = <><div className="jasa-path-illustration"><Image src={`/images/services/${serviceIllustrations[index]}.svg`} alt={`Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" /></div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.detail}</p><strong>{path.action} <b aria-hidden="true">&#8599;</b></strong></div></>;
             if (path.external) return <a href={path.href} key={path.title} target="_blank" rel="noreferrer">{inner}</a>;
             if (path.href.startsWith("#")) return <a href={path.href} key={path.title}>{inner}</a>;
             return <Link to={path.href} key={path.title}>{inner}</Link>;
@@ -281,7 +285,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
             <button className="industrial-button form-full" type="submit" disabled={submitting}>
               {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
             </button>
-            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} /></div>}
+            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} pdfUrl={pdfUrl} /></div>}
 
           </form>
         </div>

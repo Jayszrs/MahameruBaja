@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import type { CreateLeadInput } from "../lib/api";
 
-export default function RequestHandoff({ input, id, phone = "", attachment }: { input: CreateLeadInput; id: string; phone?: string; attachment?: File | null }) {
+export default function RequestHandoff({ input, id, phone = "", attachment, pdfUrl }: { input: CreateLeadInput; id: string; phone?: string; attachment?: File | null; pdfUrl?: string }) {
   const { divisionWhatsApp, divisions } = useDivisionDirectory();
   const [file, setFile] = useState<File | null>(null);
   const [url, setUrl] = useState("");
@@ -35,7 +35,7 @@ export default function RequestHandoff({ input, id, phone = "", attachment }: { 
   phone ||= divisionWhatsApp(input.businessUnitSlug || "laser-cutting").split("/").at(-1)!;
   const details = input.items?.map(item => `- ${item.productName}: ${item.quantity ?? "konfirmasi"} ${item.unit || ""}`).join("\n") || input.request || "Mohon tindak lanjut penawaran.";
   const baseMessage = `Halo Mahameru Baja, saya ${input.name}. Nomor permintaan saya ${id}.\nDivisi: ${divisions.find(d=>d.slug===input.businessUnitSlug)?.name || input.businessUnitSlug || "Mahameru Baja"}\n${details}`;
-  const message = `${baseMessage}\nSaya akan melampirkan PDF ringkasan kebutuhan. Mohon review spesifikasi, harga, dan jadwal.`;
+  const message = pdfUrl ? `${baseMessage}\nPDF daftar kebutuhan (berlaku 7 hari): ${pdfUrl}\nMohon review spesifikasi, harga, dan jadwal.` : `${baseMessage}\nSaya akan melampirkan PDF ringkasan kebutuhan. Mohon review spesifikasi, harga, dan jadwal.`;
   const fallbackMessage = `${baseMessage}\nPDF ringkasan belum tersedia. Mohon tindak lanjut kebutuhan saya.`;
 
   function download() {
@@ -57,14 +57,14 @@ export default function RequestHandoff({ input, id, phone = "", attachment }: { 
 
   return <PublicText><section className="request-handoff" aria-label="PDF dan WhatsApp">
     <div className="request-document-icon" aria-hidden="true">PDF</div>
-    <div className="request-handoff-copy"><p className="industrial-eyebrow">PERMINTAAN / {id}</p><h3>Dokumen siap untuk tim.</h3><p role="status">{file ? `${file.name} sudah dibuat.` : error ? "Pembuatan PDF perlu diulang." : "Menyiapkan PDF secara otomatis..."}</p><small>Dokumen ini merangkum kebutuhan Anda. Harga dan jadwal dikonfirmasi oleh tim.</small></div>
+    <div className="request-handoff-copy"><p className="industrial-eyebrow">PERMINTAAN / {id}</p><h3>Dokumen siap untuk tim.</h3><p role="status">{pdfUrl ? "PDF daftar kebutuhan sudah siap dikirim melalui tautan." : file ? `${file.name} sudah dibuat.` : error ? "Pembuatan PDF perlu diulang." : "Menyiapkan PDF secara otomatis..."}</p><small>Dokumen ini merangkum kebutuhan Anda. Harga dan jadwal dikonfirmasi oleh tim.</small></div>
     <div className="request-handoff-actions">
       {canShare && <button type="button" disabled={sharing || !file} onClick={share}>{sharing ? "Membuka menu berbagi..." : attachment ? "Bagikan PDF & desain ke WhatsApp" : "Bagikan PDF dari perangkat"}</button>}
-      {file ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" onClick={download}>Unduh PDF & buka WhatsApp ↗</a> : error ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(fallbackMessage)}`} target="_blank" rel="noopener noreferrer">Chat WhatsApp tanpa PDF ↗</a> : <button type="button" disabled>Menyiapkan PDF...</button>}
+      {pdfUrl ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer">Kirim daftar & PDF ke WhatsApp ↗</a> : file ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer" onClick={download}>Unduh PDF & buka WhatsApp ↗</a> : error ? <a href={`https://wa.me/${phone}?text=${encodeURIComponent(fallbackMessage)}`} target="_blank" rel="noopener noreferrer">Chat WhatsApp tanpa PDF ↗</a> : <button type="button" disabled>Menyiapkan PDF...</button>}
       {url && <a href={url} download={file!.name} className="handoff-secondary">Unduh PDF saja</a>}
       {error && <button type="button" className="handoff-secondary" onClick={() => setRetry(value => value + 1)}>Coba buat PDF lagi</button>}
     </div>
     {attachment && <p className="handoff-note">Desain dipilih: <strong>{attachment.name}</strong>. Berkas disimpan sementara di halaman ini. {canShare ? "Pilih WhatsApp untuk membagikan PDF dan desain bersamaan." : "Lampirkan berkas desain asli sebagai Dokumen saat WhatsApp terbuka."}</p>}
-    <p className="handoff-note">{canShare ? "Pilih WhatsApp pada menu berbagi untuk mengirim berkas secara langsung." : "Setelah WhatsApp terbuka, pilih lampiran Dokumen dan sertakan PDF yang sudah diunduh."} Pesan dan berkas baru terkirim setelah Anda menekan Kirim.</p>
+    <p className="handoff-note">{pdfUrl ? "Tautan PDF otomatis tercantum dalam pesan WhatsApp dan berlaku 7 hari. Anda tidak perlu memilih file. Tekan Kirim di WhatsApp untuk mengirimkan pesan." : <>{canShare ? "Pilih WhatsApp pada menu berbagi untuk mengirim berkas secara langsung." : "Setelah WhatsApp terbuka, pilih lampiran Dokumen dan sertakan PDF yang sudah diunduh."} Pesan dan berkas baru terkirim setelah Anda menekan Kirim.</>}</p>
   </section></PublicText>;
 }

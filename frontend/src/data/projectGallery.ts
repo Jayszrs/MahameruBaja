@@ -1,6 +1,7 @@
 import { divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
-import { isPublicBlobUrl, safeLocalAsset } from "./safeUrls";
+import { isPublicBlobUrl, safeLocalAsset, safeHttpsUrl } from "./safeUrls";
+import { referenceAlbums } from "./referenceAlbums";
 
 const asset = z.string().trim().max(1000).refine(value => {
   if (safeLocalAsset(value, ["images", "media", "api/cms/media"]) && /\.(?:jpg|jpeg|png|webp)$/i.test(value)) return true;
@@ -10,6 +11,8 @@ const photoSchema = z.object({ id: z.string().trim().min(1).max(100), src: asset
 export const galleryProjectSchema = z.object({ ...ownershipFields,
   id: z.string().trim().min(1).max(100), title: z.string().trim().min(1).max(160),
   kind: z.enum(["portfolio", "design", "activity"]).optional(),
+  sourceName: z.string().trim().max(160).optional(),
+  sourceUrl: z.string().trim().max(1000).refine(value => !value || safeHttpsUrl(value), "Gunakan URL sumber HTTPS.").optional(),
   category: z.string().trim().min(1).max(80),
   division: divisionSlugSchema,
   description: z.string().trim().max(2000), location: z.string().trim().max(160), year: z.string().trim().max(30),
@@ -38,7 +41,7 @@ const sourceAlbums = [
   ["jembatan-ajibata", "Beautifikasi Jembatan Ajibata", "Infrastruktur", 10, "Toba – Samosir"],
   ["jembatan-tanjung-lesung", "Jembatan Pelengkung Tanjung Lesung", "Infrastruktur", 9, "Tanjung Lesung, Banten"],
 ] as const;
-export const defaultGalleryProjects: GalleryProject[] = sourceAlbums.map(([id, title, category, count, location]) => ({
+const documentedProjects: GalleryProject[] = sourceAlbums.map(([id, title, category, count, location]) => ({
   id, title, category, division: "fabrikasi-erection", description: `Dokumentasi pekerjaan ${title.toLowerCase()} dari pengalaman proyek Mahameru Baja Indonesia. Jelajahi foto untuk melihat material, proses pengerjaan, dan detail di lapangan.`,
   location, year: "", published: true, coverId: `${id}-01`,
   photos: Array.from({ length: count }, (_, index) => {
@@ -47,3 +50,4 @@ export const defaultGalleryProjects: GalleryProject[] = sourceAlbums.map(([id, t
   }),
 }));
 export function projectCover(project: GalleryProject) { return project.photos.find(p => p.id === project.coverId) ?? project.photos[0]; }
+export const defaultGalleryProjects: GalleryProject[] = [...documentedProjects, ...referenceAlbums];

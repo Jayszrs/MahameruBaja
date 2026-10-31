@@ -15,10 +15,19 @@ import { replaceCmsFile, withCmsFileLock } from "./cmsFileLock";
 import { cache } from "react";
 import { cachedPublicCms } from "./publicCmsCache";
 import { publicServiceWording } from "../data/serviceWording";
+import { referenceAlbums } from "../data/referenceAlbums";
 
 // Local/self-hosted storage. Mount this directory on a persistent volume in production.
 const file = path.join(process.env.CMS_DATA_DIR || path.join(process.cwd(), ".cms-data"), "site-content.json");
 function legacyIdentity(content: SiteContent): SiteContent {
+  if (content.referenceAlbumVersion < 1) {
+    const ids = new Set(content.galleryProjects.map(row => row.id));
+    const missing = referenceAlbums.filter(row => !ids.has(row.id));
+    content = { ...content, referenceAlbumVersion: 1,
+      galleryProjects: [...content.galleryProjects, ...missing].slice(0, 80),
+      websiteAppearance: content.websiteAppearance.map(row => ({ ...row, memberships: row.memberships.map(item => item.id === "api" && item.title === "Member of API" && !item.image ? { ...item, title: "Member of APPI", text: "Asosiasi Pengusaha Pengelasan Indonesia", image: "/images/partners/appi.webp", alt: "Logo APPI — Asosiasi Pengusaha Pengelasan Indonesia" } : item) })),
+    };
+  }
   if (content.clientPosterVersion < 1) {
     const ids = new Set(content.promotions.map(item => item.id));
     const missing = clientPosters.filter(item => !ids.has(item.id));
@@ -85,7 +94,7 @@ export async function readSiteContent(): Promise<SiteContent> {
     throw error;
   }
 }
-export const readPublicSiteContent = cache(() => cachedPublicCms("public-site-content", async (): Promise<SiteContent> => {
+export const readPublicSiteContent = cache(() => cachedPublicCms("public-site-content-references-v1", async (): Promise<SiteContent> => {
   const content = await readSiteContent();
   const active = new Set((await readDivisions()).filter(d => d.status === "active").map(d => d.slug));
   const next = { ...content, inventory: content.inventory.filter(i => i.listed && active.has(i.division)), divisionReviews: Object.fromEntries(Object.entries(content.divisionReviews).filter(([slug]) => active.has(slug)).map(([slug, profile]) => [slug, { ...profile, reviews: profile.reviews.filter(r => r.published) }])), garudaReviews: { ...content.garudaReviews, reviews: active.has("retail-cibitung") ? content.garudaReviews.reviews.filter(r => r.published) : [] } };

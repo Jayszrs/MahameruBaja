@@ -15,6 +15,7 @@ import "../src/poster-lightbox.css";
 import "../src/local-business.css";
 import "../src/loading-accessibility.css";
 import "../src/customer-revision.css";
+import "../src/website-gallery.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
