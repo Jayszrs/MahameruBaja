@@ -1,4 +1,5 @@
 "use client";
+import { PublicSection } from "../components/PublicText";
 import PublicText from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 
@@ -65,7 +66,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
   return (
     <PublicText>
       {/* Hero */}
-      <section className="pt-36 pb-14 bg-graphite relative overflow-hidden" aria-labelledby="kontak-hero-heading">
+      <PublicSection section="opening"><section className="pt-36 pb-14 bg-graphite relative overflow-hidden" aria-labelledby="kontak-hero-heading">
         <RotatingHeroMedia className="simple-hero-media" images={["/images/steel-indonesia/toko-mahameru.jpg","/images/steel-indonesia/hollow.jpg","/images/steel-indonesia/besi-beton.jpg"]} />
         <div className="simple-hero-shade" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
@@ -85,7 +86,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
             Hubungi kami untuk informasi produk, penawaran harga, atau kunjungi toko kami langsung di Tambun Selatan, Bekasi.
           </p>
         </div>
-      </section>
+      </section></PublicSection>
 
       <ContactDirectory contacts={contacts} />
       <section className="py-16 bg-surface" aria-labelledby="kontak-section-heading">
@@ -94,7 +95,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
             {/* Contact info */}
-            <div ref={ref} className={`reveal ${visible ? 'visible' : ''}`}>
+            <PublicSection section="store"><div ref={ref} className={`reveal ${visible ? 'visible' : ''}`}>
               <h3 className="text-2xl font-extrabold text-graphite mb-6">Informasi Toko</h3>
 
               <div className="space-y-5 mb-8">
@@ -176,7 +177,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
               <div className="rounded-md overflow-hidden border border-rule bg-surface-2 aspect-[4/3]">
                 <iframe title="Lokasi Toko Besi Mahameru Baja di Google Maps" src="https://www.google.com/maps?q=Toko%20Besi%20Mahameru%20Baja%20Tambun%20Selatan&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="w-full h-full border-0" />
               </div>
-            </div>
+            </div></PublicSection>
 
             {/* Contact form */}
             <div>
@@ -190,7 +191,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                     {saved && <RequestHandoff input={saved.input} id={saved.id} />}
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                  <PublicSection section="form"><form onSubmit={handleSubmit} noValidate className="space-y-4" id="kontak-form">
                     {saveError && <p role="alert" className="text-sm text-red-600">{saveError}</p>}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <Field id="nama" label="Nama" required error={errors.nama}>
@@ -235,7 +236,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                       className="w-full py-3.5 bg-graphite hover:bg-navy text-white font-bold text-sm rounded-xl transition-colors">
                       {sending ? 'Menyimpan…' : 'Kirim Pesan'}
                     </button>
-                  </form>
+                  </form></PublicSection>
                 )}
               </div>
             </div>

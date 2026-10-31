@@ -10,7 +10,7 @@ import { readDivisions } from "./divisionStore";
 import { promotionProviderSlug, posterContactMatches } from "../data/popupPosters";
 
 export const emptyReviews = () => ({ rating: 0, reviewCount: null, ratingDate: "Belum dicatat", mapsUrl: "https://maps.google.com/", reviews: [] });
-export const collectionKeys = ["contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts", "heroAnnouncements", "partnerLogos"] as const;
+export const collectionKeys = ["sectionLists", "sectionEdits", "contacts", "reviews", "socialAccounts", "socialPosts", "promotions", "heroSlides", "galleryProjects", "websiteTexts", "heroAnnouncements", "partnerLogos"] as const;
 type Owned = ContentOwnership & { id?: string; division?: string; divisions?: string[]; platform?: string; handle?: string };
 export function normalizeOwnership(content: SiteContent): SiteContent {
   const next = structuredClone(content);
@@ -80,7 +80,7 @@ export async function mergeScopedContent(current: SiteContent, input: SiteConten
     // Only merge rows actually changed by this editor. Unrelated collections stay current.
     if (!equal(rows, baseRows)) Object.assign(next, { [key]: mergeRows(current[key] as Owned[], rows, baseRows) });
   }
-  const scalarKeys = ["rating", "reviewCount", "ratingDate", "mapsUrl", "garudaReviews", "divisionReviews"] as const;
+  const scalarKeys = ["companyVision", "companyMission", "companyMotto", "supplierLogosHomeVisible", "homeQuickLinks", "homeQuickLinksTitle", "articleIntro", "rating", "reviewCount", "ratingDate", "mapsUrl", "garudaReviews", "divisionReviews"] as const;
   for (const key of scalarKeys) {
     if (equal(input[key], base[key])) continue;
     if (slug && !["garudaReviews", "divisionReviews"].includes(key)) throw new CmsError("Ringkasan ulasan pusat hanya dapat dikelola Super Admin.", 403);

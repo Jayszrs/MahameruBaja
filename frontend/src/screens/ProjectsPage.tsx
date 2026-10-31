@@ -1,4 +1,6 @@
 "use client";
+import { useSectionList, sectionListAttributes } from "../components/PublicText";
+import { PublicSection } from "../components/PublicText";
 import PublicText from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 
@@ -30,10 +32,12 @@ const galleryItems = [
 type GalleryItem = (typeof galleryItems)[number];
 
 export default function ProjectsPage({ projects = [] }: { projects?: GalleryProject[] }) {
+  const materialRows=useSectionList("galleryMaterials",galleryItems.map(({unit,...row})=>({...row,unitLabel:unit.label,unitHref:unit.href})),"materials");
+  const currentItems=materialRows.map(({unitLabel,unitHref,...row})=>({...row,unit:{label:unitLabel,href:unitHref}}));
   const [activeFilter, setActiveFilter] = useState("Semua");
   const [lightbox, setLightbox] = useState<GalleryItem | null>(null);
   const [armedId, setArmedId] = useState<number | null>(null);
-  const filtered = activeFilter === "Semua" ? galleryItems : galleryItems.filter((item) => item.category === activeFilter);
+  const filtered = activeFilter === "Semua" ? currentItems : currentItems.filter((item) => item.category === activeFilter);
 
   const coarsePointer = () =>
     typeof window !== "undefined" && window.matchMedia("(hover: none)").matches;
@@ -59,7 +63,7 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
 
   return (
     <PublicText>
-      <section className="projects-hero" aria-labelledby="projects-hero-heading">
+      <PublicSection section="opening"><section className="projects-hero" aria-labelledby="projects-hero-heading">
         <RotatingHeroMedia className="projects-parallax-media" images={[laserImage,"/images/steel-indonesia/toko-mahameru.jpg","/images/steel-indonesia/besi-beton.jpg"]} />
         <div className="projects-hero-shade" aria-hidden="true" />
         <div className="home-grid" aria-hidden="true" />
@@ -69,11 +73,11 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
           <h1 id="projects-hero-heading">Lihat langsung material dan proses pekerjaan kami.</h1>
           <p>Galeri Mahameru Baja menampilkan material, aktivitas toko, proses produksi, hingga hasil pekerjaan yang kami kerjakan.</p>
         </div>
-      </section>
+      </section></PublicSection>
 
       <ProjectAlbums projects={projects} />
 
-      <section className="projects-gallery" aria-labelledby="gallery-heading">
+      <PublicSection section="materials"><section {...sectionListAttributes("galleryMaterials",materialRows)} className="projects-gallery" aria-labelledby="gallery-heading">
         <div className="home-shell">
           <div className="home-section-heading" data-reveal>
             <div><p className="home-eyebrow text-brand"><span />Galeri material & pekerjaan</p><h2 id="gallery-heading">Lihat material dari dekat.</h2></div>
@@ -97,7 +101,7 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
             ))}
           </div>
         </div>
-      </section>
+      </section></PublicSection>
 
       {lightbox && (
         <div className="projects-lightbox" onClick={() => setLightbox(null)} role="dialog" aria-modal="true" aria-label={lightbox.title}>
@@ -119,7 +123,7 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
         </div>
       )}
 
-      <section className="projects-cta" aria-label="Konsultasi proyek">
+      <PublicSection section="cta"><section className="projects-cta" id="proyek-cta" aria-label="Konsultasi proyek">
         <div className="home-grid" aria-hidden="true" />
         <div className="home-shell" data-reveal>
           <p className="home-eyebrow"><span />Mulai kebutuhan berikutnya</p>
@@ -127,7 +131,7 @@ export default function ProjectsPage({ projects = [] }: { projects?: GalleryProj
           <p>Kirim daftar material, volume, lokasi, dan target waktu. Tim kami membantu mengarahkan kebutuhan ke divisi yang tepat.</p>
           <div className="home-actions"><Link to="/minta-penawaran" className="home-button home-button-primary">Minta penawaran →</Link><Link to="/produk" className="home-button home-button-ghost">Lihat produk →</Link></div>
         </div>
-      </section>
+      </section></PublicSection>
     </PublicText>
   );
 }

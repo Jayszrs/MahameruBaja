@@ -1,4 +1,5 @@
 "use client";
+import { PublicSection } from "./PublicText";
 import PublicText from "./PublicText";
 import Image from "./CmsImage";
 import { mainLogo } from "../data/companyIdentity";
@@ -15,7 +16,7 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
   const [selected, setSelected] = useState(divisionSlug || "all");
   const visible = contacts.filter(c => c.published && (selected === "all" ? c.audience === undefined || c.audience.length > 0 : contactVisibleInDivision(c,selected)));
   const unit = divisions.find(d => d.slug === selected);
-  return <PublicText><section className="contact-directory" data-static-motion id="tim-kontak">
+  return <PublicText><PublicSection section="contacts"><section className="contact-directory" data-static-motion id="tim-kontak">
     <div className="industrial-container">
       <div className="directory-heading" data-reveal><div><p className="industrial-eyebrow">ORANG YANG TEPAT / LANGKAH BERIKUTNYA</p><h2>Mari bicarakan<br /><em>kebutuhan Anda.</em></h2></div><p>Pilih divisi, lalu hubungi tim untuk produk, gambar kerja, atau kebutuhan proyek Anda.</p></div>
       {!divisionSlug && <div className="directory-toolbar"><label htmlFor="contact-division">Hubungi kami — pilih divisi<select id="contact-division" value={selected} onChange={e => setSelected(e.target.value)}><option value="all">Semua divisi</option>{divisions.map(d => <option value={d.slug} key={d.slug}>{d.name} — {d.label}</option>)}</select></label>{unit && <Link href={`/unit/${unit.slug}`}>Lihat profil divisi ↗</Link>}</div>}
@@ -23,7 +24,7 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
         const provider = unit || divisions.find(d => contact.divisions.includes(d.slug));
         const message = `Halo ${contact.name}, saya ingin berkonsultasi${unit ? ` tentang ${unit.name} (${unit.label})` : " dengan Mahameru Baja"}.`;
         const female=contactIllustration(contact)==="female";
-        return <article className="directory-card" key={contact.id}>
+        return <article data-cms-owned="contacts" className="directory-card" key={contact.id}>
           <div className="directory-portrait">{contact.photo ? <img src={contact.photo} alt={contact.name} loading="lazy" decoding="async" /> : <div className="directory-cartoon"><div className="directory-avatar-art"><Image src={female?"/images/contact-admin-female-v1.webp":"/images/contact-admin-illustration.webp"} alt={`Ilustrasi admin ${female?"perempuan ":""}bertopi, bukan foto kontak`} width={640} height={640} sizes="260px" loading="lazy"/><Image className="directory-cap-logo" src={provider?.logo || mainLogo} alt={provider?.name || "Mahameru Baja"} width={72} height={64} transparentLogo/></div></div>}</div>
           <div className="directory-card-body"><h3>{contact.name}</h3><p><span className="directory-position">{contact.role}</span>{contact.divisions.length ? contact.divisions.map(s => divisions.find(d => d.slug === s)?.label).join(" · ") : "Kontak perusahaan"}</p><div className="directory-links">
             {contact.phone && <a href={`tel:+${internationalPhone(contact.phone)}`}><span>Telepon</span><strong>{contact.phone}</strong><span aria-hidden="true">↗</span></a>}
@@ -35,5 +36,5 @@ export default function ContactDirectory({ contacts, divisionSlug }: { contacts:
       })}</div>
       {!visible.length && <p className="directory-empty">Tim untuk divisi ini sedang diperbarui. <a href="https://wa.me/6281218052017" target="_blank" rel="noopener noreferrer">Hubungi kontak utama ↗</a></p>}
     </div>
-  </section></PublicText>;
+  </section></PublicSection></PublicText>;
 }

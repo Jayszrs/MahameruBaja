@@ -29,6 +29,9 @@ export function choicesForWebsite(catalog:WebsiteTextChoice[],division:Division|
   for(const slide of slides)for(const value of [slide.eyebrow,slide.title,slide.accent,slide.description,slide.primaryAction.label,slide.secondaryAction.label,slide.visualNote])add(value,"CurrentHero");
   for(const row of custom)add(row.source,"Custom",[],row.page==="all"?Object.keys(textPages).filter((page):page is TextPage=>page!=="all"): [row.page]);
   if(content) {
+    add(content.homeQuickLinksTitle,"HomePage");
+    for(const row of content.homeQuickLinks || [])add(row.label,"HomePage");
+    for(const value of [content.articleIntro?.title,content.articleIntro?.eyebrow,content.articleIntro?.description,content.articleIntro?.visualNote])add(value,"InformasiPage");
     const displayFields=new Set(['name','role','handle','title','label','eyebrow','accent','description','summary','excerpt','caption','intro','mission','aboutHeadline','values','process','text','action','headline','shortSpec','specifications','usages','category','benefit','terms','ctaLabel','question','answer','offerings','messages','visualNote']);
     function collect(value:unknown,area:string,field='') {
       if(typeof value==='string') {if(displayFields.has(field))add(value,area);return;}

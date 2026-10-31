@@ -1,10 +1,12 @@
+import { sectionListSchema } from "./sectionLists";
+import { sectionEditSchema } from "./sectionEdits";
 import { contentOwner, divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
-import { safeHttpsUrl, safeLocalAsset } from "./safeUrls";
+import { safeHttpsUrl, safeLocalAsset, safeInternalLink } from "./safeUrls";
 import { socialAccountSchema, socialPostSchema, defaultSocialAccounts, defaultSocialPosts } from "./socialMedia";
 import { googleRating, googleReviewCount, googleReviews, googleReviewsCapturedAt } from "./googleReviews";
 import { promotionSchema, samplePromotions, additionalPromotions } from "./promotions";
-import { divisionIdentity } from "./companyIdentity";
+import { groupVision, groupMotto, divisionIdentity } from "./companyIdentity";
 import { heroSlides, heroSlideSchema } from "./heroSlides";
 import { websiteTextSchema } from "./websiteTexts";
 import { clientPosters } from "./clientPosters";
@@ -44,7 +46,22 @@ export const reviewProfileSchema = z.object({
 }).superRefine((profile, ctx) => {
   if (new Set(profile.reviews.map(r => r.id)).size !== profile.reviews.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["reviews"], message: "ID ulasan harus unik" });
 });
+export const defaultArticleIntro = { eyebrow: "Panduan & Edukasi", title: "Artikel & Panduan Material", description: "Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.", image: "/images/steel-indonesia/toko-mahameru.jpg", visualNote: "Visual ilustrasi material" };
 export const siteContentSchema = z.object({
+  companyVision: text(2000).default(groupVision),
+  companyMission: text(2000).default("Retail, pengadaan material, laser cutting, bending, fabrikasi, dan erection. Pilih tim yang sesuai dengan kebutuhan Anda."),
+  companyMotto: text(2000).default(groupMotto),
+  sectionLists: z.array(sectionListSchema).max(300).default([]),
+  sectionEdits: z.array(sectionEditSchema).max(4000).default([]),
+  articleIntro: z.object({ eyebrow: text(180), title: text(300).min(1), description: text(2000), image: photo, visualNote: text(180) }).default(defaultArticleIntro),
+  homeQuickLinksTitle: text(200).default("Mulai dari kebutuhan Anda"),
+  homeQuickLinks: z.array(z.object({ id: text(80).min(1), label: text(180).min(1), href: text(500).min(1).refine(safeInternalLink, "Gunakan tautan halaman internal") })).max(20).default([
+    { id: "retail-tambun", label: "Saya mau beli besi satuan di Tambun", href: "/unit/retail-tambun" },
+    { id: "retail-cibitung", label: "Saya cari hollow, pipa, atau plat di Cibitung", href: "/unit/retail-cibitung" },
+    { id: "trading-proyek", label: "Saya butuh material untuk proyek", href: "/unit/trading-proyek" },
+    { id: "laser-cutting", label: "Saya mau potong atau tekuk plat sesuai gambar", href: "/unit/laser-cutting" },
+    { id: "fabrikasi-erection", label: "Saya ingin konsultasi fabrikasi dan erection", href: "/unit/fabrikasi-erection/kontak" },
+  ]),
   partnerLogos:partnerLogoListSchema.default(defaultPartnerLogos),
   supplierLogosHomeVisible: z.boolean().default(true),
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
@@ -68,7 +85,7 @@ export const siteContentSchema = z.object({
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
   ratingDate: text(80).min(1), mapsUrl: googleUrl,
 }).superRefine((data, ctx) => {
-  for (const key of ["contacts", "reviews", "socialPosts", "heroSlides"] as const) {
+  for (const key of ["homeQuickLinks", "contacts", "reviews", "socialPosts", "heroSlides"] as const) {
     if (new Set(data[key].map(item => item.id)).size !== data[key].length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: [key], message: "ID harus unik" });
   }
   if (new Set(data.socialAccounts.map(a => `${a.platform}:${a.handle}`)).size !== data.socialAccounts.length) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["socialAccounts"], message: "Akun sosial tidak boleh duplikat" });
@@ -90,6 +107,20 @@ export function reviewContent(content: ReviewContent): ReviewContent {
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
 // Sheet1 H11:J28. Nomor tidak dibuat dari data demo sebelumnya.
 export const defaultSiteContent: SiteContent = {
+  companyVision: groupVision,
+  companyMission: "Retail, pengadaan material, laser cutting, bending, fabrikasi, dan erection. Pilih tim yang sesuai dengan kebutuhan Anda.",
+  companyMotto: groupMotto,
+  sectionLists: [],
+  sectionEdits: [],
+  articleIntro: defaultArticleIntro,
+  homeQuickLinksTitle: "Mulai dari kebutuhan Anda",
+  homeQuickLinks: [
+    { id: "retail-tambun", label: "Saya mau beli besi satuan di Tambun", href: "/unit/retail-tambun" },
+    { id: "retail-cibitung", label: "Saya cari hollow, pipa, atau plat di Cibitung", href: "/unit/retail-cibitung" },
+    { id: "trading-proyek", label: "Saya butuh material untuk proyek", href: "/unit/trading-proyek" },
+    { id: "laser-cutting", label: "Saya mau potong atau tekuk plat sesuai gambar", href: "/unit/laser-cutting" },
+    { id: "fabrikasi-erection", label: "Saya ingin konsultasi fabrikasi dan erection", href: "/unit/fabrikasi-erection/kontak" },
+  ],
   partnerLogos:defaultPartnerLogos,
   supplierLogosHomeVisible:true,
   heroAnnouncements:[],

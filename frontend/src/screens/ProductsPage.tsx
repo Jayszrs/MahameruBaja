@@ -1,4 +1,6 @@
 "use client";
+import { useSectionList, sectionListAttributes } from "../components/PublicText";
+import { PublicSection } from "../components/PublicText";
 import PublicText from "../components/PublicText";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
@@ -36,7 +38,8 @@ const PAGE_SIZE = 12;
 
 export default function ProductsPage({ inventory = [] }: { inventory?: InventoryItem[] }) {
   const products = resolvedInventoryProducts(inventory);
-  const categories = [...categoryFilters, ...products.filter(product => !categoryFilters.some(category => category.slug === product.categorySlug)).map(product => ({ slug: product.categorySlug, label: product.category }))].filter((category, index, rows) => rows.findIndex(row => row.slug === category.slug) === index);
+  const editableCategories=useSectionList("productCategoryFilters",categoryFilters,"catalog");
+  const categories = [...editableCategories, ...products.filter(product => !editableCategories.some(category => category.slug === product.categorySlug)).map(product => ({ slug: product.categorySlug, label: product.category }))].filter((category, index, rows) => rows.findIndex(row => row.slug === category.slug) === index);
   const { divisions } = useDivisionDirectory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -184,7 +187,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
   return (
     <PublicText>
       {/* Hero */}
-      <section className="bg-graphite pt-4 pb-10 relative overflow-hidden" aria-labelledby="products-hero">
+      <PublicSection section="opening"><section className="bg-graphite pt-4 pb-10 relative overflow-hidden" aria-labelledby="products-hero">
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-white/40 mb-4">
@@ -206,9 +209,9 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
             {products.length} produk tersedia — besi beton, WF, hollow, pipa, plat, dan lebih.
           </p>
         </div>
-      </section>
+      </section></PublicSection>
 
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-8 py-8">
+      <PublicSection section="catalog"><div {...sectionListAttributes("productCategoryFilters",editableCategories)} className="max-w-[1280px] mx-auto px-6 lg:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar (desktop) */}
           <aside className="hidden lg:block w-[280px] shrink-0" aria-label="Filter produk">
@@ -327,7 +330,7 @@ export default function ProductsPage({ inventory = [] }: { inventory?: Inventory
             )}
           </div>
         </div>
-      </div>
+      </div></PublicSection>
 
       {/* Mobile sidebar drawer */}
       {sidebarOpen && (

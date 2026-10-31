@@ -1,4 +1,5 @@
 "use client";
+import { PublicSection } from "./PublicText";
 import PublicText from "./PublicText";
 import Image from "./CmsImage";
 import SocialEmbed from "./SocialEmbed";
@@ -22,7 +23,7 @@ function Post({ post }: { post: SocialPost }) {
   const division = divisions.find(d => d.slug === post.division);
   const archived=originalInstagramMedia(post);
   const video=post.displayMode==="embed"?undefined:post.videoUrl || archived?.video;
-  return <PublicText><article className={`social-feed social-single-post social-post-${post.platform}`}>
+  return <PublicText><article data-cms-owned="socialPosts" className={`social-feed social-single-post social-post-${post.platform}`}>
     <header className="social-post-source"><div><strong>{division?.name || post.title}</strong><small>{post.handle || platformLabels[post.platform]}</small></div><span className="social-post-platform" role="img" aria-label={`Konten ${platformLabels[post.platform]}`} title={platformLabels[post.platform]}><SocialIcon platform={post.platform} /></span></header>
     {video ? <video key={playerKey} className="social-native-video" src={video} poster={post.image || undefined} controls playsInline preload="none" style={archived?.video?{aspectRatio:`${archived.width} / ${archived.height}`,height:"auto"}:undefined} onError={() => setVideoError(true)} aria-label={post.title}><a href={post.url}>Buka unggahan asli</a></video> : post.displayMode!=="embed"&&post.image ? <a className="social-image-preview" href={post.url} target="_blank" rel="noopener noreferrer" aria-label={`Lihat ${post.title} di ${platformLabels[post.platform]}`}><Image src={post.image} alt={post.title} fill sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"/></a> : archived?.photos.length ? <SocialPhotoGallery key={post.url} photos={archived.photos} first={archived.first} title={post.title} url={post.url}/> : embed ? <SocialEmbed key={playerKey} src={embed} title={post.title}/> : <a className="social-external-post" href={post.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={post.platform} />Buka unggahan ↗</a>}
     {videoError && <div className="social-player-error" role="status"><span>Video belum berhasil dimuat.</span><button type="button" onClick={() => { setPlayerKey(key => key + 1); setVideoError(false); }}>Coba lagi</button></div>}
@@ -34,10 +35,10 @@ export default function SocialHub({ accounts, posts, full = false, companyName =
   const [filter, setFilter] = useState<SocialPlatform | "all">("all");
   const published = posts.filter(post => post.published && (filter === "all" || post.platform === filter));
   const shown = full ? published : published.slice(0, 6);
-  return <PublicText><section className={`social-hub ${full ? "social-hub-full" : ""}`} data-static-motion id="sosial"><div className="industrial-container">
+  return <PublicText><PublicSection section="social"><section className={`social-hub ${full ? "social-hub-full" : ""}`} data-static-motion id="sosial"><div className="industrial-container">
     <div className="social-heading"><div><p className="industrial-eyebrow">SOSIAL MEDIA / {companyName}</p><h2>Media sosial kami.<br />{" "}<em>Ikuti kegiatan dan pekerjaan kami.</em></h2><p>Lihat informasi produk, kegiatan, dan hasil pekerjaan melalui akun resmi kami.</p></div>{!full && <Link href={moreHref}>Semua unggahan ↗</Link>}</div>
     {full && posts.some(post => post.published) && <div className="social-filters" aria-label="Filter platform">{(["all", ...socialPlatforms] as const).map(value => <button type="button" key={value} aria-pressed={filter === value} onClick={() => setFilter(value)}>{value === "all" ? "Semua" : platformLabels[value]}</button>)}</div>}
     {shown.length ? <div className="social-post-grid social-permata-grid">{shown.map(post => <Post key={post.id} post={post} />)}</div> : <p className="social-empty">Belum ada unggahan untuk pilihan ini. Kunjungi akun resmi kami di bawah.</p>}
-    <nav className="social-account-directory" aria-label="Akun resmi">{accounts.filter(a=>a.published&&a.url).map(a=><a key={`${a.platform}:${a.handle}`} href={a.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={a.platform}/><span>{platformLabels[a.platform]}<strong>{a.handle}</strong></span>↗</a>)}</nav>
-  </div></section></PublicText>;
+    <nav data-cms-owned="socialAccounts" className="social-account-directory" aria-label="Akun resmi">{accounts.filter(a=>a.published&&a.url).map(a=><a key={`${a.platform}:${a.handle}`} href={a.url} target="_blank" rel="noopener noreferrer"><SocialIcon platform={a.platform}/><span>{platformLabels[a.platform]}<strong>{a.handle}</strong></span>↗</a>)}</nav>
+  </div></section></PublicSection></PublicText>;
 }

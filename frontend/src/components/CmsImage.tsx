@@ -1,12 +1,18 @@
+"use client";
 import Image, { getImageProps, type ImageProps } from "next/image";
+import { useSectionEdit } from "./PublicText";
 import { useId } from "react";
 import { isPublicBlobUrl } from "../data/safeUrls";
 import { corporateLogoFrames, corporateLogoSheet } from "../data/corporateLogos";
 const logoSheetProps = getImageProps({ src: corporateLogoSheet, alt: "", width: 1437, height: 1095 }).props;
 const logoSheetSrc = logoSheetProps.srcSet?.split(",")[0].trim().split(/\s+/)[0] || logoSheetProps.src;
 export default function CmsImage({ transparentLogo = false, ...props }: ImageProps & { transparentLogo?: boolean }) {
+  const edit = useSectionEdit();
+  const replacement = typeof props.src === "string" ? edit("image", props.src) : undefined;
+  if (replacement !== undefined && replacement) props = { ...props, src:replacement };
   const imageStyle = props.fill && props.style ? { ...props.style, width: "100%", height: "100%", position: "absolute" as const } : props.style;
   const filterId = `logo-paper-${useId().replace(/:/g, "")}`;
+  if (replacement === "") return null;
   const logo = typeof props.src === "string" ? corporateLogoFrames[props.src] : undefined;
   if (logo) return <svg xmlns="http://www.w3.org/2000/svg" viewBox={logo.viewBox} preserveAspectRatio="xMidYMid meet"
     width={props.fill ? undefined : props.width} height={props.fill ? undefined : props.height}

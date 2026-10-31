@@ -21,12 +21,14 @@ function Field({ label, value, onChange, type = "text", placeholder = "" }: { la
   return <label className="editor-field">{label}<input type={type} required={label === "Nama" || label === "Jabatan" || label.startsWith("Nama penulis")} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} /></label>;
 }
 
-export default function ContentEditor({ initialContent }: { initialContent: SiteContent }) {
+export default function ContentEditor({ initialContent, lockedTab, embedded = false }: { initialContent: SiteContent; lockedTab?: "contacts" | "reviews"; embedded?: boolean }) {
   const actor = useAdminIdentity();
   const { divisions } = useDivisionDirectory();
   const [content, setContent] = useState(initialContent);
   const baseContent = useRef(initialContent);
-  const [tab, setTab] = useAdminView("tab", ["contacts", "reviews"] as const, "contacts");
+  const [viewTab, setViewTab] = useAdminView("tab", ["contacts", "reviews"] as const, "contacts");
+  const tab = lockedTab ?? viewTab;
+  const setTab = (value: "contacts" | "reviews") => { if (!lockedTab) setViewTab(value); };
   const [reviewScope, setReviewScope] = useState<string>(actor.division === "retail-cibitung" ? "garuda" : actor.division || "main");
   const reviewProfile = reviewScope === "main" ? content : reviewScope === "garuda" ? content.garudaReviews : content.divisionReviews[reviewScope] || {rating:0,reviewCount:null,ratingDate:"Belum dicatat",mapsUrl:"https://maps.google.com/",reviews:[]};
   const rows = tab === "contacts" ? content.contacts : reviewProfile.reviews;
@@ -74,7 +76,7 @@ export default function ContentEditor({ initialContent }: { initialContent: Site
     focusEditorRecord(`content-${id}`);
   }
   const workspace = useAdminWorkspace({ dirty, busy: saving, label: "Simpan perubahan", disabled: !dirty, onSave: save });
-  return <div className="content-editor">
+  return <div className={`content-editor${embedded ? " contacts-editor-embedded" : ""}`}>
     <aside className="editor-sidebar"><Link className="editor-brand" href="/admin"><Image src={mainLogo} alt="MBI Laser Cutting" width={64} height={58} sizes="64px" /><span>Mahameru Baja<small>CONTENT STUDIO</small></span></Link><p>WEBSITE</p><button className={tab === "contacts" ? "active" : ""} onClick={() => { setTab("contacts"); setDeleteId(null); }}><span>01</span> Kontak & divisi <b>{content.contacts.length}</b></button><button className={tab === "reviews" ? "active" : ""} onClick={() => { setTab("reviews"); setDeleteId(null); }}><span>02</span> Ulasan Google <b>{content.reviews.length}</b></button><Link className="editor-sidebar-link" href="/admin/sosial">03 &middot; Sosial media &#8599;</Link><Link className="editor-sidebar-link" href="/admin/promosi">04 &middot; Banner & promo &#8599;</Link><Link className="editor-sidebar-link" href="/admin/artikel">Artikel &amp; panduan &#8599;</Link><Link className="editor-sidebar-link" href="/admin/permintaan">05 &middot; Permintaan pelanggan &#8599;</Link><div className="editor-sidebar-bottom"><Link href="/admin">← Dashboard</Link><a href="/" target="_blank" rel="noopener noreferrer">Buka website ↗</a><form action="/api/admin/logout" method="post"><button type="submit">Keluar</button></form></div></aside>
     <main className="editor-main"><header className="editor-topbar"><span>Workspace / {tab === "contacts" ? "Kontak & divisi" : "Ulasan Google"}</span><div><span className={`editor-save-state ${dirty ? "is-dirty" : ""}`}>{dirty ? "Perubahan belum disimpan" : "Semua perubahan tersimpan"}</span><button type="button" className="editor-save" disabled={saving || !dirty} onClick={save}>{saving ? "Menyimpan…" : "Simpan perubahan ↗"}</button></div></header>
     <div className="editor-content"><div className="editor-title"><p className="industrial-eyebrow">KONTEN / {tab === "contacts" ? "01" : "02"}</p><h1>{tab === "contacts" ? <>Lebih dekat.<br /><em>Lebih mudah dihubungi.</em></> : <>Suara pelanggan.<br /><em>Tampilkan cerita asli.</em></>}</h1><p>{tab === "contacts" ? "Kelola nama, nomor, foto, dan divisi yang dilayani. Kontak tampil di halaman Kontak dan profil divisi terkait." : "Salin ulasan sesuai sumber Google: nama, bintang, komentar, dan tautan. Ulasan yang disimpan tampil di beranda."}</p></div>

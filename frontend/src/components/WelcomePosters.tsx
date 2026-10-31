@@ -40,7 +40,7 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
     setOpen(false); setIndex(0); setFocused(false); setReading(false); setExpanded(false);
   }, [path]);
   useEffect(() => {
-    if (preview || path.startsWith("/admin") || !signature || seen.current.has(sessionKey)) return;
+    if (preview || path.startsWith("/admin") || new URLSearchParams(window.location.search).has("cms-preview") || !signature || seen.current.has(sessionKey)) return;
     const timer = window.setTimeout(() => { if (!seen.current.has(sessionKey)) setOpen(true); }, 700);
     return () => window.clearTimeout(timer);
   }, [path, preview, signature, sessionKey]);

@@ -1,9 +1,11 @@
 "use client";
+import { useSectionList, sectionListAttributes } from "./PublicText";
 import { useEffect, useState } from "react";
 import Image from "./CmsImage";
 
 export default function RotatingHeroMedia({ images, className = "" }: { images: string[]; className?: string }) {
-  const sources = [...new Set(images.filter(Boolean))];
+  const rows=useSectionList("heroImages",images.map(src=>({src})));
+  const sources = [...new Set(rows.map(row=>row.src).filter(Boolean))];
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -17,8 +19,8 @@ export default function RotatingHeroMedia({ images, className = "" }: { images: 
     const timer = window.setTimeout(() => setActive(index => (index + 1) % sources.length), 5000);
     return () => window.clearTimeout(timer);
   }, [active, paused, hidden, sources.length]);
-  return <div className={`rotating-hero-media ${className}`}>
+  return <div {...sectionListAttributes("heroImages",rows)} className={`rotating-hero-media ${className}`}>
     <div aria-hidden="true">{sources.length > 0 && <Image key={sources[active % sources.length]} src={sources[active % sources.length]} alt="" fill sizes="100vw" loading="eager" fetchPriority={active === 0 ? "high" : "auto"} className="is-active" />}</div>
-    {sources.length > 1 && <button type="button" className="carousel-keyboard-control" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan pergantian gambar" : "Hentikan pergantian gambar"}</button>}
+    {sources.length > 1 && <button type="button" data-cms-static className="carousel-keyboard-control" aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? "Lanjutkan pergantian gambar" : "Hentikan pergantian gambar"}</button>}
   </div>;
 }

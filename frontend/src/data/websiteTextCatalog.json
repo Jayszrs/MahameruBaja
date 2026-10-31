@@ -1461,6 +1461,10 @@
     "area": "heroSlides"
   },
   {
+    "source": "Visual ilustrasi material",
+    "area": "heroSlides"
+  },
+  {
     "source": "Visual ilustrasi proses bending",
     "area": "heroSlides"
   },
@@ -1530,10 +1534,6 @@
     ]
   },
   {
-    "source": "Mulai dari kebutuhan Anda",
-    "area": "HomePage"
-  },
-  {
     "source": "Pilih kebutuhan Anda, kami akan mengarahkan ke tim yang tepat. Buka website divisi untuk melihat layanan dan menghubungi adminnya.",
     "area": "HomePage"
   },
@@ -1543,26 +1543,6 @@
   },
   {
     "source": "Satu Mahameru, satu solusi.",
-    "area": "HomePage"
-  },
-  {
-    "source": "Saya butuh material untuk proyek",
-    "area": "HomePage"
-  },
-  {
-    "source": "Saya cari hollow, pipa, atau plat di Cibitung",
-    "area": "HomePage"
-  },
-  {
-    "source": "Saya ingin konsultasi fabrikasi dan erection",
-    "area": "HomePage"
-  },
-  {
-    "source": "Saya mau beli besi satuan di Tambun",
-    "area": "HomePage"
-  },
-  {
-    "source": "Saya mau potong atau tekuk plat sesuai gambar",
     "area": "HomePage"
   },
   {
@@ -1577,10 +1557,6 @@
       "Footer",
       "Navbar"
     ]
-  },
-  {
-    "source": "Artikel & Panduan Material",
-    "area": "InformasiPage"
   },
   {
     "source": "Baca Selengkapnya",
@@ -1607,24 +1583,8 @@
     "area": "InformasiPage"
   },
   {
-    "source": "Panduan & Edukasi",
-    "area": "InformasiPage"
-  },
-  {
     "source": "Panduan material akan tersedia di sini.",
     "area": "InformasiPage"
-  },
-  {
-    "source": "Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.",
-    "area": "InformasiPage"
-  },
-  {
-    "source": "Visual ilustrasi material",
-    "area": "InformasiPage",
-    "areas": [
-      "InformasiPage",
-      "heroSlides"
-    ]
   },
   {
     "source": "07:00 – 15:00 WIB",
@@ -5137,10 +5097,6 @@
   },
   {
     "source": "PROMO & KEGIATAN /",
-    "area": "UnifiedHomeContent"
-  },
-  {
-    "source": "Retail, pengadaan material, laser cutting, bending, fabrikasi, dan erection. Pilih tim yang sesuai dengan kebutuhan Anda.",
     "area": "UnifiedHomeContent"
   },
   {

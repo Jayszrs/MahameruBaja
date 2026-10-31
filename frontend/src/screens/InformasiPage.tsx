@@ -1,5 +1,7 @@
 "use client";
+import { PublicSection } from "../components/PublicText";
 import PublicText, { WebsiteTextScope } from "../components/PublicText";
+import { defaultArticleIntro } from "../data/siteContent";
 import Image from "../components/CmsImage";
 
 import { Link } from 'react-router';
@@ -10,15 +12,15 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
 }
 
-export default function InformasiPage({ articles }: { articles: Article[] }) {
+export default function InformasiPage({ articles, intro = defaultArticleIntro }: { articles: Article[]; intro?: typeof defaultArticleIntro }) {
   const { ref, visible } = useReveal();
   const featured = articles[0];
 
   return (
     <PublicText><div className="article-index-page" data-static-motion>
       {/* Hero */}
-      <section className="bg-graphite relative overflow-hidden" aria-labelledby="informasi-hero-heading">
-        <div className="simple-hero-media"><Image src="/images/steel-indonesia/toko-mahameru.jpg" alt="" fill sizes="100vw" loading="eager" className="object-cover"/></div>
+      <PublicSection section="opening"><section className="bg-graphite relative overflow-hidden" aria-labelledby="informasi-hero-heading">
+        {intro.image && <div className="simple-hero-media"><Image src={intro.image} alt="" fill sizes="100vw" loading="eager" className="object-cover"/></div>}
         <div className="simple-hero-shade" aria-hidden="true" />
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 pt-8 pb-12">
@@ -29,20 +31,20 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
           </nav>
           <div className="flex items-center gap-2 mb-4">
             <span className="w-6 h-px bg-brand" />
-            <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-brand">Panduan & Edukasi</span>
+            <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-brand">{intro.eyebrow}</span>
           </div>
           <h1 id="informasi-hero-heading" className="text-3xl sm:text-4xl font-extrabold text-white leading-tight mb-3 font-[family-name:var(--font-display)]">
-            Artikel & Panduan Material
+            {intro.title}
           </h1>
           <p className="text-white/50 max-w-lg text-sm leading-relaxed">
-            Panduan teknis seputar material baja, tips memilih besi yang tepat, dan edukasi konstruksi untuk proyek Anda.
+            {intro.description}
           </p>
-          <small className="simple-visual-note">Visual ilustrasi material</small>
+          <small className="simple-visual-note">{intro.visualNote}</small>
         </div>
-      </section>
+      </section></PublicSection>
 
       {/* Articles */}
-      <section className="py-14 bg-warm-white" aria-labelledby="articles-heading">
+      <PublicSection section="articles"><section className="py-14 bg-warm-white" aria-labelledby="articles-heading">
         <div className="max-w-[1280px] mx-auto px-6 lg:px-8">
           <h2 id="articles-heading" className="sr-only">Daftar Artikel</h2>
 
@@ -107,7 +109,7 @@ export default function InformasiPage({ articles }: { articles: Article[] }) {
             ))}
           </div>
         </div>
-      </section>
+      </section></PublicSection>
 
       {/* CTA to product */}
       <section className="py-14 bg-graphite relative overflow-hidden" aria-label="CTA ke produk">

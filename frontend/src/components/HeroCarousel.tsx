@@ -1,4 +1,5 @@
 "use client";
+import { PublicSection } from "./PublicText";
 import PublicText from "./PublicText";
 
 import Image from "./CmsImage";
@@ -76,7 +77,7 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
   }, [previousIndex]);
 
   return (
-    <PublicText><section
+    <PublicText><PublicSection section="hero"><section id="hero-beranda"
       className={`hero-carousel hero-carousel-bright ${paused || userPaused || interacting ? "is-paused" : ""}`}
       aria-roledescription="carousel"
       aria-label={`Layanan utama ${companyName}`}
@@ -150,6 +151,6 @@ export default function HeroCarousel({ slides: heroSlides, rating: googleRating,
 
       <HeroAnnouncementTicker messages={serviceItems}/>
       <button type="button" className="carousel-keyboard-control" aria-pressed={userPaused} onClick={()=>setUserPaused(v=>!v)}>{userPaused ? "Lanjutkan pergantian hero" : "Hentikan pergantian hero"}</button>
-    </section></PublicText>
+    </section></PublicSection></PublicText>
   );
 }

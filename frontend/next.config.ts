@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   output: process.env.NODE_ENV === "production" && process.env.VERCEL !== "1" ? "standalone" : undefined,
   poweredByHeader: false,
   reactStrictMode: true,
+  experimental: { cpus: 2 },
   devIndicators: false,
   // Public limits mirror the server target; no secrets are exposed here.
   env: { NEXT_PUBLIC_CMS_VIDEO_MAX_BYTES: process.env.VERCEL === "1" ? "4000000" : "30000000" },
