@@ -12,6 +12,7 @@ import { useAdminWorkspace } from "./AdminWorkspace";
 import HeroAnnouncementEditor from "./HeroAnnouncementEditor";
 import AdminOrderList, { moveBefore, focusEditorRecord } from "./AdminOrderList";
 import HeroMediaFields from "./HeroMediaFields";
+import AdminViewTabs from "./AdminViewTabs";
 
 const heroDestinations = [
   { label: "Beranda · halaman utama", href: "/" },
@@ -33,6 +34,7 @@ export default function HeroEditor({ initialContent, embedded = false }: { initi
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [heroView, setHeroView] = useState<"announcement" | "slides">("announcement");
   function change(update: (current: SiteContent) => SiteContent) { setContent(update); setDirty(true); setMessage(""); }
   function update(id: string, patch: Partial<HeroSlide>) { change(current => ({ ...current, heroSlides: current.heroSlides.map(slide => slide.id === id ? { ...slide, ...patch, published: true } : slide) })); }
   async function upload(id: string, file: File, poster = false) {
@@ -82,8 +84,10 @@ export default function HeroEditor({ initialContent, embedded = false }: { initi
         {message && (!embedded || failed) && <p className={`editor-notice ${failed ? "error" : "success"}`} role={failed ? "alert" : "status"}>{message}</p>}
         {busy && !embedded && <p className="editor-notice" role="status">Sedang memproses. Tunggu sampai selesai sebelum meninggalkan halaman.</p>}
         <fieldset disabled={busy}>
-          <HeroAnnouncementEditor content={content} onChange={next => change(() => next)} />
-          <div className="editor-list-heading hero-slide-list-heading"><div><span className="hero-step-label">Langkah 2</span><h2>Slide hero</h2></div><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
+          <AdminViewTabs label="Jenis konten hero" value={heroView} onChange={setHeroView} options={[{ value: "announcement", label: "Teks berjalan" }, { value: "slides", label: "Slide Hero" }]} />
+          {heroView === "announcement" && <HeroAnnouncementEditor content={content} onChange={next => change(() => next)} />}
+          {heroView === "slides" && <>
+          <div className="editor-list-heading hero-slide-list-heading"><button type="button" className="admin-primary" disabled={content.heroSlides.length >= 100} onClick={addSlide}>+ Tambah slide</button></div>
           <AdminOrderList label="Urutan slide" disabled={busy} items={content.heroSlides.map(slide => ({ id: slide.id, title: slide.eyebrow || "Slide baru", image: slide.poster || (slide.type === "image" ? slide.media : undefined) }))} onMove={(from, to) => change(current => ({ ...current, heroSlides: moveBefore(current.heroSlides, from, to) }))} onSelect={id => focusEditorRecord(`hero-${id}`)} />
           {!content.heroSlides.length && <div className="editor-empty"><h3>Belum ada slide hero</h3><p>Tambahkan slide untuk menampilkan gambar atau video pilihan Anda di beranda.</p></div>}
           {content.heroSlides.map((slide, index) => <section className="editor-panel hero-slide-editor" id={`hero-${slide.id}`} key={slide.id}>
@@ -99,6 +103,7 @@ export default function HeroEditor({ initialContent, embedded = false }: { initi
               })}
             </div>
           </section>)}
+          </>}
         </fieldset>
       </div>
     </main>

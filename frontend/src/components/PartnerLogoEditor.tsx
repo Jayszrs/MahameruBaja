@@ -6,7 +6,7 @@ import ContentOwnership from "./ContentOwnership";
 import AdminViewTabs from "./AdminViewTabs";
 import { useAdminIdentity } from "./AdminIdentity";
 import { useAdminView, useAdminWorkspace } from "./AdminWorkspace";
-import { imageUploadHelp, uploadCmsFile } from "../lib/cmsUpload";
+import { imageAddressHelp, imageAddressLabel, imageUploadHelp, uploadCmsFile } from "../lib/cmsUpload";
 import { contentId } from "../data/socialMedia";
 import { contentOwner, assetUrl } from "../data/divisionCms";
 import { partnerLogoListSchema, type PartnerLogo } from "../data/partnerLogos";
@@ -46,7 +46,6 @@ export default function PartnerLogoEditor({initialContent}:{initialContent:SiteC
   }
   const workspace=useAdminWorkspace({dirty,busy,label:"Simpan logo",disabled:!dirty,onSave:save});
   return <div className="partner-logo-editor">
-    <div className="admin-page-heading"><div><h1>Supplier & perusahaan rekanan</h1><p>Kelola logo asli pemasok dan perusahaan yang pernah bekerja sama. Simpan logo untuk langsung menampilkannya di website.</p></div></div>
     <AdminViewTabs value={tab} onChange={value=>{setTab(value);setDeleteId(null);setSelectedIds([]);}} disabled={busy} label="Jenis logo" options={[{value:"suppliers",label:"Supplier"},{value:"clients",label:"Perusahaan rekanan"}]}/>
     {message&&<p className={`editor-notice ${failed?"error":"success"}`} role={failed?"alert":"status"}>{message}</p>}
     {busy&&<p className="editor-notice" role="status">Sedang mengunggah logo atau menyimpan perubahan…</p>}
@@ -61,7 +60,7 @@ export default function PartnerLogoEditor({initialContent}:{initialContent:SiteC
         <div className="partner-editor-fields"><LogoPreview key={item.logo} item={item}/><div>
           <label className="editor-field">Nama {kind==="supplier"?"supplier":"perusahaan"}<input name={`partner-name-${item.id}`} value={item.name} maxLength={160} placeholder="Nama sesuai identitas perusahaan" onChange={event=>update(item.id,{name:event.target.value})}/></label>
           <label className="editor-field">Beranda › Logo rekanan / supplier › {item.name} — unggah logo<input type="file" name={`partner-upload-${item.id}`} accept="image/jpeg,image/png,image/webp" onChange={event=>{const file=event.currentTarget.files?.[0];event.currentTarget.value="";if(file)void upload(item,file);}}/><small>{imageUploadHelp} PNG atau WebP transparan disarankan.</small></label>
-          <label className="editor-field">Alamat gambar (opsional jika sudah unggah)<input name={`partner-url-${item.id}`} value={item.logo} maxLength={2000} placeholder="https://... atau /images/..." onChange={event=>update(item.id,{logo:event.target.value.trim()})}/><small>Gunakan alamat gambar langsung, bukan halaman website perusahaan.</small></label>
+          <label className="editor-field">{imageAddressLabel}<input name={`partner-url-${item.id}`} value={item.logo} maxLength={2000} placeholder="https://.../logo.webp" onChange={event=>update(item.id,{logo:event.target.value.trim()})}/><small>{imageAddressHelp} Gunakan link gambar langsung, bukan halaman website perusahaan.</small></label>
         </div></div>
         <div className="editor-item-actions">
           <button type="button" className="admin-secondary" disabled={item.published&&!item.logo} onClick={()=>update(item.id,{published:!item.published})}>{item.published?"Jadikan draf":"Terbitkan logo"}</button>

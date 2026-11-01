@@ -53,7 +53,7 @@ function BusinessRoutes({ content, division }: { content: SiteContent; division?
           ); })}
         </div>
         <PublicSection section="needs" page="home"><div className="home-needs" data-home-section="needs" aria-label="Pilih berdasarkan kebutuhan">
-          <p>Quick FAQ — Mulai dari kebutuhan Anda</p>
+          <p>Quick Call to Action — Mulai dari kebutuhan Anda</p>
           <div>
             {appearance.needs.map(item => <Link key={item.id} href={item.href || "/kontak"}>{item.image && <Image src={item.image} alt={item.alt || ""} width={48} height={48} />}<span>{item.title}{item.text && <small>{item.text}</small>}</span><Arrow diagonal /></Link>)}
           </div>

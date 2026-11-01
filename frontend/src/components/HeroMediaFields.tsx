@@ -15,7 +15,7 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
     <div className="hero-media-heading"><h3>Gambar atau video hero</h3><p>Unggah dari perangkat, atau tempel link file yang sudah tersedia. Cukup pilih salah satu.</p></div>
     <div className="hero-media-options">
       <p className="hero-upload-guidance">{imageUploadHelp} {videoUploadHelp} Jenis media mengikuti file yang dipilih.</p>
-      <label className="editor-field hero-upload-field">Beranda › Hero › {slide.title} — unggah gambar atau video
+      <label className="editor-field hero-upload-field">Unggah gambar atau video
         <input name={`hero-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp,video/mp4" disabled={busy} onChange={event => {
           const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
           if (file) { setPreviewError(""); void upload(file); }
@@ -26,17 +26,17 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
           const type = event.target.value as HeroSlide["type"];
           if (type !== slide.type) change({ type, media: "", poster: undefined });
         }}><option value="image">Gambar</option><option value="video">Video MP4</option></select></label>
-        <label className="editor-field hero-url-field">Link gambar atau video<input name={`hero-url-${slide.id}`} value={slide.media} maxLength={1000} disabled={busy} placeholder="https://… atau /media/…" onChange={event => change({ media: event.target.value.trim() })} />
-          <small>Gunakan link HTTPS ke file langsung. Link halaman YouTube, Instagram, atau Google Drive bukan file video. Video besar bisa memakai link MP4 dari penyimpanan Anda.</small>
+        <label className="editor-field hero-url-field">Atau gunakan link gambar atau video<input name={`hero-url-${slide.id}`} value={slide.media} maxLength={1000} disabled={busy} placeholder="https://… atau /media/…" onChange={event => change({ media: event.target.value.trim() })} />
+          <small>Alamat terisi otomatis setelah unggah. Jika tidak mengunggah file, gunakan link HTTPS langsung ke JPG, PNG, WebP, atau MP4. SVG, YouTube, Instagram, dan Google Drive tidak didukung.</small>
         </label>
       </div>
     </div>
     {slide.type === "video" && <div className="hero-media-options hero-poster-fields">
-      <label className="editor-field">Beranda › Hero › {slide.title} — unggah sampul video<input name={`hero-poster-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={event => {
+      <label className="editor-field">Unggah sampul video<input name={`hero-poster-upload-${slide.id}`} type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={event => {
         const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
         if (file) { setPreviewError(""); void upload(file, true); }
       }} /><small>{imageUploadHelp} Sampul terlihat sebelum video diputar.</small></label>
-      <label className="editor-field">Link gambar sampul (opsional)<input name={`hero-poster-url-${slide.id}`} value={slide.poster || ""} maxLength={1000} disabled={busy} onChange={event => change({ poster: event.target.value.trim() || undefined })} />{slide.poster && <button type="button" className="admin-secondary" disabled={busy} onClick={() => change({ poster: undefined })}>Hapus sampul</button>}</label>
+      <label className="editor-field">Atau gunakan link gambar sampul (opsional)<input name={`hero-poster-url-${slide.id}`} value={slide.poster || ""} maxLength={1000} disabled={busy} placeholder="https://.../sampul.webp" onChange={event => change({ poster: event.target.value.trim() || undefined })} /><small>Alamat terisi otomatis setelah unggah. Jika diisi manual, gunakan link HTTPS langsung ke JPG, PNG, atau WebP.</small>{slide.poster && <button type="button" className="admin-secondary" disabled={busy} onClick={() => change({ poster: undefined })}>Hapus sampul</button>}</label>
     </div>}
     <label className="editor-field">Deskripsi media<input name={`hero-alt-${slide.id}`} value={slide.alt} maxLength={160} disabled={busy} onChange={event => change({ alt: event.target.value })} /></label>
     <div className="hero-media-preview" aria-label="Pratinjau media hero">

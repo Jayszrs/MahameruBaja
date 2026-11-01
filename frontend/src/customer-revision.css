@@ -15,13 +15,20 @@
 .home-order-steps li > div > a { margin-top: 20px; }
 .home-needs a small { display: block; margin-top: 4px; font-weight: 400; }
 .home-needs a img { flex: none; object-fit: cover; }
-.website-quotes { background: #ece9e2; }
-.website-quote-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 40px; }
-.website-quote-grid figure { margin: 0; padding: 24px 0; border-top: 1px solid #b7b4ae; }
-.website-quote-grid img { width: 100%; height: auto; max-height: 420px; object-fit: cover; margin-bottom: 24px; }
-.website-quote-grid blockquote { font-family: var(--font-display); font-size: clamp(26px, 3.5vw, 44px); line-height: 1.15; letter-spacing: -.03em; max-width: 30ch; }
-.website-quote-grid figcaption { margin-top: 20px; font-size: 13px; color: #50565a; }
-.website-quote-grid a { display: inline-block; margin-top: 16px; text-decoration: underline; }
+.website-quotes { background:#ece9e2; }
+.website-quotes h2 { margin:0 0 clamp(28px,4vw,50px); font-size:clamp(38px,5vw,68px); letter-spacing:-.04em; }
+.website-quote-carousel { position:relative; padding-bottom:34px; }
+.website-quote-carousel figure { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); min-height:410px; margin:0; overflow:hidden; border-radius:14px; background:#fff; }
+.website-quote-image { position:relative; min-height:410px; }
+.website-quote-image img { object-fit:cover; }
+.website-quote-copy { display:flex; flex-direction:column; justify-content:center; padding:clamp(32px,5vw,72px); }
+.website-quote-copy blockquote { margin:0; font-family:var(--font-display); font-size:clamp(28px,3.6vw,48px); line-height:1.12; letter-spacing:-.03em; }
+.website-quote-copy figcaption { margin-top:24px; color:#50565a; font-size:15px; }
+.website-quote-copy a { display:inline-block; margin-top:18px; color:#a91e28; text-decoration:underline; text-underline-offset:4px; }
+.website-quote-dots { position:absolute; inset:auto 0 0; display:flex; justify-content:center; gap:8px; }
+.website-quote-dots button { width:9px; height:9px; padding:0; border:1px solid #9b9993; border-radius:50%; background:transparent; }
+.website-quote-dots button[aria-current=true] { border-color:#a91e28; background:#a91e28; }
+@media(max-width:700px){.website-quote-carousel figure{grid-template-columns:1fr}.website-quote-image{min-height:260px}.website-quote-copy{min-height:250px}}
 .membership-marks { display: flex; gap: 10px; align-items: center; flex: none; margin-left: auto; color: #202123; }
 .membership-marks > div { display: grid; justify-items: center; gap: 2px; padding: 5px 7px; background: #fff; }
 .membership-marks img { width: 70px; height: 28px; object-fit: contain; }

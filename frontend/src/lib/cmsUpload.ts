@@ -1,5 +1,7 @@
 export type CmsUploadKind = "image" | "video";
-export const imageUploadHelp = "JPG, PNG, atau WebP. Maksimal 4 MB per gambar.";
+export const imageUploadHelp = "JPG, PNG, atau WebP. Maksimal 4 MB. Setelah unggah, alamat gambar terisi otomatis.";
+export const imageAddressLabel = "Atau gunakan link gambar";
+export const imageAddressHelp = "Alamat terisi otomatis setelah unggah. Jika tidak mengunggah file, tempel link HTTPS langsung ke gambar JPG, PNG, atau WebP. SVG tidak didukung.";
 export function clientVideoByteLimit() { return process.env.NEXT_PUBLIC_CMS_VIDEO_MAX_BYTES === "4000000" ? 4_000_000 : 30_000_000; }
 export const videoUploadHelp = `MP4 (H.264). Maksimal ${clientVideoByteLimit() / 1_000_000} MB per video.`;
 export const cmsUploadEvent = "mahameru:cms-upload";

@@ -8,6 +8,8 @@ export const sectionListFields: Record<string, { label:string; fields:ListField[
   productCategoryFilters: {label:"Kategori filter produk",fields:[{key:"label",label:"Nama kategori"}]},
   heroImages: { label:"Gambar pembuka bergantian", fields:[{key:"src",label:"Gambar",type:"image"}] },
   collagePhotos: { label:"Foto kolase (tiga foto pertama tampil di halaman)", fields:[{key:"src",label:"Gambar",type:"image"},{key:"alt",label:"Deskripsi gambar"},{key:"caption",label:"Keterangan"},{key:"kind",label:"Jenis",options:["photo","logo"]}] },
+  collageGroups: { label:"Kolase beranda", fields:[{key:"title",label:"Nama kolase"},{key:"src",label:"Sampul kolase",type:"image"},{key:"alt",label:"Deskripsi sampul"}] },
+  collageImages: { label:"Foto dalam kolase", fields:[{key:"src",label:"Gambar",type:"image"},{key:"alt",label:"Deskripsi gambar"},{key:"caption",label:"Keterangan"}] },
   servicePaths: { label:"Pilihan kebutuhan layanan", fields:[{key:"title",label:"Judul"},{key:"detail",label:"Deskripsi",type:"textarea"},{key:"action",label:"Label tombol"},{key:"href",label:"Tujuan tombol",type:"link"},{key:"external",label:"Buka pada tab baru",type:"boolean"}] },
   scopeCards: { label:"Kartu ruang lingkup jasa", fields:[{key:"name",label:"Nama layanan"},{key:"description",label:"Deskripsi",type:"textarea"},{key:"image",label:"Gambar",type:"image"},{key:"icon",label:"Ikon",options:["laser","bend","weld","building"]},{key:"note",label:"Keterangan gambar"}] },
   workflowSteps: { label:"Alur pengerjaan", fields:[{key:"title",label:"Judul langkah"},{key:"desc",label:"Deskripsi",type:"textarea"},{key:"icon",label:"Ikon",options:["drawing","quote","calendar","machine","quality"]}] },
@@ -38,5 +40,6 @@ export const sectionListSchema = z.object({
       if(field.options&&typeof value==="string"&&!field.options.includes(value))ctx.addIssue({code:z.ZodIssueCode.custom,path:["rows",index,field.key],message:"Pilih salah satu opsi yang tersedia."});
     }
   }
+  if(list.key.split(":")[0]==="collageGroups"&&list.rows.length!==3)ctx.addIssue({code:z.ZodIssueCode.custom,path:["rows"],message:"Beranda memiliki tepat tiga kolase."});
 });
 export type SectionList = z.infer<typeof sectionListSchema>;

@@ -17,13 +17,17 @@ export function readSectionLists(document:Document, section:string):ListSnapshot
 }
 export default function SectionListsEditor({ content, page, section, ownerDivision = null, snapshots, errors, update, uploadState, report }: { content:SiteContent; page:TextPage; section:string; ownerDivision?:string|null; snapshots:ListSnapshot[]; errors:Record<string,string>; update:(next:SiteContent)=>void; uploadState:(busy:boolean)=>void; report:(message:string,failed?:boolean)=>void }) {
   const [expanded,setExpanded]=useState<Set<string>>(()=>new Set());
+  const [selectedCollage,setSelectedCollage]=useState<string|null>(null);
+  const [selectedCollagePhoto,setSelectedCollagePhoto]=useState<string|null>(null);
   const saved=content.sectionLists.filter(list=>(list.ownerDivision||null)===ownerDivision&&list.page===page&&list.section===section);
   function editText(source:string, replacement:string) {
     const existing=[...content.sectionEdits].reverse().find(row=>(row.ownerDivision||null)===ownerDivision&&row.page===page&&row.section===section&&row.kind==="text"&&normalizeWebsiteText(row.source)===normalizeWebsiteText(source));
     const row:SectionEdit={id:existing?.id||crypto.randomUUID(),ownerDivision,page,section,kind:"text",source,label:"Tulisan section",replacement,published:true};
     const dedupedEdits = content.sectionEdits.filter(item => !(item.page === page && item.section === section && (item.ownerDivision||null)===ownerDivision && item.kind === "text" && normalizeWebsiteText(item.source) === normalizeWebsiteText(source))); update({...content, sectionEdits: [...dedupedEdits, row]});
   }
-  const keys=[...new Set([...snapshots.map(list=>list.key),...saved.map(list=>list.key)])];
+  const discovered=[...new Set([...snapshots.map(list=>list.key),...saved.map(list=>list.key)])];
+  const hasNestedCollages=discovered.some(key=>key.startsWith("collageGroups:"));
+  const keys=discovered.filter(key=>!(hasNestedCollages&&(key.startsWith("collagePhotos:")||key.startsWith("collageImages:"))));
   return <>{keys.map(key=>{
     const definition=sectionListFields[key.split(":")[0]]; if(!definition)return null;
     const list=saved.find(list=>list.key===key), rows=(list?.rows || snapshots.find(list=>list.key===key)?.rows || []) as SectionListRow[];
@@ -32,6 +36,36 @@ export default function SectionListsEditor({ content, page, section, ownerDivisi
       const dedupedLists = content.sectionLists.filter(item => !(item.page === page && item.section === section && (item.ownerDivision||null)===ownerDivision && item.key === key)); update({...content, sectionLists: [...dedupedLists, value]});
     }
     function field(id:string|number,name:string,value:string|boolean) {change(rows.map(row=>row.id===id?{...row,[name]:value}:row));}
+    if(key.startsWith("collageGroups:")) {
+      const groups=rows.slice(0,3);
+      const currentId=selectedCollage&&groups.some(group=>String(group.id)===selectedCollage)?selectedCollage:String(groups[0]?.id||"");
+      const current=groups.find(group=>String(group.id)===currentId);
+      const suffix=key.slice("collageGroups:".length);
+      const photoKey=`collageImages:${suffix}:${currentId}`;
+      const photoSnapshot=snapshots.find(item=>item.key===photoKey);
+      const photoList=saved.find(item=>item.key===photoKey);
+      const photos=(photoList?.rows||photoSnapshot?.rows||[]) as SectionListRow[];
+      const orderedGroups=groups.map((group,index)=>({id:String(group.id),title:String(group.title||`Kolase ${index+1}`),detail:"Sampul dan kumpulan foto" ,image:typeof group.src==="string"?group.src:undefined}));
+      const orderedPhotos=photos.map((photo,index)=>({id:String(photo.id),title:String(photo.caption||photo.alt||`Foto ${index+1}`),image:typeof photo.src==="string"?photo.src:undefined}));
+      function changePhotos(next:SectionListRow[]) {
+        const value={id:photoList?.id||crypto.randomUUID(),ownerDivision,page,section,key:photoKey,rows:next,published:true};
+        const deduped=content.sectionLists.filter(item=>!(item.page===page&&item.section===section&&(item.ownerDivision||null)===ownerDivision&&item.key===photoKey));
+        update({...content,sectionLists:[...deduped,value]});
+      }
+      function photoField(id:string|number,name:string,value:string|boolean) {changePhotos(photos.map(photo=>photo.id===id?{...photo,[name]:value}:photo));}
+      return <section className="editor-panel cms-section-list cms-collage-editor" key={key}>
+        <div className="editor-list-heading"><h3>Foto kolase beranda</h3><span className="admin-field-help">Atur tepat tiga kolase. Buka satu kolase untuk mengelola sampul dan foto di dalamnya.</span></div>
+        <AdminOrderList label="Urutan kolase" items={orderedGroups} selected={currentId} onSelect={setSelectedCollage} onMove={(from,to)=>change(moveBefore(groups.map(group=>({...group,id:String(group.id)})),from,to))}/>
+        {current&&<section className="cms-collage-detail"><h4>{current.title||`Kolase ${groups.findIndex(group=>String(group.id)===currentId)+1}`}</h4>
+          <div className="cms-list-fields"><label className="editor-field">Nama kolase<input maxLength={160} value={String(current.title||"")} onChange={event=>field(current.id,"title",event.target.value)}/></label><label className="editor-field">Deskripsi sampul<input maxLength={300} value={String(current.alt||"")} onChange={event=>field(current.id,"alt",event.target.value)}/></label><label className="editor-field cms-collage-cover">Sampul kolase{current.src&&<img className="cms-section-image" src={String(current.src)} alt={String(current.alt||current.title||"Sampul kolase")}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={async event=>{const file=event.target.files?.[0];event.target.value="";if(!file)return;uploadState(true);report("Mengunggah sampul kolase…");try{field(current.id,"src",await uploadCmsFile(file,"image",ownerDivision));report("Sampul selesai diunggah. Simpan section untuk menerapkannya.");}catch(error){report(error instanceof Error?error.message:"Unggahan gagal.",true);}finally{uploadState(false);}}}/><small>JPG, PNG, WebP · maksimal 4 MB.</small></label></div>
+          <AdminOrderList label={`Urutan foto dalam ${String(current.title||"kolase")}`} items={orderedPhotos} selected={selectedCollagePhoto||undefined} onSelect={setSelectedCollagePhoto} onMove={(from,to)=>changePhotos(moveBefore(photos.map(photo=>({...photo,id:String(photo.id)})),from,to))}>
+            <button type="button" className="admin-primary" disabled={photos.length>=100} onClick={()=>{const photo={id:crypto.randomUUID(),src:"",alt:"",caption:""};changePhotos([...photos,photo]);setSelectedCollagePhoto(String(photo.id));}}>+ Tambah foto</button>
+          </AdminOrderList>
+          {photos.length===0&&<p>Belum ada foto dalam kolase ini.</p>}
+          {photos.find(photo=>String(photo.id)===selectedCollagePhoto)&&(()=>{const photo=photos.find(row=>String(row.id)===selectedCollagePhoto)!;return <div className="cms-collage-photo-detail"><div className="cms-field-heading"><h4>Rincian foto</h4><button type="button" className="admin-danger" onClick={()=>{if(window.confirm("Hapus foto ini dari kolase?")){changePhotos(photos.filter(row=>row.id!==photo.id));setSelectedCollagePhoto(null);}}}>Hapus foto</button></div><div className="cms-list-fields"><label className="editor-field">Deskripsi gambar<input maxLength={300} value={String(photo.alt||"")} onChange={event=>photoField(photo.id,"alt",event.target.value)}/></label><label className="editor-field">Keterangan<input maxLength={300} value={String(photo.caption||"")} onChange={event=>photoField(photo.id,"caption",event.target.value)}/></label><label className="editor-field cms-collage-cover">Gambar{photo.src&&<img className="cms-section-image" src={String(photo.src)} alt={String(photo.alt||photo.caption||"Pratinjau foto")}/>}<input type="file" accept="image/jpeg,image/png,image/webp" onChange={async event=>{const file=event.target.files?.[0];event.target.value="";if(!file)return;uploadState(true);report("Mengunggah foto…");try{photoField(photo.id,"src",await uploadCmsFile(file,"image",ownerDivision));report("Foto selesai diunggah. Simpan section untuk menerapkannya.");}catch(error){report(error instanceof Error?error.message:"Unggahan gagal.",true);}finally{uploadState(false);}}}/><small>JPG, PNG, WebP · maksimal 4 MB.</small></label></div></div>;})()}
+        </section>}
+      </section>;
+    }
     function ensureCategorySlug(id:string|number) {if(key!=="productCategoryFilters")return;const row=rows.find(item=>item.id===id);if(row&&!String(row.slug||"").trim()&&String(row.label||"").trim())change(rows.map(item=>item.id===id?{...item,slug:productSlug(String(item.label))||"kategori"}:item));}
     const isGuideList = key === "guideDefinitions" || key === "guideChecklist";
     const headingSource=key==="laserFAQs"?"Pertanyaan laser cutting & bending.":isGuideList?(key==="guideDefinitions"?"Potong, tekuk, atau rakit?":"Sebelum mengirim desain"):null;

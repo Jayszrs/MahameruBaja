@@ -12,6 +12,9 @@
 /* Three visible tiles, with a white-backed brand tile opening the same album. */
 .division-collage{position:relative;min-width:0;width:100%;isolation:isolate;margin-block:8px}
 .division-collage-grid{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:12px;aspect-ratio:1.14;min-height:280px}
+.division-collage-group{position:relative;min-width:0;min-height:0}
+.division-collage-group:has(.division-collage-primary){grid-row:1/3}
+.division-collage-group .division-collage-photo{width:100%;height:100%}
 .division-collage-photo{position:relative;display:block;min-width:0;min-height:0;border:0;padding:0;overflow:hidden;background:#eee;cursor:pointer;text-align:left;box-shadow:0 10px 26px #1012140c}
 .division-collage-photo img{object-fit:cover;transition:transform .35s ease}
 .division-collage-photo:hover img{transform:scale(1.035)}

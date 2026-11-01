@@ -1,4 +1,4 @@
-import { divisionSlugSchema, ownershipFields } from "./divisionCms";
+import { contentOwner, divisionSlugSchema, ownershipFields } from "./divisionCms";
 import { z } from "zod";
 import { safeHttpsUrl, safeInternalLink, safeLocalAsset } from "./safeUrls";
 
@@ -52,6 +52,13 @@ export const promotionSchema = z.object({ ...ownershipFields,
 });
 
 export type Promotion = z.infer<typeof promotionSchema>;
+
+export function promotionVisibleInDivision(promotion: Promotion, slug: string, base = `/unit/${slug}`) {
+  return promotion.audience
+    ? promotion.audience.includes(slug)
+    : contentOwner(promotion) === slug ||
+      (!contentOwner(promotion) && (promotion.ctaHref === base || promotion.ctaHref.startsWith(`${base}/`)));
+}
 
 export { prioritizePromotions } from "./promotionOrder";
 

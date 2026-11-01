@@ -91,6 +91,7 @@ export default function InventoryEditor({ initialItems, division, hideActions = 
         </div></div>
         <div className="inventory-flow-section inventory-search-section"><h2>3. Cari dan kelola produk divisi ini</h2><label className="editor-field">Cari produk di divisi ini<input type="search" value={query} placeholder="Nama produk atau kode SKU" onChange={event => setQuery(event.target.value)} /><small>Pencarian memfilter daftar produk dan formulir stok di bawah.</small></label></div>
       </section>
+      {shown.some(item => Boolean(item.product)) && <p className="admin-field-help">Foto yang diunggah otomatis mengisi alamat gambar. Jika memakai gambar dari luar, tempel link HTTPS langsung ke JPG, PNG, atau WebP; SVG tidak didukung.</p>}
       {shown.length > 0 && <AdminOrderList label="Urutan produk" disabled={busy} items={shown.map(item => ({ id: inventoryKey(item), title: allProducts.find(product => product.id === item.productId)?.name || 'Produk baru', detail: item.product?.sku, image: item.product?.image }))} onMove={reorder} onSelect={key => focusEditorRecord(`inventory-${key}`)} />}
       {shown.map(item => {
         const key = inventoryKey(item); const product = allProducts.find(product => product.id === item.productId);

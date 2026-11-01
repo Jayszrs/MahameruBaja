@@ -93,7 +93,6 @@ export default function WelcomePosters({ promotions, divisions = [], contacts = 
         <details className="poster-welcome-more" key={item.id} onToggle={event => setReading(event.currentTarget.open)}>
           <summary>Detail promo & kontak</summary>
           <div className="poster-lightbox-information">
-            {item.summary && <p className="poster-welcome-description">{item.summary}</p>}
             <p className="poster-welcome-provider"><strong>{details.division?.name || "Mahameru Baja Indonesia"}</strong>{details.division?.area && <span>{details.division.area}</span>}</p>
             {details.contact && <p className="poster-lightbox-contact"><strong>{details.contact.name}</strong>{details.contact.role && <span>{details.contact.role}</span>}{(details.contact.whatsapp || details.contact.phone || details.contact.mobile) && <span>{details.contact.whatsapp || details.contact.phone || details.contact.mobile}</span>}</p>}
             <dl className="poster-welcome-facts">{item.benefit && <div><dt>Informasi penawaran</dt><dd>{item.benefit}</dd></div>}{item.appliesTo && <div><dt>Untuk kebutuhan</dt><dd>{item.appliesTo}</dd></div>}<div><dt>Periode</dt><dd>{posterPeriod(item)}</dd></div></dl>

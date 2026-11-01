@@ -6,7 +6,7 @@ export const cmsPages: Record<string, CmsPage> = {
     { heading: "Hero / gambar pembuka", detail: "Gambar, video, judul, tombol, dan urutan slide.", edit: "/admin/hero", action: "Edit hero beranda" },
     { heading: "Promo dan penawaran", detail: "Banner yang tampil setelah hero. Popup saat masuk diatur terpisah.", edit: "/admin/promosi?view=all", action: "Edit banner beranda" },
     text("home", "Mengenal Mahameru Group"),
-    { heading: "Jasa laser cutting & bending", detail: "Foto latar bagian layanan laser di beranda.", edit: "/admin/tampilan?section=backgrounds", action: "Unggah latar laser cutting" },
+    { heading: "Alur Jasa", detail: "Tulisan pengantar dan urutan langkah pada bagian jasa di Beranda. Pilih website utama atau divisi yang ingin diedit.", edit: "/admin/website/beranda?section=laser", action: "Edit Alur Jasa" },
     { heading: "Cara pesan di Mahameru", detail: "Ilustrasi, judul singkat, teks, dan tujuan tombol setiap langkah.", edit: "/admin/tampilan?section=orderSteps", action: "Edit langkah cara pesan" },
     { heading: "Quote / kata mutiara", detail: "Tambah, ubah, hapus, atau susun quote dan gambarnya.", edit: "/admin/tampilan?section=quotes", action: "Edit quote beranda" },
     { heading: "Ulasan pelanggan", detail: "Kutipan asli pelanggan dan tautan sumber Google.", edit: "/admin/konten?tab=reviews", action: "Edit ulasan pelanggan" },

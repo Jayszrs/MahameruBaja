@@ -13,6 +13,7 @@ export const divisionSchema = z.object({
   images: z.array(z.object({ src: assetUrl, title: text(200) })).max(20),
   offerings: z.array(text(250)).max(30), process: z.array(text(500)).max(12),
   offeringDescriptions: z.record(text(250).min(1), text(2000)).default({}),
+  faqHeading: text(250).default("Yang sering ditanyakan."),
   faq: z.array(z.object({ question: text(300), answer: text(2000) })).max(30),
   address: text(1000), mapsUrl: text(1000).refine(v => !v || /^https:\/\/(?:maps\.app\.goo\.gl|goo\.gl|(?:www\.)?google\.(?:com|co\.id))\//.test(v), "Gunakan tautan Google Maps HTTPS."),
   mapEmbed: text(1500).refine(v => !v || /^https:\/\/(?:www\.)?google\.(?:com|co\.id)\/maps(?:[/?])/.test(v), "Gunakan URL embed Google Maps."),
@@ -22,7 +23,7 @@ export const divisionSchema = z.object({
 export const divisionInputSchema = divisionSchema.omit({ id: true, revision: true, sortOrder: true, createdAt: true, updatedAt: true, admins: true });
 export type Division = z.infer<typeof divisionSchema>;
 export function orderedDivisions(records: Division[]) { return [...records]; }
-export const ownershipFields = { ownerDivision: divisionSlugSchema.nullable().optional(), audience: z.array(divisionSlugSchema).max(100).optional() };
+export const ownershipFields = { ownerDivision: divisionSlugSchema.nullable().optional(), audience: z.array(z.union([divisionSlugSchema, z.literal("main")])).max(100).optional() };
 export type ContentOwnership = { ownerDivision?: string | null; audience?: string[] };
 export function contentOwner(item: ContentOwnership & { division?: string; divisions?: string[] }) {
   if (item.ownerDivision !== undefined) return item.ownerDivision;
