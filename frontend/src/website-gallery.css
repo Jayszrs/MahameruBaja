@@ -141,6 +141,29 @@
 .site-navbar form { min-width:0; }
 .quote-rating-only { flex:1; margin-block:24px; color:var(--color-steel-grey); font-size:17px; line-height:1.7; }
 .quote-tone-1 .quote-rating-only { color:var(--color-light-steel); }
+.poster-welcome.poster-image-only[open] {
+ display:block; width:min(980px, calc(100vw - 32px), calc((100dvh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * var(--poster-ratio)));
+ height:fit-content; max-height:none; padding:0; overflow:hidden; background:transparent; border:0; border-radius:28px;
+ box-shadow:0 20px 64px #0005;
+}
+.poster-image-only .poster-welcome-toolbar { position:absolute; inset:12px 12px auto auto; z-index:3; padding:0; border:0; background:transparent; }
+.poster-welcome.poster-image-only .poster-welcome-layout { display:block; min-height:0; overflow:visible; }
+.poster-welcome.poster-image-only a.poster-welcome-image { display:block; width:100%; height:auto; max-height:none; aspect-ratio:var(--poster-ratio); background:transparent; border-radius:0; }
+.poster-image-only .poster-welcome-image img { object-fit:contain; }
+.poster-welcome.poster-image-only .poster-welcome-navigation { position:absolute; inset:auto auto 12px 50%; transform:translateX(-50%); z-index:2; display:flex; gap:4px; padding:4px; border:0; border-radius:999px; background:#101112e6; color:#fff; }
+.poster-welcome.poster-image-only .poster-welcome-navigation :is(p,button) { color:#fff; }
+.poster-welcome.poster-image-only .poster-welcome-navigation p { min-width:44px; font-size:12px; }
+.poster-welcome.poster-image-only .poster-welcome-navigation button,
+.poster-welcome.poster-image-only .poster-welcome-close { width:44px; height:44px; min-width:44px; padding:0; border:0; border-radius:50%; background:transparent; color:#fff; }
+.poster-welcome.poster-image-only .poster-welcome-close { background:#101112e6; }
+.poster-welcome.poster-image-only .poster-welcome-navigation button:hover,
+.poster-welcome.poster-image-only .poster-welcome-close:hover { background:#34383a; }
+.poster-welcome.poster-image-only :is(button,a):focus-visible { outline:2px solid #fff; outline-offset:-5px; }
+@media(max-width:760px) {
+ .poster-welcome.poster-image-only[open] { border-radius:22px; }
+ .poster-image-only .poster-welcome-toolbar { top:8px; right:8px; }
+ .poster-welcome.poster-image-only .poster-welcome-navigation { bottom:8px; }
+}
 @media(min-width:761px) {
  .poster-welcome.poster-lightbox .poster-welcome-layout { display:block; }
  .poster-welcome.poster-lightbox button.poster-welcome-image { width:100%; height:auto; aspect-ratio:16/9; max-height:57dvh; background:var(--color-surface-2); }
