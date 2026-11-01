@@ -20,6 +20,7 @@ import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
 import { WebsiteTextProvider } from "../src/components/PublicText";
+import SiteLanguageProvider from "../src/components/SiteLanguageProvider";
 import WelcomePosters from "../src/components/WelcomePosters";
 import { connection } from "next/server";
 import AppShell from "../src/components/AppShell";
@@ -85,7 +86,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const [divisions, content] = await Promise.all([readPublicDivisions(), readPublicSiteContent()]);
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><AdminNavigationProvider><AppShell inventory={content.inventory} appearance={content.websiteAppearance} contacts={content.contacts}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
+      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><SiteLanguageProvider enabled={Boolean(process.env.GOOGLE_TRANSLATE_API_KEY)}><AdminNavigationProvider><AppShell inventory={content.inventory} appearance={content.websiteAppearance} contacts={content.contacts}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></SiteLanguageProvider></WebsiteTextProvider></DivisionDirectory></body>
     </html>
   );
 }

@@ -7,7 +7,7 @@ import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import Image from "../components/CmsImage"
-import { useState, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
 import { createLead, type CreateLeadInput } from "../lib/api"
@@ -22,6 +22,15 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
   const cards = config.services;
   const { divisions } = useDivisionDirectory();
   const [selected, setSelected] = useState("Laser Cutting")
+  useEffect(() => {
+    const choose = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>(".service-process-options a[data-service-choice]") : null;
+      const service = link?.dataset.serviceChoice;
+      if (service && laserServices.includes(service)) setSelected(service);
+    };
+    document.addEventListener("click", choose);
+    return () => document.removeEventListener("click", choose);
+  }, []);
   const [file, setFile] = useState<File | null>(null)
   const [fileError, setFileError] = useState("")
   const [message, setMessage] = useState("")

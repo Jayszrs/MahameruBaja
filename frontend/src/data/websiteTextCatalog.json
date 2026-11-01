@@ -64,7 +64,6 @@
     "area": "AboutMergedPage",
     "areas": [
       "AboutMergedPage",
-      "LocalBusinessDetails",
       "UnifiedHomeContent"
     ]
   },
@@ -250,6 +249,14 @@
   {
     "source": "Jenis-Jenis Plat Besi dan Aplikasinya dalam Fabrikasi",
     "area": "articles"
+  },
+  {
+    "source": "Laser Cutting & Bending",
+    "area": "articles",
+    "areas": [
+      "articles",
+      "serviceContent"
+    ]
   },
   {
     "source": "Mengenal Profil Besi WF (Wide Flange) dan Fungsinya dalam Konstruksi",
@@ -490,6 +497,10 @@
   },
   {
     "source": "Cari besi dan material untuk pekerjaan Anda. Hubungi tim toko untuk informasi terbaru.",
+    "area": "clientPosters"
+  },
+  {
+    "source": "Jasa laser cutting",
     "area": "clientPosters"
   },
   {
@@ -792,7 +803,15 @@
     "area": "divisionContent"
   },
   {
+    "source": "Besi beton",
+    "area": "divisionContent"
+  },
+  {
     "source": "Besi beton & wiremesh",
+    "area": "divisionContent"
+  },
+  {
+    "source": "Besi hollow",
     "area": "divisionContent"
   },
   {
@@ -1433,7 +1452,7 @@
     "area": "GalleryPage"
   },
   {
-    "source": "Kebersamaan tim, acara perusahaan, dan aktivitas sehari-hari di Mahameru Baja.",
+    "source": "Jelajahi foto kegiatan, pekerjaan, material, dan referensi yang sudah dipublikasikan.",
     "area": "GalleryPage"
   },
   {
@@ -1613,7 +1632,6 @@
     "areas": [
       "HomePage",
       "Footer",
-      "WelcomePosters",
       "socialMedia"
     ]
   },
@@ -1720,7 +1738,11 @@
   },
   {
     "source": "Buka Google Maps",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "LocalBusinessDetails"
+    ]
   },
   {
     "source": "email@example.com (opsional)",
@@ -2044,11 +2066,31 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "Bahas",
+    "area": "LaserServiceGuide"
+  },
+  {
     "source": "Bending plat",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Cantumkan satuan ukuran dan dimensi akhir pada gambar.",
+    "source": "Butuh potong, tekuk, atau rakit?",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Cantumkan satuan ukuran dan jumlah tiap komponen. Harga, toleransi, dan jadwal dikonfirmasi sebelum produksi.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Cek penawaran",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "DWG / DXF, PDF, atau foto.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Empat langkah, langsung dipahami.",
     "area": "LaserServiceGuide"
   },
   {
@@ -2056,23 +2098,11 @@
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Gambar DWG atau DXF membantu peninjauan bentuk. PDF dan foto dapat dikirim untuk konsultasi awal. Tim memastikan kelayakan file, toleransi, harga, dan jadwal sebelum produksi.",
+    "source": "Jasa cutting laser Tambun & Bekasi, sesuai gambar kerja Anda.",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Jasa cutting laser adalah pemotongan plat dengan mesin laser CNC mengikuti pola gambar kerja. MBI Laser Cutting &amp; Bending melayani jasa cutting laser Bekasi, Tambun, dan sekitarnya, mulai dari ornamen pagar dan panel hingga komponen custom. Jenis bahan, ketebalan, ukuran, serta jumlah diperiksa bersama gambar sebelum pekerjaan disepakati.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Jasa Cutting Laser Tambun &amp; Bekasi untuk plat sesuai gambar kerja",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Jelaskan apakah material disediakan sendiri atau perlu dibantu pengadaannya.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Kirim gambar untuk penawaran cutting laser",
+    "source": "Kirim gambar",
     "area": "LaserServiceGuide"
   },
   {
@@ -2080,35 +2110,51 @@
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Panduan untuk menyiapkan pesanan",
+    "source": "Lengkapi detail",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Potong, tekuk, atau rakit?",
+    "source": "Mulai konsultasi",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Sebelum mengirim desain",
+    "source": "Perakitan, pengelasan, dan finishing.",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Sertakan detail tekukan, finishing, lokasi tujuan, dan target waktu.",
+    "source": "Pilih proses",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Tulis jumlah setiap desain atau komponen, bukan hanya total lembar plat.",
+    "source": "Pola, panel, ornamen, dan komponen plat.",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Untuk kebutuhan perakitan atau pengelasan setelah bagian dibuat. Sampaikan sambungan dan finishing yang dibutuhkan saat konsultasi.",
+    "source": "Potong",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Untuk membuat tekukan. Sertakan arah, sudut tekuk, dan dimensi hasil akhir agar tim bisa memeriksa kebutuhan pembentukan.",
+    "source": "Potong, tekuk, atau rakit.",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Untuk memotong bentuk atau pola pada plat mengikuti gambar kerja, seperti panel, ornamen, dan bagian komponen.",
+    "source": "Rakit",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Tekuk",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Tekukan sesuai arah, sudut, dan ukuran.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Tim konfirmasi harga dan jadwal.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Ukuran, bahan, jumlah, dan target waktu.",
     "area": "LaserServiceGuide"
   },
   {
@@ -2176,103 +2222,55 @@
     "area": "Legal"
   },
   {
-    "source": "Alamat & kontak tim laser cutting",
+    "source": "Chat",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Alamat & kontak toko",
+    "source": "Cukup siapkan ini",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Area layanan:",
+    "source": "DWG / DXF. PDF atau foto untuk konsultasi awal.",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Cara cek harga dan pengiriman",
+    "source": "Finishing, lokasi, dan tanggal kebutuhan.",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Cari besi beton, hollow, pipa, plat, WF, UNP, CNP, wiremesh, atau baja ringan melalui katalog Mahameru Baja. Untuk pembelian di Tambun dan Cibitung, pilih toko yang ingin dihubungi lalu konfirmasikan spesifikasi, stok, dan harga terbaru.",
+    "source": "Gambar",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Detail bending atau finishing, lokasi tujuan, dan target waktu.",
+    "source": "Harga dan jadwal dipastikan setelah gambar diperiksa.",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Gambar DWG atau DXF; PDF dan foto dapat dipakai untuk konsultasi awal.",
+    "source": "Jenis, ketebalan, ukuran, dan jumlah komponen.",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Harga dan stok material dapat berubah. Biaya serta jangkauan pengiriman disepakati dengan admin sesuai pesanan.",
+    "source": "Kirim desain & minta harga",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Harga laser cutting bergantung pada bahan, panjang dan kerumitan potong, jumlah, serta proses tambahan. Kapasitas mesin, toleransi, dan jadwal dipastikan setelah gambar ditinjau.",
+    "source": "Kirim desain, cek prosesnya, lalu terima penawaran.",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Jenis material, ketebalan plat, dimensi, dan jumlah setiap komponen.",
+    "source": "Kontak lengkap",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Kirim gambar kerja untuk kebutuhan ornamen pagar, panel, atau komponen plat. Tim MBI Laser Cutting & Bending meninjau jenis bahan, ketebalan, ukuran, dan jumlah sebelum mengonfirmasi proses produksi.",
+    "source": "Material & jumlah",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Kirim kebutuhan laser cutting",
+    "source": "Siap bahas kebutuhan Anda?",
     "area": "LocalBusinessDetails"
   },
   {
-    "source": "Konfirmasikan jadwal kunjungan dengan admin sebelum datang.",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Konsultasi cutting laser Bekasi",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Lihat jasa laser cutting dan bending Bekasi",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Lihat katalog besi dan baja Bekasi",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Lokasi pengambilan atau alamat pengiriman di Bekasi dan sekitarnya.",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Minta harga material",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Nama material, ukuran, ketebalan, dan jumlah batang atau lembar.",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Perlu bahan untuk pekerjaan Anda?",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Perlu plat dipotong atau ditekuk?",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Petunjuk arah Google Maps",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Siapkan data untuk penawaran",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Tanggal kebutuhan, agar tim dapat mengecek stok serta jadwal pengiriman.",
-    "area": "LocalBusinessDetails"
-  },
-  {
-    "source": "Toko besi dan baja di Tambun & Cibitung, Bekasi",
+    "source": "Target pengerjaan",
     "area": "LocalBusinessDetails"
   },
   {
@@ -2302,6 +2300,10 @@
       "Navbar",
       "QuotationDrawer"
     ]
+  },
+  {
+    "source": "Galeri",
+    "area": "Navbar"
   },
   {
     "source": "Galvalum",
@@ -2352,10 +2354,6 @@
     "area": "Navbar"
   },
   {
-    "source": "Proyek",
-    "area": "Navbar"
-  },
-  {
     "source": "Sosial Media",
     "area": "Navbar"
   },
@@ -2386,10 +2384,6 @@
   {
     "source": "Mungkin halaman ini sudah dipindahkan atau URL yang Anda masukkan tidak sesuai. Gunakan navigasi di bawah untuk kembali ke halaman yang benar.",
     "area": "NotFoundPage"
-  },
-  {
-    "source": "Album kegiatan",
-    "area": "page"
   },
   {
     "source": "Album kegiatan dan kebersamaan tim Mahameru Baja Indonesia.",
@@ -2565,7 +2559,6 @@
     "areas": [
       "ProductDetailPage",
       "ProductsPage",
-      "ProjectsPage",
       "QuotationPage",
       "Navbar",
       "SearchOverlay"
@@ -3963,7 +3956,11 @@
   },
   {
     "source": "foto",
-    "area": "ProjectAlbums"
+    "area": "ProjectAlbums",
+    "areas": [
+      "ProjectAlbums",
+      "WebsitePhotoGallery"
+    ]
   },
   {
     "source": "Foto untuk kategori ini belum diterbitkan.",
@@ -3979,7 +3976,11 @@
   },
   {
     "source": "Lihat sumber",
-    "area": "ProjectAlbums"
+    "area": "ProjectAlbums",
+    "areas": [
+      "ProjectAlbums",
+      "WebsitePhotoGallery"
+    ]
   },
   {
     "source": "Pengalaman proyek kami.",
@@ -3995,7 +3996,11 @@
   },
   {
     "source": "Referensi:",
-    "area": "ProjectAlbums"
+    "area": "ProjectAlbums",
+    "areas": [
+      "ProjectAlbums",
+      "WebsitePhotoGallery"
+    ]
   },
   {
     "source": "Satu proyek, beragam perspektif. Buka album untuk melihat rangkaian dokumentasi pekerjaan Mahameru Baja Indonesia.",
@@ -4007,179 +4012,30 @@
   },
   {
     "source": "Sumber referensi:",
-    "area": "ProjectAlbums"
+    "area": "ProjectAlbums",
+    "areas": [
+      "ProjectAlbums",
+      "WebsitePhotoGallery"
+    ]
   },
   {
     "source": "telah kami kerjakan.",
     "area": "ProjectAlbums"
   },
   {
-    "source": "Baja ringan",
+    "source": "Dari proses sampai hasil pekerjaan.",
     "area": "ProjectsPage"
   },
   {
-    "source": "Besi beton",
-    "area": "ProjectsPage",
-    "areas": [
-      "ProjectsPage",
-      "divisionContent"
-    ]
-  },
-  {
-    "source": "Besi hollow",
-    "area": "ProjectsPage",
-    "areas": [
-      "ProjectsPage",
-      "divisionContent"
-    ]
-  },
-  {
-    "source": "Bondek untuk kebutuhan konstruksi",
+    "source": "Jelajahi dokumentasi proyek Mahameru Baja.",
     "area": "ProjectsPage"
   },
   {
-    "source": "Butuh material untuk proyek Anda?",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh layanan: pembelian besi satuan langsung di toko, dibantu cek ukuran dan stok.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh layanan: pengiriman material ke lokasi mengikuti jadwal yang disepakati.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh layanan: stok material disiapkan untuk kebutuhan retail maupun proyek.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh material: plat untuk kebutuhan cutting, fabrikasi, dan konstruksi.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: baja ringan untuk rangka atap renovasi maupun proyek.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: besi beton sesuai daftar kebutuhan, jumlah, dan jadwal proyek.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: bondek untuk dak dan lantai kerja proyek.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: hollow untuk rangka dan konstruksi, tersedia berbagai ukuran.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: pipa untuk instalasi dan konstruksi sesuai spesifikasi.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengadaan: spandek untuk atap dan dinding bangunan.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengerjaan: memotong plat mengikuti gambar kerja untuk panel, ornamen, dan komponen custom.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh pengerjaan: menekuk plat sesuai ukuran dan sudut dari gambar yang disetujui.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Contoh stok: wiremesh untuk pengecoran, disiapkan sesuai volume kebutuhan.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Dokumentasi & pekerjaan",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Galeri",
-    "area": "ProjectsPage",
-    "areas": [
-      "ProjectsPage",
-      "Navbar"
-    ]
-  },
-  {
-    "source": "Galeri Mahameru Baja menampilkan material, aktivitas toko, proses produksi, hingga hasil pekerjaan yang kami kerjakan.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Galeri material & pekerjaan",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Ilustrasi",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Ilustrasi alur pengiriman material",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Ilustrasi persediaan baja konstruksi",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Ilustrasi proses bending",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Ilustrasi proses laser cutting",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Jasa laser cutting",
-    "area": "ProjectsPage",
-    "areas": [
-      "ProjectsPage",
-      "clientPosters"
-    ]
-  },
-  {
-    "source": "Kirim daftar material, volume, lokasi, dan target waktu. Tim kami membantu mengarahkan kebutuhan ke divisi yang tepat.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Laser Cutting & Bending",
-    "area": "ProjectsPage",
-    "areas": [
-      "ProjectsPage",
-      "articles",
-      "serviceContent"
-    ]
-  },
-  {
-    "source": "Lihat detail",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Lihat langsung material dan proses pekerjaan kami.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Lihat material dari dekat.",
+    "source": "Kirim daftar kebutuhan atau gambar kerja ke tim kami.",
     "area": "ProjectsPage"
   },
   {
     "source": "Lihat produk",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Lihat produk →",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Material spandek",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Mesin",
     "area": "ProjectsPage"
   },
   {
@@ -4192,47 +4048,15 @@
     ]
   },
   {
-    "source": "Minta penawaran →",
-    "area": "ProjectsPage"
+    "source": "Proyek",
+    "area": "ProjectsPage",
+    "areas": [
+      "ProjectsPage",
+      "Navbar"
+    ]
   },
   {
-    "source": "Minta penawaran serupa",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Mulai kebutuhan berikutnya",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Persediaan wiremesh",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Pilih kategori untuk melihat foto toko, produk, gudang, dan proses pengerjaan. Buka gambar untuk melihat lebih jelas.",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Pipa hitam",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Plat hitam",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Retail",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Toko Mahameru Baja, Tambun Selatan",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Toko Tambun",
-    "area": "ProjectsPage"
-  },
-  {
-    "source": "Warehouse",
+    "source": "Punya rencana proyek?",
     "area": "ProjectsPage"
   },
   {
@@ -4465,19 +4289,11 @@
   },
   {
     "source": "Perbesar poster",
-    "area": "Promotions",
-    "areas": [
-      "Promotions",
-      "WelcomePosters"
-    ]
+    "area": "Promotions"
   },
   {
     "source": "Periode",
-    "area": "Promotions",
-    "areas": [
-      "Promotions",
-      "WelcomePosters"
-    ]
+    "area": "Promotions"
   },
   {
     "source": "PROMO & KEGIATAN",
@@ -5109,7 +4925,11 @@
   },
   {
     "source": "Semua",
-    "area": "SocialHub"
+    "area": "SocialHub",
+    "areas": [
+      "SocialHub",
+      "WebsitePhotoGallery"
+    ]
   },
   {
     "source": "Semua unggahan ↗",
@@ -5508,6 +5328,34 @@
     "area": "UnifiedHomeContent"
   },
   {
+    "source": "Belum ada foto yang cocok. Coba kategori atau kata lain.",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "Cari foto",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "Cari material, proyek, atau desain…",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "Lihat di website ↗",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "noopener noreferrer",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "Produk, desain, proyek, dan cerita Mahameru dalam satu galeri.",
+    "area": "WebsitePhotoGallery"
+  },
+  {
+    "source": "Tampilkan foto berikutnya (",
+    "area": "WebsitePhotoGallery"
+  },
+  {
     "source": "Baca selengkapnya ↗",
     "area": "WebsiteQuotes"
   },
@@ -5516,43 +5364,11 @@
     "area": "WebsiteQuotes"
   },
   {
-    "source": "Chat",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Detail promo & kontak",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "di WhatsApp",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Hubungi",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Informasi Mahameru",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Informasi penawaran",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Kembali ke detail",
-    "area": "WelcomePosters"
-  },
-  {
     "source": "Pratinjau poster",
     "area": "WelcomePosters"
   },
   {
     "source": "Promo & informasi",
-    "area": "WelcomePosters"
-  },
-  {
-    "source": "Untuk kebutuhan",
     "area": "WelcomePosters"
   },
   {

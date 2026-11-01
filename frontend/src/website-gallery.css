@@ -141,6 +141,8 @@
 .site-navbar form { min-width:0; }
 .quote-rating-only { flex:1; margin-block:24px; color:var(--color-steel-grey); font-size:17px; line-height:1.7; }
 .quote-tone-1 .quote-rating-only { color:var(--color-light-steel); }
+.site-translation-status { position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:130; display:flex; align-items:center; gap:14px; max-width:calc(100vw - 32px); width:max-content; padding:10px 14px; border-radius:12px; background:var(--color-graphite); color:white; box-shadow:0 8px 24px #0003; font-size:12px; }
+.site-translation-status button { flex:none; min-height:32px; min-width:36px; padding:4px 8px; background:white; border-radius:6px; color:var(--color-graphite); font-weight:700; }
 .poster-welcome.poster-image-only[open] {
  display:block; width:min(980px, calc(100vw - 32px), calc((100dvh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) * var(--poster-ratio)));
  height:fit-content; max-height:none; padding:0; overflow:hidden; background:transparent; border:0; border-radius:28px;

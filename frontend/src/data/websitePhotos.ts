@@ -15,11 +15,19 @@ export function collectWebsitePhotos(content: SiteContent, divisions: Division[]
     if (!src || !safeHttpsUrl(src) && !safeLocalAsset(src, ["images", "media", "api/cms/media", "api/articles/media"])) return;
     const existing = photos.get(src);
     if (existing) { if (!existing.categories.includes(category)) existing.categories.push(category); return; }
-    photos.set(src, { id: `website-photo-${photos.size}`, src, title, alt, categories: [category], href, ...source });
+    const categories = [category];
+    if (category !== "Referensi desain" && /laser|bending|tekuk plat/i.test(`${title} ${alt}`)) categories.push("Laser cutting & bending");
+    photos.set(src, { id: `website-photo-${photos.size}`, src, title, alt, categories, href, ...source });
   }
   for (const album of content.galleryProjects.filter(row => row.published)) {
     const category = album.kind === "design" ? "Referensi desain" : album.kind === "activity" ? "Kegiatan" : "Proyek";
-    for (const photo of album.photos) add(photo.src, album.title, category, album.kind === "design" ? "/jasa#album-desain" : "/proyek", photo.alt, album.sourceUrl ? { sourceName: album.sourceName, sourceUrl: album.sourceUrl } : undefined);
+    for (const photo of album.photos) {
+      const href = album.kind === "design" ? "/jasa#album-desain" : album.kind === "activity" ? "/galeri" : "/proyek";
+      const source = album.sourceUrl ? { sourceName: album.sourceName, sourceUrl: album.sourceUrl } : undefined;
+      add(photo.src, photo.caption || album.title, category, href, photo.alt, source);
+      add(photo.src, album.title, album.category, href, photo.alt, source);
+      if (album.division === "laser-cutting" && album.kind !== "design") add(photo.src, album.title, "Kegiatan laser cutting", href, photo.alt, source);
+    }
   }
   const listed = new Set(content.inventory.filter(row => row.listed).map(row => row.productId));
   for (const product of resolvedInventoryProducts(content.inventory).filter(row => listed.has(row.id))) {
