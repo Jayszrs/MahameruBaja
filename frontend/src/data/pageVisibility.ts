@@ -11,5 +11,6 @@ export const serviceSections = [
   {id:"workflow",label:"Alur pekerjaan",selector:".laser-process"},
   {id:"request",label:"Form konsultasi kebutuhan",selector:"#request"},
   {id:"faq",label:"Pertanyaan laser cutting & bending",selector:".laser-faq"},
+  {id:"reviews",label:"Ulasan pelanggan MBI Laser Cutting",selector:".home-reviews"},
   {id:"location",label:"Alamat & kontak tim laser cutting",selector:".local-business-details"},
 ];

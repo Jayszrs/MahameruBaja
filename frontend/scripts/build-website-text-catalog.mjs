@@ -4,7 +4,7 @@ import path from 'node:path';
 import ts from 'typescript';
 import { fileURLToPath } from 'node:url';
 const frontend = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const publicComponents = new Set(['Navbar','Footer','UnifiedHomeContent','HeroCarousel','Promotions','ProjectAlbums','ContactDirectory','DivisionLocation','DivisionVision','SocialHub','SocialProof','QuotationDrawer','SearchOverlay','ProductCard','RequestHandoff','EventCountdown','DivisionCollage','WelcomePosters']);
+const publicComponents = new Set(['Navbar','Footer','UnifiedHomeContent','HeroCarousel','Promotions','ProjectAlbums','ContactDirectory','DivisionLocation','DivisionVision','SocialHub','SocialProof','QuotationDrawer','SearchOverlay','ProductCard','RequestHandoff','EventCountdown','DivisionCollage','WelcomePosters','LocalBusinessDetails','LaserServiceGuide','ServiceAlbums','WebsiteQuotes']);
 for(const name of ['ShareArticle','RequestPhotoInput','PhotoGalleryDialog','ProductInventory','HorizontalRibbons','WhatsAppButton','RequestFields','FooterDivisions'])publicComponents.add(name);
 const rows = new Map();
 const normalize = text => text.replace(/\s+/g, ' ').trim();

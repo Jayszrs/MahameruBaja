@@ -1,5 +1,6 @@
 import { readPublicSiteContent } from "../../src/lib/siteContentStore";
 import { appearanceForSite } from "../../src/data/websiteAppearance";
+import SocialProof from "../../src/components/SocialProof";
 import LaserCuttingPage from "../../src/screens/LaserCuttingPage";
 import type { Metadata } from "next";
 import LocalBusinessDetails from "../../src/components/LocalBusinessDetails";
@@ -41,5 +42,5 @@ export default async function Page() {
     ...(appearanceForSite(content.websiteAppearance).hiddenServiceSections.includes("faq") ? [] : [faqSchema(base, "/jasa", faqs)]),
     breadcrumbSchema(base, "/jasa", "Jasa Cutting Laser Bekasi & Tambun"),
   ] };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage><LocalBusinessDetails divisions={divisions} service /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage>{content.divisionReviews["laser-cutting"] && <SocialProof content={content.divisionReviews["laser-cutting"]} companyName="MBI Laser Cutting" includeImported={false} partnerLogos={[]} />}<LocalBusinessDetails divisions={divisions} service /></>;
 }

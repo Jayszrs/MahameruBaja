@@ -147,7 +147,7 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
         {(() => { const review = slide.review; return <>
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{String.fromCharCode(8220)}</span><small>ULASAN GOOGLE</small></div>
         <Stars rating={review.rating} />
-        <blockquote>{review.text}</blockquote>
+        {review.text ? <blockquote>{review.text}</blockquote> : <p className="quote-rating-only">Memberi penilaian tanpa komentar tertulis.</p>}
         <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || `Pelanggan ${companyName}`}</small></div><a className="quote-source" href={review.authorUrl || review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
         </>; })()}
       </article> : <article className={`quote-card quote-tone-${index % 3} quote-info-card`} key={`${copy}-${slide.kind}`} aria-hidden={copy !== 1}>
@@ -157,7 +157,7 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
         <a href={content.mapsUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>{slide.kind === "summary" ? "Baca seluruh ulasan" : "Tulis ulasan di Google Maps"} <ReviewArrow /></a>
       </article>))}
     </div></div>
-    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><span>{published.length} kutipan pelanggan</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
+    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><span>{published.some(review=>review.ratingOnly) ? `${published.length} ulasan · ${published.filter(review=>review.text).length} dengan komentar` : `${published.length} kutipan pelanggan`}</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
   </section></PublicText>;
 }
 

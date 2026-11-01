@@ -1,10 +1,12 @@
 import { googleRating,googleReviewCount,googleReviewsCapturedAt,googleReviews } from "./googleReviews";
 import { defaultGarudaReviews } from "./divisionLocations";
 import type { ReviewContent } from "./siteContent";
+import { laserGoogleReviews } from "./laserGoogleReviews";
 
 export const savedReviewSnapshots:Record<string,ReviewContent>={
   main:{rating:googleRating,reviewCount:googleReviewCount,ratingDate:googleReviewsCapturedAt,mapsUrl:"https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8",reviews:googleReviews},
   garuda:defaultGarudaReviews,
+  "laser-cutting":laserGoogleReviews,
 };
 savedReviewSnapshots["retail-tambun"]=savedReviewSnapshots.main;
 const key=(value:string)=>value.replace(/\s+/g," ").trim().toLowerCase();

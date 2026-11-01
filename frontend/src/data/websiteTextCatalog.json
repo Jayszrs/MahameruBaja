@@ -64,6 +64,7 @@
     "area": "AboutMergedPage",
     "areas": [
       "AboutMergedPage",
+      "LocalBusinessDetails",
       "UnifiedHomeContent"
     ]
   },
@@ -1179,7 +1180,8 @@
     "area": "DivisionSubPage",
     "areas": [
       "DivisionSubPage",
-      "LaserCuttingPage"
+      "LaserCuttingPage",
+      "ServiceAlbums"
     ]
   },
   {
@@ -2042,6 +2044,74 @@
     "area": "LaserCuttingPage"
   },
   {
+    "source": "Bending plat",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Cantumkan satuan ukuran dan dimensi akhir pada gambar.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Fabrikasi",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Gambar DWG atau DXF membantu peninjauan bentuk. PDF dan foto dapat dikirim untuk konsultasi awal. Tim memastikan kelayakan file, toleransi, harga, dan jadwal sebelum produksi.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Jasa cutting laser adalah pemotongan plat dengan mesin laser CNC mengikuti pola gambar kerja. MBI Laser Cutting &amp; Bending melayani jasa cutting laser Bekasi, Tambun, dan sekitarnya, mulai dari ornamen pagar dan panel hingga komponen custom. Jenis bahan, ketebalan, ukuran, serta jumlah diperiksa bersama gambar sebelum pekerjaan disepakati.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Jasa Cutting Laser Tambun &amp; Bekasi untuk plat sesuai gambar kerja",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Jelaskan apakah material disediakan sendiri atau perlu dibantu pengadaannya.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Kirim gambar untuk penawaran cutting laser",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Laser cutting",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Panduan untuk menyiapkan pesanan",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Potong, tekuk, atau rakit?",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Sebelum mengirim desain",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Sertakan detail tekukan, finishing, lokasi tujuan, dan target waktu.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Tulis jumlah setiap desain atau komponen, bukan hanya total lembar plat.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Untuk kebutuhan perakitan atau pengelasan setelah bagian dibuat. Sampaikan sambungan dan finishing yang dibutuhkan saat konsultasi.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Untuk membuat tekukan. Sertakan arah, sudut tekuk, dan dimensi hasil akhir agar tim bisa memeriksa kebutuhan pembentukan.",
+    "area": "LaserServiceGuide"
+  },
+  {
+    "source": "Untuk memotong bentuk atau pola pada plat mengikuti gambar kerja, seperti panel, ornamen, dan bagian komponen.",
+    "area": "LaserServiceGuide"
+  },
+  {
     "source": ". Jika kutipan ulasan ditampilkan di situs, nama dan isi ulasan berasal dari profil publik penulis di Google Maps.",
     "area": "Legal"
   },
@@ -2104,6 +2174,106 @@
   {
     "source": "WhatsApp utama",
     "area": "Legal"
+  },
+  {
+    "source": "Alamat & kontak tim laser cutting",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Alamat & kontak toko",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Area layanan:",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Cara cek harga dan pengiriman",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Cari besi beton, hollow, pipa, plat, WF, UNP, CNP, wiremesh, atau baja ringan melalui katalog Mahameru Baja. Untuk pembelian di Tambun dan Cibitung, pilih toko yang ingin dihubungi lalu konfirmasikan spesifikasi, stok, dan harga terbaru.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Detail bending atau finishing, lokasi tujuan, dan target waktu.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Gambar DWG atau DXF; PDF dan foto dapat dipakai untuk konsultasi awal.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Harga dan stok material dapat berubah. Biaya serta jangkauan pengiriman disepakati dengan admin sesuai pesanan.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Harga laser cutting bergantung pada bahan, panjang dan kerumitan potong, jumlah, serta proses tambahan. Kapasitas mesin, toleransi, dan jadwal dipastikan setelah gambar ditinjau.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Jenis material, ketebalan plat, dimensi, dan jumlah setiap komponen.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Kirim gambar kerja untuk kebutuhan ornamen pagar, panel, atau komponen plat. Tim MBI Laser Cutting & Bending meninjau jenis bahan, ketebalan, ukuran, dan jumlah sebelum mengonfirmasi proses produksi.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Kirim kebutuhan laser cutting",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Konfirmasikan jadwal kunjungan dengan admin sebelum datang.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Konsultasi cutting laser Bekasi",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Lihat jasa laser cutting dan bending Bekasi",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Lihat katalog besi dan baja Bekasi",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Lokasi pengambilan atau alamat pengiriman di Bekasi dan sekitarnya.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Minta harga material",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Nama material, ukuran, ketebalan, dan jumlah batang atau lembar.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Perlu bahan untuk pekerjaan Anda?",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Perlu plat dipotong atau ditekuk?",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Petunjuk arah Google Maps",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Siapkan data untuk penawaran",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Tanggal kebutuhan, agar tim dapat mengecek stok serta jadwal pengiriman.",
+    "area": "LocalBusinessDetails"
+  },
+  {
+    "source": "Toko besi dan baja di Tambun & Cibitung, Bekasi",
+    "area": "LocalBusinessDetails"
   },
   {
     "source": "Bahasa / Language",
@@ -4718,6 +4888,10 @@
     "area": "SearchPage"
   },
   {
+    "source": "Portofolio hasil pekerjaan",
+    "area": "ServiceAlbums"
+  },
+  {
     "source": "Atur pengiriman ke lokasi sesuai pesanan dan jadwal yang disepakati.",
     "area": "serviceContent"
   },
@@ -5042,10 +5216,6 @@
     "area": "SocialProof"
   },
   {
-    "source": "kutipan pelanggan",
-    "area": "SocialProof"
-  },
-  {
     "source": "Langsung dari Google Maps.",
     "area": "SocialProof"
   },
@@ -5071,6 +5241,10 @@
   },
   {
     "source": "melalui kerja sama.",
+    "area": "SocialProof"
+  },
+  {
+    "source": "Memberi penilaian tanpa komentar tertulis.",
     "area": "SocialProof"
   },
   {
@@ -5332,6 +5506,14 @@
   {
     "source": "Yang sering ditanyakan.",
     "area": "UnifiedHomeContent"
+  },
+  {
+    "source": "Baca selengkapnya ↗",
+    "area": "WebsiteQuotes"
+  },
+  {
+    "source": "Catatan Mahameru",
+    "area": "WebsiteQuotes"
   },
   {
     "source": "Chat",

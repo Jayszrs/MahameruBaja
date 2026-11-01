@@ -1,9 +1,10 @@
 import Link from "next/link";
+import PublicText from "./PublicText";
 import type { Division } from "../data/divisionCms";
 
 export default function LocalBusinessDetails({ divisions, service = false }: { divisions: Division[]; service?: boolean }) {
   if (!divisions.length) return null;
-  return <section className="home-section local-business-details" aria-labelledby="local-business-heading">
+  return <PublicText><section className="home-section local-business-details" aria-labelledby="local-business-heading">
     <div className="home-shell">
       <h2 id="local-business-heading">{service ? "Konsultasi cutting laser Bekasi" : "Toko besi dan baja di Tambun & Cibitung, Bekasi"}</h2>
       <p>{service
@@ -43,5 +44,5 @@ export default function LocalBusinessDetails({ divisions, service = false }: { d
         </div>
       </div>
     </div>
-  </section>;
+  </section></PublicText>;
 }

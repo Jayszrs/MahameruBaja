@@ -68,7 +68,7 @@
 .poster-welcome.poster-lightbox .poster-lightbox-information :is(p,span,dd,dt,strong,a) { color:#50585b; }
 .poster-welcome.poster-lightbox :is(button,a,summary):focus-visible { outline-color:#af1616; }
 .quote-cart-loading { padding-block:80px; }
-.quote-auto-pdf { margin-bottom:22px; padding:20px; background:#edf4ef; border-left:3px solid #1a7a3e; }
+.quote-auto-pdf { margin-bottom:22px; padding:20px; background:#edf4ef; border:1px solid var(--color-light-steel); }
 .quote-auto-pdf strong { font-size:15px; }
 .quote-auto-pdf p { margin-top:8px; color:#505b54; font-size:14px; line-height:1.65; }
 .quote-optional-photos { margin-bottom:24px; border-bottom:1px solid #d6dadc; padding-bottom:16px; }
@@ -139,6 +139,8 @@
 .laser-process-icon img { width:160px; height:100px; object-fit:contain; }
 .cms-section-visibility { display:flex; align-items:center; gap:12px; min-height:44px; padding:10px 0; border-bottom:1px solid var(--color-light-steel); }
 .site-navbar form { min-width:0; }
+.quote-rating-only { flex:1; margin-block:24px; color:var(--color-steel-grey); font-size:17px; line-height:1.7; }
+.quote-tone-1 .quote-rating-only { color:var(--color-light-steel); }
 @media(min-width:761px) {
  .poster-welcome.poster-lightbox .poster-welcome-layout { display:block; }
  .poster-welcome.poster-lightbox button.poster-welcome-image { width:100%; height:auto; aspect-ratio:16/9; max-height:57dvh; background:var(--color-surface-2); }
