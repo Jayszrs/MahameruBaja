@@ -1,4 +1,6 @@
 import type { Division } from "../data/divisionCms";
+export const siteDisplayName = "MBI Laser Cutting";
+export const siteAlternateNames = ["MBI Laser", "Mahameru Baja", "Mahameru Baja Indonesia"];
 
 export function jsonLd(value: unknown) {
   return JSON.stringify(value).replace(/</g, "\\u003c");
@@ -9,10 +11,13 @@ export function organizationSchema(base: string) {
     "@type": "Organization",
     "@id": `${base}/#organization`,
     name: "Mahameru Baja Indonesia",
+    alternateName: ["Mahameru Baja", "MBI"],
     url: base,
-    logo: `${base}/images/steel-indonesia/company-logo.jpeg`,
+    logo: {"@type":"ImageObject",url:`${base}/apple-touch-icon.png`,width:180,height:180,caption:"Logo MBI — Mahameru Baja Indonesia"},
   };
 }
+
+export function websiteSchema(base:string){return {"@type":"WebSite","@id":`${base}/#website`,name:siteDisplayName,alternateName:siteAlternateNames,url:`${base}/`,inLanguage:"id-ID",publisher:{"@id":`${base}/#organization`}};}
 
 export function divisionBusinessSchema(division: Division, base: string) {
   const digits = division.admins[0]?.phone.replace(/\D/g, "");
@@ -21,6 +26,7 @@ export function divisionBusinessSchema(division: Division, base: string) {
     "@type": division.slug.startsWith("retail-") ? "HardwareStore" : "LocalBusiness",
     "@id": `${base}/unit/${division.slug}#business`,
     name: division.name,
+    ...(division.slug === "laser-cutting" ? {alternateName:["MBI Laser","MBI Laser Cutting"],logo:{"@type":"ImageObject",url:`${base}/apple-touch-icon.png`,width:180,height:180}} : {}),
     url: `${base}/unit/${division.slug}`,
     description: division.description,
     image: division.hero ? new URL(division.hero, base).href : undefined,

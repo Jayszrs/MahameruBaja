@@ -3,13 +3,13 @@ import { connection } from "next/server";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
 import { siteOrigin } from "../src/lib/siteOrigin";
 import { readPublicDivisions } from "../src/lib/divisionStore";
-import { divisionBusinessSchema, jsonLd, organizationSchema } from "../src/lib/structuredData";
+import { divisionBusinessSchema, jsonLd, organizationSchema, siteDisplayName, websiteSchema } from "../src/lib/structuredData";
 
 export const metadata = {
-  title: { absolute: "Mahameru Baja | Toko Besi & Jasa Cutting Laser Bekasi" },
-  description: "Mahameru Baja di Bekasi melayani toko besi Tambun dan Cibitung, supplier baja proyek, jasa cutting laser, bending plat, fabrikasi, serta erection.",
+  title: { absolute: "MBI Laser Cutting | Jasa Cutting Laser Bekasi & Tambun" },
+  description: "MBI Laser Cutting, Mahameru Baja Indonesia: jasa cutting laser Bekasi dan Tambun, bending plat, fabrikasi, serta material baja. Kirim desain untuk cek proses dan harga.",
   alternates: { canonical: "/" },
-  openGraph: { siteName: "Mahameru Baja Indonesia", url: "/", title: "Mahameru Baja | Toko Besi & Jasa Cutting Laser Bekasi", description: "Jasa cutting laser plat, bending, fabrikasi, dan material konstruksi dalam lima divisi Mahameru Baja.", images: [{ url: "/images/laser-cutting-illustration.jpg", width: 1800, height: 1013, alt: "MBI Laser Cutting — ilustrasi proses produksi" }] },
+  openGraph: { siteName: siteDisplayName, url: "/", title: "MBI Laser Cutting | Jasa Cutting Laser Bekasi & Tambun", description: "Jasa cutting laser plat, bending, fabrikasi, dan material konstruksi dalam lima divisi Mahameru Baja.", images: [{ url: "/images/laser-cutting-illustration.jpg", width: 1800, height: 1013, alt: "MBI Laser Cutting — ilustrasi proses produksi" }] },
 };
 
 export default async function Page() {
@@ -19,7 +19,7 @@ export default async function Page() {
   const base = siteOrigin();
   const schema = { "@context": "https://schema.org", "@graph": [
     { ...organizationSchema(base), subOrganization: divisions.map(division => ({ "@id": `${base}/unit/${division.slug}#business` })) },
-    { "@type": "WebSite", "@id": `${base}/#website`, name: "Mahameru Baja Indonesia", alternateName: "Mahameru Baja", url: base, inLanguage: "id-ID", publisher: { "@id": `${base}/#organization` } },
+    websiteSchema(base),
     ...divisions.map(division => divisionBusinessSchema(division, base)),
   ] };
   return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><HomePage content={content} /></>;

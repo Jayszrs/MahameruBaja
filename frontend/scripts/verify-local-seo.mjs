@@ -42,7 +42,7 @@ try {
     assert.equal(data.headings.length, 1, `${route} has one server-rendered h1`);
     assert(data.description && data.graph.length > 0, `${route} metadata and JSON-LD`);
     assert(!/noindex/i.test(data.robots), `${route} indexable`);
-    assert.equal(data.siteName, "Mahameru Baja Indonesia", `${route} uses the business site name`);
+    assert.equal(data.siteName, ["/","/jasa"].includes(route)?"MBI Laser Cutting":"Mahameru Baja Indonesia", `${route} uses the business site name`);
     assert(data.icons.includes('/favicon.ico') && data.icons.includes('/favicon.png'), `${route} static brand favicons`);
     assert(data.serviceLinks.length >= 8 && data.serviceLinks.every(link => /bekasi/i.test(link.text)), `${route} useful Bekasi service links`);
     if (route.startsWith('/unit/')) assert.match(data.title, /bekasi/i, `${route} local title`);
@@ -54,19 +54,19 @@ try {
       if (route !== "/") assert(data.text.includes(business.address.streetAddress), `${route}: schema address also visible`);
     }
     if (route === "/jasa") {
-      assert.match(data.headings[0], /laser cutting Bekasi/i);
+      assert.match(data.headings[0], /cutting laser Bekasi/i);
       assert(data.graph.some(node => node["@type"] === "Service"));
       assert.match(data.localText, /DWG.*DXF/s);
       assert.match(data.guide, /cutting laser.*gambar kerja/is);
       for (const keyword of ["cutting laser tambun", "cutting laser bekasi", "jasa cutting laser"]) {
         assert(data.text.toLowerCase().includes(keyword), `${route}: requested phrase is visible without JavaScript: ${keyword}`);
       }
-      guideArticle = await page.locator('.laser-guide-reading a').first().getAttribute('href').catch(() => null);
+      guideArticle = await page.locator('.service-reading-links a').first().getAttribute('href').catch(() => null);
     }
     if (route === "/produk") {
       assert.match(data.headings[0], /besi.*baja Bekasi/i);
       assert.equal(businesses.length, 2);
-      assert.match(data.localText, /Cibitung/);
+      assert.equal(data.localText,undefined,"Removed product appendix stays absent");
     }
     results.push({ route, title: data.title, serverRendered: true, businesses: businesses.length });
   }
@@ -140,7 +140,7 @@ try {
       if (route !== "/" && [390, 1440].includes(width)) {
         if (route === "/jasa") await ui.locator('.footer-local-services').screenshot({ path: `${artifacts}/footer-services-${width}.png` });
         if (route === "/jasa") await ui.locator('.laser-service-guide').screenshot({ path: `${artifacts}/laser-guide-${width}.png` });
-        await ui.locator(".local-business-details").screenshot({ path: `${artifacts}/${route.slice(1)}-local-${width}.png` });
+        if(route === "/jasa")await ui.locator(".local-business-details").screenshot({ path: `${artifacts}/${route.slice(1)}-local-${width}.png` });
         await ui.evaluate(() => window.scrollTo(0, 0));
         await ui.screenshot({ path: `${artifacts}/${route.slice(1)}-hero-${width}.png` });
       }

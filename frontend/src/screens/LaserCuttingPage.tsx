@@ -10,8 +10,7 @@ import Image from "../components/CmsImage"
 import { useEffect, useState, type ReactNode } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
-import { createLead, type CreateLeadInput } from "../lib/api"
-import RequestHandoff from "../components/RequestHandoff"
+import ServiceRequestWizard from "../components/ServiceRequestWizard"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 
@@ -21,7 +20,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
   const config = appearanceForSite(appearance);
   const cards = config.services;
   const { divisions } = useDivisionDirectory();
-  const [selected, setSelected] = useState("Laser Cutting")
+  const [selected, setSelected] = useState("")
   useEffect(() => {
     const choose = (event: MouseEvent) => {
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>(".service-process-options a[data-service-choice]") : null;
@@ -31,67 +30,6 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
     document.addEventListener("click", choose);
     return () => document.removeEventListener("click", choose);
   }, []);
-  const [file, setFile] = useState<File | null>(null)
-  const [fileError, setFileError] = useState("")
-  const [message, setMessage] = useState("")
-  const [submitError, setSubmitError] = useState("")
-  const [submitting, setSubmitting] = useState(false)
-  const [leadId, setLeadId] = useState("")
-  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
-  const [divisionSlug, setDivisionSlug] = useState(divisions.find(d=>d.slug === "laser-cutting")?.slug || divisions[0]?.slug || "")
-  const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (fileError) return
-    const data = new FormData(event.currentTarget)
-    const details = [
-      "nama",
-      "perusahaan",
-      "whatsapp",
-      "kota",
-      "material",
-      "ketebalan",
-      "ukuran",
-      "jumlah",
-      "catatan",
-    ]
-      .map((field) => `${field}: ${data.get(field) || "-"}`)
-      .join("\n")
-    setSubmitting(true)
-    setSubmitError("")
-    try {
-      const input: CreateLeadInput = {
-        kind: divisionSlug === "laser-cutting" ? "LASER" : divisionSlug === "trading-proyek" ? "TRADING" : "GENERAL",
-        businessUnitSlug: divisionSlug,
-        name: String(data.get("nama") || ""),
-        company: String(data.get("perusahaan") || "") || undefined,
-        whatsapp: String(data.get("whatsapp") || ""),
-        city: String(data.get("kota") || "") || undefined,
-        request: `${selected}\n${details}`,
-        consent: true,
-        metadata: {
-          service: selected,
-          material: data.get("material"),
-          thickness: data.get("ketebalan"),
-          dimensions: data.get("ukuran"),
-          quantity: data.get("jumlah"),
-          attachmentName: file?.name,
-          attachmentSize: file?.size,
-        },
-      }
-      const result = await createLead(input)
-      setPdfUrl(result.pdfUrl);
-      setRequestInput(input)
-      setLeadId(result.id)
-      setMessage(
-        `Halo Mahameru Baja, nomor request saya ${result.id}. Saya ingin request ${selected}.\n${details}\nFile desain: ${file?.name || "akan dikirim melalui chat"}\nMohon arahkan ke tim MBI Laser Cutting dan konfirmasi kelayakan, harga serta jadwal.`,
-      )
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Request belum dapat disimpan.")
-    } finally {
-      setSubmitting(false)
-    }
-  }
   return (
     <PublicText>
       <section className="company-about-hero jasa-hero">
@@ -151,132 +89,10 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           <p><strong>Kirim dalam format yang Anda punya.</strong> File DWG, DXF, PDF, foto, atau daftar kebutuhan juga bisa. Tim akan mengecek kebutuhan Anda sebelum memberikan penawaran.</p>
         </div>
       </section>
-      <section id="request" className="business-section">
-        <div className="industrial-container request-grid">
-          <div>
-            <h2>Ceritakan kebutuhan material atau jasa Anda.</h2>
-            <p>
-              Pilih divisi dan ceritakan kebutuhan material atau jasa Anda. Ringkasan tersimpan di portal dan dapat dikirim langsung ke WhatsApp admin divisi.
-            </p>
-            <p className="verification-note">
-              Setelah permintaan tersimpan, lanjutkan percakapan melalui WhatsApp.
-              File gambar dikirim sebagai lampiran di sana agar tim bisa meninjaunya.
-            </p>
-          </div>
-          <form onSubmit={submit} className="laser-request-form">
-            <label className="form-full">Divisi tujuan<select value={divisionSlug} onChange={e => setDivisionSlug(e.target.value)}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
-            <label className="form-full">
-              Kebutuhan / layanan
-              <select
-                value={selected}
-                onChange={(event) => setSelected(event.target.value)}
-              >
-                {laserServices.map((service) => (
-                  <option key={service}>{service}</option>
-                ))}
-              </select>
-            </label>
-            {[
-              { name: "nama", label: "Nama", required: true },
-              { name: "perusahaan", label: "Perusahaan / PIC" },
-              {
-                name: "whatsapp",
-                label: "Nomor WhatsApp",
-                required: true,
-                type: "tel",
-              },
-              { name: "kota", label: "Kota / lokasi proyek", required: true },
-              { name: "material", label: "Material / produk (jika sudah diketahui)" },
-              {
-                name: "ketebalan",
-                label: "Ketebalan (mm)",
-                required: false,
-                type: "number",
-              },
-              {
-                name: "ukuran",
-                label: "Spesifikasi / ukuran (jika diketahui)",
-                required: false,
-              },
-              {
-                name: "jumlah",
-                label: "Jumlah kebutuhan",
-                required: false,
-                type: "number",
-              },
-            ].map((field) => (
-              <label key={field.name}>
-                {field.label}
-                {field.required && " *"}
-                <input
-                  name={field.name}
-                  type={field.type || "text"}
-                  required={field.required}
-                  min={
-                    field.type === "number"
-                      ? field.name === "jumlah"
-                        ? "1"
-                        : "0.01"
-                      : undefined
-                  }
-                  step={field.name === "jumlah" ? "1" : "any"}
-                  placeholder={
-                    field.name === "ukuran" ? "Contoh: 600 × 400 mm" : undefined
-                  }
-                />
-              </label>
-            ))}
-            <label className="form-full">
-              Gambar / desain (opsional, maks. 10 MB)
-              <input
-                type="file"
-                accept=".dwg,.dxf,.pdf,.ai,.cdr,.jpg,.jpeg,.png"
-                onChange={(event) => {
-                  const attachment = event.target.files?.[0] || null
-                  const valid =
-                    !attachment ||
-                    (/\.(dwg|dxf|pdf|ai|cdr|jpe?g|png)$/i.test(
-                      attachment.name,
-                    ) &&
-                      attachment.size <= 10 * 1024 * 1024)
-                  setFileError(
-                    valid
-                      ? ""
-                      : "Pilih format yang didukung dengan ukuran maksimal 10 MB.",
-                  )
-                  setFile(valid ? attachment : null)
-                  setMessage("")
-                }}
-              />
-              <small>
-                DWG, DXF, PDF, AI, CDR, JPG atau PNG. Setelah mengisi formulir,
-                kirim file tersebut sebagai lampiran WhatsApp.
-              </small>
-              {fileError && (
-                <span role="alert" className="text-brand">
-                  {fileError}
-                </span>
-              )}
-            </label>
-            <label className="form-full">
-              Detail kebutuhan / pekerjaan
-              <textarea
-                name="catatan"
-                rows={3}
-                placeholder="Detail tekukan, finishing, jadwal kebutuhan atau pertanyaan teknis"
-              />
-            </label>
-            <label className="form-full consent-label">
-              <input type="checkbox" required />
-              Saya setuju membagikan informasi ini kepada tim melalui WhatsApp.
-            </label>
-            {submitError && <p role="alert" className="form-full text-brand">{submitError}</p>}
-            <button className="industrial-button form-full" type="submit" disabled={submitting}>
-              {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
-            </button>
-            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} pdfUrl={pdfUrl} /></div>}
-
-          </form>
+      <section id="request" className="business-section service-wizard-section">
+        <div className="industrial-container">
+          <header className="service-wizard-intro"><h2>Minta penawaran, satu langkah demi langkah.</h2><p>Isi layanan, detail pekerjaan, dan kontak. Tim kami mengecek kebutuhan sebelum memberikan harga.</p></header>
+          <ServiceRequestWizard divisions={divisions} service={selected} onServiceChange={setSelected} />
         </div>
       </section>
       <section className="laser-faq business-section">

@@ -44,6 +44,7 @@ export const laserServices = [
   "Bending",
   "Laser Cutting + Bending",
   "Fabrikasi",
+  "Sandblasting",
   "Pekerjaan Proyek",
   "Pengadaan Material",
   "Konsultasi Material",

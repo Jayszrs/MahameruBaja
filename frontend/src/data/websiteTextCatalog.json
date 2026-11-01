@@ -682,6 +682,7 @@
     "area": "ContactDirectory",
     "areas": [
       "ContactDirectory",
+      "ServiceRequestWizard",
       "ShareArticle",
       "WhatsAppButton"
     ]
@@ -1393,7 +1394,11 @@
   },
   {
     "source": "Perusahaan",
-    "area": "Footer"
+    "area": "Footer",
+    "areas": [
+      "Footer",
+      "ServiceRequestWizard"
+    ]
   },
   {
     "source": "Pilih admin divisi",
@@ -1811,7 +1816,11 @@
   },
   {
     "source": "Menyimpan…",
-    "area": "KontakPage"
+    "area": "KontakPage",
+    "areas": [
+      "KontakPage",
+      "ServiceRequestWizard"
+    ]
   },
   {
     "source": "Minggu",
@@ -1870,31 +1879,7 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Ceritakan kebutuhan material atau jasa Anda.",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Detail jasa laser cutting, bending, dan fabrikasi.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Detail kebutuhan / pekerjaan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Detail tekukan, finishing, jadwal kebutuhan atau pertanyaan teknis",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Divisi tujuan",
-    "area": "LaserCuttingPage",
-    "areas": [
-      "LaserCuttingPage",
-      "QuotationPage"
-    ]
-  },
-  {
-    "source": "DWG, DXF, PDF, AI, CDR, JPG atau PNG. Setelah mengisi formulir, kirim file tersebut sebagai lampiran WhatsApp.",
     "area": "LaserCuttingPage"
   },
   {
@@ -1902,31 +1887,11 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Gambar / desain (opsional, maks. 10 MB)",
+    "source": "Isi layanan, detail pekerjaan, dan kontak. Tim kami mengecek kebutuhan sebelum memberikan harga.",
     "area": "LaserCuttingPage"
   },
   {
     "source": "Jasa Cutting Laser Bekasi &amp; Tambun",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "jumlah",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Jumlah kebutuhan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Kebutuhan / layanan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "ketebalan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Ketebalan (mm)",
     "area": "LaserCuttingPage"
   },
   {
@@ -1935,14 +1900,6 @@
   },
   {
     "source": "Konsultasikan kebutuhan ↗",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "kota",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Kota / lokasi proyek",
     "area": "LaserCuttingPage"
   },
   {
@@ -1962,59 +1919,15 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "material",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Material / produk (jika sudah diketahui)",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.",
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Menyimpan permintaan...",
-    "area": "LaserCuttingPage",
-    "areas": [
-      "LaserCuttingPage",
-      "QuotationPage"
-    ]
-  },
-  {
-    "source": "nama",
+    "source": "Minta penawaran, satu langkah demi langkah.",
     "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Nama",
-    "area": "LaserCuttingPage",
-    "areas": [
-      "LaserCuttingPage",
-      "QuotationPage"
-    ]
-  },
-  {
-    "source": "Nomor WhatsApp",
-    "area": "LaserCuttingPage",
-    "areas": [
-      "LaserCuttingPage",
-      "QuotationPage"
-    ]
   },
   {
     "source": "Pertanyaan laser cutting & bending.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "perusahaan",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Perusahaan / PIC",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Pilih divisi dan ceritakan kebutuhan material atau jasa Anda. Ringkasan tersimpan di portal dan dapat dikirim langsung ke WhatsApp admin divisi.",
     "area": "LaserCuttingPage"
   },
   {
@@ -2022,31 +1935,7 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "Request",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Request penawaran",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Saya setuju membagikan informasi ini kepada tim melalui WhatsApp.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Setelah permintaan tersimpan, lanjutkan percakapan melalui WhatsApp. File gambar dikirim sebagai lampiran di sana agar tim bisa meninjaunya.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Simpan dan lanjut ke WhatsApp",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "Spesifikasi / ukuran (jika diketahui)",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "tersimpan",
     "area": "LaserCuttingPage"
   },
   {
@@ -2054,15 +1943,7 @@
     "area": "LaserCuttingPage"
   },
   {
-    "source": "ukuran",
-    "area": "LaserCuttingPage"
-  },
-  {
     "source": "Visual ilustrasi proses laser cutting.",
-    "area": "LaserCuttingPage"
-  },
-  {
-    "source": "whatsapp",
     "area": "LaserCuttingPage"
   },
   {
@@ -2078,22 +1959,6 @@
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Cantumkan satuan ukuran dan jumlah tiap komponen. Harga, toleransi, dan jadwal dikonfirmasi sebelum produksi.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Cek penawaran",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "DWG / DXF, PDF, atau foto.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Empat langkah, langsung dipahami.",
-    "area": "LaserServiceGuide"
-  },
-  {
     "source": "Fabrikasi",
     "area": "LaserServiceGuide"
   },
@@ -2102,27 +1967,19 @@
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Kirim gambar",
-    "area": "LaserServiceGuide"
-  },
-  {
     "source": "Laser cutting",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Lengkapi detail",
+    "source": "Layanan → gambar & detail → kontak → cek dan kirim.",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Mulai konsultasi",
+    "source": "Mulai isi kebutuhan",
     "area": "LaserServiceGuide"
   },
   {
     "source": "Perakitan, pengelasan, dan finishing.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Pilih proses",
     "area": "LaserServiceGuide"
   },
   {
@@ -2134,11 +1991,11 @@
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Potong, tekuk, atau rakit.",
+    "source": "Rakit",
     "area": "LaserServiceGuide"
   },
   {
-    "source": "Rakit",
+    "source": "Siapkan penawaran dalam 4 tahap.",
     "area": "LaserServiceGuide"
   },
   {
@@ -2147,14 +2004,6 @@
   },
   {
     "source": "Tekukan sesuai arah, sudut, dan ukuran.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Tim konfirmasi harga dan jadwal.",
-    "area": "LaserServiceGuide"
-  },
-  {
-    "source": "Ukuran, bahan, jumlah, dan target waktu.",
     "area": "LaserServiceGuide"
   },
   {
@@ -2239,7 +2088,11 @@
   },
   {
     "source": "Gambar",
-    "area": "LocalBusinessDetails"
+    "area": "LocalBusinessDetails",
+    "areas": [
+      "LocalBusinessDetails",
+      "ServiceRequestWizard"
+    ]
   },
   {
     "source": "Harga dan jadwal dipastikan setelah gambar diperiksa.",
@@ -3282,10 +3135,6 @@
   },
   {
     "source": "Lembar / Kg",
-    "area": "products"
-  },
-  {
-    "source": "Material",
     "area": "products"
   },
   {
@@ -4360,6 +4209,14 @@
     "area": "QuotationPage"
   },
   {
+    "source": "Divisi tujuan",
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "ServiceRequestWizard"
+    ]
+  },
+  {
     "source": "Email",
     "area": "QuotationPage",
     "areas": [
@@ -4412,6 +4269,10 @@
     "area": "QuotationPage"
   },
   {
+    "source": "Menyimpan permintaan...",
+    "area": "QuotationPage"
+  },
+  {
     "source": "Minta Penawaran",
     "area": "QuotationPage",
     "areas": [
@@ -4428,6 +4289,14 @@
     "area": "QuotationPage"
   },
   {
+    "source": "Nama",
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "ServiceRequestWizard"
+    ]
+  },
+  {
     "source": "Nama lengkap Anda",
     "area": "QuotationPage"
   },
@@ -4442,6 +4311,14 @@
   {
     "source": "Nama produk, spesifikasi, jumlah, dan catatan sudah diambil dari daftar Anda. Lengkapi kontak, lalu lanjut ke WhatsApp. Tidak perlu memilih atau mengunggah file.",
     "area": "QuotationPage"
+  },
+  {
+    "source": "Nomor WhatsApp",
+    "area": "QuotationPage",
+    "areas": [
+      "QuotationPage",
+      "ServiceRequestWizard"
+    ]
   },
   {
     "source": "Opsional",
@@ -4609,7 +4486,11 @@
   },
   {
     "source": "(opsional)",
-    "area": "RequestPhotoInput"
+    "area": "RequestPhotoInput",
+    "areas": [
+      "RequestPhotoInput",
+      "ServiceRequestWizard"
+    ]
   },
   {
     "source": "Foto disimpan bersama permintaan dan hanya dapat dibuka oleh admin yang menangani. Foto tidak otomatis menjadi lampiran WhatsApp.",
@@ -4866,6 +4747,162 @@
   {
     "source": "Wujudkan potongan plat sesuai desain Anda, dari ornamen sampai komponen mesin. Kirim gambar, ukuran, bahan, dan jumlah; tim membantu mengecek proses dan harga.",
     "area": "serviceDescriptions"
+  },
+  {
+    "source": "Belum ada divisi tersedia",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Belum punya gambar, saya ingin konsultasi dulu.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Buat permintaan baru",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Catatan",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Cek sekali lagi, lalu kirim.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Ceritakan bentuk, tekukan, finishing, dan target pengerjaan.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Contoh: 600 × 400 mm, atau perlu bantuan ukuran",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Contoh: plat besi, stainless, atau minta rekomendasi",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Contoh: Tambun, Bekasi",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "dari 4",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Detail kebutuhan",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Divisi tujuan *",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "DWG, DXF, PDF, AI, CDR, JPG, PNG. Maksimal 10 MB. Lampiran dikirim lewat WhatsApp setelah permintaan disimpan.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Gambar dan detail pekerjaan",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Gambar kerja / desain",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Hapus file",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Jumlah komponen",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Ke mana tim kami menghubungi Anda?",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Kembali",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Ketebalan (mm)",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Konsultasi tanpa gambar",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Kota / lokasi proyek",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Langkah",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Lanjut",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Layanan",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Lengkapi bagian yang ditandai sebelum melanjutkan.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Lokasi",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Material",
+    "area": "ServiceRequestWizard",
+    "areas": [
+      "ServiceRequestWizard",
+      "products"
+    ]
+  },
+  {
+    "source": "Material / bahan",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Mau dibantu apa?",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Permintaan Anda sudah tersimpan.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Perusahaan / PIC",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Pilih layanan *",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Saya setuju data ini dipakai tim Mahameru untuk menindaklanjuti permintaan melalui WhatsApp.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Simpan & lanjut WhatsApp",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Tim akan mengecek gambar, material, harga, dan jadwal. Permintaan ini belum menjadi pesanan produksi.",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Ukuran & jumlah",
+    "area": "ServiceRequestWizard"
+  },
+  {
+    "source": "Ukuran akhir",
+    "area": "ServiceRequestWizard"
   },
   {
     "source": "Facebook",
@@ -5360,7 +5397,7 @@
     "area": "WebsiteQuotes"
   },
   {
-    "source": "Catatan Mahameru",
+    "source": "Quotes",
     "area": "WebsiteQuotes"
   },
   {

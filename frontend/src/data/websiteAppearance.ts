@@ -7,6 +7,9 @@ import { homeSections, serviceSections } from "./pageVisibility";
 const image = z.string().trim().max(1000).refine(value => !value || safeLocalAsset(value, ["images", "media", "api/cms/media"]) || safeHttpsUrl(value), "Pilih gambar atau URL HTTPS.");
 const link = z.string().trim().max(500).refine(value => !value || safeInternalLink(value), "Gunakan tautan halaman website, misalnya /jasa#request.");
 const item = z.object({ id: z.string().min(1).max(100), title: z.string().trim().min(1).max(160), text: z.string().trim().max(500), image, alt: z.string().trim().max(200), href: link, ctaLabel:z.string().trim().max(80).optional() });
+export const defaultQuoteImage = "/images/steel-indonesia/toko-mahameru.jpg";
+export const sandblastingImage = "/images/sandblasting-illustration-v1.webp";
+const quoteItem = item.extend({image:image.transform(value=>value || defaultQuoteImage)});
 export const websiteAppearanceSchema = z.object({
   ...ownershipFields, id: z.string().min(1).max(100), published: z.boolean(),
   featureImage: image, calloutImage: image,
@@ -17,7 +20,7 @@ export const websiteAppearanceSchema = z.object({
   hiddenHomeSections:z.array(z.enum(homeSections.map(section=>section.id) as [string,...string[]])).max(20).default([]),
   hiddenServiceSections:z.array(z.enum(serviceSections.map(section=>section.id) as [string,...string[]])).max(12).default([]),
   orderSteps: z.array(item).max(8), needs: z.array(item).max(12),
-  quotes: z.array(item).max(36), services: z.array(item).max(12),
+  quotes: z.array(quoteItem).max(36), services: z.array(item).max(12),
   memberships: z.array(item).max(6),
 }).superRefine((row, ctx) => {
   for (const key of ["orderSteps", "needs", "quotes", "services", "memberships", "servicePaths", "serviceWorkflow"] as const) {
@@ -52,17 +55,18 @@ export function defaultAppearance(owner: string | null = null): WebsiteAppearanc
       entry("fabrication", "Saya ingin konsultasi fabrikasi dan erection", "", "", "/unit/fabrikasi-erection/kontak"),
       entry("upvc", "Saya ingin tanya atap UPVC Atlas", "", "", "/produk?kategori=atap-upvc"),
     ],
-    quotes: [entry("mahameru", "Satu Mahameru, satu solusi.", "Mahameru Baja Indonesia")],
+    quotes: [entry("mahameru", "Satu Mahameru, satu solusi.", "Mahameru Baja Indonesia",defaultQuoteImage,"","Toko Mahameru Baja")],
     memberships: [entry("issc", "Member of ISSC", "Indonesian Society of Steel Construction", "/images/partners/issc.webp"), entry("api", "Member of APPI", "Asosiasi Pengusaha Pengelasan Indonesia", "/images/partners/appi.webp", "", "Logo APPI — Asosiasi Pengusaha Pengelasan Indonesia")],
     services: [
       entry("laser", "Laser cutting plat & custom", "Potong plat sesuai gambar kerja untuk ornamen, panel, dan komponen custom.", "/images/laser-cutting-illustration.jpg", "/jasa#request", "Ilustrasi laser cutting plat"),
       entry("bending", "Bending & tekuk plat", "Tekuk plat sesuai ukuran dan sudut pada gambar kerja.", "/images/cnc-bending-visual-v1.png", "/jasa#request", "Ilustrasi proses bending"),
       entry("fabrication", "Fabrikasi & finishing", "Perakitan, pengelasan, dan finishing sesuai ruang lingkup pekerjaan.", "/images/steel-indonesia/plat-hitam.jpg", "/unit/fabrikasi-erection/kontak", "Material plat baja"),
       entry("project", "Produksi & pekerjaan proyek", "Diskusikan spesifikasi, jumlah, dan jadwal pekerjaan proyek.", "/images/hero-steel-logistics-v1.png", "/minta-penawaran", "Ilustrasi pengadaan material proyek"),
-      entry("sandblasting", "Sandblasting", "Konsultasikan pembersihan permukaan baja sebelum proses pelapisan.", "", "/unit/fabrikasi-erection/kontak"),
+      entry("sandblasting", "Sandblasting", "Konsultasikan pembersihan permukaan baja sebelum proses pelapisan.", sandblastingImage, "/unit/fabrikasi-erection/kontak","Ilustrasi proses sandblasting baja"),
     ],
   };
 }
 export function appearanceForSite(rows: WebsiteAppearance[] = [], owner?: string | null): WebsiteAppearance {
-  return rows.find(row => row.published && contentOwner(row) === (owner || null)) || defaultAppearance(owner || null);
+  const row=rows.find(row => row.published && contentOwner(row) === (owner || null)) || defaultAppearance(owner || null);
+  return {...row,quotes:row.quotes.map(quote=>({...quote,image:quote.image || defaultQuoteImage})),services:row.services.map(service=>!service.image&&/sandblast/i.test(`${service.id} ${service.title}`)?{...service,image:sandblastingImage,alt:service.alt||"Ilustrasi proses sandblasting baja"}:service)};
 }

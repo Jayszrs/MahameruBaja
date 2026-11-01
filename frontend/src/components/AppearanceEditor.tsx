@@ -14,7 +14,7 @@ import { uploadCmsFile } from "../lib/cmsUpload";
 const lists: { key: AppearanceList; label: string; help: string }[] = [
   { key: "orderSteps", label: "Cara pesan", help: "Gambar ilustrasi, judul pendek, dan satu kalimat untuk setiap langkah." },
   { key: "needs", label: "Quick FAQ — Mulai dari kebutuhan Anda", help: "Beranda > 5 layanan kebutuhan baja > Quick FAQ. Tambahkan pertanyaan singkat dengan tautan ke halaman atau bagian yang menjawabnya." },
-  { key: "quotes", label: "Quote / kata mutiara", help: "Quote terpisah dari ulasan pelanggan Google. Kolom keterangan dapat berisi nama penulis atau sumber." },
+  { key: "quotes", label: "Quotes", help: "Beranda > Quotes. Setiap quote memakai gambar, teks kutipan, dan nama penulis/sumber. Unggah gambar untuk setiap quote baru." },
   { key: "services", label: "Detail jasa laser cutting, bending, dan fabrikasi", help: "Gambar dan teks pada halaman Jasa. Untuk /jasa utama, pilih Website utama." },
   { key: "memberships", label: "Keanggotaan di header", help: "Gunakan nama dan logo keanggotaan yang benar. Label ini bukan lisensi atau sertifikasi." },
   { key:"servicePaths",label:"Apa yang bisa kami bantu?",help:"Jasa > pilihan kebutuhan. Ubah ilustrasi, judul, keterangan, dan tombol setiap pilihan." },
@@ -51,6 +51,7 @@ export default function AppearanceEditor({ initialContent, servicePage = false }
   }
   async function save() {
     if (busy) return;
+    if(tab === "quotes" && row.quotes.some(quote=>!quote.image.trim())){setFailed(true);setMessage("Unggah gambar untuk setiap quote sebelum menyimpan.");return;}
     for (const value of content.websiteAppearance) {
       const result = websiteAppearanceSchema.safeParse(value);
       if (!result.success) { setFailed(true); setMessage(result.error.issues[0].message); return; }
