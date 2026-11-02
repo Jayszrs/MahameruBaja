@@ -21,6 +21,7 @@ export const sectionListFields: Record<string, { label:string; fields:ListField[
   footerLocalLinks: { label:"Layanan & area", fields:[{key:"group",label:"Nama kelompok"},{key:"label",label:"Label tautan"},{key:"href",label:"Tujuan",type:"link"},{key:"slug",label:"Divisi"}] },
   guideDefinitions: { label:"Potong, tekuk, atau rakit", fields:[{key:"term",label:"Nama proses"},{key:"description",label:"Penjelasan",type:"textarea"}] },
   guideChecklist: { label:"Sebelum mengirim desain", fields:[{key:"text",label:"Petunjuk",type:"textarea"}] },
+  aboutEngineeringSteps: { label:"Tahapan cara membantu", fields:[{key:"title",label:"Judul tahapan"},{key:"description",label:"Penjelasan tahapan",type:"textarea"}] },
 };
 export type SectionListRow = { id:string|number; [field:string]:string|number|boolean };
 export const sectionListSchema = z.object({

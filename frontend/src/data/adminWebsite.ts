@@ -1,23 +1,424 @@
 ﻿import type { TextPage } from "./websiteTexts";
-export type WebsiteSection = { id:string; label:string; editor:string; area?:string; anchor?:string; tab?:string; shared?:string; sourceSection?:string };
-export type WebsiteWorkspace = { id:string; label:string; url:string; textPage:TextPage; sections:WebsiteSection[] };
-const section=(id:string,label:string,editor="copy",area?:string,anchor?:string,tab?:string):WebsiteSection=>({id,label,editor,area,anchor,tab});
-export const websiteWorkspaces:WebsiteWorkspace[]=[
- {id:"beranda",label:"Beranda",url:"/",textPage:"home",sections:[section("header","Header","appearance","HomePage","header","memberships"),section("hero","Hero & teks berjalan","hero","HeroCarousel","hero-beranda"),section("promo","Promo & kegiatan","promotions","Promotions","promo-beranda"),section("intro","Mengenal Mahameru Group","section","UnifiedHomeContent","profil"),section("laser","Alur Jasa","appearance","UnifiedHomeContent","alur-jasa","homeFeatureSteps"),section("order","Cara Pesan","appearance","UnifiedHomeContent","cara-pesan","orderSteps"),section("quotes","Quote / kata mutiara","appearance","WebsiteQuotes","quotes","quotes"),section("faq","Pertanyaan unit","divisions","UnifiedHomeContent","faq-unit"),section("offerings","Review Google Maps","divisions","UnifiedHomeContent","layanan-unit"),section("suppliers","Rekan & Supplier","partners","SocialProof","supplier","suppliers"),section("gallery","Proyek yang Telah Dikerjakan","gallery","ProjectAlbums","galeri-unit"),section("location","Lokasi","section","divisionLocations","location-heading"), section("callout","Penutup","copy","UnifiedHomeContent","cta-penutup"),section("network","Jaringan Mahameru Group","divisions","HomePage","pilih-divisi")]},
- {id:"tentang",label:"Tentang Kami",url:"/tentang-kami",textPage:"about",sections:[section("opening","Pembuka Tentang Kami","copy","AboutMergedPage","tentang-pembuka"),section("vision","Visi Mahameru Grup","copy","companyIdentity","vision-heading"),section("divisions","Mengenal Unit","divisions","divisionAbout","divisi"),section("engineering","Cara Membantu","section","AboutMergedPage","about-engineering"),section("network","Jaringan Mahameru Group","divisions","AboutMergedPage","divisi"),]},
- {id:"produk",label:"Produk",url:"/produk",textPage:"products",sections:[section("opening","Pembuka Produk","copy","ProductsPage","products-hero"),section("catalog","Katalog, kategori & stok","inventory","ProductDetailPage"),section("copy","Tulisan katalog & detail produk","copy")]},
- {id:"jasa",label:"Jasa",url:"/jasa",textPage:"services",sections:[section("opening","Jasa cutting laser","copy","LaserCuttingPage","jasa-pembuka"),section("guide","Panduan menyiapkan pesanan","section","LaserServiceGuide","laser-guide-heading"),section("services","Pilihan jasa","appearance","LaserCuttingPage","jasa-overview","servicePaths"),section("technical","Ruang lingkup","appearance","LaserCuttingPage","laser-cutting","services"),section("albums","Jelajahi desain","gallery","ServiceAlbums","album-desain"),section("portfolio","Portofolio hasil pekerjaan","gallery","ServiceAlbums","portofolio-jasa"),section("process","Alur pekerjaan","appearance","LaserCuttingPage","jasa-proses","serviceWorkflow"),section("faq","Pertanyaan laser cutting & bending","section","LaserCuttingPage","jasa-faq")]},
- {id:"galeri",label:"Galeri",url:"/proyek",textPage:"gallery",sections:[section("opening","Pembuka Galeri","copy","ProjectsPage","projects-hero-heading"),section("albums","Album & foto proyek","gallery","ProjectAlbums","pengalaman-proyek"),section("materials","Galeri material & pekerjaan","section","ProjectsPage","gallery-heading"),section("cta","CTA konsultasi proyek","copy","ProjectsPage","proyek-cta")]},
- {id:"artikel",label:"Artikel",url:"/informasi",textPage:"articles",sections:[section("opening","Pembuka Artikel","articleIntro","InformasiPage","informasi-hero-heading"),section("articles","Daftar & isi artikel","articles","CurrentArticle","articles-heading")]},
- {id:"kontak",label:"Kontak",url:"/kontak",textPage:"contact",sections:[section("opening","Pembuka Kontak","copy","KontakPage","kontak-hero-heading"),section("contacts","Kontak & WhatsApp","contacts","ContactDirectory","tim-kontak","contacts")]},
- {id:"sosial",label:"Sosial Media",url:"/sosial-media",textPage:"social",sections:[section("opening","Pembuka Sosial Media","copy","SocialPageHero","sosial-hero"),section("posts","Unggahan sosial","social","SocialHub","sosial","posts"),section("accounts","Akun sosial","social","SocialHub","sosial","accounts")]},
- {id:"footer",label:"Footer",url:"/",textPage:"all",sections:[section("copy","Tulisan Footer","section","Footer","footer-cta"),section("divisions","Divisi Mahameru Baja","footerDivisions","FooterDivisions","footer-divisi"),section("background","Foto latar Footer","footerBackground","AppearanceEditor","company-footer","identity")]},
+export type WebsiteSection = {
+  id: string;
+  label: string;
+  editor: string;
+  area?: string;
+  anchor?: string;
+  tab?: string;
+  shared?: string;
+  sourceSection?: string;
+};
+export type WebsiteWorkspace = {
+  id: string;
+  label: string;
+  url: string;
+  textPage: TextPage;
+  sections: WebsiteSection[];
+};
+const section = (
+  id: string,
+  label: string,
+  editor = "copy",
+  area?: string,
+  anchor?: string,
+  tab?: string,
+): WebsiteSection => ({ id, label, editor, area, anchor, tab });
+export const websiteWorkspaces: WebsiteWorkspace[] = [
+  {
+    id: "beranda",
+    label: "Beranda",
+    url: "/",
+    textPage: "home",
+    sections: [
+      section(
+        "header",
+        "Header",
+        "appearance",
+        "HomePage",
+        "header",
+        "memberships",
+      ),
+      section(
+        "hero",
+        "Hero & teks berjalan",
+        "hero",
+        "HeroCarousel",
+        "hero-beranda",
+      ),
+      section(
+        "promo",
+        "Promo & kegiatan",
+        "promotions",
+        "Promotions",
+        "promo-beranda",
+      ),
+      section(
+        "intro",
+        "Mengenal Mahameru Group",
+        "section",
+        "UnifiedHomeContent",
+        "profil",
+      ),
+      section(
+        "laser",
+        "Alur Jasa",
+        "appearance",
+        "UnifiedHomeContent",
+        "alur-jasa",
+        "homeFeatureSteps",
+      ),
+      section(
+        "order",
+        "Cara Pesan",
+        "appearance",
+        "UnifiedHomeContent",
+        "cara-pesan",
+        "orderSteps",
+      ),
+      section(
+        "quotes",
+        "Quote / kata mutiara",
+        "appearance",
+        "WebsiteQuotes",
+        "quotes",
+        "quotes",
+      ),
+      section(
+        "faq",
+        "Pertanyaan unit",
+        "divisions",
+        "UnifiedHomeContent",
+        "faq-unit",
+      ),
+      section(
+        "offerings",
+        "Review Google Maps",
+        "reviews",
+        "UnifiedHomeContent",
+        "layanan-unit",
+      ),
+      section(
+        "suppliers",
+        "Rekan & Supplier",
+        "partners",
+        "SocialProof",
+        "supplier",
+        "suppliers",
+      ),
+      section(
+        "gallery",
+        "Proyek yang Telah Dikerjakan",
+        "gallery",
+        "ProjectAlbums",
+        "galeri-unit",
+      ),
+      section(
+        "location",
+        "Lokasi",
+        "section",
+        "divisionLocations",
+        "location-heading",
+      ),
+      section(
+        "callout",
+        "Penutup",
+        "copy",
+        "UnifiedHomeContent",
+        "cta-penutup",
+      ),
+      section(
+        "network",
+        "Jaringan Mahameru Group",
+        "divisions",
+        "HomePage",
+        "pilih-divisi",
+      ),
+    ],
+  },
+  {
+    id: "tentang",
+    label: "Tentang Kami",
+    url: "/tentang-kami",
+    textPage: "about",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Tentang Kami",
+        "copy",
+        "AboutMergedPage",
+        "tentang-pembuka",
+      ),
+      section(
+        "vision",
+        "Visi dan Misi",
+        "copy",
+        "companyIdentity",
+        "vision-heading",
+      ),
+      section(
+        "divisions",
+        "Mengenal Unit",
+        "divisions",
+        "divisionAbout",
+        "divisi",
+      ),
+      section(
+        "engineering",
+        "Cara Membantu",
+        "section",
+        "AboutMergedPage",
+        "about-engineering",
+      ),
+    ],
+  },
+  {
+    id: "produk",
+    label: "Produk",
+    url: "/produk",
+    textPage: "products",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Produk",
+        "copy",
+        "ProductsPage",
+        "products-hero",
+      ),
+      section(
+        "catalog",
+        "Katalog, kategori & stok",
+        "inventory",
+        "ProductDetailPage",
+      ),
+      section("copy", "Tulisan katalog & detail produk", "copy"),
+    ],
+  },
+  {
+    id: "jasa",
+    label: "Jasa",
+    url: "/jasa",
+    textPage: "services",
+    sections: [
+      section(
+        "opening",
+        "Jasa cutting laser",
+        "copy",
+        "LaserCuttingPage",
+        "jasa-pembuka",
+      ),
+      section(
+        "guide",
+        "Panduan menyiapkan pesanan",
+        "section",
+        "LaserServiceGuide",
+        "laser-guide-heading",
+      ),
+      section(
+        "services",
+        "Pilihan jasa",
+        "appearance",
+        "LaserCuttingPage",
+        "jasa-overview",
+        "servicePaths",
+      ),
+      section(
+        "technical",
+        "Ruang lingkup",
+        "appearance",
+        "LaserCuttingPage",
+        "laser-cutting",
+        "services",
+      ),
+      section(
+        "albums",
+        "Jelajahi desain",
+        "gallery",
+        "ServiceAlbums",
+        "album-desain",
+      ),
+      section(
+        "portfolio",
+        "Portofolio hasil pekerjaan",
+        "gallery",
+        "ServiceAlbums",
+        "portofolio-jasa",
+      ),
+      section(
+        "process",
+        "Alur pekerjaan",
+        "appearance",
+        "LaserCuttingPage",
+        "jasa-proses",
+        "serviceWorkflow",
+      ),
+      section(
+        "faq",
+        "Pertanyaan laser cutting & bending",
+        "section",
+        "LaserCuttingPage",
+        "jasa-faq",
+      ),
+    ],
+  },
+  {
+    id: "galeri",
+    label: "Galeri",
+    url: "/proyek",
+    textPage: "gallery",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Galeri",
+        "copy",
+        "ProjectsPage",
+        "projects-hero-heading",
+      ),
+      section(
+        "albums",
+        "Album & foto proyek",
+        "gallery",
+        "ProjectAlbums",
+        "pengalaman-proyek",
+      ),
+      section(
+        "materials",
+        "Galeri material & pekerjaan",
+        "section",
+        "ProjectsPage",
+        "gallery-heading",
+      ),
+      section(
+        "cta",
+        "CTA konsultasi proyek",
+        "copy",
+        "ProjectsPage",
+        "proyek-cta",
+      ),
+    ],
+  },
+  {
+    id: "artikel",
+    label: "Artikel",
+    url: "/informasi",
+    textPage: "articles",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Artikel",
+        "articleIntro",
+        "InformasiPage",
+        "informasi-hero-heading",
+      ),
+      section(
+        "articles",
+        "Daftar & isi artikel",
+        "articles",
+        "CurrentArticle",
+        "articles-heading",
+      ),
+    ],
+  },
+  {
+    id: "kontak",
+    label: "Kontak",
+    url: "/kontak",
+    textPage: "contact",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Kontak",
+        "copy",
+        "KontakPage",
+        "kontak-hero-heading",
+      ),
+      section(
+        "contacts",
+        "Kontak & WhatsApp",
+        "contacts",
+        "ContactDirectory",
+        "tim-kontak",
+        "contacts",
+      ),
+    ],
+  },
+  {
+    id: "sosial",
+    label: "Sosial Media",
+    url: "/sosial-media",
+    textPage: "social",
+    sections: [
+      section(
+        "opening",
+        "Pembuka Sosial Media",
+        "copy",
+        "SocialPageHero",
+        "sosial-hero",
+      ),
+      section(
+        "posts",
+        "Unggahan sosial",
+        "social",
+        "SocialHub",
+        "sosial",
+        "posts",
+      ),
+      section(
+        "accounts",
+        "Akun sosial",
+        "social",
+        "SocialHub",
+        "sosial",
+        "accounts",
+      ),
+    ],
+  },
+  {
+    id: "footer",
+    label: "Footer",
+    url: "/",
+    textPage: "all",
+    sections: [
+      section("copy", "Tulisan Footer", "section", "Footer", "footer-cta"),
+      section(
+        "divisions",
+        "Divisi Mahameru Baja",
+        "footerDivisions",
+        "FooterDivisions",
+        "footer-divisi",
+      ),
+      section(
+        "background",
+        "Foto latar Footer",
+        "footerBackground",
+        "AppearanceEditor",
+        "company-footer",
+        "identity",
+      ),
+    ],
+  },
 ];
 
-export function publicSectionId(workspace:WebsiteWorkspace, selected:WebsiteSection) {
- if(workspace.id==="beranda")return ({promo:"promotions",laser:"alur-jasa",network:"divisions",offerings:"offerings",faq:"faq",gallery:"albums"} as Record<string,string>)[selected.id] || selected.id;
- if(workspace.id==="produk"&&selected.id==="copy")return "catalog";
- if(workspace.id==="artikel"&&selected.id==="copy")return "articles";
- if(workspace.id==="sosial")return selected.id==="opening"?"opening":"social";
- return selected.id;
+export function publicSectionId(
+  workspace: WebsiteWorkspace,
+  selected: WebsiteSection,
+) {
+  if (workspace.id === "beranda")
+    return (
+      (
+        {
+          promo: "promotions",
+          laser: "alur-jasa",
+          network: "divisions",
+          offerings: "offerings",
+          faq: "faq",
+          gallery: "albums",
+        } as Record<string, string>
+      )[selected.id] || selected.id
+    );
+  if (workspace.id === "produk" && selected.id === "copy") return "catalog";
+  if (workspace.id === "artikel" && selected.id === "copy") return "articles";
+  if (workspace.id === "sosial")
+    return selected.id === "opening" ? "opening" : "social";
+  return selected.id;
 }

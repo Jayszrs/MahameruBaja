@@ -578,6 +578,21 @@
 .admin-shell .editor-panel-title > .admin-primary { margin-left:auto; }
 .admin-shell .division-faq-editor > .editor-list-heading > .admin-primary { background:var(--admin-red); color:#fff; }
 .admin-shell .partner-logo-editor > .editor-fields > .editor-panel:first-child .editor-panel-title { margin:0; padding:0; border-bottom:0; }
+.admin-shell .about-divisions-workspace { display:grid; gap:18px; }
+.admin-shell .about-divisions-workspace .admin-inline-empty { padding:18px 24px; }
+.admin-shell .about-divisions-workspace .cover-limit-notice { margin:10px 0 0; padding-left:2px; color:var(--admin-red,#b4232c); }
+.admin-shell .about-division-content { display:grid; grid-template-columns:minmax(220px,280px) minmax(0,1fr); gap:18px; align-items:start; }
+.admin-shell .about-division-picker, .admin-shell .about-division-detail { min-width:0; }
+.admin-shell .about-division-picker { padding:18px; border:1px solid var(--admin-border,#e5e7eb); border-radius:14px; background:#fff; }
+.admin-shell .about-division-picker > h2, .admin-shell .about-division-picker > p { margin-top:0; }
+.admin-shell .about-album-detail { margin-top:18px; padding:18px; }
+.admin-shell .about-album-editor { display:block; margin-top:24px; }
+.admin-shell .about-album-editor .about-album-detail { margin-top:0; }
+.admin-shell .cms-file-button { display:inline-flex; align-items:center; cursor:pointer; }
+.admin-shell .about-album-photos { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-top:16px; }
+.admin-shell .about-album-photos article { display:grid; gap:10px; align-content:start; padding:12px; border:1px solid var(--admin-border,#e5e7eb); border-radius:12px; background:#fff; }
+.admin-shell .about-album-photos img { width:100%; height:120px; object-fit:cover; border-radius:8px; }
+@media(max-width:800px) { .admin-shell .about-division-content, .admin-shell .about-album-editor { grid-template-columns:1fr; } }
 @media(max-width:700px) {
   .admin-shell .editor-field.website-scope-picker { width:100%; grid-template-columns:minmax(0,1fr); gap:6px; }
   .admin-shell .editor-field.website-scope-picker .website-scope-label { grid-column:1; grid-row:1; }

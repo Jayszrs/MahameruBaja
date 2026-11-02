@@ -1380,7 +1380,7 @@ html { scroll-padding-top: calc(var(--header-height) + 20px); -webkit-text-size-
 .unit-about p:not(.industrial-eyebrow), .unit-service-list p:not(.industrial-eyebrow), .unit-section-intro p:not(.industrial-eyebrow) { font-size:14px; line-height:1.85; color:#717b7c; margin-top:25px; }
 .unit-about a { display:inline-block; margin-top:30px; font-size:12px; font-weight:700; color:#bc2630; }
 .unit-values { padding-block:85px; background:#e9e9e3; }
-.unit-values .industrial-container > div { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:35px; }
+.unit-values .industrial-container > div { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:40px; margin-top:35px; }
 .unit-values article { border-top:1px solid #bfc6c0; padding-top:25px; }
 .unit-values article > span { color:#bd2630; font-size:11px; font-family:var(--font-mono); }
 .unit-values h3 { font-size:26px; letter-spacing:-.03em; line-height:1.2; margin-top:35px; }

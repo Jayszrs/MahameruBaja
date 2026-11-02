@@ -9,6 +9,7 @@ import { visibleInDivision } from "../../../../src/data/divisionCms";
 import { divisionSearchTitle, divisionSearchDescription } from "../../../../src/data/divisionSeo";
 import { siteOrigin } from "../../../../src/lib/siteOrigin";
 import { divisionBusinessSchema, jsonLd, organizationSchema } from "../../../../src/lib/structuredData";
+import { defaultGalleryProjects } from "../../../../src/data/projectGallery";
 
 type Params = { slug: string; section: string };
 export async function generateMetadata({ params }: { params: Promise<Params> }) {
@@ -27,7 +28,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const content = ["kontak", "produk", "galeri", "tentang", "layanan"].includes(section) ? await readPublicSiteContent() : null;
   const contacts = section === "kontak" ? content!.contacts.filter(c => c.published) : [];
   const inventory = section === "produk" ? content!.inventory : [];
-  const projects = ["galeri", "tentang", "layanan"].includes(section) ? content!.galleryProjects.filter(p => p.published && p.photos.length && visibleInDivision(p,division.slug)) : [];
+  const galleryProjectById = new Map(content!.galleryProjects.map((project) => [project.id, project]));
+  const galleryProjects = [
+    ...defaultGalleryProjects.map((project) => galleryProjectById.get(project.id) || project),
+    ...content!.galleryProjects.filter((project) => !defaultGalleryProjects.some((item) => item.id === project.id)),
+  ];
+  const projects = ["galeri", "tentang", "layanan"].includes(section) ? galleryProjects.filter(p => p.published && p.photos.length && visibleInDivision(p,division.slug)) : [];
   const base = siteOrigin();
   const schema = { "@context": "https://schema.org", "@graph": [organizationSchema(base), divisionBusinessSchema(division, base), {
     "@type": "BreadcrumbList", itemListElement: [

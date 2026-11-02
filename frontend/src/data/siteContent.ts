@@ -64,6 +64,9 @@ export const siteContentSchema = z.object({
     { id: "laser-cutting", label: "Saya mau potong atau tekuk plat sesuai gambar", href: "/unit/laser-cutting" },
     { id: "fabrikasi-erection", label: "Saya ingin konsultasi fabrikasi dan erection", href: "/unit/fabrikasi-erection/kontak" },
   ]),
+  reviewEyebrow: text(180).default("Cerita & kepercayaan"),
+  reviewHeading: text(300).default("Setiap kebutuhan, punya ceritanya."),
+  reviewDescription: text(1000).default("Ulasan pelanggan dari Google Maps. Baca cerita lengkapnya di profil toko kami."),
   partnerLogos:partnerLogoListSchema.default(defaultPartnerLogos),
   supplierLogosHomeVisible: z.boolean().default(true),
   heroAnnouncements:z.array(heroAnnouncementSchema).max(100).default([]),
@@ -101,11 +104,11 @@ export type TeamContact = SiteContent["contacts"][number];
 export function contactVisibleInDivision(contact: TeamContact, slug: string) {
   return contact.audience ? contact.audience.includes(slug) : contact.divisions.length ? contact.divisions.includes(slug) : !contentOwner(contact) || contentOwner(contact) === slug;
 }
-export type ReviewContent = Pick<SiteContent, "rating" | "reviewCount" | "ratingDate" | "mapsUrl" | "reviews">;
+export type ReviewContent = Pick<SiteContent, "rating" | "reviewCount" | "ratingDate" | "mapsUrl" | "reviews"> & Partial<Pick<SiteContent, "reviewEyebrow" | "reviewHeading" | "reviewDescription">>;
 // Only review fields cross the reviews widget's client boundary. Do not ship
 // unrelated division projects, contacts or other CMS content in its props.
 export function reviewContent(content: ReviewContent): ReviewContent {
-  return { rating: content.rating, reviewCount: content.reviewCount, ratingDate: content.ratingDate, mapsUrl: content.mapsUrl, reviews: content.reviews };
+  return { rating: content.rating, reviewCount: content.reviewCount, ratingDate: content.ratingDate, mapsUrl: content.mapsUrl, reviews: content.reviews, reviewEyebrow: content.reviewEyebrow, reviewHeading: content.reviewHeading, reviewDescription: content.reviewDescription };
 }
 
 // Identitas dan penempatan admin: Excel DAFTAR LOGO DANA NOMOR BARU MBI,
@@ -126,6 +129,9 @@ export const defaultSiteContent: SiteContent = {
     { id: "laser-cutting", label: "Saya mau potong atau tekuk plat sesuai gambar", href: "/unit/laser-cutting" },
     { id: "fabrikasi-erection", label: "Saya ingin konsultasi fabrikasi dan erection", href: "/unit/fabrikasi-erection/kontak" },
   ],
+  reviewEyebrow: "Cerita & kepercayaan",
+  reviewHeading: "Setiap kebutuhan, punya ceritanya.",
+  reviewDescription: "Ulasan pelanggan dari Google Maps. Baca cerita lengkapnya di profil toko kami.",
   partnerLogos:defaultPartnerLogos,
   supplierLogosHomeVisible:true,
   heroAnnouncements:[],

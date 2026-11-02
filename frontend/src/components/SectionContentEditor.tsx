@@ -12,6 +12,14 @@ import { imageAddressHelp, imageAddressLabel, uploadCmsFile } from "../lib/cmsUp
 import { defaultAppearance } from "../data/websiteAppearance";
 
 type Field = Pick<SectionEdit, "kind" | "source" | "label"> & {binding?:"companyVision"|"companyMission"|"companyMotto"; mergedSources?: string[]};
+const PUBLIC_SECTION_CACHE_TTL = 30_000;
+const publicSectionCache = new Map<string, { html: string; expiresAt: number }>();
+
+function invalidatePublicSectionCache(url: string) {
+  const target = new URL(url, window.location.origin);
+  publicSectionCache.delete(target.toString());
+}
+
 function originalImage(value: string) {
   try { const url = new URL(value, window.location.origin); return url.pathname === "/_next/image" ? url.searchParams.get("url") || value : url.origin === window.location.origin ? url.pathname + url.search : value; }
   catch { return value; }
@@ -81,10 +89,23 @@ export default function SectionContentEditor({ initialContent, page, section, ur
   function changeProductHeroImage(value:string) { setContent(current=>{const index=current.websiteAppearance.findIndex(row=>row.ownerDivision===null);const row=index<0?{...defaultAppearance(),productHeroImage:value}:{...current.websiteAppearance[index],productHeroImage:value,published:true};return {...current,websiteAppearance:index<0?[...current.websiteAppearance,row]:current.websiteAppearance.map((item,i)=>i===index?row:item)};});setMessage(""); }
   const load = useCallback(async () => {
     setLoading(true); setFailed(false); setMessage("");
+    const target = new URL(url, window.location.origin);
+    const cacheKey = target.toString();
+    const cached = publicSectionCache.get(cacheKey);
     try {
-      const target = new URL(url, window.location.origin); target.searchParams.set("cms-source", String(Date.now()));
-      const response = await fetch(target, { cache: "no-store" }); if (!response.ok) throw new Error(`Halaman publik belum dapat dibaca (${response.status}).`);
-      const document = new DOMParser().parseFromString(await response.text(), "text/html");
+      const html = cached && cached.expiresAt > Date.now()
+        ? cached.html
+        : await (async () => {
+            const response = await fetch(target, { cache: "no-store" });
+            if (!response.ok) throw new Error(`Halaman publik belum dapat dibaca (${response.status}).`);
+            const fresh = await response.text();
+            publicSectionCache.set(cacheKey, {
+              html: fresh,
+              expiresAt: Date.now() + PUBLIC_SECTION_CACHE_TTL,
+            });
+            return fresh;
+          })();
+      const document = new DOMParser().parseFromString(html, "text/html");
       setSnapshots(readSectionLists(document,section));
       setFields(readSectionFields(document, section));
     } catch (error) { setFailed(true); setMessage(error instanceof Error ? error.message : "Tidak dapat membaca section."); }
@@ -130,6 +151,7 @@ export default function SectionContentEditor({ initialContent, page, section, ur
     try {
       const response = await fetch("/api/admin/content", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...content, _base: base }) });
       const next = await response.json(); if (!response.ok) throw new Error(next.message || "Perubahan belum tersimpan.");
+      invalidatePublicSectionCache(url);
       setContent(next); setBase(next); setMessage("Perubahan section tersimpan. Buka pratinjau untuk melihat hasilnya.");
     } catch (error) { setFailed(true); setMessage(error instanceof Error ? error.message : "Gagal menyimpan."); }
     finally { setBusy(false); }

@@ -110,7 +110,7 @@
 .about-engineering { background:#ece9e2; }
 .about-engineering h2 { font:750 clamp(32px,4vw,54px)/1.1 var(--font-display); margin:18px 0; letter-spacing:-.03em; }
 .about-engineering .home-shell > p:not(.industrial-eyebrow) { max-width:65ch; line-height:1.75; color:#50565a; }
-.about-engineering-points { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:28px; margin:35px 0; }
+.about-engineering-points { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; margin:35px 0; }
 .about-engineering-points > div { border-top:1px solid #b7b4ae; padding-top:18px; }
 .about-engineering-points span { font:12px var(--font-mono); color:#af1616; }
 .about-engineering-points h3 { font:750 22px var(--font-display); margin:18px 0 12px; }
