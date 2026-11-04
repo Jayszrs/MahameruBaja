@@ -64,9 +64,9 @@ export default async function Page({
       page === "footer" && identity
         ? editableDivisions(identity)
         : Promise.resolve([]),
-      (page === "beranda" || page === "tentang") && identity
+      (page === "beranda" || page === "tentang" || page === "produk") && identity
         ? editableDivisions(identity).then((rows) =>
-            page === "tentang"
+            page === "tentang" || page === "produk"
               ? rows
               : rows.filter((row) => row.status === "active"),
           )
@@ -74,7 +74,7 @@ export default async function Page({
     ],
   );
   const homeSite =
-    page === "beranda" || page === "tentang"
+    page === "beranda" || page === "tentang" || page === "produk"
       ? identity?.division ||
         homeDivisions.find((row) => row.slug === query.site)?.slug ||
         null
@@ -95,6 +95,7 @@ export default async function Page({
     ? homeDivisions.find((row) => row.slug === homeSite)?.name || homeSite
     : "Website utama · Mahameru Baja";
   const homeUrl = homeSite ? `/unit/${homeSite}` : "/";
+  const productUrl = homeSite ? `/unit/${homeSite}/produk` : workspace.url;
   const aboutUrl =
     page === "tentang" && homeSite
       ? `/unit/${homeSite}/tentang`
@@ -221,7 +222,8 @@ export default async function Page({
         <header className="admin-section-heading">
           <div>
             {((page === "beranda" && scopedHomeSections.has(selected.id)) ||
-              (page === "tentang" && selected.id !== "divisions")) && (
+              (page === "tentang" && selected.id !== "divisions") ||
+              (page === "produk" && selected.id === "opening")) && (
               <HomeWebsitePicker
                 value={homeSite || ""}
                 divisions={homeDivisions}
@@ -230,7 +232,7 @@ export default async function Page({
             )}
           </div>
           <a
-            href={`${page === "beranda" ? homeUrl : workspace.url}?cms-preview=1${selected.anchor ? `#${selected.anchor}` : ""}`}
+            href={`${page === "beranda" ? homeUrl : page === "produk" ? productUrl : workspace.url}?cms-preview=1${selected.anchor ? `#${selected.anchor}` : ""}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -457,10 +459,12 @@ export default async function Page({
                 ? homeUrl
                 : page === "tentang"
                   ? aboutUrl
+                  : page === "produk"
+                    ? productUrl
                   : workspace.url
             }
             ownerDivision={
-              page === "beranda" || page === "tentang" ? homeSite : null
+              page === "beranda" || page === "tentang" || page === "produk" ? homeSite : null
             }
             hideImages={page === "jasa" && selected.id === "guide"}
             hideGuidance
@@ -491,9 +495,7 @@ export default async function Page({
             mergeHeadingFields={page === "tentang" && selected.id === "opening"}
             hideTextFields={page === "tentang" && selected.id === "opening"}
             productOpening={page === "produk" && selected.id === "opening"}
-            numberingOffset={
-              page === "produk" && selected.id === "opening" ? 2 : 0
-            }
+            numberingOffset={0}
             hideGenericText={page === "beranda" && selected.id === "intro"}
             hideActionFields={
               (page === "beranda" &&

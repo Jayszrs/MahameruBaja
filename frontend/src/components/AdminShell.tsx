@@ -33,29 +33,42 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [offerToastCount, setOfferToastCount] = useState(0);
   const seenOfferIds = useRef<Set<string> | null>(null);
   const offerToastTimer = useRef<number | null>(null);
+  const offerRefresh = useRef<Promise<void> | null>(null);
   useEffect(() => {
     let active = true;
-    const refresh = async () => { try {
-      const response = await fetch("/api/admin/requests", { cache: "no-store" }); if (!response.ok) return;
-      const rows: { id?: string; status?: string; archived?: boolean; source?: string }[] = await response.json(); if (!active || !Array.isArray(rows)) return;
-      const pending = rows.filter(row => !row.archived && row.status === "Baru" && row.source !== "ADMIN" && row.id);
-      setNewOffers(pending.length);
-      if (!seenOfferIds.current) {
-        try { const stored = JSON.parse(sessionStorage.getItem("mahameru.admin.seen-new-offers.v1") || "[]"); seenOfferIds.current = new Set(Array.isArray(stored) ? stored.filter((id): id is string => typeof id === "string") : []); }
-        catch { seenOfferIds.current = new Set(); }
-      }
-      const seen = seenOfferIds.current;
-      const unseen = pending.filter(row => !seen.has(row.id!));
-      if (unseen.length) {
-        unseen.forEach(row => seen.add(row.id!));
-        try { sessionStorage.setItem("mahameru.admin.seen-new-offers.v1", JSON.stringify([...seen].slice(-500))); } catch { /* Notification is still shown for this session. */ }
-        setOfferToastCount(unseen.length);
-        if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current);
-        offerToastTimer.current = window.setTimeout(() => setOfferToastCount(0), 12000);
-      }
-    } catch { /* The sidebar remains usable if the count is temporarily unavailable. */ } };
+    const controller = new AbortController();
+    const refresh = () => {
+      if (offerRefresh.current) return offerRefresh.current;
+      offerRefresh.current = (async () => {
+        try {
+          const response = await fetch("/api/admin/requests", { cache: "no-store", signal: controller.signal });
+          if (!response.ok) return;
+          const rows: { id?: string; status?: string; archived?: boolean; source?: string }[] = await response.json();
+          if (!active || !Array.isArray(rows)) return;
+          const pending = rows.filter(row => !row.archived && row.status === "Baru" && row.source !== "ADMIN" && row.id);
+          setNewOffers(pending.length);
+          if (!seenOfferIds.current) {
+            try { const stored = JSON.parse(sessionStorage.getItem("mahameru.admin.seen-new-offers.v1") || "[]"); seenOfferIds.current = new Set(Array.isArray(stored) ? stored.filter((id): id is string => typeof id === "string") : []); }
+            catch { seenOfferIds.current = new Set(); }
+          }
+          const seen = seenOfferIds.current;
+          const unseen = pending.filter(row => !seen.has(row.id!));
+          if (unseen.length) {
+            unseen.forEach(row => seen.add(row.id!));
+            try { sessionStorage.setItem("mahameru.admin.seen-new-offers.v1", JSON.stringify([...seen].slice(-500))); } catch { /* Notification is still shown for this session. */ }
+            setOfferToastCount(unseen.length);
+            if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current);
+            offerToastTimer.current = window.setTimeout(() => setOfferToastCount(0), 12000);
+          }
+        } catch { /* The sidebar remains usable if the count is temporarily unavailable. */ }
+        finally {
+          offerRefresh.current = null;
+        }
+      })();
+      return offerRefresh.current;
+    };
     void refresh(); const timer = window.setInterval(refresh, 30000); window.addEventListener("focus", refresh);
-    return () => { active = false; window.clearInterval(timer); window.removeEventListener("focus", refresh); if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current); };
+    return () => { active = false; controller.abort(); window.clearInterval(timer); window.removeEventListener("focus", refresh); if (offerToastTimer.current !== null) window.clearTimeout(offerToastTimer.current); };
   }, []);
   useEffect(() => {
     const update = (event: Event) => {

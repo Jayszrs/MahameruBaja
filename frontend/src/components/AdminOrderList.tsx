@@ -38,7 +38,18 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
   }, [itemIds]);
   function selectItem(id: string) {
     const disclosure = disclosureFor(id);
-    if (!disclosure) { onSelect?.(id); return; }
+    if (!disclosure) {
+      onSelect?.(id);
+      requestAnimationFrame(() => {
+        const orderRow = document.querySelector<HTMLElement>(`[data-order-list="${CSS.escape(listId)}"] [data-order-id="${CSS.escape(id)}"]`);
+        const orderList = orderRow?.closest<HTMLElement>(".admin-order-list");
+        const details = orderList?.parentElement?.querySelectorAll<HTMLElement>("details.cms-list-row");
+        const index = items.findIndex(item => item.id === id);
+        const detail = index >= 0 ? details?.[index] : undefined;
+        detail?.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
+      return;
+    }
     disclosure.open = !disclosure.open;
     setOpenDetails(disclosure.open ? id : null);
     if (disclosure.open) {
