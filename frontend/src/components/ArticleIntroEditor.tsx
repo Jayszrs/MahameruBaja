@@ -39,7 +39,6 @@ export default function ArticleIntroEditor({ initialContent }: { initialContent:
       }} /><small>JPG, PNG, WebP · maksimal 4 MB. Gambar lama tetap tersimpan sampai penggantian berhasil.</small></label><label className="editor-field">Tautan gambar<input value={content.articleIntro.image} onChange={event => change("image", event.target.value)} /></label></div>
       {content.articleIntro.image && <div className="article-intro-image-preview"><img src={content.articleIntro.image} alt="Pratinjau gambar pembuka Artikel" /><button className="admin-secondary" type="button" onClick={() => change("image", "")}>Hapus gambar dari halaman</button></div>}
       <label className="editor-field">Keterangan visual<input value={content.articleIntro.visualNote} maxLength={180} onChange={event => change("visualNote", event.target.value)} /></label>
-      <div className="admin-form-actions"><button type="button" className="admin-primary" disabled={!dirty || busy} onClick={() => void save()}>Simpan pembuka Artikel</button></div>
     </fieldset>
   </section>;
 }

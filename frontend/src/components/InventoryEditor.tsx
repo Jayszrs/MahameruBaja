@@ -108,7 +108,6 @@ export default function InventoryEditor({ initialItems, division, hideActions = 
       })}
       <datalist id="product-categories">{[...new Set(allProducts.map(product => product.category).filter(Boolean))].map(category => <option key={category} value={category} />)}</datalist>
       {!shown.length && <div className="editor-empty"><h2>{query ? 'Produk tidak ditemukan' : 'Belum ada produk di divisi ini'}</h2><p>{query ? 'Coba nama produk lain atau kosongkan pencarian.' : 'Gunakan Tambah produk baru untuk membuat produk pertama.'}</p></div>}
-      {!hideActions && <div className="admin-form-actions"><p>{dirty ? 'Simpan agar perubahan langsung tampil di website.' : 'Semua perubahan tersimpan.'}</p><button type="button" className="admin-primary" disabled={!dirty} onClick={() => void save()}>Simpan produk & stok</button></div>}
     </fieldset>
     {deleteKey && <AdminDialog title="Hapus produk dari divisi?" onClose={() => setDeleteKey(null)}><p>Produk dan catatan stok akan dihapus dari katalog divisi setelah perubahan disimpan.</p><div className="admin-dialog-actions"><button type="button" className="admin-secondary" onClick={() => setDeleteKey(null)}>Batal</button><button type="button" className="admin-danger" onClick={() => { setItems(rows => rows.filter(row => inventoryKey(row) !== deleteKey)); setDirty(true); setMessage(''); setDeleteKey(null); }}>Hapus dari divisi</button></div></AdminDialog>}
   </div>;

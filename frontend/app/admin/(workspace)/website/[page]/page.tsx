@@ -232,7 +232,7 @@ export default async function Page({
             )}
           </div>
           <a
-            href={`${page === "beranda" ? homeUrl : page === "produk" ? productUrl : workspace.url}?cms-preview=1${selected.anchor ? `#${selected.anchor}` : ""}`}
+            href={`${page === "beranda" ? homeUrl : page === "produk" ? productUrl : page === "tentang" ? aboutUrl : workspace.url}?cms-preview=1${selected.anchor ? `#${selected.anchor}` : ""}`}
             target="_blank"
             rel="noopener noreferrer"
           >

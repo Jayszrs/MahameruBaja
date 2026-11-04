@@ -191,12 +191,11 @@ export const websiteWorkspaces: WebsiteWorkspace[] = [
         "inventory",
         "ProductDetailPage",
       ),
-      section("copy", "Tulisan katalog & detail produk", "copy"),
     ],
   },
   {
     id: "jasa",
-    label: "Jasa",
+    label: "Jasa/Layanan",
     url: "/jasa",
     textPage: "services",
     sections: [
