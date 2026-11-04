@@ -1,23 +1,24 @@
 import { readPublicSiteContent } from "../../src/lib/siteContentStore";
 import { appearanceForSite } from "../../src/data/websiteAppearance";
+import SocialProof from "../../src/components/SocialProof";
 import LaserCuttingPage from "../../src/screens/LaserCuttingPage";
 import type { Metadata } from "next";
 import LocalBusinessDetails from "../../src/components/LocalBusinessDetails";
 import { readPublicDivisions } from "../../src/lib/divisionStore";
 import { siteOrigin } from "../../src/lib/siteOrigin";
-import { breadcrumbSchema, divisionBusinessSchema, faqSchema, jsonLd, organizationSchema } from "../../src/lib/structuredData";
+import { breadcrumbSchema, divisionBusinessSchema, faqSchema, jsonLd, organizationSchema, siteDisplayName } from "../../src/lib/structuredData";
 import LaserServiceGuide from "../../src/components/LaserServiceGuide";
 import { readPublishedArticles } from "../../src/lib/articleStore";
 import { laserFAQs } from "../../src/data/business";
 import { contentOwner, visibleInDivision } from "../../src/data/divisionCms";
 
-const title = "Jasa Cutting Laser Tambun & Bekasi | Mahameru Baja";
-const description = "Jasa cutting laser Tambun dan Bekasi untuk potong dan bending plat sesuai gambar. Kirim desain, bahan, ketebalan, dan jumlah ke MBI untuk penawaran.";
+const title = "Jasa Cutting Laser Bekasi & Tambun | MBI Laser Cutting";
+const description = "MBI Laser Cutting melayani jasa cutting laser Bekasi dan Tambun, bending plat, serta fabrikasi. Kirim gambar, material, ukuran, dan jumlah untuk penawaran.";
 export const metadata: Metadata = {
   title: { absolute: title },
   description,
   alternates: { canonical: "/jasa" },
-  openGraph: { siteName: "Mahameru Baja Indonesia", title, description, url: "/jasa", images: [{ url: "/images/laser-cutting-illustration.jpg", alt: "Ilustrasi proses laser cutting plat" }] },
+  openGraph: { siteName: siteDisplayName, title, description, url: "/jasa", images: [{ url: "/images/laser-cutting-illustration.jpg", alt: "Ilustrasi proses laser cutting plat" }] },
   twitter: { card: "summary_large_image", title, description },
 };
 
@@ -41,5 +42,5 @@ export default async function Page() {
     ...(appearanceForSite(content.websiteAppearance).hiddenServiceSections.includes("faq") ? [] : [faqSchema(base, "/jasa", faqs)]),
     breadcrumbSchema(base, "/jasa", "Jasa Cutting Laser Bekasi & Tambun"),
   ] };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage><LocalBusinessDetails divisions={divisions} service /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage>{content.divisionReviews["laser-cutting"] && <SocialProof content={content.divisionReviews["laser-cutting"]} companyName="MBI Laser Cutting" includeImported={false} partnerLogos={[]} />}<LocalBusinessDetails divisions={divisions} service /></>;
 }

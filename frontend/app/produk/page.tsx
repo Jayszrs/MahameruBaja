@@ -3,9 +3,7 @@ import { readPublicSiteContent } from "../../src/lib/siteContentStore";
 import { connection } from "next/server";
 import ProductsPage from "../../src/screens/ProductsPage";
 import type { Metadata } from "next";
-import LocalBusinessDetails from "../../src/components/LocalBusinessDetails";
 import { readPublicDivisions } from "../../src/lib/divisionStore";
-import { appearanceForSite } from "../../src/data/websiteAppearance";
 import { siteOrigin } from "../../src/lib/siteOrigin";
 import { breadcrumbSchema, divisionBusinessSchema, jsonLd, organizationSchema } from "../../src/lib/structuredData";
 const title = "Toko Besi & Baja Bekasi, Tambun, Cibitung | Mahameru Baja";
@@ -17,8 +15,7 @@ export const metadata: Metadata = {
 };
 export default async function Page() {
   await connection();
-  const [content, allDivisions] = await Promise.all([readPublicSiteContent(), readPublicDivisions()]);
-  const { inventory } = content;
+  const [{ inventory }, allDivisions] = await Promise.all([readPublicSiteContent(), readPublicDivisions()]);
   const divisions = allDivisions.filter(division => division.slug.startsWith("retail-"));
   const base = siteOrigin();
   const schema = { "@context": "https://schema.org", "@graph": [
@@ -26,5 +23,5 @@ export default async function Page() {
     { "@type": "CollectionPage", "@id": `${base}/produk#webpage`, url: `${base}/produk`, name: title, description, about: divisions.map(division => ({ "@id": `${base}/unit/${division.slug}#business` })) },
     breadcrumbSchema(base, "/produk", "Toko besi dan baja Bekasi"),
   ] };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><Suspense><ProductsPage inventory={inventory.filter(i => i.listed)} heroImage={appearanceForSite(content.websiteAppearance).productHeroImage} /></Suspense><LocalBusinessDetails divisions={divisions} /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><Suspense><ProductsPage inventory={inventory.filter(i => i.listed)} /></Suspense></>;
 }

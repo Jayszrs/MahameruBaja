@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript'),vm=require('node:vm');
+const code=ts.transpileModule(fs.readFileSync('frontend/src/data/serviceRequest.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const moduleScope={exports:{}};vm.runInNewContext(code,{module:moduleScope,exports:moduleScope.exports,Number});const {validateServiceStep,emptyServiceRequest}=moduleScope.exports;
+const errors=(step,draft=emptyServiceRequest,file=null,service='Laser Cutting',division='laser-cutting')=>Object.keys(validateServiceStep(step,draft,service,division,file));
+assert(errors(0,emptyServiceRequest,null,'').includes('service'));assert(errors(0,emptyServiceRequest,null,'Laser Cutting','').includes('division'));
+assert(errors(1).includes('file'));const draft={...emptyServiceRequest,noDrawing:true,notes:'Panel pagar sesuai ukuran proyek',material:'Plat besi',dimensions:'600 x 400 mm',quantity:'2',name:'Pelanggan',whatsapp:'+62 812-1805-2017',city:'Bekasi',consent:true};
+for(let step=0;step<4;step++)assert.equal(errors(step,draft).length,0);
+assert(errors(1,{...draft,notes:''}).includes('notes'));assert(errors(1,{...draft,quantity:'0'}).includes('quantity'));assert(errors(1,{...draft,quantity:'1.5'}).includes('quantity'));assert(errors(1,{...draft,thickness:'-1'}).includes('thickness'));
+assert(errors(1,{...draft,noDrawing:false},{name:'desain.exe',size:100}).includes('file'));assert(errors(1,{...draft,noDrawing:false},{name:'desain.pdf',size:11*1024*1024}).includes('file'));assert.equal(errors(1,{...draft,noDrawing:false,notes:''},{name:'desain.dwg',size:1024}).length,0);
+assert(errors(2,{...draft,whatsapp:'bukan nomor'}).includes('whatsapp'));assert(errors(2,{...draft,name:' '}).includes('name'));assert(errors(2,{...draft,city:''}).includes('city'));assert(errors(3,{...draft,consent:false}).includes('consent'));
+console.log('Service wizard validation passed: step gates, design/consultation alternatives, quantities, file type/size, contact and consent.');

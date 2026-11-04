@@ -16,15 +16,18 @@ import "../src/local-business.css";
 import "../src/loading-accessibility.css";
 import "../src/customer-revision.css";
 import "../src/website-gallery.css";
+import "../src/service-wizard.css";
 import { DivisionDirectory } from "../src/components/DivisionDirectory";
 import { readPublicDivisions } from "../src/lib/divisionStore";
 import { readPublicSiteContent } from "../src/lib/siteContentStore";
 import { WebsiteTextProvider } from "../src/components/PublicText";
+import SiteLanguageProvider from "../src/components/SiteLanguageProvider";
 import WelcomePosters from "../src/components/WelcomePosters";
 import { connection } from "next/server";
 import AppShell from "../src/components/AppShell";
 import AdminNavigationProvider from "../src/components/AdminNavigationProvider";
 import { isPreviewSite, siteOrigin } from "../src/lib/siteOrigin";
+import { siteDisplayName } from "../src/lib/structuredData";
 
 const siteUrl = siteOrigin();
 
@@ -54,16 +57,16 @@ export const metadata: Metadata = {
   robots: isPreviewSite() ? { index: false, follow: false } : undefined,
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mahameru Baja Indonesia | Material, Laser Cutting & Fabrikasi",
-    template: "%s | Mahameru Baja Indonesia",
+    default: "MBI Laser Cutting | Jasa Cutting Laser Bekasi & Tambun",
+    template: "%s | MBI Laser Cutting",
   },
   description: "Retail besi, supplier material proyek, laser cutting, bending, fabrikasi, dan erection di Tambun, Cibitung, dan Bekasi.",
   verification: { google: process.env.GOOGLE_SITE_VERIFICATION || "e5pMHAECF9BZQf04S3uJAhmre9xFHY8eTPfEAgap_sA" },
-  applicationName: "Mahameru Baja Indonesia",
+  applicationName: siteDisplayName,
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
       { url: "/favicon.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.ico", sizes: "16x16 32x32 48x48 64x64", type: "image/x-icon" },
     ],
     shortcut: "/favicon.ico",
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
@@ -71,7 +74,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    siteName: "Mahameru Baja Indonesia",
+    siteName: siteDisplayName,
     url: siteUrl,
     images: [{ url: "/images/steel-indonesia/toko-mahameru.jpg", width: 1080, height: 608, alt: "Toko Besi Mahameru Baja" }],
   },
@@ -85,7 +88,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const [divisions, content] = await Promise.all([readPublicDivisions(), readPublicSiteContent()]);
   return (
     <html lang="id" data-scroll-behavior="smooth" className={`${manrope.variable} ${archivo.variable} ${plexMono.variable}`}>
-      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts} sectionEdits={content.sectionEdits} sectionLists={content.sectionLists} companyVision={content.companyVision} companyMotto={content.companyMotto}><AdminNavigationProvider><AppShell inventory={content.inventory} appearance={content.websiteAppearance} contacts={content.contacts}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></WebsiteTextProvider></DivisionDirectory></body>
+      <body><DivisionDirectory divisions={divisions}><WebsiteTextProvider texts={content.websiteTexts}><SiteLanguageProvider enabled={Boolean(process.env.GOOGLE_TRANSLATE_API_KEY)}><AdminNavigationProvider><AppShell inventory={content.inventory} appearance={content.websiteAppearance} contacts={content.contacts}>{children}<WelcomePosters promotions={content.promotions} divisions={divisions} contacts={content.contacts} /></AppShell></AdminNavigationProvider></SiteLanguageProvider></WebsiteTextProvider></DivisionDirectory></body>
     </html>
   );
 }

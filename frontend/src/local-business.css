@@ -21,6 +21,54 @@
 .local-business-links { display: flex; flex-wrap: wrap; gap: 8px 24px; }
 .local-business-links a { display: inline-flex; align-items: center; min-height: 44px; }
 @media (max-width: 760px) { .local-business-columns { grid-template-columns: 1fr; gap: 32px; margin-top: 28px; } }
+.service-guide-compact,.service-contact-section { scroll-margin-top:150px; }
+.service-guide-compact h2,.service-contact-section h2 { max-width:28ch; }
+.service-process-options { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin:30px 0 44px; }
+.service-process-options > a { display:grid; grid-template-columns:40px 1fr; gap:12px; padding:26px; border:1px solid var(--color-light-steel); border-radius:16px; background:white; text-decoration:none; transition:border-color .15s ease; }
+.service-process-options > a:hover { border-color:var(--color-brand); }
+.service-process-options svg { color:var(--color-brand); }
+.service-process-options strong { font:800 25px/1.1 var(--font-display); }
+.service-process-options strong small { display:block; margin-top:8px; font:500 13px/1.5 var(--font-sans); color:var(--color-steel-grey); }
+.service-process-options > a p,.service-process-options > a > span { grid-column:1/-1; margin:0; }
+.service-process-options > a > span { color:var(--color-brand-dark); font-weight:700; font-size:13px; margin-top:6px; }
+.service-flow-heading,.service-contact-heading { display:flex; align-items:center; justify-content:space-between; gap:24px; }
+.service-flow-heading h3 { margin:0; }
+.service-flow-heading .home-button,.service-contact-heading .home-button { flex:none; text-decoration:none; color:white; }
+.laser-service-guide .service-order-flow { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; list-style:none; padding:0; margin:28px 0 18px; }
+.service-order-flow li { position:relative; display:flex; gap:14px; padding:24px 22px 24px 0; border-top:1px solid var(--color-light-steel); margin:0; }
+.laser-service-guide .service-order-flow li + li { margin:0; }
+.service-order-flow li > span { display:grid; place-items:center; flex:none; width:32px; height:32px; border-radius:50%; color:white; background:var(--color-brand-dark); font:700 14px var(--font-sans); }
+.service-order-flow h4 { margin:3px 0 8px; }
+.service-order-flow li p { margin:0; font-size:13px; }
+.service-guide-compact .service-flow-note { font-size:13px; max-width:85ch; }
+.service-reading-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:24px; }
+.service-reading-links a { display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:48px; padding:12px 16px; border:1px solid var(--color-light-steel); border-radius:10px; font-size:13px; text-decoration:none; }
+.service-contact-heading h2 { margin-bottom:10px; }
+.service-contact-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:24px; margin-top:30px; }
+.service-prepare-card,.service-location-card { padding:28px; border:1px solid var(--color-light-steel); border-radius:16px; background:white; }
+.service-contact-section .service-prepare-card ul { list-style:none; padding:0; display:grid; gap:20px; }
+.service-prepare-card li strong,.service-prepare-card li span { display:block; }
+.service-prepare-card li span,.service-contact-section small { color:var(--color-steel-grey); font-size:13px; }
+.service-prepare-card > small { display:block; margin-top:20px; }
+.service-contact-section .service-location-card address { font-size:14px; margin:0 0 22px; }
+.service-sales-buttons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.service-sales-buttons a { display:grid; gap:3px; padding:14px 16px; border-radius:10px; color:white; background:var(--color-positive); text-decoration:none; font-weight:700; }
+.service-sales-buttons a:hover { color:white; background:#145f30; }
+.service-contact-section .service-sales-buttons small { color:white; font-weight:400; }
+.service-location-actions { display:flex; flex-wrap:wrap; gap:12px 24px; margin-top:18px; }
+.service-location-actions a { display:inline-flex; align-items:center; min-height:44px; font-size:13px; }
+@media(max-width:900px) { .laser-service-guide .service-order-flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .service-process-options > a { padding:20px; } }
+@media(max-width:650px) {
+ .service-process-options,.service-contact-grid { grid-template-columns:1fr; gap:12px; }
+ .service-process-options > a { grid-template-columns:38px 1fr auto; gap:8px 12px; padding:18px; }
+ .service-process-options > a p { grid-column:2/-1; font-size:13px; }
+ .service-process-options > a > span { grid-column:2/-1; }
+ .service-flow-heading,.service-contact-heading { flex-direction:column; align-items:flex-start; gap:14px; }
+ .laser-service-guide .service-order-flow { grid-template-columns:1fr; }
+ .service-order-flow li { padding:18px 0; }
+ .service-prepare-card,.service-location-card { padding:22px; }
+ .service-sales-buttons { grid-template-columns:1fr; }
+}
 .footer-local-services { padding: 32px 0; border-top: 1px solid #ffffff30; color: #fff; }
 .footer-local-services > h2 { font-size: 22px; line-height: 1.4; margin-bottom: 12px; }
 .footer-local-services > p { max-width: 65ch; color: #d6dadc; font-size: 14px; line-height: 1.75; }

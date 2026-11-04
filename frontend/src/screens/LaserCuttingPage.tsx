@@ -1,18 +1,16 @@
-﻿"use client";
+"use client";
 import { appearanceForSite, type WebsiteAppearance } from "../data/websiteAppearance";
 import type { GalleryProject } from "../data/projectGallery";
 import ServiceAlbums from "../components/ServiceAlbums";
-import PublicText, { PublicSection } from "../components/PublicText";
-import { useSectionList, sectionListAttributes } from "../components/PublicText";
+import PublicText from "../components/PublicText";
 import RotatingHeroMedia from "../components/RotatingHeroMedia";
 import { useDivisionDirectory } from "../components/DivisionDirectory";
 
 import Image from "../components/CmsImage"
-import { useState, type ReactNode } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { Link } from "react-router"
 import { laserImage, laserServices, laserFAQs } from "../data/business"
-import { createLead, type CreateLeadInput } from "../lib/api"
-import RequestHandoff from "../components/RequestHandoff"
+import ServiceRequestWizard from "../components/ServiceRequestWizard"
 import IndustryIcon, { type IconName } from "../components/IndustryIcon"
 
 
@@ -20,90 +18,37 @@ const scopeIcons: IconName[] = ["laser", "bend", "weld", "building", "weld"];
 
 export default function LaserCuttingPage({ children, appearance = [], projects = [], faqs = laserFAQs }: { children?: ReactNode; appearance?: WebsiteAppearance[]; projects?: GalleryProject[]; faqs?: { question: string; answer: string }[] }) {
   const config = appearanceForSite(appearance);
-  const managedFaqs = useSectionList("laserFAQs", faqs, "faq");
   const cards = config.services;
   const { divisions } = useDivisionDirectory();
-  const [selected, setSelected] = useState("Laser Cutting")
-  const [file, setFile] = useState<File | null>(null)
-  const [fileError, setFileError] = useState("")
-  const [message, setMessage] = useState("")
-  const [submitError, setSubmitError] = useState("")
-  const [submitting, setSubmitting] = useState(false)
-  const [leadId, setLeadId] = useState("")
-  const [pdfUrl, setPdfUrl] = useState<string | undefined>();
-  const [divisionSlug, setDivisionSlug] = useState(divisions.find(d=>d.slug === "laser-cutting")?.slug || divisions[0]?.slug || "")
-  const [requestInput, setRequestInput] = useState<CreateLeadInput | null>(null)
-  async function submit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (fileError) return
-    const data = new FormData(event.currentTarget)
-    const details = [
-      "nama",
-      "perusahaan",
-      "whatsapp",
-      "kota",
-      "material",
-      "ketebalan",
-      "ukuran",
-      "jumlah",
-      "catatan",
-    ]
-      .map((field) => `${field}: ${data.get(field) || "-"}`)
-      .join("\n")
-    setSubmitting(true)
-    setSubmitError("")
-    try {
-      const input: CreateLeadInput = {
-        kind: divisionSlug === "laser-cutting" ? "LASER" : divisionSlug === "trading-proyek" ? "TRADING" : "GENERAL",
-        businessUnitSlug: divisionSlug,
-        name: String(data.get("nama") || ""),
-        company: String(data.get("perusahaan") || "") || undefined,
-        whatsapp: String(data.get("whatsapp") || ""),
-        city: String(data.get("kota") || "") || undefined,
-        request: `${selected}\n${details}`,
-        consent: true,
-        metadata: {
-          service: selected,
-          material: data.get("material"),
-          thickness: data.get("ketebalan"),
-          dimensions: data.get("ukuran"),
-          quantity: data.get("jumlah"),
-          attachmentName: file?.name,
-          attachmentSize: file?.size,
-        },
-      }
-      const result = await createLead(input)
-      setPdfUrl(result.pdfUrl);
-      setRequestInput(input)
-      setLeadId(result.id)
-      setMessage(
-        `Halo Mahameru Baja, nomor request saya ${result.id}. Saya ingin request ${selected}.\n${details}\nFile desain: ${file?.name || "akan dikirim melalui chat"}\nMohon arahkan ke tim MBI Laser Cutting dan konfirmasi kelayakan, harga serta jadwal.`,
-      )
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Request belum dapat disimpan.")
-    } finally {
-      setSubmitting(false)
-    }
-  }
+  const [selected, setSelected] = useState("")
+  useEffect(() => {
+    const choose = (event: MouseEvent) => {
+      const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>(".service-process-options a[data-service-choice]") : null;
+      const service = link?.dataset.serviceChoice;
+      if (service && laserServices.includes(service)) setSelected(service);
+    };
+    document.addEventListener("click", choose);
+    return () => document.removeEventListener("click", choose);
+  }, []);
   return (
     <PublicText>
-      <PublicSection section="opening"><section id="jasa-pembuka" className="company-about-hero jasa-hero">
+      <section className="company-about-hero jasa-hero">
         <RotatingHeroMedia className="company-about-background" images={config.serviceHeroImage ? [config.serviceHeroImage] : [laserImage,"/images/cnc-bending-visual-v1.png","/images/steel-indonesia/plat-hitam.jpg"]} />
-        <div className="home-shell"><nav aria-label="Breadcrumb" data-cms-static><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
-          <p className="industrial-eyebrow" data-cms-static>LASER CUTTING / BENDING / FABRIKASI</p>
+        <div className="home-shell"><nav aria-label="Breadcrumb"><Link to="/">Beranda</Link><span>/ Jasa</span></nav>
+          <p className="industrial-eyebrow">LASER CUTTING / BENDING / FABRIKASI</p>
           <h1>Jasa Cutting Laser Bekasi &amp; Tambun<br /><em>plat, bending &amp; fabrikasi.</em></h1>
           <p>MBI Laser Cutting &amp; Bending melayani jasa cutting laser Tambun, Bekasi, dan sekitarnya untuk potong dan tekuk plat sesuai gambar kerja. Kirim desain, jenis bahan, ketebalan, dan jumlah untuk ditinjau tim sebelum penawaran.</p>
-          <div className="home-actions" data-cms-static><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
-          <small className="jasa-hero-caption" data-cms-static>Visual ilustrasi proses laser cutting.</small>
+          <div className="home-actions"><a className="home-button home-button-primary" href="#request">Konsultasikan kebutuhan ↗</a><a className="home-button home-button-ghost" href="#album-desain">Jelajahi desain</a><a className="home-button home-button-ghost" href="#portofolio-jasa">Lihat hasil pekerjaan</a></div>
+          <small className="jasa-hero-caption">Visual ilustrasi proses laser cutting.</small>
         </div>
-      </section></PublicSection>
+      </section>
       {children}
-      <PublicSection section="services"><section id="jasa-overview" className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
+      <section className="jasa-overview" aria-labelledby="jasa-overview-title"><div className="industrial-container"><div className="jasa-overview-head"><h2 id="jasa-overview-title">Apa yang bisa kami bantu?</h2></div><div className="jasa-paths">{config.servicePaths.map((path, index) => {
             const inner = <><div className="jasa-path-illustration">{path.image && <Image src={path.image} alt={path.alt || `Ilustrasi ${path.title.toLowerCase()}`} width={480} height={300} sizes="(max-width:650px) 100vw, 33vw" />}</div><div className="jasa-path-copy"><span>0{index + 1}</span><h3>{path.title}</h3><p>{path.text}</p><strong>{path.ctaLabel || "Lihat pilihan"} <b aria-hidden="true">&#8599;</b></strong></div></>;
             if (path.href.startsWith("#")) return <a href={path.href || "/kontak"} key={path.title}>{inner}</a>;
             return <Link to={path.href || "/kontak"} key={path.title}>{inner}</Link>;
-          })}</div></div></section></PublicSection>
-      <PublicSection section="technical"><section id="laser-cutting" className="business-section">
+          })}</div></div></section>
+      <section id="laser-cutting" className="business-section">
         <div className="industrial-container">
           <div className="section-heading">
             <div>
@@ -111,7 +56,7 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
               <h2>Detail jasa laser cutting, bending, dan fabrikasi.</h2>
             </div>
           </div>
-          <div className="business-grid laser-scope-grid" data-cms-static>
+          <div className="business-grid laser-scope-grid">
             {cards.map((card, index) => (
               <article className="business-card laser-scope-card" data-reveal key={card.id}>
                 {card.image && <div className="laser-scope-media"><Image src={card.image} alt={card.alt || card.title} fill sizes="(max-width:650px) 90vw, 25vw" /><small>{card.alt}</small></div>}
@@ -126,12 +71,12 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           </div>
           <p className="verification-note">Tim mengecek jenis bahan, ukuran, ketebalan, dan kemampuan mesin sebelum memberikan harga serta jadwal pengerjaan.</p>
         </div>
-      </section></PublicSection>
+      </section>
       <ServiceAlbums projects={projects} />
-      <PublicSection section="process"><section id="jasa-proses" className="laser-process">
+      <section className="laser-process">
         <div className="industrial-container">
           <h2>Alur pekerjaan dari gambar yang Anda kirim.</h2>
-          <div className="process-grid" data-cms-owned>
+          <div className="process-grid">
             {config.serviceWorkflow.map((step, index) => (
               <div className="laser-process-step" data-reveal key={step.title}>
                 <span>0{index + 1}</span>
@@ -143,146 +88,24 @@ export default function LaserCuttingPage({ children, appearance = [], projects =
           </div>
           <p><strong>Kirim dalam format yang Anda punya.</strong> File DWG, DXF, PDF, foto, atau daftar kebutuhan juga bisa. Tim akan mengecek kebutuhan Anda sebelum memberikan penawaran.</p>
         </div>
-      </section></PublicSection>
-      <section id="request" className="business-section">
-        <div className="industrial-container request-grid">
-          <div>
-            <h2>Ceritakan kebutuhan material atau jasa Anda.</h2>
-            <p>
-              Pilih divisi dan ceritakan kebutuhan material atau jasa Anda. Ringkasan tersimpan di portal dan dapat dikirim langsung ke WhatsApp admin divisi.
-            </p>
-            <p className="verification-note">
-              Setelah permintaan tersimpan, lanjutkan percakapan melalui WhatsApp.
-              File gambar dikirim sebagai lampiran di sana agar tim bisa meninjaunya.
-            </p>
-          </div>
-          <form onSubmit={submit} className="laser-request-form">
-            <label className="form-full">Divisi tujuan<select value={divisionSlug} onChange={e => setDivisionSlug(e.target.value)}>{divisions.map(d => <option key={d.slug} value={d.slug}>{d.name}</option>)}</select></label>
-            <label className="form-full">
-              Kebutuhan / layanan
-              <select
-                value={selected}
-                onChange={(event) => setSelected(event.target.value)}
-              >
-                {laserServices.map((service) => (
-                  <option key={service}>{service}</option>
-                ))}
-              </select>
-            </label>
-            {[
-              { name: "nama", label: "Nama", required: true },
-              { name: "perusahaan", label: "Perusahaan / PIC" },
-              {
-                name: "whatsapp",
-                label: "Nomor WhatsApp",
-                required: true,
-                type: "tel",
-              },
-              { name: "kota", label: "Kota / lokasi proyek", required: true },
-              { name: "material", label: "Material / produk (jika sudah diketahui)" },
-              {
-                name: "ketebalan",
-                label: "Ketebalan (mm)",
-                required: false,
-                type: "number",
-              },
-              {
-                name: "ukuran",
-                label: "Spesifikasi / ukuran (jika diketahui)",
-                required: false,
-              },
-              {
-                name: "jumlah",
-                label: "Jumlah kebutuhan",
-                required: false,
-                type: "number",
-              },
-            ].map((field) => (
-              <label key={field.name}>
-                {field.label}
-                {field.required && " *"}
-                <input
-                  name={field.name}
-                  type={field.type || "text"}
-                  required={field.required}
-                  min={
-                    field.type === "number"
-                      ? field.name === "jumlah"
-                        ? "1"
-                        : "0.01"
-                      : undefined
-                  }
-                  step={field.name === "jumlah" ? "1" : "any"}
-                  placeholder={
-                    field.name === "ukuran" ? "Contoh: 600 × 400 mm" : undefined
-                  }
-                />
-              </label>
-            ))}
-            <label className="form-full">
-              Gambar / desain (opsional, maks. 10 MB)
-              <input
-                type="file"
-                accept=".dwg,.dxf,.pdf,.ai,.cdr,.jpg,.jpeg,.png"
-                onChange={(event) => {
-                  const attachment = event.target.files?.[0] || null
-                  const valid =
-                    !attachment ||
-                    (/\.(dwg|dxf|pdf|ai|cdr|jpe?g|png)$/i.test(
-                      attachment.name,
-                    ) &&
-                      attachment.size <= 10 * 1024 * 1024)
-                  setFileError(
-                    valid
-                      ? ""
-                      : "Pilih format yang didukung dengan ukuran maksimal 10 MB.",
-                  )
-                  setFile(valid ? attachment : null)
-                  setMessage("")
-                }}
-              />
-              <small>
-                DWG, DXF, PDF, AI, CDR, JPG atau PNG. Setelah mengisi formulir,
-                kirim file tersebut sebagai lampiran WhatsApp.
-              </small>
-              {fileError && (
-                <span role="alert" className="text-brand">
-                  {fileError}
-                </span>
-              )}
-            </label>
-            <label className="form-full">
-              Detail kebutuhan / pekerjaan
-              <textarea
-                name="catatan"
-                rows={3}
-                placeholder="Detail tekukan, finishing, jadwal kebutuhan atau pertanyaan teknis"
-              />
-            </label>
-            <label className="form-full consent-label">
-              <input type="checkbox" required />
-              Saya setuju membagikan informasi ini kepada tim melalui WhatsApp.
-            </label>
-            {submitError && <p role="alert" className="form-full text-brand">{submitError}</p>}
-            <button className="industrial-button form-full" type="submit" disabled={submitting}>
-              {submitting ? "Menyimpan permintaan..." : "Simpan dan lanjut ke WhatsApp"} <span aria-hidden="true">↗</span>
-            </button>
-            {message && requestInput && <div className="form-full"><p className="industrial-eyebrow">Request {leadId} tersimpan</p><RequestHandoff input={requestInput} id={leadId} attachment={file} pdfUrl={pdfUrl} /></div>}
-
-          </form>
+      </section>
+      <section id="request" className="business-section service-wizard-section">
+        <div className="industrial-container">
+          <header className="service-wizard-intro"><h2>Minta penawaran, satu langkah demi langkah.</h2><p>Isi layanan, detail pekerjaan, dan kontak. Tim kami mengecek kebutuhan sebelum memberikan harga.</p></header>
+          <ServiceRequestWizard divisions={divisions} service={selected} onServiceChange={setSelected} />
         </div>
       </section>
-      <PublicSection section="faq"><section id="jasa-faq" className="laser-faq business-section">
+      <section className="laser-faq business-section">
         <div className="industrial-container">
           <h2>Pertanyaan laser cutting & bending.</h2>
-          <div {...sectionListAttributes("laserFAQs", managedFaqs)}>{managedFaqs.map((item) => (
+          {faqs.map((item) => (
             <details key={item.question}>
               <summary>{item.question}</summary>
               <p>{item.answer}</p>
             </details>
-          ))}</div>
+          ))}
         </div>
-      </section></PublicSection>
+      </section>
     </PublicText>
   )
 }

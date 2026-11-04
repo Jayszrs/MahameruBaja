@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = resolvedInventoryProducts(content.inventory).filter(product => content.inventory.some(item => item.productId === product.id && item.listed));
   const staticPaths = ["", "/tentang-kami", "/produk", "/jasa", "/proyek", "/galeri", "/informasi", "/kontak", "/minta-penawaran", "/sosial-media", "/kebijakan-privasi", "/syarat-ketentuan"];
   return [
-    ...staticPaths.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),
+    ...staticPaths.map((path) => ({ url: `${base}${path}`, ...(["","/jasa"].includes(path)?{lastModified:new Date("2026-11-01T00:00:00+07:00")}:{}), changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.8 })),
     ...divisions.map((division) => ({ url: `${base}/unit/${division.slug}`, changeFrequency: "monthly" as const, priority: 0.85 })),
     ...divisions.flatMap(d => ["tentang", d.kind === "material" ? "produk" : "layanan", "galeri", "kontak"].map(section => ({ url: `${base}/unit/${d.slug}/${section}`, changeFrequency: "monthly" as const, priority: 0.7 }))),
     ...products.map((product) => ({ url: `${base}/produk/${product.slug}`, changeFrequency: "weekly" as const, priority: 0.7 })),

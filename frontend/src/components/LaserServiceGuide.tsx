@@ -1,30 +1,16 @@
-﻿"use client";
-import { useSectionList, sectionListAttributes } from "./PublicText";
-import { PublicSection } from "./PublicText";
-import { Fragment } from "react";
 import Link from "next/link";
+import PublicText from "./PublicText";
 import type { Article } from "../data/articles";
-
+const processes = [
+  {title:"Potong",label:"Laser cutting",service:"Laser Cutting",text:"Pola, panel, ornamen, dan komponen plat.",path:"M5 5h14v14H5z M9 9l6 6m0-6-6 6"},
+  {title:"Tekuk",label:"Bending plat",service:"Bending",text:"Tekukan sesuai arah, sudut, dan ukuran.",path:"M4 5v14h16 M9 5v9h11"},
+  {title:"Rakit",label:"Fabrikasi",service:"Fabrikasi",text:"Perakitan, pengelasan, dan finishing.",path:"M4 8h6v6H4z M14 10h6v6h-6z M10 11h4 M7 14v5h10v-3"},
+];
 export default function LaserServiceGuide({ articles }: { articles: Article[] }) {
-  const definitions=useSectionList("guideDefinitions",[{term:"Laser cutting",description:"Untuk memotong bentuk atau pola pada plat mengikuti gambar kerja, seperti panel, ornamen, dan bagian komponen."},{term:"Bending plat",description:"Untuk membuat tekukan. Sertakan arah, sudut tekuk, dan dimensi hasil akhir agar tim bisa memeriksa kebutuhan pembentukan."},{term:"Fabrikasi",description:"Untuk kebutuhan perakitan atau pengelasan setelah bagian dibuat. Sampaikan sambungan dan finishing yang dibutuhkan saat konsultasi."}],"guide");
-  const checklist=useSectionList("guideChecklist",[{text:"Cantumkan satuan ukuran dan dimensi akhir pada gambar."},{text:"Tulis jumlah setiap desain atau komponen, bukan hanya total lembar plat."},{text:"Jelaskan apakah material disediakan sendiri atau perlu dibantu pengadaannya."},{text:"Sertakan detail tekukan, finishing, lokasi tujuan, dan target waktu."}],"guide");
-  return <PublicSection section="guide"><section className="home-section laser-service-guide" aria-labelledby="laser-guide-heading">
-    <div className="home-shell">
-      <h2 id="laser-guide-heading">Jasa Cutting Laser Tambun &amp; Bekasi untuk plat sesuai gambar kerja</h2>
-      <p>Jasa cutting laser adalah pemotongan plat dengan mesin laser CNC mengikuti pola gambar kerja. MBI Laser Cutting &amp; Bending melayani jasa cutting laser Bekasi, Tambun, dan sekitarnya, mulai dari ornamen pagar dan panel hingga komponen custom. Jenis bahan, ketebalan, ukuran, serta jumlah diperiksa bersama gambar sebelum pekerjaan disepakati.</p>
-      <div className="local-business-columns">
-        <div>
-          <h3 data-cms-static>Potong, tekuk, atau rakit?</h3>
-          <dl {...sectionListAttributes("guideDefinitions",definitions)}>{definitions.map(row=><Fragment key={row.term}><dt>{row.term}</dt><dd>{row.description}</dd></Fragment>)}</dl>
-        </div>
-        <div>
-          <h3 data-cms-static>Sebelum mengirim desain</h3>
-          <ul {...sectionListAttributes("guideChecklist",checklist)}>{checklist.map(row=><li key={row.text}>{row.text}</li>)}</ul>
-          <p>Gambar DWG atau DXF membantu peninjauan bentuk. PDF dan foto dapat dikirim untuk konsultasi awal. Tim memastikan kelayakan file, toleransi, harga, dan jadwal sebelum produksi.</p>
-          <Link className="local-business-action" href="#request" data-cms-static>Kirim gambar untuk penawaran cutting laser</Link>
-        </div>
-      </div>
-      {articles.length > 0 && <nav className="laser-guide-reading" aria-label="Panduan laser cutting" data-cms-static><h3>Panduan untuk menyiapkan pesanan</h3><ul>{articles.map(article => <li key={article.id}><Link href={`/informasi/${article.slug}`}>{article.title}</Link></li>)}</ul></nav>}
-    </div>
-  </section></PublicSection>;
+  return <PublicText><section className="home-section laser-service-guide service-guide-compact" aria-labelledby="laser-guide-heading"><div className="home-shell">
+    <h2 id="laser-guide-heading">Butuh potong, tekuk, atau rakit?</h2><p>Jasa cutting laser Tambun & Bekasi, sesuai gambar kerja Anda.</p>
+    <nav className="service-process-options" aria-label="Pilih proses pengerjaan">{processes.map(item=><Link href="#request" data-service-choice={item.service} key={item.title}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d={item.path}/></svg><strong>{item.title}<small>{item.label}</small></strong><p>{item.text}</p><span>Bahas {item.label.toLowerCase()}</span></Link>)}</nav>
+    <div className="service-flow-heading"><div><h3>Siapkan penawaran dalam 4 tahap.</h3><p>Layanan → gambar & detail → kontak → cek dan kirim.</p></div><Link href="#request" className="home-button home-button-primary">Mulai isi kebutuhan</Link></div>
+    {articles.length>0&&<nav className="service-reading-links" aria-label="Panduan menyiapkan desain">{articles.map(article=><Link href={`/informasi/${article.slug}`} key={article.id}>{article.title}<span aria-hidden="true">↗</span></Link>)}</nav>}
+  </div></section></PublicText>;
 }

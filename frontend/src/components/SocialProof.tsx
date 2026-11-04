@@ -1,5 +1,5 @@
 "use client";
-import PublicText, { PublicSection } from "./PublicText";
+import PublicText from "./PublicText";
 
 import Image from "./CmsImage";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
@@ -134,20 +134,20 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
   if (published.length < 3) slides.push({ kind: "summary" }, { kind: "invite" });
   const copies = [0, 1, 2];
   const marquee = useMarquee(slides.length, 30);
-  return <PublicText><PublicSection section="reviews"><section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
+  return <PublicText><section className="home-section home-reviews reviews-editorial" id="ulasan" aria-labelledby="reviews-heading">
     <div className="home-shell">
       <div className="home-section-heading proof-heading" data-reveal>
-        <div><p className="home-eyebrow text-brand"><span />{includeImported ? (content.reviewEyebrow || "Cerita & kepercayaan") : `Ulasan pelanggan ${companyName}`}</p><h2 id="reviews-heading">{includeImported ? (content.reviewHeading || "Setiap kebutuhan, punya ceritanya.") : <>Pengalaman pelanggan.<br /><em>Langsung dari Google Maps.</em></>}</h2></div>
+        <div><p className="home-eyebrow text-brand"><span />{includeImported ? "Cerita & kepercayaan" : `Ulasan pelanggan ${companyName}`}</p><h2 id="reviews-heading">{includeImported ? <>Setiap kebutuhan,<br /><em>punya ceritanya.</em></> : <>Pengalaman pelanggan.<br /><em>Langsung dari Google Maps.</em></>}</h2></div>
         <a className="review-rating-seal" href={content.mapsUrl} target="_blank" rel="noopener noreferrer" aria-label={`Rating Google Maps ${content.rating} dari 5. Buka sumber`}><span className="review-seal-label">GOOGLE MAPS</span><strong>{content.rating.toFixed(1)}<small>/5</small></strong><Stars rating={content.rating} /><span>{content.reviewCount !== null ? `${content.reviewCount} ulasan` : "Lihat penilaian"}<ReviewArrow /></span></a>
       </div>
-      <div className="review-caption-row"><p>{published.length ? (content.reviewDescription || "Ulasan pelanggan dari Google Maps. Baca cerita lengkapnya di profil toko kami.") : "Lihat penilaian dan cerita pelanggan langsung pada profil Google Maps."}</p><button className="carousel-keyboard-control" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan pergeseran ulasan" : "Hentikan pergeseran ulasan"}</button></div>
+      <div className="review-caption-row"><p>{published.length ? "Ulasan pelanggan dari Google Maps. Baca cerita lengkapnya di profil toko kami." : "Lihat penilaian dan cerita pelanggan langsung pada profil Google Maps."}</p><button className="carousel-keyboard-control" type="button" onClick={marquee.togglePause} aria-pressed={marquee.userPaused}>{marquee.userPaused ? "Lanjutkan pergeseran ulasan" : "Hentikan pergeseran ulasan"}</button></div>
     </div>
     <div className="reviews-bleed"><div className="home-review-cards proof-marquee quote-ribbon" {...marquee.handlers} tabIndex={0} aria-label="Kartu cerita bergerak ke kanan. Geser atau gunakan tombol panah untuk menjelajah.">
       {copies.flatMap(copy => slides.map((slide, index) => slide.kind === "review" ? <article className={`quote-card quote-tone-${index % 3}`} key={`${copy}-${slide.review.id}`} aria-hidden={copy !== 1}>
         {(() => { const review = slide.review; return <>
         <div className="quote-card-top"><span className="quote-symbol" aria-hidden="true">{String.fromCharCode(8220)}</span><small>ULASAN GOOGLE</small></div>
         <Stars rating={review.rating} />
-        <blockquote>{review.text}</blockquote>
+        {review.text ? <blockquote>{review.text}</blockquote> : <p className="quote-rating-only">Memberi penilaian tanpa komentar tertulis.</p>}
         <footer><span className="quote-avatar" aria-hidden="true">{review.authorPhoto ? <Image src={review.authorPhoto} alt="" width={38} height={38} /> : review.author.slice(0, 1)}</span><div><strong>{review.author}</strong><small>{review.when || `Pelanggan ${companyName}`}</small></div><a className="quote-source" href={review.authorUrl || review.url} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1} aria-label={`Baca ulasan asli ${review.author}`}><ReviewArrow /></a></footer>
         </>; })()}
       </article> : <article className={`quote-card quote-tone-${index % 3} quote-info-card`} key={`${copy}-${slide.kind}`} aria-hidden={copy !== 1}>
@@ -157,26 +157,26 @@ function Reviews({ content, companyName, includeImported }: { content: ReviewCon
         <a href={content.mapsUrl} target="_blank" rel="noopener noreferrer" tabIndex={copy === 1 ? 0 : -1}>{slide.kind === "summary" ? "Baca seluruh ulasan" : "Tulis ulasan di Google Maps"} <ReviewArrow /></a>
       </article>))}
     </div></div>
-    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><span>{published.length} kutipan pelanggan</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
-  </section></PublicSection></PublicText>;
+    <div className="home-shell review-bottomline"><small>Profil {companyName} · dicatat {content.ratingDate}</small><span>{published.some(review=>review.ratingOnly) ? `${published.length} ulasan · ${published.filter(review=>review.text).length} dengan komentar` : `${published.length} kutipan pelanggan`}</span><a href={content.mapsUrl} target="_blank" rel="noopener noreferrer">Baca ulasan di Google Maps <ReviewArrow /></a></div>
+  </section></PublicText>;
 }
 
 function Clients({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><PublicSection section="partners"><section className="home-clients" data-static-motion id="klien" aria-labelledby="clients-heading">
+  return <PublicText><section className="home-clients" data-static-motion id="klien" aria-labelledby="clients-heading">
     <div className="home-shell" data-reveal>
       <div className="proof-client-heading"><div><h2 id="clients-heading">Kepercayaan yang tumbuh<br /><em>melalui kerja sama.</em></h2><p className="partnership-intro">Perusahaan yang telah bekerja sama dengan Mahameru Baja Indonesia dalam memenuhi kebutuhan material dan pekerjaan proyek.</p></div></div>
       <LogoMarquee logos={logos} kind="client"/>
     </div>
-  </section></PublicSection></PublicText>;
+  </section></PublicText>;
 }
 
 function Suppliers({logos}:{logos:PartnerLogo[]}) {
   if(!logos.length)return null;
-  return <PublicText><PublicSection section="suppliers"><section className="home-suppliers" data-static-motion id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
+  return <PublicText><section className="home-suppliers" data-static-motion id="supplier" aria-labelledby="suppliers-heading"><div className="home-shell">
     <div className="home-section-heading"><div><p className="home-eyebrow text-brand"><span />Jaringan pemasok material</p><h2 id="suppliers-heading">Supplier kami.<br /><em>Bagian dari setiap kebutuhan.</em></h2></div><p>Mahameru Baja bekerja dengan jaringan pemasok material baja dan produk turunannya untuk mendukung kebutuhan toko, fabrikasi, serta pengadaan proyek.</p></div>
     <LogoMarquee logos={logos} kind="supplier"/>
-  </div></section></PublicSection></PublicText>;
+  </div></section></PublicText>;
 }
 
 export default function SocialProof({ content, partnerLogos = [], companyName = "Mahameru Baja", includeImported = true, reviewsOnly = false }: { content: ReviewContent; partnerLogos?:PartnerLogo[]; companyName?: string; includeImported?: boolean; reviewsOnly?: boolean }) {
