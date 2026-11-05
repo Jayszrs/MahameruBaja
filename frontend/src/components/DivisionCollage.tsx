@@ -19,17 +19,19 @@ export default function DivisionCollage({ division, index = 0, projects = [] }: 
   const setGalleryCount=useCallback((id:string,count:number)=>setGalleryCounts(current=>current[id]===count?current:{...current,[id]:count}),[]);
   const documented: GalleryImage[] = projects.filter(project => project.published && visibleInDivision(project,division.slug)).flatMap(project => project.photos.map(photo => ({ src: photo.src, alt: photo.alt, caption: photo.caption || `${project.title} — ${photo.alt}` })));
   const hero = division.images.find(photo => photo.src === division.hero);
-  const candidates: GalleryImage[] = [...documented,
+  const assetPhotos: GalleryImage[] = [
     { src: division.hero, alt: hero?.title || division.name, caption: hero?.title || division.area },
     ...division.images.map(photo => ({ src: photo.src, alt: photo.title, caption: photo.title })),
     { src: divisionIdentity[division.slug].logo, alt: `Logo ${division.name}`, caption: `Identitas ${division.name}`, kind: "logo" },
   ];
+  const candidates: GalleryImage[] = [...documented, ...assetPhotos];
   const defaultPhotos = candidates.filter((photo, i) => candidates.findIndex(item => item.src === photo.src) === i);
   const legacyPhotos = useSectionList(`collagePhotos:${division.slug}`, defaultPhotos);
-  const galleryPhotos = useSectionList(`collageImages:${division.slug}:gallery`, projects.filter(project=>project.published&&visibleInDivision(project,division.slug)).flatMap(project=>project.photos.map(photo=>({src:photo.src,alt:photo.alt,caption:photo.caption||`${project.title} — ${photo.alt}`}))));
+  const defaultGallery = [...legacyPhotos, ...documented, ...assetPhotos].filter((photo, i, all) => all.findIndex(item => item.src === photo.src) === i);
+  const galleryPhotos = useSectionList(`collageImages:${division.slug}:gallery`, defaultGallery);
   // Keep older CMS gallery records readable while the canonical one-gallery
   // list is being migrated. New saves use collageImages:<slug>:gallery.
-  const allGalleryPhotos = galleryPhotos.length ? galleryPhotos : legacyPhotos;
+  const allGalleryPhotos = galleryPhotos;
   const defaults=Array.from({length:3},(_,position)=>{
     const cover=allGalleryPhotos[position];
     const fallback=legacyPhotos[position];

@@ -95,7 +95,11 @@ export function usePublicTextReplacement() {
     return serviceWording(replacement === undefined ? value : `${value.match(/^\s*/)?.[0] || ""}${replacement}${value.match(/\s*$/)?.[0] || ""}`);
   }, [replacements, path]);
 }
-export default function PublicText({ children }: { children: ReactNode }) {
+export default function PublicText({ children, section, page }: { children: ReactNode; section?:string; page?:TextPage }) {
+  if (section) return <SectionScope.Provider value={{ section, page }}><PublicTextRenderer>{children}</PublicTextRenderer></SectionScope.Provider>;
+  return <PublicTextRenderer>{children}</PublicTextRenderer>;
+}
+function PublicTextRenderer({ children }: { children: ReactNode }) {
   const replace = usePublicTextReplacement(); const edit = useSectionEdit(); const path = usePathname();
   if (path.startsWith("/admin")) return <>{children}</>;
   return <>{responsiveArrowHints(translatePublicTree(children, value => { const current = replace(value); return serviceWording(edit("text", current) ?? current); }, edit))}</>;

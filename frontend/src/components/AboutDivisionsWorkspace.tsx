@@ -17,7 +17,8 @@ type Draft = Omit<
   Division,
   "id" | "revision" | "createdAt" | "updatedAt" | "admins"
 >;
-type ListRow = Record<string, string | number | boolean> & {
+type ListValue = string | number | boolean | string[];
+type ListRow = Record<string, ListValue> & {
   id: string | number;
 };
 const centralCopy = {
@@ -85,7 +86,7 @@ export default function AboutDivisionsWorkspace({
     );
   }
   function rowId(
-    row: Record<string, string | number | boolean>,
+    row: Record<string, ListValue>,
     fallback = "",
   ) {
     return typeof row.id === "string" || typeof row.id === "number"
@@ -93,7 +94,7 @@ export default function AboutDivisionsWorkspace({
       : fallback;
   }
   function rowsOf(
-    rows: Array<Record<string, string | number | boolean>>,
+    rows: Array<Record<string, ListValue>>,
   ): ListRow[] {
     return rows.map((row, index) => ({
       ...row,
@@ -102,7 +103,7 @@ export default function AboutDivisionsWorkspace({
   }
   function setList(
     key: string,
-    rows: Array<Record<string, string | number | boolean>>,
+    rows: Array<Record<string, ListValue>>,
   ) {
     const current = list(key);
     const normalizedRows = rowsOf(rows);
@@ -200,7 +201,7 @@ export default function AboutDivisionsWorkspace({
         .flatMap((project) => project.photos)
     : [];
   const knownPhotoSources = new Set(legacyPhotoRows.map((row) => String(row.src || "")));
-  const defaultPhotos: ListRow[] = rowsOf([
+  const defaultPhotoCandidates: ListRow[] = rowsOf([
     ...legacyPhotoRows,
     ...documentedPhotoRows.filter((row) => !knownPhotoSources.has(row.src)),
     ...(
@@ -221,11 +222,9 @@ export default function AboutDivisionsWorkspace({
         : []
     ),
   ]);
-  const photos = rowsOf(
-    galleryKey && list(galleryKey)?.rows.length
-      ? list(galleryKey)!.rows
-      : defaultPhotos,
-  );
+  const defaultPhotos = defaultPhotoCandidates.filter((row, index, rows) => rows.findIndex((candidate) => candidate.src === row.src) === index);
+  const savedPhotoList = galleryKey ? list(galleryKey) : undefined;
+  const photos = rowsOf(savedPhotoList ? savedPhotoList.rows : defaultPhotos);
   const defaultCovers = photos.slice(0, 3).map((row, index) => ({
     id: `cover-${index + 1}`,
     photoId: String(rowId(row)),
@@ -233,11 +232,8 @@ export default function AboutDivisionsWorkspace({
     src: String(row.src || ""),
     alt: String(row.alt || ""),
   }));
-  const covers = rowsOf(
-    coverKey && list(coverKey)?.rows.length
-      ? list(coverKey)!.rows
-      : defaultCovers,
-  ).slice(0, 3);
+  const savedCoverList = coverKey ? list(coverKey) : undefined;
+  const covers = rowsOf(savedCoverList ? savedCoverList.rows : defaultCovers).slice(0, 3);
   const photo = photos.find((row) => String(rowId(row)) === selectedPhoto);
   const coverCount = covers.filter((row) => String(row.photoId || "").trim()).length;
   const album = division
@@ -322,7 +318,7 @@ export default function AboutDivisionsWorkspace({
       row.page === "about" && row.section === "divisions" && !row.ownerDivision,
   );
   const textValue = (source: string) =>
-    textRows.find((row) => row.source === source)?.replacement || source;
+    textRows.find((row) => row.source === source)?.replacement ?? source;
   function changeText(source: string, label: string, replacement: string) {
     setContent((current) => {
       const existing = current.sectionEdits.find(
@@ -355,9 +351,25 @@ export default function AboutDivisionsWorkspace({
   }
   async function save() {
     if (!division || !draft || busy) return;
+    if (photos.length < 3) {
+      setFailed(true);
+      setMessage("Tambahkan setidaknya tiga foto agar mozaik website tetap terisi.");
+      return;
+    }
+    if (coverCount !== 3 || new Set(covers.map((row) => String(row.photoId || "")).filter(Boolean)).size !== 3) {
+      setFailed(true);
+      setMessage("Pilih tiga foto berbeda sebagai sampul mozaik.");
+      return;
+    }
+    if (mainSite && [centralCopy.eyebrow, centralCopy.heading, centralCopy.headingTail, centralCopy.description].some(source => !textValue(source).trim())) {
+      setFailed(true);
+      setMessage("Isi semua tulisan Jaringan Mahameru Group sebelum menyimpan.");
+      return;
+    }
     setBusy(true);
     setFailed(false);
     setMessage("");
+    let savedDivision: Division | null = null;
     try {
       const profileResponse = await fetch(
         `/api/admin/divisions/${division.id}`,
@@ -367,11 +379,10 @@ export default function AboutDivisionsWorkspace({
           body: JSON.stringify({ ...draft, revision: division.revision }),
         },
       );
-      const savedDivision = await profileResponse.json();
-      if (!profileResponse.ok)
-        throw new Error(
-          savedDivision.message || "Profil divisi belum tersimpan.",
-        );
+      const profileResult = await profileResponse.json() as Division | { message?: string };
+      if (!profileResponse.ok) throw new Error((profileResult as { message?: string }).message || "Profil divisi belum tersimpan.");
+      const persistedDivision = profileResult as Division;
+      savedDivision = persistedDivision;
       const contentResponse = await fetch("/api/admin/content", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -380,15 +391,29 @@ export default function AboutDivisionsWorkspace({
       const savedContent = await contentResponse.json();
       if (!contentResponse.ok)
         throw new Error(savedContent.message || "Album belum tersimpan.");
-      setDivision(savedDivision);
-      setDraft(draftOf(savedDivision));
+      setDivision(persistedDivision);
+      setDraft(draftOf(persistedDivision));
       setContent(savedContent);
       base.current = savedContent;
       setDirty(false);
       setMessage("Perubahan tersimpan dan tampil di website.");
     } catch (error) {
       setFailed(true);
-      setMessage((error as Error).message);
+      let message = (error as Error).message;
+      if (savedDivision) {
+        try {
+          const rollback = await fetch(`/api/admin/divisions/${division.id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...draftOf(division), revision: savedDivision.revision }),
+          });
+          if (!rollback.ok) message += " Profil divisi sudah tersimpan, tetapi pemulihan otomatis gagal; muat ulang profil divisi.";
+          else message += " Profil divisi dipulihkan karena album gagal disimpan.";
+        } catch {
+          message += " Profil divisi mungkin sudah tersimpan; muat ulang sebelum mencoba lagi.";
+        }
+      }
+      setMessage(message);
     } finally {
       setBusy(false);
     }

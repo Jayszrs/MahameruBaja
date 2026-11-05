@@ -1,20 +1,21 @@
 "use client";
-import { createContext, useCallback, useContext, useLayoutEffect, useRef } from "react";
+import { createContext, useCallback, useContext, useId, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type AdminWorkspaceState = {
-  dirty: boolean; busy: boolean; label?: string; disabled?: boolean; onSave?: () => void;
+  dirty: boolean; busy: boolean; label?: string; disabled?: boolean; onSave?: () => void | Promise<void>;
   secondaryLabel?: string; onSecondary?: () => void;
 };
 export const emptyAdminWorkspace: AdminWorkspaceState = { dirty: false, busy: false };
 export const AdminWorkspaceContext = createContext<{
-  register: (state: AdminWorkspaceState) => void; confirmDiscard: () => Promise<boolean>;
+  register: (key: string, state?: AdminWorkspaceState) => void; confirmDiscard: () => Promise<boolean>;
 } | null>(null);
 
 export function useAdminWorkspace(options: AdminWorkspaceState) {
   const context = useContext(AdminWorkspaceContext);
   if (!context) throw new Error("Admin workspace must be inside AdminShell");
   const { register, confirmDiscard } = context;
+  const id=useId();
   const latest = useRef(options); latest.current = options;
   const onSave = useCallback(() => {
     const invalid = document.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>("#admin-main input:invalid:not(:disabled), #admin-main select:invalid:not(:disabled), #admin-main textarea:invalid:not(:disabled)");
@@ -23,14 +24,14 @@ export function useAdminWorkspace(options: AdminWorkspaceState) {
       while (parent) { if (parent instanceof HTMLDetailsElement) parent.open = true; parent = parent.parentElement; }
       invalid.scrollIntoView({ block: "center", behavior: "smooth" }); invalid.focus({ preventScroll: true }); invalid.reportValidity(); return;
     }
-    latest.current.onSave?.();
+    return latest.current.onSave?.();
   }, []);
   const onSecondary = useCallback(() => latest.current.onSecondary?.(), []);
   const { dirty, busy, label, disabled, secondaryLabel } = options;
   useLayoutEffect(() => {
-    register({ dirty, busy, label, disabled, onSave: label ? onSave : undefined, secondaryLabel, onSecondary });
+    register(id,{ dirty, busy, label, disabled, onSave: label ? onSave : undefined, secondaryLabel, onSecondary });
   }, [register, dirty, busy, label, disabled, secondaryLabel, onSave, onSecondary]);
-  useLayoutEffect(() => () => register(emptyAdminWorkspace), [register]);
+  useLayoutEffect(() => () => register(id), [register,id]);
   const router = useRouter();
   return { confirmDiscard, refreshDashboard: useCallback(() => router.refresh(), [router]) };
 }

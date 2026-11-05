@@ -5,7 +5,7 @@ import { cmsBlobPrefix } from "./cmsStorageConfig";
 
 // Keep fresh reads for authentication, mutations and local/self-hosted development.
 // This app has not enabled Cache Components; use the existing Data Cache API.
-const publicKeys = new Set(["site-content", "divisions", "articles", "media-index"]);
+const publicKeys = new Set(["site-content", "divisions", "public-divisions", "articles", "media-index"]);
 function scope() {
   return createHash("sha256").update(`${cmsBlobPrefix()}\0${process.env.BLOB_READ_WRITE_TOKEN || ""}`).digest("hex");
 }

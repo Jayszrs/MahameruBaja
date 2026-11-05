@@ -26,6 +26,7 @@ export default async function Page() {
   const [allDivisions, published, content] = await Promise.all([readPublicDivisions(), readPublishedArticles(), readPublicSiteContent()]);
   const divisions = allDivisions.filter(division => division.slug === "laser-cutting");
   const faqs = divisions[0]?.faq ?? laserFAQs;
+  const faqHeading = divisions[0]?.faqHeading || "Pertanyaan laser cutting & bending.";
   const articles = published.filter(article => visibleInDivision(article, "laser-cutting") || !contentOwner(article) && article.audience === undefined && /laser|bending/i.test(`${article.title} ${article.category}`)).slice(0, 3);
   const base = siteOrigin();
   const schema = { "@context": "https://schema.org", "@graph": [
@@ -42,5 +43,5 @@ export default async function Page() {
     ...(appearanceForSite(content.websiteAppearance).hiddenServiceSections.includes("faq") ? [] : [faqSchema(base, "/jasa", faqs)]),
     breadcrumbSchema(base, "/jasa", "Jasa Cutting Laser Bekasi & Tambun"),
   ] };
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs}><LaserServiceGuide articles={articles} /></LaserCuttingPage>{content.divisionReviews["laser-cutting"] && <SocialProof content={content.divisionReviews["laser-cutting"]} companyName="MBI Laser Cutting" includeImported={false} partnerLogos={[]} />}<LocalBusinessDetails divisions={divisions} service /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} /><LaserCuttingPage appearance={content.websiteAppearance} projects={content.galleryProjects} faqs={faqs} faqHeading={faqHeading}><LaserServiceGuide articles={articles} /></LaserCuttingPage>{content.divisionReviews["laser-cutting"] && <SocialProof content={content.divisionReviews["laser-cutting"]} companyName="MBI Laser Cutting" includeImported={false} partnerLogos={[]} />}<LocalBusinessDetails divisions={divisions} service /></>;
 }

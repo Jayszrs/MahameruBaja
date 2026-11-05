@@ -1,7 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { cache } from "react";
-import { cachedPublicCms } from "./publicCmsCache";
+import { cachedPublicCms, invalidatePublicCms } from "./publicCmsCache";
 import { z } from "zod";
 import { divisions as seeds } from "../data/divisionContent";
 import { divisionIdentity } from "../data/companyIdentity";
@@ -22,6 +22,7 @@ const initial = () => seeds.map(seed => divisionSchema.parse({ ...seed, ...divis
   address: seed.slug === "retail-cibitung" ? garudaLocation.address : "Jl. Permata Regensi Blok K1 No. 38–39, Tambun Selatan, Kabupaten Bekasi 17510",
   mapsUrl: seed.slug === "retail-cibitung" ? garudaLocation.mapsUrl : "https://maps.app.goo.gl/ZWbVmEBLMJm2kRBm8",
   mapEmbed: seed.slug === "retail-cibitung" ? garudaLocation.embedUrl : "https://www.google.com/maps?q=Toko+Besi+Mahameru+Baja+Tambun+Selatan&output=embed",
+  businessHours: seed.slug === "retail-cibitung" ? "Jam kunjungan dikonfirmasi dengan admin." : "Senin–Sabtu · 07.00–17.00 WIB",
   createdAt: epoch, updatedAt: epoch,
 }));
 const collection = cmsCollection("divisions", z.array(divisionSchema), initial);
@@ -45,7 +46,7 @@ export function assertDivisionScope(actor: AdminIdentity, slug: string | null | 
 export async function saveDivision(actor: AdminIdentity, input: unknown, id?: string, revision?: number) {
   const parsed = divisionInputSchema.parse(input);
   await (await import("./cmsMedia")).validateMediaOwnership(parsed,actor);
-  return collection.mutate(records => {
+  const saved = await collection.mutate(records => {
     const current = id ? records.find(d => d.id === id) : undefined;
     if (id && !current) throw new CmsError("Divisi tidak ditemukan.", 404);
     if (!current && actor.role !== "super_admin") throw new CmsError("Hanya Super Admin dapat membuat divisi.", 403);
@@ -64,17 +65,21 @@ export async function saveDivision(actor: AdminIdentity, input: unknown, id?: st
     const saved = divisionSchema.parse({ ...current, ...parsed, sortOrder: position, id: id || randomUUID(), revision: current ? current.revision + 1 : 0, admins: current?.admins || [], createdAt: current?.createdAt || now, updatedAt: now });
     return { value: current ? records.map(d => d.id === id ? saved : d) : [saved, ...records], result: saved };
   });
+  invalidatePublicCms("public-divisions");
+  return saved;
 }
 export async function reorderDivisions(actor: AdminIdentity, requested: RecordOrder) {
   if (actor.role !== "super_admin") throw new CmsError("Hanya Super Admin dapat mengatur urutan divisi.", 403);
-  return collection.mutate(records => {
+  const ordered = await collection.mutate(records => {
     const ordered = applyManualOrder(orderedDivisions(records), requested, () => true);
     return { value: ordered, result: ordered };
   });
+  invalidatePublicCms("public-divisions");
+  return ordered;
 }
 export async function deleteDivision(actor: AdminIdentity, id: string, revision: number) {
   if (actor.role !== "super_admin") throw new CmsError("Akses ditolak.", 403);
-  return collection.mutate(async records => {
+  const result = await collection.mutate(async records => {
     const current = records.find(d => d.id === id);
     if (!current) throw new CmsError("Divisi tidak ditemukan.", 404);
     if (current.revision !== revision) throw new CmsError("Profil telah diubah. Muat ulang.", 409);
@@ -86,4 +91,6 @@ export async function deleteDivision(actor: AdminIdentity, id: string, revision:
     if (current.status === "active") throw new CmsError("Arsipkan divisi sebelum menghapus.");
     return { value: records.filter(d => d.id !== id), result: { deleted: id } };
   });
+  invalidatePublicCms("public-divisions");
+  return result;
 }

@@ -59,6 +59,7 @@ export const divisions = [
   },
   {
     slug: "laser-cutting", name: "MBI Laser Cutting & Bending", label: "Laser cutting & bending", area: "Tambun Selatan, Bekasi",
+    faqHeading: "Pertanyaan laser cutting & bending.",
     title: "Jasa cutting laser plat dari gambar ke komponen.",
     intro: "Mulai dari gambar kerja. Jasa cutting laser dan bending plat di Tambun Selatan, Bekasi — tim meninjau material, ketebalan, ukuran, jumlah, serta proses cutting dan bending sebelum penawaran.",
     description: "MBI Laser Cutting melayani jasa cutting laser untuk plat, bending, komponen custom, panel, ornamen, dan fabrikasi di area Tambun, Bekasi, dan sekitarnya. Setiap permintaan ditinjau berdasarkan gambar teknik agar kelayakan proses, harga, dan jadwal dapat dikonfirmasi secara bertanggung jawab.",

@@ -17,6 +17,7 @@ export const sectionEditSchema = z.object({
   published: z.boolean().default(true),
 }).superRefine((row, ctx) => {
   const value = row.replacement;
+  if (row.kind === "text" && !value.trim()) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["replacement"], message: "Tulisan tidak boleh kosong." });
   if (row.kind === "link" && !safeSectionLink(value)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["replacement"], message: "Gunakan tautan halaman, HTTPS, telepon, atau email yang valid." });
   if (row.kind === "image" && value && !safeLocalAsset(value, ["images", "media", "api/cms/media"]) && !safeHttpsUrl(value)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["replacement"], message: "Gunakan gambar lokal atau tautan HTTPS." });
   if (row.kind === "embed" && !safeHttpsUrl(value)) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["replacement"], message: "Gunakan URL HTTPS untuk peta." });

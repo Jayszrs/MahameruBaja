@@ -95,7 +95,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
             {/* Contact info */}
-            <PublicSection section="store"><div ref={ref} className={`reveal ${visible ? 'visible' : ''}`}>
+            <PublicSection section="store" page="contact"><div id="informasi-toko" ref={ref} className={`reveal ${visible ? 'visible' : ''}`}>
               <h3 className="text-2xl font-extrabold text-graphite mb-6">Informasi Toko</h3>
 
               <div className="space-y-5 mb-8">
@@ -181,7 +181,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
 
             {/* Contact form */}
             <div>
-              <div className="bg-white rounded-md border border-rule p-6 lg:p-8">
+              <PublicSection section="form" page="contact"><div id="kontak-form-section" className="bg-white rounded-md border border-rule p-6 lg:p-8">
                 <h3 className="text-xl font-extrabold text-graphite mb-6">Kirim Pesan</h3>
 
                 {submitted ? (
@@ -191,7 +191,7 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                     {saved && <RequestHandoff input={saved.input} id={saved.id} />}
                   </div>
                 ) : (
-                  <PublicSection section="form"><form onSubmit={handleSubmit} noValidate className="space-y-4" id="kontak-form">
+                  <form onSubmit={handleSubmit} noValidate className="space-y-4" id="kontak-form">
                     {saveError && <p role="alert" className="text-sm text-red-600">{saveError}</p>}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <Field id="nama" label="Nama" required error={errors.nama}>
@@ -236,9 +236,9 @@ export default function KontakPage({ contacts }: { contacts: TeamContact[] }) {
                       className="w-full py-3.5 bg-graphite hover:bg-navy text-white font-bold text-sm rounded-xl transition-colors">
                       {sending ? 'Menyimpan…' : 'Kirim Pesan'}
                     </button>
-                  </form></PublicSection>
+                  </form>
                 )}
-              </div>
+              </div></PublicSection>
             </div>
           </div>
         </div>

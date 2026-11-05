@@ -15,9 +15,9 @@ export function focusEditorRecord(id: string) {
     if (!(record instanceof HTMLDetailsElement) || record.open) record?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
   });
 }
-export default function AdminOrderList({ items, label, onMove, onSelect, selected, disabled, children }: {
+export default function AdminOrderList({ items, label, onMove, onSelect, selected, disabled, children, hideOpenHint = false, selectionVerb = "Buka rincian" }: {
   items: OrderItem[]; label: string; onMove: (fromId: string, toId: string) => void;
-  onSelect?: (id: string) => void; selected?: string; disabled?: boolean; children?: ReactNode;
+  onSelect?: (id: string) => void; selected?: string; disabled?: boolean; children?: ReactNode; hideOpenHint?: boolean; selectionVerb?:string;
 }) {
   const listId = useId();
   const [drag, setDrag] = useState<{ from: string; to: string; x: number; y: number; left: number; top: number; width: number; height: number; offsetX: number; offsetY: number } | null>(null);
@@ -80,7 +80,7 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
       </button>
       <span className="admin-order-number">{index + 1}</span>
       {item.image && <img src={item.image} alt="" className="admin-order-thumbnail"/>}
-      {onSelect ? <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id || openDetails === item.id} aria-expanded={openDetails === item.id} aria-label={`${openDetails === item.id ? "Tutup" : "Buka"} rincian ${item.title}`} onClick={() => selectItem(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}<span className="admin-order-open">{openDetails === item.id ? "Tutup rincian" : "Buka rincian"} {openDetails === item.id ? "⌃" : "↗"}</span></button> : <div className="admin-order-copy"><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}</div>}
+      {onSelect ? <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id || openDetails === item.id} aria-expanded={openDetails === item.id} aria-label={`${openDetails === item.id ? "Tutup rincian" : selectionVerb} ${item.title}`} onClick={() => selectItem(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}{!hideOpenHint&&<span className="admin-order-open">{openDetails === item.id ? "Tutup rincian" : "Buka rincian"} {openDetails === item.id ? "⌃" : "↗"}</span>}</button> : <div className="admin-order-copy"><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}</div>}
     </div></div>;})}</div><p className="admin-order-status" role="status" aria-live="polite">{notice}</p>
   </section>;
 }

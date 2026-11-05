@@ -28,3 +28,17 @@ export const cmsPages: Record<string, CmsPage> = {
   kontak: { label: "Kontak", publicHref: "/kontak", sections: [text("contact", "Hubungi tim Mahameru"), { heading: "Kontak sales per divisi", detail: "Nama, foto, WhatsApp, telepon, email, dan pembagian divisi. Juga dipakai oleh popup sales dan footer.", edit: "/admin/konten?tab=contacts", action: "Edit pembagian sales & kontak" }, { heading: "Alamat dan lokasi divisi", detail: "Alamat, Google Maps, dan peta lokasi.", edit: "/admin/divisi", action: "Edit lokasi divisi" }] },
   sosial: { label: "Sosial Media", publicHref: "/sosial-media", sections: [{ heading: "Akun sosial", detail: "Nama akun, tautan resmi, dan divisi pemilik.", edit: "/admin/sosial?tab=accounts", action: "Edit akun sosial" }, { heading: "Unggahan sosial", detail: "Foto, video, judul, dan tautan unggahan.", edit: "/admin/sosial?tab=posts", action: "Unggah foto / video sosial" }] },
 };
+
+// Dashboard shortcuts should open the same page workspaces as the CMS sidebar.
+// Proyek is a section inside the Galeri workspace; it has no separate editor.
+export const cmsWorkspaceLinks: Record<keyof typeof cmsPages, string> = {
+  beranda: "/admin/website/beranda",
+  tentang: "/admin/website/tentang",
+  produk: "/admin/website/produk",
+  jasa: "/admin/website/jasa",
+  proyek: "/admin/website/galeri?section=projects",
+  galeri: "/admin/website/galeri?section=albums",
+  artikel: "/admin/website/artikel",
+  kontak: "/admin/website/kontak",
+  sosial: "/admin/website/sosial",
+};

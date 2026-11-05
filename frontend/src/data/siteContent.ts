@@ -13,6 +13,7 @@ import { websiteTextSchema } from "./websiteTexts";
 import { clientPosters } from "./clientPosters";
 import { heroAnnouncementSchema } from "./heroAnnouncements";
 import { defaultGarudaReviews } from "./divisionLocations";
+import { laserGoogleReviews } from "./laserGoogleReviews";
 import { inventoryListSchema, defaultInventory } from "./inventory";
 import { galleryProjectsSchema, defaultGalleryProjects } from "./projectGallery";
 import { partnerLogoListSchema, defaultPartnerLogos } from "./partnerLogos";
@@ -38,9 +39,9 @@ export const contactSchema = z.object({ ...ownershipFields,
 });
 export const reviewSchema = z.object({ ...ownershipFields,
   id: text(80).min(1), author: text(100).min(1), rating: z.number().int().min(1).max(5),
-  text: text(2000).min(1), when: text(100), url: googleUrl,
+  text: text(2000), ratingOnly:z.boolean().optional(), when: text(100), url: googleUrl,
   authorPhoto: photo.optional(), authorUrl: googleUrl.optional(), published: z.boolean(),
-});
+}).superRefine((review,ctx)=>{if(!review.text && !review.ratingOnly)ctx.addIssue({code:"custom",path:["text"],message:"Isi komentar asli atau tandai sebagai penilaian tanpa komentar."});});
 export const reviewProfileSchema = z.object({
   rating: z.number().min(0).max(5), reviewCount: z.number().int().min(0).nullable(),
   ratingDate: text(80).min(1), mapsUrl: googleUrl, reviews: z.array(reviewSchema).max(200),
@@ -74,6 +75,7 @@ export const siteContentSchema = z.object({
   clientPosterVersion: z.number().int().nonnegative().default(0),
   referenceAlbumVersion: z.number().int().nonnegative().default(0),
   customerJourneyVersion: z.number().int().nonnegative().default(0),
+  laserReviewVersion: z.number().int().nonnegative().default(0),
   revision: z.number().int().min(0),
   identityVersion: z.number().int().min(0).default(0),
   showcaseVersion: z.number().int().min(0).default(0),
@@ -138,8 +140,8 @@ export const defaultSiteContent: SiteContent = {
   websiteTexts: [],
   clientPosterVersion: 1,
   referenceAlbumVersion: 1,
-  customerJourneyVersion: 1,
-  divisionReviews: {},
+  customerJourneyVersion: 1, laserReviewVersion: 1,
+  divisionReviews: { "laser-cutting": laserGoogleReviews },
   garudaReviews: defaultGarudaReviews,
   inventory: defaultInventory,
   galleryProjects: defaultGalleryProjects,

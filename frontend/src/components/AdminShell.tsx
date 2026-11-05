@@ -28,6 +28,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const [desktop, setDesktop] = useState(true);
   const [wide,setWide]=useState(false);
   const [workspace, setWorkspace] = useState<AdminWorkspaceState>(emptyAdminWorkspace);
+  const workspaceEditors = useRef(new Map<string, AdminWorkspaceState>());
   const [uploads, setUploads] = useState<CmsUploadActivity[]>([]);
   const [newOffers, setNewOffers] = useState(0);
   const [offerToastCount, setOfferToastCount] = useState(0);
@@ -85,7 +86,22 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const menuButton = useRef<HTMLButtonElement>(null);
   const sidebar = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDivElement>(null);
-  const register = useCallback((value: AdminWorkspaceState) => setWorkspace(value), []);
+  const register = useCallback((key: string, value?: AdminWorkspaceState) => {
+    if (value) workspaceEditors.current.set(key,value); else workspaceEditors.current.delete(key);
+    const editors=[...workspaceEditors.current.values()];
+    if(!editors.length){setWorkspace(emptyAdminWorkspace);return;}
+    const dirtyEditors=editors.filter(editor=>editor.dirty&&editor.onSave&&!editor.disabled);
+    const busy=editors.some(editor=>editor.busy);
+    setWorkspace({
+      dirty:editors.some(editor=>editor.dirty),
+      busy,
+      disabled:busy||dirtyEditors.length===0,
+      label:dirtyEditors[0]?.label||editors.find(editor=>editor.label)?.label,
+      secondaryLabel:dirtyEditors.find(editor=>editor.secondaryLabel)?.secondaryLabel,
+      onSave:async()=>{for(const editor of dirtyEditors)await editor.onSave?.();},
+      onSecondary:()=>dirtyEditors.find(editor=>editor.onSecondary)?.onSecondary?.(),
+    });
+  }, []);
   useEffect(()=>{try{setWide(localStorage.getItem("mahameru.admin.wide.v1")==="true");}catch{/* Layout preferences are optional. */}},[]);
   function toggleWide() {setWide(value=>{const next=!value;try{localStorage.setItem("mahameru.admin.wide.v1",String(next));}catch{/* Layout preferences are optional. */}return next;});}
 

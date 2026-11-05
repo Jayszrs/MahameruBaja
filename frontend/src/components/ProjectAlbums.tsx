@@ -6,14 +6,16 @@ import Link from "next/link";
 import { useEffect, useRef, useState, useId } from "react";
 import { projectCover, type GalleryProject } from "../data/projectGallery";
 
-export default function ProjectAlbums({ projects, layout = "grid", galleryHref = "/proyek", title, description, sectionId, ...rest }: { projects: GalleryProject[]; layout?: "grid" | "ribbon"; galleryHref?: string; title?: string; description?: string; sectionId?: string; [key: string]: unknown }) {
+export default function ProjectAlbums({ projects, layout = "grid", galleryHref = "/proyek", title, description, sectionId, categoryOrder, ...rest }: { projects: GalleryProject[]; layout?: "grid" | "ribbon"; galleryHref?: string; title?: string; description?: string; sectionId?: string; categoryOrder?: string[]; [key: string]: unknown }) {
   const headingId = useId();
   const [filter, setFilter] = useState("Semua");
   const [selected, setSelected] = useState<GalleryProject | null>(null);
   const [index, setIndex] = useState(0);
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLButtonElement | null>(null);
-  const categories = ["Semua", ...new Set(projects.map(p => p.category))];
+  const availableCategories=[...new Set(projects.map(p=>p.category))];
+  const orderedCategories=categoryOrder?.filter(category=>availableCategories.includes(category))||[];
+  const categories = ["Semua", ...new Set([...orderedCategories,...availableCategories])];
   const visible = projects.filter(p => p.published && p.photos.length && (filter === "Semua" || p.category === filter));
   const photo = selected?.photos[index];
   function open(project: GalleryProject, button: HTMLButtonElement) {

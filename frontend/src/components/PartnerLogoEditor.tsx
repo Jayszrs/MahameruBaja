@@ -16,15 +16,16 @@ function LogoPreview({item}:{item:PartnerLogo}) {
   const [failed,setFailed]=useState(false);
   return <div className="partner-editor-preview">{item.logo && assetUrl.safeParse(item.logo).success && !failed ? <Image src={item.logo} alt={item.name || "Pratinjau logo"} width={280} height={160} sizes="280px" onError={()=>setFailed(true)}/> : <p>{failed ? "Logo belum termuat. Periksa alamat gambar atau unggah kembali." : "Unggah logo atau isi alamat gambar untuk melihat pratinjau."}</p>}</div>;
 }
-export default function PartnerLogoEditor({initialContent}:{initialContent:SiteContent}) {
+export default function PartnerLogoEditor({initialContent, initialTab = "suppliers", lockedTab}:{initialContent:SiteContent; initialTab?:"suppliers"|"clients"; lockedTab?:"suppliers"|"clients"}) {
   const actor=useAdminIdentity();
   const [content,setContent]=useState(initialContent), base=useRef(initialContent);
-  const [tab,setTab]=useAdminView("tab",["suppliers","clients"] as const,"suppliers");
+  const [tab,setTab]=useAdminView("tab",["suppliers","clients"] as const,initialTab);
   const [dirty,setDirty]=useState(false),[busy,setBusy]=useState(false);
   const [message,setMessage]=useState(""),[failed,setFailed]=useState(false),[deleteId,setDeleteId]=useState<string|null>(null);
   const [newId,setNewId]=useState("");
   const [selectedIds,setSelectedIds]=useState<string[]>([]);
-  const kind=tab==="suppliers"?"supplier":"client";
+  const activeTab=lockedTab || tab;
+  const kind=activeTab==="suppliers"?"supplier":"client";
   const rows=content.partnerLogos.filter(row=>row.kind===kind).sort((a,b)=>Number(a.published)-Number(b.published));
   function change(update:(rows:PartnerLogo[])=>PartnerLogo[]) {setContent(current=>({...current,partnerLogos:update(current.partnerLogos)}));setDirty(true);setMessage("");}
   function update(id:string,patch:Partial<PartnerLogo>) {change(items=>items.map(item=>item.id===id?{...item,...patch}:item));}
@@ -46,7 +47,7 @@ export default function PartnerLogoEditor({initialContent}:{initialContent:SiteC
   }
   const workspace=useAdminWorkspace({dirty,busy,label:"Simpan logo",disabled:!dirty,onSave:save});
   return <div className="partner-logo-editor">
-    <AdminViewTabs value={tab} onChange={value=>{setTab(value);setDeleteId(null);setSelectedIds([]);}} disabled={busy} label="Jenis logo" options={[{value:"suppliers",label:"Supplier"},{value:"clients",label:"Perusahaan rekanan"}]}/>
+    {!lockedTab&&<AdminViewTabs value={tab} onChange={value=>{setTab(value);setDeleteId(null);setSelectedIds([]);}} disabled={busy} label="Jenis logo" options={[{value:"suppliers",label:"Supplier"},{value:"clients",label:"Perusahaan rekanan"}]}/>}
     {message&&<p className={`editor-notice ${failed?"error":"success"}`} role={failed?"alert":"status"}>{message}</p>}
     {busy&&<p className="editor-notice" role="status">Sedang mengunggah logo atau menyimpan perubahan…</p>}
     <fieldset className="editor-fields" disabled={busy}>

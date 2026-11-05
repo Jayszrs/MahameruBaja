@@ -112,7 +112,7 @@ export default function InformasiPage({ articles, intro = defaultArticleIntro }:
       </section></PublicSection>
 
       {/* CTA to product */}
-      <section className="py-14 bg-graphite relative overflow-hidden" aria-label="CTA ke produk">
+      <PublicSection section="cta" page="articles"><section id="artikel-cta" className="py-14 bg-graphite relative overflow-hidden" aria-label="CTA ke produk">
         <div className="absolute inset-0 texture-blueprint" aria-hidden="true" />
         <div className="relative z-10 max-w-[1280px] mx-auto px-6 lg:px-8 text-center">
           <h2 className="text-xl lg:text-2xl font-extrabold text-white mb-3 font-[family-name:var(--font-display)]">
@@ -127,7 +127,7 @@ export default function InformasiPage({ articles, intro = defaultArticleIntro }:
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
           </Link>
         </div>
-      </section>
+      </section></PublicSection>
     </div></PublicText>
   );
 }

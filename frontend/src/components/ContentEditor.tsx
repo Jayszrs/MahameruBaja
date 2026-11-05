@@ -60,11 +60,15 @@ export default function ContentEditor({
   lockedTab,
   embedded = false,
   initialReviewScope,
+  hideReviewScopePicker = false,
+  hideReviewIntro = false,
 }: {
   initialContent: SiteContent;
   lockedTab?: "contacts" | "reviews";
   embedded?: boolean;
   initialReviewScope?: string;
+  hideReviewScopePicker?: boolean;
+  hideReviewIntro?: boolean;
 }) {
   const actor = useAdminIdentity();
   const { divisions } = useDivisionDirectory();
@@ -397,7 +401,7 @@ export default function ContentEditor({
             </div>
           )}
           <fieldset disabled={saving} className="editor-fields">
-            {tab === "reviews" && (
+            {tab === "reviews" && !hideReviewIntro && (
               <section className="editor-panel">
                 <div className="editor-panel-title">
                   <h2>Teks pembuka review</h2>
@@ -414,7 +418,7 @@ export default function ContentEditor({
                   <h2>Ringkasan Google Maps</h2>
                   <span>Catatan manual</span>
                 </div>
-                <label className="editor-field">
+                {!hideReviewScopePicker && <label className="editor-field">
                   Profil lokasi
                   <select
                     value={reviewScope}
@@ -440,7 +444,7 @@ export default function ContentEditor({
                         </option>
                       ))}
                   </select>
-                </label>
+                </label>}
                 <div className="editor-grid">
                   <label className="editor-field">
                     Rating rata-rata

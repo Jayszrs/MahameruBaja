@@ -6,7 +6,7 @@ import { isPublicBlobUrl } from "../data/safeUrls";
 import { corporateLogoFrames, corporateLogoSheet } from "../data/corporateLogos";
 const logoSheetProps = getImageProps({ src: corporateLogoSheet, alt: "", width: 1437, height: 1095 }).props;
 const logoSheetSrc = logoSheetProps.srcSet?.split(",")[0].trim().split(/\s+/)[0] || logoSheetProps.src;
-export default function CmsImage({ transparentLogo = false, ...props }: ImageProps & { transparentLogo?: boolean }) {
+export default function CmsImage({ transparentLogo = false, cleanLogo = false, ...props }: ImageProps & { transparentLogo?: boolean; cleanLogo?: boolean }) {
   const edit = useSectionEdit();
   const replacement = typeof props.src === "string" ? edit("image", props.src) : undefined;
   if (replacement !== undefined && replacement) props = { ...props, src:replacement };
@@ -23,7 +23,8 @@ export default function CmsImage({ transparentLogo = false, ...props }: ImagePro
       {/* Remove near-white paper, retaining the original dark and colored artwork. */}
       <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -6 -6 -6 0 17" />
     </filter></defs>}
-    <image href={logoSheetSrc} x="0" y="0" width="1437" height="1095" style={{ clipPath: logo.clip }} filter={transparentLogo ? `url(#${filterId})` : undefined} />
+    {cleanLogo && <defs><filter id={`${filterId}-clean`} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 -4 0 2.5"/><feMorphology operator="erode" radius="0.3"/></filter></defs>}
+    <image href={cleanLogo ? corporateLogoSheet : logoSheetSrc} x="0" y="0" width="1437" height="1095" style={{ clipPath: logo.clip }} filter={cleanLogo ? `url(#${filterId}-clean)` : transparentLogo ? `url(#${filterId})` : undefined} />
     {logo.wordmark&&<text className="corporate-logo-wordmark" x="345" y="538" textAnchor="middle" textLength="570" lengthAdjust="spacingAndGlyphs" fill="#d00000" fontSize="68" fontWeight="900" fontFamily="var(--font-archivo), Arial, sans-serif">{logo.wordmark}</text>}
   </svg>;
   const privateOrExternal = typeof props.src === "string" && (props.src.startsWith("/") && !props.src.startsWith("/images/") && props.src !== "/mbi-mark.svg" || props.src.startsWith("https://") && !isPublicBlobUrl(props.src));

@@ -1399,8 +1399,8 @@ html { scroll-padding-top: calc(var(--header-height) + 20px); -webkit-text-size-
 .unit-product-grid p { font-size:11px; color:#73807c; margin-top:10px; }
 .unit-product-grid a > span { display:block; border-top:1px solid #e1e5e1; padding-top:16px; margin-top:20px; font-size:11px; font-weight:700; }
 .unit-gallery-grid { display:grid; grid-template-columns:1.3fr 1fr; gap:35px; align-items:start; }
-.unit-gallery-grid figure:nth-child(2) { margin-top:110px; }
-.unit-gallery-grid figure:last-child { grid-column:1 / -1; }
+.unit-gallery-grid figure:nth-child(3n + 2) { margin-top:110px; }
+.unit-gallery-grid figure:nth-child(3n) { grid-column:1 / -1; }
 .unit-gallery-grid figure > div { position:relative; overflow:hidden; height:520px; }
 .unit-gallery-grid figure > div > div { position:absolute; inset:-16% 0; transform:translate3d(0,var(--parallax-y,0),0); }
 .unit-gallery-grid img { object-fit:cover; }
@@ -1511,7 +1511,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color:transp
   .unit-sub-hero h1 { font-size:clamp(36px,9.5vw,60px); }
   .unit-sub-hero nav { margin-bottom:28px; }
   .unit-gallery-grid { gap:25px; grid-template-columns:1fr; }
-  .unit-gallery-grid figure:nth-child(2) { margin-top:0; } .unit-gallery-grid figure > div { height:360px; }
+  .unit-gallery-grid figure:nth-child(3n + 2) { margin-top:0; } .unit-gallery-grid figure:nth-child(3n) { grid-column:auto; } .unit-gallery-grid figure > div { height:360px; }
   .unit-sub-cta, .unit-footer-top, .social-heading { align-items:start; flex-direction:column; gap:28px; }
   .unit-footer { padding-top:60px; } .unit-footer-top { padding-bottom:40px; }
   .unit-product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
@@ -1691,7 +1691,7 @@ button, a, input, select, textarea, summary { -webkit-tap-highlight-color:transp
 .unit-service-photo { border-radius:120px 20px 120px 20px; }
 .unit-service-list article:nth-child(even) .unit-service-photo { border-radius:20px 120px 20px 120px; }
 .unit-gallery-grid figure > div { border-radius:20px 130px 20px 20px; }
-.unit-gallery-grid figure:nth-child(2) > div { border-radius:180px 180px 20px 20px; }
+.unit-gallery-grid figure:nth-child(3n + 2) > div { border-radius:180px 180px 20px 20px; }
 .directory-cards { gap:30px; align-items:start; }
 .directory-card { border-radius:140px 140px 20px 20px; overflow:hidden; }
 .directory-card:nth-child(2) { margin-top:45px; border-radius:25px; }

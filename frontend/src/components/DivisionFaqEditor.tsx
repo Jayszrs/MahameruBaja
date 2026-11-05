@@ -6,7 +6,7 @@ import { useAdminWorkspace } from "./AdminWorkspace";
 
 export default function DivisionFaqEditor({ initialDivision }: { initialDivision: Division }) {
   const [division,setDivision]=useState(initialDivision);
-  const [faqHeading,setFaqHeading]=useState(initialDivision.faqHeading || "Yang sering ditanyakan.");
+  const [faqHeading,setFaqHeading]=useState(initialDivision.faqHeading || "Pertanyaan laser cutting & bending.");
   const [faq,setFaq]=useState(initialDivision.faq);
   const [dirty,setDirty]=useState(false);
   const [busy,setBusy]=useState(false);
