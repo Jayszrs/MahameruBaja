@@ -20,6 +20,7 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
           const file = event.currentTarget.files?.[0]; event.currentTarget.value = "";
           if (file) { setPreviewError(""); void upload(file); }
         }} />
+        <small>{busy ? "Sedang mengunggah…" : slide.media ? "Media sudah terisi. Pilih file baru untuk menggantinya." : "Belum ada file dipilih."}</small>
       </label>
       <div className="hero-link-fields">
         <label className="editor-field hero-kind-field">Jenis media dari link<select name={`hero-kind-${slide.id}`} value={slide.type} disabled={busy} onChange={event => {
@@ -27,7 +28,7 @@ export default function HeroMediaFields({ slide, busy, update, upload }: {
           if (type !== slide.type) change({ type, media: "", poster: undefined });
         }}><option value="image">Gambar</option><option value="video">Video MP4</option></select></label>
         <label className="editor-field hero-url-field">Atau gunakan link gambar atau video<input name={`hero-url-${slide.id}`} value={slide.media} maxLength={1000} disabled={busy} placeholder="https://… atau /media/…" onChange={event => change({ media: event.target.value.trim() })} />
-          <small>Alamat terisi otomatis setelah unggah. Jika tidak mengunggah file, gunakan link HTTPS langsung ke JPG, PNG, WebP, atau MP4. SVG, YouTube, Instagram, dan Google Drive tidak didukung.</small>
+          <small>Tempel link langsung ke file JPG, PNG, WebP, atau MP4. Link halaman tidak bisa dipakai.</small>
         </label>
       </div>
     </div>

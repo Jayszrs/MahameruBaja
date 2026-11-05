@@ -10,7 +10,7 @@ export function moveBefore<T extends { id: string }>(items: T[], fromId: string,
 export function focusEditorRecord(id: string) {
   requestAnimationFrame(() => {
     const record = document.getElementById(id);
-    if (record instanceof HTMLDetailsElement) record.open = !record.open;
+    if (record instanceof HTMLDetailsElement) record.open = true;
     record?.scrollIntoView({ block: "start", behavior: "instant" });
     if (!(record instanceof HTMLDetailsElement) || record.open) record?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
   });
@@ -23,6 +23,7 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
   const [drag, setDrag] = useState<{ from: string; to: string; x: number; y: number; left: number; top: number; width: number; height: number; offsetX: number; offsetY: number } | null>(null);
   const [notice, setNotice] = useState("");
   const [openDetails, setOpenDetails] = useState<string | null>(null);
+  const [activeItem, setActiveItem] = useState<string | null>(null);
   const itemIds = items.map(item => item.id).join("|");
   function disclosureFor(id: string) {
     return Array.from(document.querySelectorAll<HTMLDetailsElement>("details[id]")).find(node => node.id === id || node.id.endsWith(`-${id}`)) || null;
@@ -38,24 +39,37 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
   }, [itemIds]);
   function selectItem(id: string) {
     const disclosure = disclosureFor(id);
+    setActiveItem(id);
     if (!disclosure) {
       onSelect?.(id);
       requestAnimationFrame(() => {
-        const orderRow = document.querySelector<HTMLElement>(`[data-order-list="${CSS.escape(listId)}"] [data-order-id="${CSS.escape(id)}"]`);
-        const orderList = orderRow?.closest<HTMLElement>(".admin-order-list");
-        const details = orderList?.parentElement?.querySelectorAll<HTMLElement>("details.cms-list-row");
-        const index = items.findIndex(item => item.id === id);
-        const detail = index >= 0 ? details?.[index] : undefined;
-        detail?.scrollIntoView({ block: "center", behavior: "smooth" });
+        requestAnimationFrame(() => {
+          const orderRow = document.querySelector<HTMLElement>(`[data-order-list="${CSS.escape(listId)}"] [data-order-id="${CSS.escape(id)}"]`);
+          const orderList = orderRow?.closest<HTMLElement>(".admin-order-list");
+          const scope = orderList?.closest<HTMLElement>("fieldset, .gallery-editor-layout, .cms-section-content, .editor-content") || orderList?.parentElement;
+          const index = items.findIndex(item => item.id === id);
+          const detailMatches = Array.from(scope?.querySelectorAll<HTMLElement>(`[data-order-detail-id="${CSS.escape(id)}"], [data-cms-detail-id$=":${CSS.escape(id)}"]`) || []);
+          const exact = detailMatches.find(node => node.textContent?.includes(items[index]?.title || "\u0000")) || detailMatches[0];
+          const selectors = ".editor-panel, .admin-repeat-row, .cms-list-row, details.cms-list-row, article.editor-panel, .cms-collage-detail, .cms-collage-photo-detail, .about-division-detail, .about-album-detail, .gallery-editor-project, .unit-gallery-photo-detail, .about-engineering-step, .footer-division-detail";
+          const following = Array.from(scope?.querySelectorAll<HTMLElement>(selectors) || []).filter(node => {
+            if (!orderList || node.closest(".admin-order-list")) return false;
+            return Boolean(orderList.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING);
+          });
+          const details = following.filter(node => node instanceof HTMLDetailsElement);
+          const formCards = following.filter(node => !following.some(other => other !== node && node.contains(other)));
+          const titledCard = formCards.find(node => node.textContent?.includes(items[index]?.title || "\u0000"));
+          const target = exact || details[index] || titledCard || formCards[index];
+          if (target instanceof HTMLDetailsElement) target.open = true;
+          target?.scrollIntoView({ block: "center", behavior: "smooth" });
+          target?.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
+        });
       });
       return;
     }
-    disclosure.open = !disclosure.open;
-    setOpenDetails(disclosure.open ? id : null);
-    if (disclosure.open) {
-      disclosure.scrollIntoView({ block: "start", behavior: "instant" });
-      disclosure.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
-    }
+    disclosure.open = true;
+    setOpenDetails(id);
+    disclosure.scrollIntoView({ block: "center", behavior: "smooth" });
+    disclosure.querySelector<HTMLInputElement | HTMLTextAreaElement>("input:not([type=checkbox]):not([type=file]), textarea")?.focus({ preventScroll: true });
   }
   function move(from: string, to: string) {
     if (disabled || from === to) return;
@@ -66,7 +80,7 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
   return <section className="admin-order-list" aria-label={label}>
     <div className="editor-list-heading"><h3>{label}</h3>{children}</div>
     {items.length > 1 && <p className="admin-field-help" id={`${listId}-help`}>Seret untuk mengubah urutan. Jika menggunakan keyboard, tekan panah atas atau bawah untuk memindahkan item.</p>}
-    <div className="admin-order-items">{items.map((item, index) => { const lifted=drag?.from===item.id; return <div className="admin-order-slot" key={item.id} style={lifted?{height:drag.height}:undefined}>        <div data-order-list={listId} data-order-id={item.id} className={`admin-order-row${selected === item.id ? " is-selected" : ""}${drag?.to === item.id ? " is-drop-target" : ""}${lifted ? " is-dragging" : ""}`} onClick={event => { if (!(event.target instanceof Element) || !event.target.closest("button")) selectItem(item.id); }} style={lifted?{position:"fixed",left:drag.x-drag.offsetX,top:drag.y-drag.offsetY,width:drag.width,zIndex:80,pointerEvents:"none",transform:"scale(1.015) rotate(.25deg)"}:undefined}>
+    <div className="admin-order-items">{items.map((item, index) => { const lifted=drag?.from===item.id; return <div className="admin-order-slot" key={item.id} style={lifted?{height:drag.height}:undefined}>        <div data-order-list={listId} data-order-id={item.id} className={`admin-order-row${selected === item.id || activeItem === item.id ? " is-selected" : ""}${drag?.to === item.id ? " is-drop-target" : ""}${lifted ? " is-dragging" : ""}`} onClick={event => { if (!(event.target instanceof Element) || !event.target.closest("button")) selectItem(item.id); }} style={lifted?{position:"fixed",left:drag.x-drag.offsetX,top:drag.y-drag.offsetY,width:drag.width,zIndex:80,pointerEvents:"none",transform:"scale(1.015) rotate(.25deg)"}:undefined}>
       <button type="button" className="admin-drag-handle" aria-label={`Atur urutan ${item.title}, posisi ${index + 1} dari ${items.length}`} aria-describedby={items.length > 1 ? `${listId}-help` : undefined} aria-keyshortcuts="ArrowUp ArrowDown" disabled={disabled || items.length < 2} style={{ touchAction: "none" }}
         onPointerDown={event => { if (event.button !== 0 || disabled || items.length < 2) return; const rect=event.currentTarget.closest<HTMLElement>(".admin-order-row")!.getBoundingClientRect(); event.currentTarget.setPointerCapture(event.pointerId); setDrag({ from:item.id,to:item.id,x:event.clientX,y:event.clientY,left:rect.left,top:rect.top,width:rect.width,height:rect.height,offsetX:event.clientX-rect.left,offsetY:event.clientY-rect.top }); }}
         onPointerMove={event => { if (!drag) return;
@@ -80,7 +94,7 @@ export default function AdminOrderList({ items, label, onMove, onSelect, selecte
       </button>
       <span className="admin-order-number">{index + 1}</span>
       {item.image && <img src={item.image} alt="" className="admin-order-thumbnail"/>}
-      {onSelect ? <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id || openDetails === item.id} aria-expanded={openDetails === item.id} aria-label={`${openDetails === item.id ? "Tutup rincian" : selectionVerb} ${item.title}`} onClick={() => selectItem(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}{!hideOpenHint&&<span className="admin-order-open">{openDetails === item.id ? "Tutup rincian" : "Buka rincian"} {openDetails === item.id ? "⌃" : "↗"}</span>}</button> : <div className="admin-order-copy"><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}</div>}
+      <button type="button" className="admin-order-select" disabled={disabled} aria-pressed={selected === item.id || activeItem === item.id || openDetails === item.id} aria-expanded={openDetails === item.id} aria-label={`${openDetails === item.id ? "Tutup rincian" : selectionVerb} ${item.title}`} onClick={() => selectItem(item.id)}><strong>{item.title}</strong>{item.detail && <small>{item.detail}</small>}{!hideOpenHint&&<span className="admin-order-open">{openDetails === item.id ? "Tutup rincian" : "Buka rincian"} {openDetails === item.id ? "⌃" : "↗"}</span>}</button>
     </div></div>;})}</div><p className="admin-order-status" role="status" aria-live="polite">{notice}</p>
   </section>;
 }
